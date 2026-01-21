@@ -11,8 +11,10 @@ COPY package*.json ./
 # Installer les dépendances
 RUN npm install --omit=dev
 
-# Copier le reste du code
-COPY . .
+# Copier le reste du code (tous les fichiers)
+COPY src ./src
+COPY public ./public
+COPY .env* ./
 
 # Créer les dossiers nécessaires
 RUN mkdir -p logs sessions whatsapp_auth
