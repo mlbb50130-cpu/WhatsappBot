@@ -2,6 +2,9 @@ FROM node:20-alpine
 
 WORKDIR /app
 
+# Installer git (nécessaire pour npm)
+RUN apk add --no-cache git
+
 # Copier les fichiers
 COPY package*.json ./
 COPY . .
