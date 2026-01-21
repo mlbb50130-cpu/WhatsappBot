@@ -4,7 +4,8 @@ npm-debug.log
 .gitignore
 .env.example
 README.md
-logs/
-sessions/
-.dockerignore
 *.md
+logs
+sessions
+.dockerignore
+
