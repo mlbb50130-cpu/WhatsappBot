@@ -5,6 +5,7 @@ const User = require('./models/User');
 const CooldownManager = require('./utils/cooldown');
 const XPSystem = require('./utils/xpSystem');
 const PermissionManager = require('./utils/permissions');
+const AdminActionsManager = require('./utils/adminActions');
 
 const commands = new Map();
 
