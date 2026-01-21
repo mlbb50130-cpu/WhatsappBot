@@ -9,10 +9,14 @@ RUN apk add --no-cache git
 COPY package*.json ./
 
 # Installer les dépendances
-RUN npm install --omit=dev
+RUN npm install --omit=dev --legacy-peer-deps
 
-# Copier TOUS les fichiers du projet
+# Copier TOUS les fichiers du projet (forcer le refresh)
 COPY . .
+
+# Vérifier que les fichiers existent
+RUN ls -la src/utils/adminActions.js
+RUN ls -la src/commands/admin/
 
 # Créer les dossiers nécessaires
 RUN mkdir -p logs sessions whatsapp_auth
