@@ -6,6 +6,7 @@ const QRCode = require('qrcode');
 const config = require('./config');
 const { connectDatabase } = require('./database');
 const { loadCommands, handleMessage } = require('./handler');
+const { createWebServer, updateBotStats, incrementStat } = require('./webserver');
 const qrcode = require('qrcode-terminal');
 const fs = require('fs');
 const path = require('path');
@@ -72,11 +73,14 @@ async function connectToWhatsApp() {
     if (connection === 'open') {
       pairingCodeGenerated = false;
       isReady = true;
+      updateBotStats({ connected: true });
       console.log('\n✅ BOT CONNECTED!\n');
     }
 
     if (connection === 'close') {
       pairingCodeGenerated = false;
+      isReady = false;
+      updateBotStats({ connected: false });
       isReady = false;
       const shouldReconnect = (lastDisconnect?.error)?.output?.statusCode !== 401;
       
@@ -214,6 +218,9 @@ async function main() {
   try {
     console.log(`🤖 TetsuBot - Otaku RPG WhatsApp Bot`);
     console.log(`═══════════════════════════════════\n`);
+
+    // Démarrer le serveur web
+    createWebServer(process.env.PORT || 3000);
 
     // Connect to database
     await connectDatabase();

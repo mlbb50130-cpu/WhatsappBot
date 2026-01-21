@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TetsuBot - Tableau de Bord</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 TetsuBot</h1>
+            <p>Bot WhatsApp RPG Otaku</p>
+        </header>
+
+        <nav class="navbar">
+            <a href="#" class="active">Accueil</a>
+            <a href="#status">Statut</a>
+            <a href="#stats">Statistiques</a>
+        </nav>
+
+        <main>
+            <section id="status" class="card">
+                <h2>📊 Statut du Bot</h2>
+                <div class="status-container">
+                    <div class="status-item">
+                        <span class="label">Connexion:</span>
+                        <span class="value" id="connection-status">Vérification...</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="label">Utilisateurs:</span>
+                        <span class="value" id="users-count">--</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="label">Groupes:</span>
+                        <span class="value" id="groups-count">--</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="label">Uptime:</span>
+                        <span class="value" id="uptime">--</span>
+                    </div>
+                </div>
+            </section>
+
+            <section id="stats" class="card">
+                <h2>📈 Statistiques</h2>
+                <div class="stats-container">
+                    <div class="stat-box">
+                        <h3>Messages traités</h3>
+                        <p id="messages-count" class="stat-number">0</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>Commandes exécutées</h3>
+                        <p id="commands-count" class="stat-number">0</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>Erreurs</h3>
+                        <p id="errors-count" class="stat-number">0</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card">
+                <h2>ℹ️ À propos</h2>
+                <p>TetsuBot est un bot WhatsApp interactif avec un système RPG otaku complet incluant:</p>
+                <ul>
+                    <li>Système de niveaux et d'expérience</li>
+                    <li>Quêtes et défis</li>
+                    <li>Combats en temps réel</li>
+                    <li>Inventaire et équipement</li>
+                    <li>Lieux d'exploration</li>
+                </ul>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 TetsuBot - Tous droits réservés</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
