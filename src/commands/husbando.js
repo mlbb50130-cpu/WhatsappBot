@@ -23,36 +23,29 @@ module.exports = {
       let imageUrl;
       const isNsfw = filter === 'nsfw';
 
-      /* ====== NEKOS.LIFE API (Meilleure) ====== */
+      /* ====== WAIFU.IM API (Meilleure avec filtres) ====== */
       try {
-        const endpoint = isNsfw ? 
-          'https://nekos.life/api/v2/image/husbando' :
-          'https://nekos.life/api/v2/image/neko';
-        
-        const res = await axios.get(endpoint, { timeout: 10000 });
-        imageUrl = res.data?.url;
-      } catch (e) {
-        console.log('[HUSBANDO] Nekos.life failed:', e.message);
-      }
+        const nsfw_param = isNsfw ? 'true' : 'false';
+        const res = await axios.get(
+          `https://api.waifu.im/search?is_nsfw=${nsfw_param}&tag=husbando`,
+          { timeout: 10000 }
+        );
 
-      /* ====== FALLBACK: NEKOSAPI ====== */
-      if (!imageUrl) {
-        try {
-          const tags = isNsfw ? 'husbando' : 'husbando';
-          const res = await axios.get(
-            `https://api.nekosapi.com/v4/images/random?tags=${tags}`,
-            { timeout: 10000 }
-          );
-          imageUrl = res.data?.data?.[0]?.image_url;
-        } catch (e) {
-          console.log('[HUSBANDO] NekosAPI failed');
+        if (res.data?.images?.[0]) {
+          imageUrl = res.data.images[0].url;
         }
+      } catch (e) {
+        console.log('[HUSBANDO] Waifu.im failed:', e.message);
       }
 
       /* ====== FALLBACK: NEKOS.BEST ====== */
       if (!imageUrl) {
-        const res = await axios.get('https://nekos.best/api/v2/husbando');
-        imageUrl = res.data?.results?.[0]?.url;
+        try {
+          const res = await axios.get('https://nekos.best/api/v2/husbando');
+          imageUrl = res.data?.results?.[0]?.url;
+        } catch (e) {
+          console.log('[HUSBANDO] Nekos.best failed');
+        }
       }
 
       if (!imageUrl) {

@@ -16,43 +16,36 @@ module.exports = {
       
       if (!['sfw', 'nsfw'].includes(filter)) {
         return sock.sendMessage(jid, { 
-          text: '❌ Usage: !waifu [sfw|nsfw]\n\n🥰 sfw = Image appropriée\n🔞 nsfw = Image pour adultes' 
+          text: '❌ Usage: !waifu [sfw|nsfw]\n\n😻 sfw = Image appropriée\n🔞 nsfw = Image pour adultes' 
         });
       }
 
       let imageUrl;
       const isNsfw = filter === 'nsfw';
 
-      /* ====== NEKOS.LIFE API (Meilleure) ====== */
+      /* ====== WAIFU.IM API (Meilleure avec filtres) ====== */
       try {
-        const endpoint = isNsfw ? 
-          'https://nekos.life/api/v2/image/waifu' :
-          'https://nekos.life/api/v2/image/neko';
-        
-        const res = await axios.get(endpoint, { timeout: 10000 });
-        imageUrl = res.data?.url;
-      } catch (e) {
-        console.log('[WAIFU] Nekos.life failed:', e.message);
-      }
+        const nsfw_param = isNsfw ? 'true' : 'false';
+        const res = await axios.get(
+          `https://api.waifu.im/search?is_nsfw=${nsfw_param}&tag=waifu`,
+          { timeout: 10000 }
+        );
 
-      /* ====== FALLBACK: NEKOSAPI ====== */
-      if (!imageUrl) {
-        try {
-          const tags = isNsfw ? 'waifu,ecchi' : 'waifu';
-          const res = await axios.get(
-            `https://api.nekosapi.com/v4/images/random?tags=${tags}`,
-            { timeout: 10000 }
-          );
-          imageUrl = res.data?.data?.[0]?.image_url;
-        } catch (e) {
-          console.log('[WAIFU] NekosAPI failed');
+        if (res.data?.images?.[0]) {
+          imageUrl = res.data.images[0].url;
         }
+      } catch (e) {
+        console.log('[WAIFU] Waifu.im failed:', e.message);
       }
 
       /* ====== FALLBACK: NEKOS.BEST ====== */
       if (!imageUrl) {
-        const res = await axios.get('https://nekos.best/api/v2/waifu');
-        imageUrl = res.data?.results?.[0]?.url;
+        try {
+          const res = await axios.get('https://nekos.best/api/v2/waifu');
+          imageUrl = res.data?.results?.[0]?.url;
+        } catch (e) {
+          console.log('[WAIFU] Nekos.best failed');
+        }
       }
 
       if (!imageUrl) {
@@ -66,7 +59,7 @@ module.exports = {
       });
 
       /* ====== ENVOI WHATSAPP ====== */
-      const filterEmoji = isNsfw ? '🔞' : '🥰';
+      const filterEmoji = isNsfw ? '🔞' : '😻';
       const filterText = isNsfw ? 'NSFW' : 'SFW';
       
       await sock.sendMessage(jid, {
