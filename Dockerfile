@@ -5,16 +5,14 @@ WORKDIR /app
 # Installer git (nécessaire pour npm)
 RUN apk add --no-cache git
 
-# Copier les fichiers
+# Copier package.json et package-lock.json
 COPY package*.json ./
 
 # Installer les dépendances
 RUN npm install --omit=dev
 
-# Copier le reste du code (tous les fichiers)
-COPY src ./src
-COPY public ./public
-COPY .env* ./
+# Copier TOUS les fichiers du projet
+COPY . .
 
 # Créer les dossiers nécessaires
 RUN mkdir -p logs sessions whatsapp_auth
