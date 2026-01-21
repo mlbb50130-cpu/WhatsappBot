@@ -7,10 +7,12 @@ RUN apk add --no-cache git
 
 # Copier les fichiers
 COPY package*.json ./
-COPY . .
 
 # Installer les dépendances
 RUN npm install --omit=dev
+
+# Copier le reste du code
+COPY . .
 
 # Créer les dossiers nécessaires
 RUN mkdir -p logs sessions whatsapp_auth
