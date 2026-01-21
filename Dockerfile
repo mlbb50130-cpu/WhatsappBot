@@ -7,7 +7,7 @@ COPY package*.json ./
 COPY . .
 
 # Installer les dépendances
-RUN npm ci --omit=dev
+RUN npm install --omit=dev
 
 # Créer les dossiers nécessaires
 RUN mkdir -p logs sessions whatsapp_auth
