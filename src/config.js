@@ -12,7 +12,7 @@ module.exports = {
   DB_NAME: 'tetsubot',
   
   // 🔐 Session
-  SESSION_NAME: process.env.WHATSAPP_SESSION_NAME || 'tetsubot_session',
+  SESSION_NAME: process.env.WHATSAPP_SESSION_NAME || 'Whatsapp_auth',
   SESSION_DIR: './sessions',
   
   // 👥 GROUP SETTINGS

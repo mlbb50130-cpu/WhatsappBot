@@ -5,7 +5,7 @@ node_modules/
 .env.example.complete
 logs/
 sessions/
-tetsubot_session/
+Whatsapp_auth/
 backups/
 *.bat
 *.log
