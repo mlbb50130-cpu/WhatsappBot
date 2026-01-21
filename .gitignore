@@ -59,7 +59,7 @@ logs/
 backups/
 *.backup
 
-# Admin/Demo files
+# Admin/Demo files (but NOT the utils/adminActions.js file)
 ADMIN*.md
 ADMIN*.js
 ADVANCED_CONFIG*.js
@@ -68,6 +68,9 @@ VERIFY*.js
 check-files.*
 verify.bat
 pre-deploy-check.bat
+
+# Whitelist the actual admin actions utility
+!src/utils/adminActions.js
 QUICK_START*.txt
 DEPLOYMENT.md
 DEPLOY*.md
