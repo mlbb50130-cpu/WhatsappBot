@@ -1,0 +1,102 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Session files
+tetsubot_session/
+tetsubot_session.data.json
+session/
+
+# OS files
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.sublime-project
+.sublime-workspace
+
+# Build
+dist/
+build/
+
+# Database
+*.db
+*.sqlite
+dump.rdb
+
+# Testing
+coverage/
+.nyc_output/
+
+# Misc
+.cache/
+temp/
+tmp/
+# Railway-specific
+.railway/
+railway-build.txt
+
+# WhatsApp Auth (créé après déploiement)
+# whatsapp_auth/ (à vérifier - peut contenir des credentials)
+
+# Logs et backups
+logs/
+backups/
+*.backup
+
+# Admin/Demo files
+ADMIN*.md
+ADMIN*.js
+ADVANCED_CONFIG*.js
+CHECK*.js
+VERIFY*.js
+check-files.*
+verify.bat
+pre-deploy-check.bat
+QUICK_START*.txt
+DEPLOYMENT.md
+DEPLOY*.md
+TESTING_LOCAL.txt
+LOCAL_TESTING.md
+TEST_COMMANDS.md
+START_HERE.md
+START_NOW.txt
+
+# Configuration docs
+CONFIG_*.md
+HANDLER_UPDATE.md
+MODELS_DOCUMENTATION.md
+MONGODB_ATLAS.md
+INDEX.txt
+
+# Scripts de déploiement local
+*.bat
+install.sh
+run-mongodb.bat
+start-mongodb.bat
+start.bat
+test-local.bat
+mongodb.bat
+
+# Fichiers de verification
+VERIFICATION*.md
+SETUP_COMPLETE.md
+IMPLEMENTATION_COMPLETE.md
+PROJECT_STATUS.md
+BOT_STATUS.md
+CONFIG_STATUS.txt

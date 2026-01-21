@@ -1,0 +1,323 @@
+# 🤖 TetsuBot - Otaku RPG WhatsApp Bot
+
+Un bot WhatsApp complet et modulaire avec système RPG otaku, niveaux, quêtes, duels et bien plus!
+
+## 🎯 Caractéristiques
+
+- **🎖️ Système de niveaux** - Gagnez XP automatiquement par messages
+- **⚔️ Duels PvP** - Affrontez d'autres joueurs
+- **📚 Quiz Otaku** - Questions sur anime/manga
+- **🎁 Système de Loot** - Ouvrez des coffres aléatoires
+- **🎨 Images Anime** - Waifu, Husbando, GIF anime
+- **🎯 Quêtes** - Missions quotidiennes et hebdomadaires
+- **🔐 Modération** - Avertissements, bans, kicks
+- **⚙️ Admin** - Contrôle total du bot
+- **📊 Inventaire** - Collectionnez des objets
+- **🏆 Classements** - Compétition globale
+
+## 🛠️ Stack Technique
+
+- **Node.js** - Runtime JavaScript
+- **Baileys** - Client WhatsApp multi-device
+- **MongoDB** - Base de données NoSQL
+- **Mongoose** - ODM MongoDB
+- **Axios** - Client HTTP
+
+## 📦 Installation
+
+### Prérequis
+- Node.js >= 16
+- MongoDB
+- NPM ou Yarn
+
+### Étapes
+
+1. **Clone le repo**
+```bash
+git clone <repo-url>
+cd TetsuBot
+```
+
+2. **Installe les dépendances**
+```bash
+npm install
+```
+
+3. **Configure l'environnement**
+```bash
+cp .env.example .env
+# Édite .env avec tes paramètres
+```
+
+4. **Lance le bot**
+```bash
+npm start
+```
+
+5. **Première utilisation**
+   - Scanne le QR code avec WhatsApp
+   - Attends la connexion
+   - Commence à utiliser les commandes!
+
+## 📋 Configuration (.env)
+
+```env
+MONGODB_URI=mongodb://localhost:27017/tetsubot
+WHATSAPP_SESSION_NAME=tetsubot_session
+NODE_ENV=development
+BOT_PREFIX=!
+ADMIN_JIDS=120363xxxxxx@g.us,120363xxxxxx@g.us
+```
+
+## 🚀 Commandes
+
+### 👤 Profil & Niveau
+```
+!profil        - Voir ton profil
+!level         - Voir ton niveau
+!xp            - Voir ton XP
+!stats         - Voir tes stats
+!badges        - Voir tes badges
+```
+
+### ⚔️ Duels & Combats
+```
+!duel @user    - Défier un utilisateur
+!powerlevel    - Voir ton power level
+!chakra        - Voir ton chakra
+```
+
+### 📚 Quiz
+```
+!quiz          - Lancer un quiz otaku
+!reponse A     - Répondre A/B/C/D
+```
+
+### 🎁 Loot
+```
+!loot          - Ouvrir un loot aléatoire
+!inventaire    - Voir ton inventaire
+```
+
+### 🎨 Images
+```
+!waifu         - Image waifu aléatoire
+!husbando      - Image husbando aléatoire
+```
+
+### 🎪 Fun
+```
+!chance        - Voir ta chance du jour
+!roast @user   - Faire un roast
+!ship @u1 @u2 - Shipper deux personnes
+!pfc           - Pierre-Feuille-Ciseaux
+```
+
+### 🛡️ Admin (ADMIN SEULEMENT)
+```
+!kick @user         - Expulser un utilisateur
+!warn @user raison  - Avertir un utilisateur
+!setxp @user 500    - Définir l'XP
+```
+
+### 📌 Bot
+```
+!menu          - Afficher le menu
+!help          - Aide générale
+!help commande - Aide sur une commande
+!ping          - Latence du bot
+!info          - Info du bot
+```
+
+## 📁 Structure du Projet
+
+```
+/src
+ ├─ index.js                → Point d'entrée principal
+ ├─ handler.js              → Gestion des messages et commandes
+ ├─ config.js               → Configuration centralisée
+ ├─ database.js             → Connexion MongoDB
+ ├─ commands/
+ │   ├─ profil.js
+ │   ├─ level.js
+ │   ├─ quiz.js
+ │   ├─ duel.js
+ │   ├─ loot.js
+ │   ├─ waifu.js
+ │   ├─ fun.js
+ │   ├─ admin/
+ │   │   ├─ kick.js
+ │   │   ├─ warn.js
+ │   │   └─ setxp.js
+ ├─ models/
+ │   ├─ User.js             → Schéma utilisateur
+ │   ├─ Inventory.js        → Inventaire
+ │   ├─ Quest.js            → Quêtes
+ │   └─ Warn.js             → Avertissements
+ └─ utils/
+     ├─ xpSystem.js         → Calculs XP/Niveaux
+     ├─ cooldown.js         → Gestion cooldown
+     ├─ antiSpam.js         → Anti-spam
+     ├─ antiLink.js         → Anti-lien
+     ├─ permissions.js      → Gestion permissions
+     └─ random.js           → Utilitaires aléatoires
+```
+
+## 🎮 Système de Niveaux
+
+### Rangs par Niveau
+- **Lv 1-5**: 🥋 Genin Otaku
+- **Lv 6-10**: 🎌 Chuunin Otaku
+- **Lv 11-20**: ⚔️ Jounin Otaku
+- **Lv 21-30**: 👨‍🏫 Sensei Otaku
+- **Lv 31-50**: ✨ Légende Otaku
+- **Lv 51+**: 👑 Dieu Otaku
+
+### Gain d'XP
+- 💬 Message: +5 XP (cooldown 5s)
+- 🎯 Quiz: +25 XP
+- ⚔️ Duel gagné: +30 XP
+- 🎁 Loot: +10-100 XP (selon rareté)
+
+## 🛡️ Modération
+
+### Système d'Avertissements
+- **1-2 avertissements**: Avertissement enregistré
+- **3 avertissements**: BAN automatique
+
+### Commandes Admin
+```
+!kick @user              - Expulser du groupe
+!warn @user raison       - Avertir (3 = ban)
+!setxp @user 500         - Modifier XP
+!antilink on/off         - Anti-lien
+!antispam on/off         - Anti-spam
+```
+
+## 🔌 API Externes
+
+- **Waifu.pics** - Images anime
+- **Jikan** - Données anime/manga (optionnel)
+
+## 🚀 Déploiement
+
+### Railway
+```bash
+npm install
+npm start
+```
+
+### Heroku
+```bash
+heroku login
+heroku create my-tetsubot
+git push heroku main
+```
+
+### VPS (Ubuntu)
+```bash
+sudo apt-get install nodejs mongodb
+npm install -g pm2
+pm2 start src/index.js --name tetsubot
+pm2 startup
+pm2 save
+```
+
+## 📝 Format Standard d'une Commande
+
+```javascript
+module.exports = {
+  name: "commande",
+  description: "Description",
+  category: "CATEGORIE",
+  usage: "!commande",
+  adminOnly: false,
+  groupOnly: false,
+  cooldown: 5,
+  
+  async execute(sock, message, args, user, isGroup, groupData) {
+    const senderJid = message.key.remoteJid;
+    // Code ici
+  }
+};
+```
+
+## 🐛 Dépannage
+
+### Bot ne se connecte pas
+```bash
+# Supprime la session et relance
+rm -rf tetsubot_session
+npm start
+```
+
+### MongoDB ne se connecte pas
+```bash
+# Vérifie que MongoDB est lancé
+mongod --version
+# Ou lance with Docker
+docker run -d -p 27017:27017 mongo
+```
+
+### Erreurs de permissions
+- Assure-toi que le bot est admin du groupe
+- Vérifie les permissions dans config.js
+
+## 📖 Documentation API
+
+### User Model
+```javascript
+{
+  jid: String,           // ID WhatsApp unique
+  username: String,      // Nom d'utilisateur
+  xp: Number,            // Expérience
+  level: Number,         // Niveau
+  rank: String,          // Rang actuel
+  title: String,         // Titre personnalisé
+  badges: Array,         // Badges gagnés
+  inventory: Array,      // Inventaire
+  stats: {
+    messages: Number,    // Messages envoyés
+    quiz: Number,        // Quiz complétés
+    wins: Number,        // Victoires
+    losses: Number,      // Défaites
+    duels: Number        // Duels
+  },
+  warnings: Number,      // Avertissements
+  isBanned: Boolean,     // Banni?
+  isMuted: Boolean,      // Mute?
+  createdAt: Date        // Date création
+}
+```
+
+## 🤝 Contribution
+
+Les contributions sont bienvenues! N'hésite pas à:
+1. Fork le projet
+2. Crée une branche (`git checkout -b feature/AmazingFeature`)
+3. Commit tes changements (`git commit -m 'Add AmazingFeature'`)
+4. Push (`git push origin feature/AmazingFeature`)
+5. Ouvre une Pull Request
+
+## 📄 Licence
+
+MIT License - vois [LICENSE](LICENSE) pour plus de détails
+
+## 👨‍💻 Auteur
+
+**Shayne Dev** - [GitHub](https://github.com)
+
+## ⭐ Support
+
+Si t'aimes ce projet, n'oublie pas de laisser une ⭐!
+
+## 📞 Contact
+
+- Discord: Shayne#0000
+- Email: shayne@example.com
+
+---
+
+**Fait avec ❤️ par Shayne Dev**
+
+**Bon jeu! 🎮 Amusez-vous bien!**
