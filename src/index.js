@@ -6,6 +6,7 @@ const { connectDatabase } = require('./database');
 const { loadCommands, handleMessage } = require('./handler');
 const qrcode = require('qrcode-terminal');
 const fs = require('fs');
+const path = require('path');
 
 let sock = null;
 let qrShown = false;
@@ -14,11 +15,15 @@ async function connectToWhatsApp() {
   qrShown = false;
   
   // Ensure sessions directory exists
-  if (!fs.existsSync('./whatsapp_auth')) {
-    fs.mkdirSync('./whatsapp_auth', { recursive: true });
+  const sessionDir = config.SESSION_DIR;
+  console.log(`📁 Session directory: ${sessionDir}`);
+  
+  if (!fs.existsSync(sessionDir)) {
+    fs.mkdirSync(sessionDir, { recursive: true });
+    console.log(`✅ Created session directory: ${sessionDir}`);
   }
 
-  const { state, saveCreds } = await useMultiFileAuthState('./whatsapp_auth');
+  const { state, saveCreds } = await useMultiFileAuthState(sessionDir);
 
   sock = makeWASocket({
     auth: state,

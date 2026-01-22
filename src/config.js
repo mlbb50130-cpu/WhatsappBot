@@ -1,4 +1,5 @@
 require('dotenv').config();
+const path = require('path');
 
 module.exports = {
   // 🤖 Bot Configuration
@@ -13,7 +14,7 @@ module.exports = {
   
   // 🔐 Session
   SESSION_NAME: process.env.WHATSAPP_SESSION_NAME || 'whatsapp_auth',
-  SESSION_DIR: './whatsapp_auth',
+  SESSION_DIR: process.env.SESSION_DIR || path.join(process.cwd(), 'whatsapp_auth'),
   
   // 👥 GROUP SETTINGS
   GROUP_FEATURES: {
