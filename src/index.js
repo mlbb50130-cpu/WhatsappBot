@@ -14,11 +14,11 @@ async function connectToWhatsApp() {
   qrShown = false;
   
   // Ensure sessions directory exists
-  if (!fs.existsSync('./tetsubot_session')) {
-    fs.mkdirSync('./tetsubot_session', { recursive: true });
+  if (!fs.existsSync('./whatsapp_auth')) {
+    fs.mkdirSync('./whatsapp_auth', { recursive: true });
   }
 
-  const { state, saveCreds } = await useMultiFileAuthState('./tetsubot_session');
+  const { state, saveCreds } = await useMultiFileAuthState('./whatsapp_auth');
 
   sock = makeWASocket({
     auth: state,
@@ -74,7 +74,7 @@ async function connectToWhatsApp() {
         console.log('⚠️  Disconnected. Reconnecting...');
         setTimeout(() => connectToWhatsApp(), 5000);
       } else {
-        console.log('❌ Logout. Delete tetsubot_session folder and restart.');
+        console.log('❌ Logout. Delete whatsapp_auth folder and restart.');
       }
     }
   });
