@@ -28,14 +28,30 @@ async function connectToWhatsApp() {
     syncFullHistory: false,
     markOnlineOnConnect: true,
     generateHighQualityLinkPreview: true,
+    emitOwnEventsUnfiltered: true,
     pairingCodeTimeoutMs: 120000,
-    maxMsToWaitForConnection: 120000, // Augmenté à 120s
+    maxMsToWaitForConnection: 120000,
     retryRequestDelayMs: 5000,
     keepAliveIntervalMs: 30000,
+    version: [2, 2407, 3],
   });
 
   // Sauvegarder les credentials
   sock.ev.on('creds.update', saveCreds);
+
+  // Événement pour le QR code direct
+  sock.ev.on('qr', (qr) => {
+    console.log('\n╔════════════════════════════════════════╗');
+    console.log('║  📱 QR CODE GÉNÉRÉ PAR BAILEYS       ║');
+    console.log('╚════════════════════════════════════════╝\n');
+    try {
+      const qrcode = require('qrcode-terminal');
+      qrcode.generate(qr, { small: true });
+    } catch (err) {
+      console.log('QR:', qr);
+    }
+    qrDisplayed = true;
+  });
 
   // Timer pour afficher un message d'attente du QR
   connectionTimeout = setTimeout(() => {
