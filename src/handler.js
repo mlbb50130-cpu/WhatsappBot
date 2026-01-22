@@ -26,17 +26,17 @@ function loadCommands() {
           const command = require(filePath);
           if (command.name) {
             commands.set(command.name.toLowerCase(), command);
-            console.log(`${config.COLORS.CYAN}📄 Command loaded: ${command.name}${config.COLORS.RESET}`);
+            console.log(`📄 Commande chargée: ${command.name}`);
           }
         } catch (error) {
-          console.error(`${config.COLORS.RED}❌ Error loading command ${file}: ${error.message}${config.COLORS.RESET}`);
+          console.error(`❌ Erreur chargement ${file}: ${error.message}`);
         }
       }
     }
   };
   
   loadDir(commandsPath);
-  console.log(`${config.COLORS.GREEN}✅ ${commands.size} commands loaded${config.COLORS.RESET}`);
+  console.log(`✅ ${commands.size} commandes chargées`);
 }
 
 // Get or create user
@@ -186,7 +186,7 @@ async function handleMessage(sock, message, isGroup, groupData) {
     await command.execute(sock, message, args, user, isGroup, groupData);
 
   } catch (error) {
-    console.error(`${config.COLORS.RED}❌ Handler Error: ${error.message}${config.COLORS.RESET}`);
+    console.error(`❌ Erreur handler: ${error.message}`);
     try {
       const senderJid = message.key.remoteJid;
       await sock.sendMessage(senderJid, {
