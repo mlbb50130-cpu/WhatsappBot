@@ -103,7 +103,7 @@ module.exports = {
 
 ════════════════════════════════════════
 
-${winner === 'attacker' ? `🏆 ${user.username} GAGNE!\n+30 XP` : `🏆 ${opponent.username} GAGNE!\n+30 XP`}
+${winner === 'attacker' ? `🎆 Joueur 1 remporte la victoire!\n+30 XP` : `🎆 Joueur 2 remporte la victoire!\n+30 XP`}
 
 Différence: ${difference} points
 ════════════════════════════════════════
