@@ -68,6 +68,11 @@ module.exports = {
       const totalXp = Math.floor(loot.xp * (rarityMultiplier[loot.rarity] || 1));
       user.xp += totalXp;
       user.lastLootTime = new Date();
+
+      // Update quest progress for "Looteur chanceux"
+      if (!user.questProgress) user.questProgress = {};
+      user.questProgress.loots = (user.questProgress.loots || 0) + 1;
+      
       await user.save();
 
       const rarityColors = {

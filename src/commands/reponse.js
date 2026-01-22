@@ -54,6 +54,11 @@ module.exports = {
       // Correct answer
       user.xp += session.quiz.reward;
       user.stats.quiz += 1;
+      
+      // Update quest progress for "Quiz master"
+      if (!user.questProgress) user.questProgress = {};
+      user.questProgress.quizCorrect = (user.questProgress.quizCorrect || 0) + 1;
+      
       await user.save();
 
       await sock.sendMessage(senderJid, {

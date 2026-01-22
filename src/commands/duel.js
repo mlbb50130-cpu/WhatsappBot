@@ -74,10 +74,19 @@ module.exports = {
     if (winner === 'attacker') {
       user.stats.wins += 1;
       user.xp += 30;
+      
+      // Update quest progress for "Guerrier du jour"
+      if (!user.questProgress) user.questProgress = {};
+      user.questProgress.duels = (user.questProgress.duels || 0) + 1;
+      
       opponent.stats.losses += 1;
     } else {
       user.stats.losses += 1;
       opponent.stats.wins += 1;
+      
+      // Update quest progress for opponent's "Guerrier du jour"
+      if (!opponent.questProgress) opponent.questProgress = {};
+      opponent.questProgress.duels = (opponent.questProgress.duels || 0) + 1;
       opponent.xp += 30;
     }
 
