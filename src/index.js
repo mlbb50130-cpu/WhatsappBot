@@ -225,8 +225,6 @@ async function connectToWhatsApp() {
       } else {
         console.log('❌ Impossible de se reconnecter. Session invalide.');
         process.exit(1);
-      } else {
-        console.log('❌ Logout. Delete whatsapp_auth folder and restart.');
       }
     }
   });
