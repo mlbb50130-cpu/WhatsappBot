@@ -83,8 +83,6 @@ module.exports = {
 
         /* ====== FALLBACK: JIKAN API - Chercher des husbandos populaires et forts ====== */
         if (!imageUrl) {
-        /* ====== FALLBACK: JIKAN API - Chercher des husbandos populaires et forts ====== */
-        if (!imageUrl) {
           try {
             const popularCharacters = [
               'Kakashi Hatake', 'Rengoku', 'Toji Fushiguro', 'Gojo Satoru',
