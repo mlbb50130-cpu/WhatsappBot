@@ -14,50 +14,63 @@ module.exports = {
       let imageUrl;
       let characterInfo = '';
 
-      /* ====== WAIFU.IM API - Tags spécifiques pour husbando ====== */
+      /* ====== NEKOS.BEST - API de fanart pour husbando (priorité pour fanart) ====== */
       try {
-        // Utiliser les tags "male" ou essayer plusieurs tags pour husbando
-        const tags = ['male', 'husbando'];
-        const tag = tags[Math.floor(Math.random() * tags.length)];
-        
-        const res = await axios.get(
-          `https://api.waifu.im/search?tag=${tag}&many=false`,
-          { timeout: 10000 }
-        );
-
-        if (res.data?.images?.[0]?.url) {
-          imageUrl = res.data.images[0].url;
-          characterInfo = res.data.images[0].source || 'Personnage fort';
+        const res = await axios.get('https://nekos.best/api/v2/husbando');
+        if (res.data?.results?.[0]?.url) {
+          imageUrl = res.data.results[0].url;
+          characterInfo = 'Fanart husbando populaire';
         }
       } catch (e) {
-        console.log('[HUSBANDO] Waifu.im failed:', e.message);
+        console.log('[HUSBANDO] Nekos.best fanart failed:', e.message);
       }
 
-      /* ====== FALLBACK: JIKAN API - Chercher des personnages masculins ====== */
+      /* ====== FALLBACK: JIKAN API - Chercher des husbandos populaires et forts ====== */
       if (!imageUrl) {
         try {
-          // Répéter jusqu'à trouver un personnage masculin
-          for (let i = 0; i < 5; i++) {
-            const res = await axios.get('https://api.jikan.moe/v4/random/characters', {
-              timeout: 10000
-            });
+          // Liste de personnages populaires/forts comme demandé (Kakashi, Rengoku, etc.)
+          const popularCharacters = [
+            'Kakashi Hatake', 'Rengoku', 'Toji Fushiguro', 'Gojo Satoru',
+            'Levi Ackerman', 'Itachi Uchiha', 'Madara Uchiha', 'Saitama',
+            'Sasuke Uchiha', 'Naruto Uzumaki', 'Ichigo Kurosaki', 'Aizen Sosuke',
+            'Jiraiya', 'Minato Namikaze', 'Rock Lee', 'Neji Hyuga'
+          ];
 
-            if (res.data?.data?.images?.jpg?.image_url) {
-              const character = res.data.data;
-              // Vérifier si c'est probablement un personnage masculin (simple heuristique)
-              const isMale = character.about?.toLowerCase().includes('male') || 
-                           character.name?.toLowerCase().includes('no') ||
-                           !character.about?.toLowerCase().includes('female');
-              
-              if (isMale) {
-                imageUrl = character.images.jpg.image_url;
-                characterInfo = `${character.name} - ${character.about?.split('\n')[0]?.slice(0, 50) || 'Personnage populaire'}`;
-                break;
-              }
-            }
+          const randomChar = popularCharacters[Math.floor(Math.random() * popularCharacters.length)];
+          const encodedName = encodeURIComponent(randomChar);
+
+          const res = await axios.get(
+            `https://api.jikan.moe/v4/characters?query=${encodedName}&order_by=favorites&sort=desc`,
+            { timeout: 10000 }
+          );
+
+          if (res.data?.data?.[0]?.images?.jpg?.image_url) {
+            const character = res.data.data[0];
+            imageUrl = character.images.jpg.image_url;
+            characterInfo = `${character.name} ⭐ (Populaire & Fort)`;
           }
         } catch (e) {
-          console.log('[HUSBANDO] Jikan failed');
+          console.log('[HUSBANDO] Jikan popular characters failed');
+        }
+      }
+
+      /* ====== FALLBACK: WAIFU.IM - Tags male/husbando ====== */
+      if (!imageUrl) {
+        try {
+          const tags = ['male', 'husbando'];
+          const tag = tags[Math.floor(Math.random() * tags.length)];
+          
+          const res = await axios.get(
+            `https://api.waifu.im/search?tag=${tag}&many=false`,
+            { timeout: 10000 }
+          );
+
+          if (res.data?.images?.[0]?.url) {
+            imageUrl = res.data.images[0].url;
+            characterInfo = res.data.images[0].source || 'Husbando populaire';
+          }
+        } catch (e) {
+          console.log('[HUSBANDO] Waifu.im failed');
         }
       }
 
