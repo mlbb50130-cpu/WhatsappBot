@@ -41,7 +41,9 @@ module.exports = {
   └─ Uptime: N/A
 
 *CRÉATEUR*
-  └─ Développé par Shayne Dev
+  ├─ Nom: Kassim
+  ├─ WhatsApp: wa.me/2290154959093
+  └─ Créateur & Développeur Principal
 
 *SUPPORT*
   ├─ Prefix: \`!\`
