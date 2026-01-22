@@ -23,11 +23,12 @@ async function connectToWhatsApp() {
   sock = makeWASocket({
     auth: state,
     logger: require('pino')({ level: 'silent' }),
-    browser: ['TetsuBot', 'Safari', '17.0'],
+    browser: ['TetsuBot', 'Chrome', '120.0.0.0'],
     syncFullHistory: false,
+    markOnlineOnConnect: true,
+    generateHighQualityLinkPreview: true,
+    pairingCodeTimeoutMs: 60000,
     shouldIgnoreJid: (jid) => jid.includes('broadcast'),
-    generateHighQualityLinkPreview: false,
-    maxMsToWaitForConnection: 60000,
   });
 
   // Save credentials when updated
