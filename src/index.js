@@ -22,13 +22,7 @@ async function connectToWhatsApp() {
 
   sock = makeWASocket({
     auth: state,
-    logger: require('pino')({ 
-      level: 'silent',
-      transport: {
-        target: 'pino-pretty',
-        options: { colorize: true }
-      }
-    }),
+    logger: require('pino')({ level: 'silent' }),
     // Browser Configuration - Imiter un vrai client
     browser: ['TetsuBot', 'Chrome', '120.0.0.0'],
     
@@ -54,7 +48,6 @@ async function connectToWhatsApp() {
     
     // Compatibility
     version: [2, 2407, 3],
-    isInitialSync: true,
   });
 
   // Save credentials when updated
