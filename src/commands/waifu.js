@@ -83,8 +83,6 @@ module.exports = {
 
         /* ====== FALLBACK: WAIFU.IM - Tags female/waifu ====== */
         if (!imageUrl) {
-        /* ====== FALLBACK: WAIFU.IM - Tags female/waifu ====== */
-        if (!imageUrl) {
           try {
             const tags = ['female', 'waifu'];
             const tag = tags[Math.floor(Math.random() * tags.length)];
