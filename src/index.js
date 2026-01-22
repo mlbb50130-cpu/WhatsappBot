@@ -74,10 +74,24 @@ async function connectToWhatsApp() {
     if (connection === 'close') {
       qrShown = false;
       const shouldReconnect = (lastDisconnect?.error)?.output?.statusCode !== 401;
+      const statusCode = (lastDisconnect?.error)?.output?.statusCode;
+      
+      console.log(`\n⚠️  Disconnected. Status Code: ${statusCode}`);
+      
+      if (statusCode === 401) {
+        console.log(`\n❌ SESSION EXPIRÉE - Authentification invalide`);
+        console.log(`\n🔄 Supprimer le dossier de session et relancer:`);
+        console.log(`   rm -rf whatsapp_auth/ (ou supprimer le dossier manuellement)`);
+        console.log(`   npm start`);
+        process.exit(1);
+      }
       
       if (shouldReconnect) {
-        console.log('⚠️  Disconnected. Reconnecting...');
-        setTimeout(() => connectToWhatsApp(), 5000);
+        console.log('⏳ Tentative de reconnexion dans 10s...');
+        setTimeout(() => connectToWhatsApp(), 10000);
+      } else {
+        console.log('❌ Impossible de se reconnecter. Session invalide.');
+        process.exit(1);
       } else {
         console.log('❌ Logout. Delete whatsapp_auth folder and restart.');
       }
