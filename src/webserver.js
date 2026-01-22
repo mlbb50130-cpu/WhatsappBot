@@ -20,6 +20,9 @@ function createWebServer(port = 3000) {
     // Middleware
     app.use(express.json());
     app.use(express.static(path.join(__dirname, '../public')));
+    
+    // Serve asset images
+    app.use('/assets', express.static(path.join(__dirname, './asset')));
 
     // Routes API
     app.get('/api/status', (req, res) => {

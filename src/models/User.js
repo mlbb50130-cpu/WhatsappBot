@@ -38,10 +38,6 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  lastLootTime: {
-    type: Date,
-    default: null
-  },
   inventory: [{
     itemId: String,
     name: String,
@@ -56,18 +52,6 @@ const userSchema = new mongoose.Schema({
     losses: { type: Number, default: 0 },
     duels: { type: Number, default: 0 }
   },
-  questProgress: {
-    duels: { type: Number, default: 0 },      // Quête: Guerrier du jour (3 duels)
-    loots: { type: Number, default: 0 },      // Quête: Looteur chanceux (2 loots)
-    quizCorrect: { type: Number, default: 0 }, // Quête: Quiz master (5 quiz corrects)
-    messages: { type: Number, default: 0 },   // Quête: Socialite (50 messages)
-    level: { type: Number, default: 0 }       // Quête: Champion (niveau 10)
-  },
-  completedQuests: [{
-    questId: Number,
-    completedAt: { type: Date, default: Date.now },
-    rewardClaimed: { type: Boolean, default: false }
-  }],
   warnings: {
     type: Number,
     default: 0

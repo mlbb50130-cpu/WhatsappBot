@@ -45,11 +45,10 @@ module.exports = {
       } catch (apiError) {
         console.error('Jikan API error:', apiError.message);
         await sock.sendMessage(senderJid, { text: '❌ Erreur lors de la récupération!' });
+        return;
       }
-
     } catch (error) {
       console.error('Error in topmanga command:', error.message);
-      await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
     }
   }
 };

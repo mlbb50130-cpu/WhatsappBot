@@ -1,5 +1,4 @@
 const AdminActionsManager = require('../../utils/adminActions');
-const MessageParser = require('../../utils/messageParser');
 
 module.exports = {
   name: 'demote',
@@ -24,8 +23,8 @@ module.exports = {
       return;
     }
 
-    // Extract mention using new parser
-    const mentions = MessageParser.extractMentions(message);
+    // Parse mention
+    const mentions = message.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
     
     if (mentions.length === 0) {
       await sock.sendMessage(senderJid, {

@@ -1,5 +1,4 @@
 const PermissionManager = require('../../utils/permissions');
-const MessageParser = require('../../utils/messageParser');
 const User = require('../../models/User');
 
 module.exports = {
@@ -14,8 +13,8 @@ module.exports = {
   async execute(sock, message, args, user, isGroup, groupData) {
     const senderJid = message.key.remoteJid;
 
-    // Extract mention using new parser
-    const mentions = MessageParser.extractMentions(message);
+    // Parse mention
+    const mentions = message.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
     
     if (mentions.length === 0 || !args[1]) {
       await sock.sendMessage(senderJid, {

@@ -1,38 +1,20 @@
 const RandomUtils = require('../utils/random');
-const MessageParser = require('../utils/messageParser');
-const User = require('../models/User');
 
 module.exports = {
   name: 'duel',
-  description: 'Défier un utilisateur en duel (Max 5x par jour)',
+  description: 'Défier un utilisateur en duel',
   category: 'COMBATS',
   usage: '!duel @user',
   adminOnly: false,
   groupOnly: true,
-  cooldown: 60,
+  cooldown: 15,
 
   async execute(sock, message, args, user, isGroup, groupData) {
     const senderJid = message.key.remoteJid;
     const participantJid = message.key.participant || senderJid;
 
-    // Check 5x per day limit
-    const now = Date.now();
-    const today = new Date(now).toDateString();
-    if (!user.duelsToday) user.duelsToday = { date: today, count: 0 };
-    
-    if (user.duelsToday.date !== today) {
-      user.duelsToday = { date: today, count: 0 };
-    }
-    
-    if (user.duelsToday.count >= 5) {
-      await sock.sendMessage(senderJid, {
-        text: '⚠️ Tu as atteint la limite de 5 duels par jour!\nReviens demain! 😴'
-      });
-      return;
-    }
-
-    // Extract mention using new parser
-    const mentions = MessageParser.extractMentions(message);
+    // Parse mention
+    const mentions = message.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
     
     if (mentions.length === 0) {
       await sock.sendMessage(senderJid, {
@@ -70,23 +52,13 @@ module.exports = {
 
     // Update stats
     user.stats.duels += 1;
-    user.duelsToday.count += 1;
     if (winner === 'attacker') {
       user.stats.wins += 1;
       user.xp += 30;
-      
-      // Update quest progress for "Guerrier du jour"
-      if (!user.questProgress) user.questProgress = {};
-      user.questProgress.duels = (user.questProgress.duels || 0) + 1;
-      
       opponent.stats.losses += 1;
     } else {
       user.stats.losses += 1;
       opponent.stats.wins += 1;
-      
-      // Update quest progress for opponent's "Guerrier du jour"
-      if (!opponent.questProgress) opponent.questProgress = {};
-      opponent.questProgress.duels = (opponent.questProgress.duels || 0) + 1;
       opponent.xp += 30;
     }
 
@@ -112,7 +84,7 @@ module.exports = {
 
 ════════════════════════════════════════
 
-${winner === 'attacker' ? `🎆 Joueur 1 remporte la victoire!\n+30 XP` : `🎆 Joueur 2 remporte la victoire!\n+30 XP`}
+${winner === 'attacker' ? `🏆 ${user.username} GAGNE!\n+30 XP` : `🏆 ${opponent.username} GAGNE!\n+30 XP`}
 
 Différence: ${difference} points
 ════════════════════════════════════════

@@ -26,6 +26,7 @@ module.exports = {
 ║         👤 TON PROFIL OTAKU 👤        ║
 ╚════════════════════════════════════════╝
 
+*👤 Nom:* ${user.username}
 *🎌 Rang:* ${rankInfo.emoji} ${user.rank}
 *📍 Titre:* ${user.title}
 

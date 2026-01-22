@@ -109,34 +109,13 @@ async function addXP(jid, amount = config.XP_PER_MESSAGE) {
 // Main message handler
 async function handleMessage(sock, message, isGroup, groupData) {
   try {
-    // Extract message text (Baileys 7.0 compatibility)
-    let messageContent = '';
-    if (message.message?.conversation) {
-      messageContent = message.message.conversation;
-    } else if (message.message?.extendedTextMessage?.text) {
-      messageContent = message.message.extendedTextMessage.text;
-    } else if (message.body) {
-      messageContent = message.body;
-    }
-    
+    const messageContent = message.body || '';
     const senderJid = message.key.remoteJid;
     const participantJid = message.key.participant || senderJid;
     const username = message.pushName || 'Anonymous';
 
     // Ignore bot's own messages
     if (message.key.fromMe) return;
-    
-    // Additional check: ignore messages from the bot itself (check for bot number)
-    try {
-      const botNumber = sock.user?.id?.split(':')[0];
-      const participantNumber = participantJid?.split('@')[0]?.split(':')[0];
-      if (botNumber && participantNumber && botNumber === participantNumber) {
-        console.log('[MESSAGE] Ignoring bot\'s own message (by number match)');
-        return;
-      }
-    } catch (e) {
-      // Continue if error in bot number check
-    }
 
     // Check if message starts with prefix
     if (!messageContent.startsWith(config.PREFIX)) {
@@ -154,16 +133,11 @@ async function handleMessage(sock, message, isGroup, groupData) {
     // Get command
     const command = commands.get(commandName);
     if (!command) {
-      await sock.sendMessage(senderJid, {
-        text: `❌ Commande inconnue: \`${commandName}\`\n\nUtilise \`!help\` pour voir la liste des commandes disponibles.`
-      });
       return;
     }
 
     // Get or create user
-    console.log('[HANDLER] Getting or creating user:', participantJid);
     const user = await getOrCreateUser(participantJid, username);
-    console.log('[HANDLER] User retrieved/created:', user ? user.jid : 'NULL');
     if (!user) {
       await sock.sendMessage(senderJid, {
         text: '❌ Erreur lors de la récupération du profil. Essayez à nouveau.'
@@ -209,9 +183,7 @@ async function handleMessage(sock, message, isGroup, groupData) {
     CooldownManager.set(participantJid, commandName, command.cooldown * 1000 || 3000);
 
     // Execute command
-    console.log(`[COMMAND] Executing command: ${commandName}`);
     await command.execute(sock, message, args, user, isGroup, groupData);
-    console.log(`[COMMAND] Command executed successfully: ${commandName}`);
 
   } catch (error) {
     console.error(`${config.COLORS.RED}❌ Handler Error: ${error.message}${config.COLORS.RESET}`);

@@ -57,11 +57,10 @@ module.exports = {
       } catch (apiError) {
         console.error('Jikan API error:', apiError.message);
         await sock.sendMessage(senderJid, { text: '❌ Erreur lors de la récupération des données!' });
+        return;
       }
-
     } catch (error) {
       console.error('Error in manga command:', error.message);
-      await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
     }
   }
 };

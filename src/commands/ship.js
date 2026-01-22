@@ -1,5 +1,4 @@
 const RandomUtils = require('../utils/random');
-const MessageParser = require('../utils/messageParser');
 
 module.exports = {
   name: 'ship',
@@ -13,7 +12,7 @@ module.exports = {
   async execute(sock, message, args, user, isGroup, groupData) {
     const senderJid = message.key.remoteJid;
 
-    const mentions = MessageParser.extractMentions(message);
+    const mentions = message.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
     
     if (mentions.length < 2) {
       await sock.sendMessage(senderJid, {
