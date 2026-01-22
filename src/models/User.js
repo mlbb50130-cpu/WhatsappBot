@@ -38,6 +38,10 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  lastLootTime: {
+    type: Date,
+    default: null
+  },
   inventory: [{
     itemId: String,
     name: String,

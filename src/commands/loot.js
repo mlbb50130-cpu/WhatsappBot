@@ -23,59 +23,61 @@ module.exports = {
   async execute(sock, message, args, user, isGroup, groupData) {
     const senderJid = message.key.remoteJid;
 
-    // Check 24h cooldown per user
-    const now = Date.now();
-    const lastLootTime = user.lastLootTime ? new Date(user.lastLootTime).getTime() : 0;
-    const timeSinceLastLoot = now - lastLootTime;
-    const oneDayInMs = 24 * 60 * 60 * 1000;
+    try {
+      // Check 24h cooldown per user
+      const now = Date.now();
+      const lastLootTime = user.lastLootTime ? new Date(user.lastLootTime).getTime() : 0;
+      const timeSinceLastLoot = now - lastLootTime;
+      const oneDayInMs = 24 * 60 * 60 * 1000; // 24 heures
 
-    if (timeSinceLastLoot < oneDayInMs) {
-      const remainingMs = oneDayInMs - timeSinceLastLoot;
-      const hours = Math.floor(remainingMs / (60 * 60 * 1000));
-      const minutes = Math.floor((remainingMs % (60 * 60 * 1000)) / (60 * 1000));
-      
-      await sock.sendMessage(senderJid, {
-        text: `⏰ Tu dois attendre ${hours}h ${minutes}m avant de faire un nouveau loot!\nReviens bientôt! 😴`
+      // Si lastLootTime existe ET que moins de 24h ont passé
+      if (lastLootTime > 0 && timeSinceLastLoot < oneDayInMs) {
+        const remainingMs = oneDayInMs - timeSinceLastLoot;
+        const hours = Math.floor(remainingMs / (60 * 60 * 1000));
+        const minutes = Math.floor((remainingMs % (60 * 60 * 1000)) / (60 * 1000));
+        
+        await sock.sendMessage(senderJid, {
+          text: `⏰ Tu dois attendre ${hours}h ${minutes}m avant de faire un nouveau loot!\nReviens bientôt! 😴`
+        });
+        return;
+      }
+
+      // Weighted random selection
+      const items = this.lootTable.map(item => ({
+        value: item,
+        weight: item.weight
+      }));
+
+      const loot = RandomUtils.weighted(items);
+
+      // Add to inventory
+      user.inventory.push({
+        itemId: RandomUtils.generateId(),
+        name: loot.name,
+        rarity: loot.rarity,
+        quantity: 1
       });
-      return;
-    }
 
-    // Weighted random selection
-    const items = this.lootTable.map(item => ({
-      value: item,
-      weight: item.weight
-    }));
+      // Add XP (scaled by rarity)
+      const rarityMultiplier = {
+        common: 1,
+        rare: 1.5,
+        epic: 2.5,
+        legendary: 4
+      };
+      const totalXp = Math.floor(loot.xp * (rarityMultiplier[loot.rarity] || 1));
+      user.xp += totalXp;
+      user.lastLootTime = new Date();
+      await user.save();
 
-    const loot = RandomUtils.weighted(items);
+      const rarityColors = {
+        common: '⚪',
+        rare: '🔵',
+        epic: '🟣',
+        legendary: '🟡'
+      };
 
-    // Add to inventory
-    user.inventory.push({
-      itemId: RandomUtils.generateId(),
-      name: loot.name,
-      rarity: loot.rarity,
-      quantity: 1
-    });
-
-    // Add XP (scaled by rarity)
-    const rarityMultiplier = {
-      common: 1,
-      rare: 1.5,
-      epic: 2.5,
-      legendary: 4
-    };
-    const totalXp = Math.floor(loot.xp * (rarityMultiplier[loot.rarity] || 1));
-    user.xp += totalXp;
-    user.lastLootTime = new Date();
-    await user.save();
-
-    const rarityColors = {
-      common: '⚪',
-      rare: '🔵',
-      epic: '🟣',
-      legendary: '🟡'
-    };
-
-    const result = `
+      const result = `
 ╔════════════════════════════════════════╗
 ║           🎁 LOOT OBTENU 🎁           ║
 ╚════════════════════════════════════════╝
@@ -94,6 +96,10 @@ Inventaire: ${user.inventory.length}/50
 ════════════════════════════════════════
 `;
 
-    await sock.sendMessage(senderJid, { text: result });
+      await sock.sendMessage(senderJid, { text: result });
+    } catch (error) {
+      console.error('Erreur loot:', error.message);
+      await sock.sendMessage(senderJid, { text: '❌ Erreur lors de l\'ouverture du loot!' });
+    }
   }
 };
