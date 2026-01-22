@@ -2,40 +2,47 @@ const axios = require('axios');
 
 module.exports = {
   name: 'husbando',
-  description: 'Image husbando aléatoire (SFW ou NSFW)',
+  description: 'Image de husbando populaire/fort',
   category: 'IMAGES',
-  usage: '!husbando [sfw|nsfw]',
+  usage: '!husbando',
   cooldown: 5,
 
   async execute(sock, message, args, user) {
     const jid = message.key.remoteJid;
 
     try {
-      // Déterminer le filtre (SFW par défaut)
-      const filter = args?.[0]?.toLowerCase() || 'sfw';
-      
-      if (!['sfw', 'nsfw'].includes(filter)) {
-        return sock.sendMessage(jid, { 
-          text: '❌ Usage: !husbando [sfw|nsfw]\n\n😍 sfw = Image appropriée\n🔞 nsfw = Image pour adultes' 
-        });
-      }
-
       let imageUrl;
-      const isNsfw = filter === 'nsfw';
+      let characterInfo = '';
 
-      /* ====== WAIFU.IM API (Meilleure avec filtres) ====== */
+      /* ====== WAIFU.IM API - Personnages populaires ====== */
       try {
-        const nsfw_param = isNsfw ? 'true' : 'false';
         const res = await axios.get(
-          `https://api.waifu.im/search?is_nsfw=${nsfw_param}&tag=husbando`,
+          'https://api.waifu.im/search?tag=husbando&many=false',
           { timeout: 10000 }
         );
 
         if (res.data?.images?.[0]) {
           imageUrl = res.data.images[0].url;
+          characterInfo = res.data.images[0].source || 'Personnage de anime';
         }
       } catch (e) {
         console.log('[HUSBANDO] Waifu.im failed:', e.message);
+      }
+
+      /* ====== FALLBACK: JIKAN API (MyAnimeList) ====== */
+      if (!imageUrl) {
+        try {
+          const res = await axios.get('https://api.jikan.moe/v4/random/characters', {
+            timeout: 10000
+          });
+
+          if (res.data?.data?.images?.jpg?.image_url) {
+            imageUrl = res.data.data.images.jpg.image_url;
+            characterInfo = `${res.data.data.name} - ${res.data.data.about?.split('\n')[0] || 'Personnage populaire'}`;
+          }
+        } catch (e) {
+          console.log('[HUSBANDO] Jikan failed');
+        }
       }
 
       /* ====== FALLBACK: NEKOS.BEST ====== */
@@ -59,12 +66,9 @@ module.exports = {
       });
 
       /* ====== ENVOI WHATSAPP ====== */
-      const filterEmoji = isNsfw ? '🔞' : '😍';
-      const filterText = isNsfw ? 'NSFW' : 'SFW';
-      
       await sock.sendMessage(jid, {
         image: Buffer.from(imgBuffer.data),
-        caption: `${filterEmoji} *Husbando ${filterText}*\n➕ 5 XP ✨`
+        caption: `😍 *Husbando Populaire*\n\n${characterInfo}\n\n➕ 5 XP ✨`
       });
 
       user.xp += 5;
