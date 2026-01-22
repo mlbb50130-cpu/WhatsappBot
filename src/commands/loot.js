@@ -24,15 +24,15 @@ module.exports = {
     const senderJid = message.key.remoteJid;
 
     try {
-      // Check 24h cooldown per user
+      // Check 10h cooldown per user
       const now = Date.now();
       const lastLootTime = user.lastLootTime ? new Date(user.lastLootTime).getTime() : 0;
       const timeSinceLastLoot = now - lastLootTime;
-      const oneDayInMs = 24 * 60 * 60 * 1000; // 24 heures
+      const cooldownMs = 10 * 60 * 60 * 1000; // 10 heures
 
-      // Si lastLootTime existe ET que moins de 24h ont passé
-      if (lastLootTime > 0 && timeSinceLastLoot < oneDayInMs) {
-        const remainingMs = oneDayInMs - timeSinceLastLoot;
+      // Si lastLootTime existe ET que le cooldown n'est pas passé
+      if (lastLootTime > 0 && timeSinceLastLoot < cooldownMs) {
+        const remainingMs = cooldownMs - timeSinceLastLoot;
         const hours = Math.floor(remainingMs / (60 * 60 * 1000));
         const minutes = Math.floor((remainingMs % (60 * 60 * 1000)) / (60 * 1000));
         
@@ -89,7 +89,7 @@ ${rarityColors[loot.rarity]} Rareté: ${loot.rarity.toUpperCase()}
   ├─ ✨ XP: +${totalXp}
   └─ 📦 Objet ajouté à l'inventaire
 
-*PROCHAIN LOOT:* Dans 24h
+*PROCHAIN LOOT:* Dans 10h
 
 ════════════════════════════════════════
 Inventaire: ${user.inventory.length}/50

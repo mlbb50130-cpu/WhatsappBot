@@ -13,7 +13,7 @@ module.exports = {
     try {
       const quests = [
         { id: 1, emoji: '⚔️', name: 'Guerrier du jour', description: 'Gagne 3 duels', reward: '500 XP' },
-        { id: 2, emoji: '💎', name: 'Looteur chanceux', description: 'Ouvre 5 loots', reward: '300 XP' },
+        { id: 2, emoji: '💎', name: 'Looteur chanceux', description: 'Ouvre 2 loots', reward: '300 XP' },
         { id: 3, emoji: '📚', name: 'Quiz master', description: 'Réponds correctement à 5 quiz', reward: '400 XP' },
         { id: 4, emoji: '🌟', name: 'Socialite', description: 'Écris 50 messages', reward: '200 XP' },
         { id: 5, emoji: '🏆', name: 'Champion', description: 'Atteins le niveau 10', reward: '1000 XP' }
