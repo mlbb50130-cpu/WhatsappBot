@@ -52,6 +52,17 @@ module.exports = {
 \`!neko\` - Image chat anime
 \`!animegif\` - GIF anime aléatoire
 
+👹 *PERSONNAGES SPÉCIAUX*
+\`!assets\` - Liste de tous les personnages disponibles
+\`!bleach\` - Images Bleach
+\`!naruto\` - Images Naruto
+\`!gojo\` - Images Gojo
+\`!deku\` - Images Deku
+\`!madara\` - Images Madara
+\`!sukuna\` - Images Sukuna
+\`!miku\` - Images Miku HD
+Et bien d'autres...
+
 🎪 *FUN*
 \`!blagueotaku\` - Blague otaku
 \`!roast @user\` - Faire un roast

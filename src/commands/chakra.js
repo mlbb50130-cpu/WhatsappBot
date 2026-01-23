@@ -11,9 +11,22 @@ module.exports = {
     const senderJid = message.key.remoteJid;
 
     try {
-      const maxChakra = user.level * 50;
-      const currentChakra = Math.min(user.chakra || maxChakra, maxChakra);
+      const maxChakra = 100;
+      
+      // Reset chakra if 24h passed
+      const now = new Date();
+      const lastReset = user.lastChakraReset ? new Date(user.lastChakraReset) : now;
+      const hoursDiff = (now - lastReset) / (1000 * 60 * 60);
+      
+      if (hoursDiff >= 24) {
+        user.chakra = maxChakra;
+        user.lastChakraReset = now;
+        await user.save();
+      }
+      
+      const currentChakra = user.chakra || maxChakra;
       const chakraPercent = Math.round((currentChakra / maxChakra) * 100);
+      const hoursUntilReset = Math.ceil(24 - hoursDiff);
 
       const chakraBar = this.createChakraBar(chakraPercent, 15);
 
@@ -22,13 +35,15 @@ module.exports = {
 ║         🔵 TON CHAKRA 🔵           ║
 ╚════════════════════════════════════╝
 
-👤 *${user.pseudo || 'Joueur'}*
+👤 *${user.username || 'Joueur'}*
 🔵 *Chakra:* ${currentChakra}/${maxChakra}
 
 *Niveau de pouvoir:*
 ${chakraBar}
 
 ${chakraPercent === 100 ? '⚡ Chakra au maximum!' : chakraPercent >= 75 ? '💪 Chakra élevé' : chakraPercent >= 50 ? '⚡ Chakra normal' : chakraPercent >= 25 ? '😓 Chakra faible' : '🪨 Chakra critique'}
+
+⏰ *Réinitialisation:* ${hoursUntilReset}h
 
 ═════════════════════════════════════`;
 

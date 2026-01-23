@@ -43,6 +43,28 @@ module.exports = {
       return;
     }
 
+    // Reset chakra if 24h passed
+    const now = new Date();
+    const lastReset = user.lastChakraReset ? new Date(user.lastChakraReset) : now;
+    const hoursDiff = (now - lastReset) / (1000 * 60 * 60);
+    
+    if (hoursDiff >= 24) {
+      user.chakra = 100;
+      user.lastChakraReset = now;
+    }
+
+    const maxChakra = 100;
+    if (user.chakra <= 0) {
+      await sock.sendMessage(senderJid, {
+        text: `❌ Ton chakra est épuisé (${user.chakra}/${maxChakra})!\n⏰ Il se réinitialisera en ${Math.ceil(24 - hoursDiff)}h`
+      });
+      return;
+    }
+
+    // Duel costs 20 chakra
+    const chakraCost = 20;
+    user.chakra -= chakraCost;
+
     // Create duel
     const attackerPower = user.level * 10 + RandomUtils.range(10, 50);
     const defenderPower = opponent.level * 10 + RandomUtils.range(10, 50);
@@ -87,6 +109,8 @@ module.exports = {
 ${winner === 'attacker' ? `🏆 ${user.username} GAGNE!\n+30 XP` : `🏆 ${opponent.username} GAGNE!\n+30 XP`}
 
 Différence: ${difference} points
+🔵 Chakra utilisé: ${chakraCost}
+🔵 Chakra restant: ${user.chakra}/${maxChakra}
 ════════════════════════════════════════
 `;
 

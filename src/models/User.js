@@ -65,6 +65,14 @@ const userSchema = new mongoose.Schema({
     default: false
   },
   mutedUntil: Date,
+  chakra: {
+    type: Number,
+    default: 100
+  },
+  lastChakraReset: {
+    type: Date,
+    default: Date.now
+  },
   createdAt: {
     type: Date,
     default: Date.now
