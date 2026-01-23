@@ -61,6 +61,7 @@ module.exports = {
 \`!madara\` - Images Madara
 \`!sukuna\` - Images Sukuna
 \`!miku\` - Images Miku HD
+\`!nino\` - Images NINO Nakano
 Et bien d'autres...
 
 🎪 *FUN*
