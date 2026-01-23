@@ -29,25 +29,27 @@ module.exports = {
         console.log('[NEKO] Nekos.best API failed:', apiError.message);
       }
 
+      const caption = isGroup ? '🐱 *Neko mignon!*\n\n✨ +5 XP 💫' : '🐱 *Neko mignon!*';
+      
       if (imageUrl) {
         try {
           await sock.sendMessage(senderJid, {
             image: { url: imageUrl },
-            caption: '🐱 *Neko mignon!*\n\n✨ +5 XP 💫'
+            caption: caption
           });
         } catch (sendError) {
           console.log('[NEKO] Failed to send image, using fallback');
           await sock.sendMessage(senderJid, {
-            text: '🐱 *Une neko adorable!*\n\n✨ +5 XP 💫'
+            text: caption
           });
         }
       } else {
         await sock.sendMessage(senderJid, {
-          text: '🐱 *Une neko adorable!*\n\n✨ +5 XP 💫'
+          text: caption
         });
       }
 
-      user.xp += 5;
+      if (isGroup) if (isGroup) user.xp += 5; // Seulement en groupe // Seulement en groupe
       await user.save();
 
     } catch (error) {

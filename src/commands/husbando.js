@@ -1,4 +1,6 @@
-const axios = require('axios');
+const fs = require('fs');
+const path = require('path');
+const { getAssetBuffer } = require('../utils/assets');
 
 module.exports = {
   name: 'husbando',
@@ -13,15 +15,35 @@ module.exports = {
     const senderJid = message.key.remoteJid;
 
     try {
-      const response = await axios.get('https://api.waifu.pics/random/husbando');
-      const imageUrl = response.data.url;
+      // Charger les images de Husbando depuis les assets
+      const assetPath = path.join(__dirname, '../asset/Husbando');
+      const files = fs.readdirSync(assetPath).filter(f => 
+        f.startsWith('Husbando_') && (f.endsWith('.jpg') || f.endsWith('.png'))
+      );
+
+      if (files.length === 0) {
+        await sock.sendMessage(senderJid, {
+          text: '❌ Aucune image disponible pour le moment'
+        });
+        return;
+      }
+
+      const randomFile = files[Math.floor(Math.random() * files.length)];
+      const imageBuffer = getAssetBuffer('Husbando', randomFile);
+
+      if (!imageBuffer) {
+        await sock.sendMessage(senderJid, {
+          text: '❌ Erreur lors du chargement de l\'image'
+        });
+        return;
+      }
 
       await sock.sendMessage(senderJid, {
-        image: { url: imageUrl },
-        caption: '😍 Un beau husbando pour toi!\n\n+5 XP'
+        image: imageBuffer,
+        caption: isGroup ? '😍 *Un beau Husbando!*\n\n➕ 5 XP ✨' : '😍 *Un beau Husbando!*\n\n'
       });
 
-      user.xp += 5;
+      if (isGroup) if (isGroup) user.xp += 5; // Seulement en groupe // Seulement en groupe
       await user.save();
 
     } catch (error) {

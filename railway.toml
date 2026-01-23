@@ -1,1 +1,8 @@
 builder = "dockerfile"
+[[services.tetsubot.volumes]]
+source = "asset-storage"
+mount_point = "/app/src/asset"
+
+[[services.tetsubot.volumes]]
+source = "whatsapp-auth-storage"
+mount_point = "/app/whatsapp_auth"

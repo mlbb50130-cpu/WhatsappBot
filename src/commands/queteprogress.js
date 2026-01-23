@@ -4,7 +4,7 @@ module.exports = {
   category: 'QUÊTES',
   usage: '!queteprogress',
   adminOnly: false,
-  groupOnly: false,
+  groupOnly: true,
   cooldown: 3,
 
   async execute(sock, message, args, user, isGroup, groupData) {

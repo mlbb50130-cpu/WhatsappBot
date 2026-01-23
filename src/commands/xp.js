@@ -11,35 +11,43 @@ module.exports = {
     const senderJid = message.key.remoteJid;
 
     try {
-      const nextLevelXp = user.level * 100;
-      const progressBar = this.createProgressBar(user.xp, nextLevelXp, 10);
+      if (!user) {
+        await sock.sendMessage(senderJid, { text: '❌ Utilisateur introuvable!' });
+        return;
+      }
+
+      const level = user.level || 1;
+      const userXp = user.xp || 0;
+      const nextLevelXp = level * 100;
+      
+      // Capper la progression à 100% maximum
+      const percentProgress = Math.min(1, userXp / nextLevelXp);
+      const filled = Math.round(percentProgress * 10);
+      const empty = 10 - filled;
+      const progressPercent = Math.round(percentProgress * 100);
+      const progressBar = `[${('█').repeat(filled)}${('░').repeat(empty)}] ${progressPercent}%`;
       
       const xpMessage = `
 ╔════════════════════════════════════╗
 ║          💫 TON XP ACTUEL 💫       ║
 ╚════════════════════════════════════╝
 
-👤 *Utilisateur:* ${user.pseudo || 'Joueur'}
-📊 *Niveau:* ${user.level}
-✨ *XP Actuel:* ${user.xp}/${nextLevelXp}
+👤 *Utilisateur:* ${user.username || 'Joueur'}
+📊 *Niveau:* ${level}
+✨ *XP Actuel:* ${userXp}/${nextLevelXp}
 
 *Progression:*
 ${progressBar}
 
-${user.xp >= nextLevelXp ? '🎉 Tu es prêt pour le levelup!' : '⏳ Continue pour progresser!'}
+${userXp >= nextLevelXp ? '🎉 Tu es prêt pour le levelup!' : '⏳ Continue pour progresser!'}
 
 ═════════════════════════════════════`;
 
       await sock.sendMessage(senderJid, { text: xpMessage });
     } catch (error) {
       console.error('Error in xp command:', error.message);
-      await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      console.error('User object:', user);
+      await sock.sendMessage(senderJid, { text: '❌ Erreur lors de la récupération de ton XP!' });
     }
-  },
-
-  createProgressBar(current, max, length = 10) {
-    const filled = Math.round((current / max) * length);
-    const empty = length - filled;
-    return `[${('█').repeat(filled)}${('░').repeat(empty)}] ${Math.round((current / max) * 100)}%`;
   }
 };

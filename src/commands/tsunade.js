@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const RandomUtils = require('../utils/random');
-const { getAssetUrl } = require('../utils/assets');
+const { getAssetBuffer } = require('../utils/assets');
 
 module.exports = {
   name: 'tsunade',
@@ -17,6 +17,11 @@ module.exports = {
     const assetPath = path.join(__dirname, '../asset/Tsunade');
 
     try {
+      if (!fs.existsSync(assetPath)) {
+        await sock.sendMessage(senderJid, { text: '❌ Aucune photo trouvée!' });
+        return;
+      }
+
       const files = fs.readdirSync(assetPath).filter(f => /\.(jpg|jpeg|png|gif|webp)$/i.test(f));
       
       if (files.length === 0) {
@@ -25,14 +30,19 @@ module.exports = {
       }
 
       const randomFile = RandomUtils.choice(files);
-      const imageUrl = getAssetUrl('Tsunade', randomFile);
+      const imageBuffer = getAssetBuffer('Tsunade', randomFile);
 
-      user.xp += 2;
+      if (!imageBuffer) {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur lors du chargement!' });
+        return;
+      }
+
+      if (isGroup) if (isGroup) user.xp += 2; // Seulement en groupe // Seulement en groupe
       await user.save();
 
       await sock.sendMessage(senderJid, {
-        image: { url: imageUrl },
-        caption: '👱 *Tsunade*\n\n➕ 2 XP ✨'
+        image: imageBuffer,
+        caption: isGroup ? '💪 *Tsunade*\n\n➕ 2 XP ✨' : '💪 *Tsunade*\n\n'
       });
     } catch (error) {
       console.error('Error in tsunade command:', error.message);

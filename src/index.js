@@ -1,5 +1,6 @@
 const makeWASocket = require('@whiskeysockets/baileys').default;
-const { useMultiFileAuthState } = require('@whiskeysockets/baileys');
+const { useMultiFileAuthState, fetchLatestBaileysVersion, Browsers } = require('@whiskeysockets/baileys');
+const { Boom } = require('@hapi/boom');
 const config = require('./config');
 const { connectDatabase } = require('./database');
 const { loadCommands, handleMessage } = require('./handler');
@@ -7,179 +8,188 @@ const qrcode = require('qrcode-terminal');
 const fs = require('fs');
 
 let sock = null;
-let qrDisplayed = false;
-let connectionTimeout;
+let qrShown = false;
 
 async function connectToWhatsApp() {
-  qrDisplayed = false;
+  qrShown = false;
   
-  // Créer le dossier session s'il n'existe pas
-  if (!fs.existsSync(config.SESSION_DIR)) {
-    fs.mkdirSync(config.SESSION_DIR, { recursive: true });
+  // Ensure sessions directory exists
+  if (!fs.existsSync('./tetsubot_session')) {
+    fs.mkdirSync('./tetsubot_session', { recursive: true });
   }
 
-  const { state, saveCreds } = await useMultiFileAuthState(config.SESSION_DIR);
+  const { state, saveCreds } = await useMultiFileAuthState('./whatsapp_auth');
 
-  // Configuration minimaliste et stable
+  // Récupérer la dernière version de Baileys
+  const { version, isLatest } = await fetchLatestBaileysVersion();
+  console.log(`[BAILEYS] Using version: ${version.join('.')}, isLatest: ${isLatest}`);
+
   sock = makeWASocket({
+    version,
     auth: state,
     logger: require('pino')({ level: 'silent' }),
-    browser: ['TetsuBot', 'Chrome', '120.0.0.0'],
+    browser: Browsers.ubuntu('Chrome'),
     syncFullHistory: false,
-    markOnlineOnConnect: true,
+    shouldIgnoreJid: (jid) => jid.includes('broadcast'),
     generateHighQualityLinkPreview: true,
-    emitOwnEventsUnfiltered: true,
-    pairingCodeTimeoutMs: 120000,
-    maxMsToWaitForConnection: 120000,
-    retryRequestDelayMs: 5000,
-    keepAliveIntervalMs: 30000,
-    version: [2, 2407, 3],
+    printQRInTerminal: false,
   });
 
-  // Sauvegarder les credentials
+  // Save credentials when updated
   sock.ev.on('creds.update', saveCreds);
 
-  // Événement pour le QR code direct
-  sock.ev.on('qr', (qr) => {
-    console.log('\n╔════════════════════════════════════════╗');
-    console.log('║  📱 QR CODE GÉNÉRÉ PAR BAILEYS       ║');
-    console.log('╚════════════════════════════════════════╝\n');
-    try {
-      const qrcode = require('qrcode-terminal');
-      qrcode.generate(qr, { small: true });
-    } catch (err) {
-      console.log('QR:', qr);
-    }
-    qrDisplayed = true;
-  });
-
-  // Timer pour afficher un message d'attente du QR
-  connectionTimeout = setTimeout(() => {
-    if (!qrDisplayed) {
-      console.log('⏳ En attente du QR code...');
-    }
-  }, 5000);
-
-  // Gestion de la connexion
   sock.ev.on('connection.update', async (update) => {
-    const { connection, lastDisconnect, qr, isNewLogin, pairingCode } = update;
+    const { connection, lastDisconnect, qr } = update;
 
-    // Afficher le QR code
+    // Display QR Code when generated
     if (qr) {
-      clearTimeout(connectionTimeout);
-      qrDisplayed = true;
+      qrShown = true;
       console.log('\n╔════════════════════════════════════════╗');
-      console.log('║  📱 SCANNER AVEC WHATSAPP            ║');
+      console.log('║  📱 SCAN THIS QR WITH WHATSAPP       ║');
       console.log('╚════════════════════════════════════════╝\n');
+      
       try {
         qrcode.generate(qr, { small: true });
       } catch (err) {
-        console.log('QR Code (base64):', qr);
+        console.log(qr);
       }
-      console.log('\nÉtapes:');
-      console.log('1. Ouvrez WhatsApp sur votre téléphone');
-      console.log('2. Menu > Paramètres > Appareils liés > Nouvel appareil');
-      console.log('3. Scannez le code QR ci-dessus');
-      console.log('⏱️  Délai d\'expiration: 120 secondes\n');
+      
+      console.log('\n✅ Steps:');
+      console.log('1. Open WhatsApp');
+      console.log('2. Menu > Linked Devices > New Device');
+      console.log('3. Scan QR code above');
+      console.log('4. Wait for connection\n');
     }
 
-    // Pairing code si le QR échoue
-    if (pairingCode) {
-      clearTimeout(connectionTimeout);
-      console.log('\n📌 Code d\'appairage (alternative au QR):\n');
-      console.log(pairingCode.match(/.{1,4}/g).join('-'));
-      console.log('\n');
-    }
-
+    // Connection states
     if (connection === 'connecting') {
-      console.log('⏳ Connexion en cours...');
+      console.log('⏳ Connecting to WhatsApp...');
     }
 
     if (connection === 'open') {
-      clearTimeout(connectionTimeout);
-      console.log('\n✅ BOT CONNECTÉ AVEC SUCCÈS!\n');
+      console.log('\n✅ BOT CONNECTED!\n');
+      qrShown = false;
     }
 
     if (connection === 'close') {
-      clearTimeout(connectionTimeout);
-      const statusCode = (lastDisconnect?.error)?.output?.statusCode;
-      const reason = lastDisconnect?.error?.message || 'Raison inconnue';
+      qrShown = false;
+      const shouldReconnect = (lastDisconnect?.error)?.output?.statusCode !== 401;
       
-      console.log(`\n⚠️  Déconnexion`);
-      console.log(`   Status: ${statusCode}`);
-      console.log(`   Raison: ${reason}`);
-      
-      if (statusCode === 405) {
-        console.log('\n❌ ERREUR 405: Connection Failure');
-        console.log('╔════════════════════════════════════════╗');
-        console.log('║  ⛔ CE NUMÉRO EST BLOQUÉ PAR WHATSAPP  ║');
-        console.log('╚════════════════════════════════════════╝\n');
-        console.log('Le QR code NE peut PAS être généré car:');
-        console.log('  • WhatsApp a bloqué ce numéro');
-        console.log('  • Trop de tentatives de connexion');
-        console.log('  • "Appareils liés" est désactivé/indisponible\n');
-        console.log('SOLUTIONS:\n');
-        console.log('  1️⃣  ATTENDRE 24-48h');
-        console.log('     WhatsApp débloquera automatiquement\n');
-        console.log('  2️⃣  UTILISER UN AUTRE NUMÉRO');
-        console.log('     Assurez-vous que "Appareils liés" est ACTIF\n');
-        console.log('  3️⃣  VÉRIFIER WHATSAPP WEB');
-        console.log('     Allez sur web.whatsapp.com');
-        console.log('     Si ça fonctionne, le numéro n\'est pas bloqué\n');
-        console.log('🔄 Nouvelle tentative dans 120 secondes...\n');
-        setTimeout(() => connectToWhatsApp(), 120000);
-      } else if (statusCode === 401) {
-        console.log('\n❌ Erreur 401: Session invalide');
-        if (fs.existsSync(config.SESSION_DIR)) {
-          fs.rmSync(config.SESSION_DIR, { recursive: true });
-        }
-        setTimeout(() => connectToWhatsApp(), 5000);
+      if (shouldReconnect) {
+        console.log('⚠️  Disconnected. Reconnecting in 10 seconds...');
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        return connectToWhatsApp();
       } else {
-        console.log('🔄 Reconnexion dans 10 secondes...\n');
-        setTimeout(() => connectToWhatsApp(), 10000);
+        console.log('❌ Logout. Delete tetsubot_session folder and restart.');
       }
     }
   });
 
-  // Gestion des messages
+  // Handle messages
   sock.ev.on('messages.upsert', async (m) => {
     const message = m.messages[0];
     if (!message.message) return;
 
+    // Extract message content (Baileys 7.0 compatible)
+    let messageContent = '';
+    if (message.message.conversation) {
+      messageContent = message.message.conversation;
+    } else if (message.message.extendedTextMessage?.text) {
+      messageContent = message.message.extendedTextMessage.text;
+    }
+
+    console.log(`[MESSAGE] Received: ${messageContent}`);
+
     const senderJid = message.key.remoteJid;
     const isGroup = senderJid.endsWith('@g.us');
 
+    // Get group data if in group
     let groupData = null;
     if (isGroup) {
       try {
         groupData = await sock.groupMetadata(senderJid);
       } catch (error) {
-        // Ignorer
+        console.error('Error fetching group metadata:', error.message);
       }
     }
 
+    // Handle message
     await handleMessage(sock, message, isGroup, groupData);
+  });
+
+  // Handle group updates
+  sock.ev.on('groups.upsert', async (updates) => {
+    for (const update of updates) {
+      console.log(`${config.COLORS.CYAN}📢 Group update: ${update.subject}${config.COLORS.RESET}`);
+      
+      try {
+        const Group = require('./models/Group');
+        let group = await Group.findOne({ groupJid: update.id });
+        
+        // Si le groupe n'existe pas encore (nouveau groupe)
+        if (!group) {
+          // Créer l'entrée du groupe
+          group = new Group({
+            groupJid: update.id,
+            groupName: update.subject,
+            isActive: false
+          });
+          await group.save();
+          
+          // Envoyer un message d'accueil
+          await sock.sendMessage(update.id, {
+            text: '👋 *Bienvenue!* 🎉\n\n' +
+                  'Je suis **TetsuBot** - Un bot RPG Otaku pour votre groupe!\n\n' +
+                  '⚙️ *Pour m\'activer dans ce groupe:*\n' +
+                  'Mon propriétaire doit envoyer la commande `!activatebot`\n\n' +
+                  '📞 Contactez: @22954959093\n\n' +
+                  '🚀 Une fois activé, vous pourrez:\n' +
+                  '• Gagner de l\'XP\n' +
+                  '• Participer à des quêtes\n' +
+                  '• Affronter d\'autres joueurs\n' +
+                  '• Et bien plus!\n\n' +
+                  '⏳ En attente d\'activation...',
+            mentions: ['22954959093@s.whatsapp.net']
+          });
+          
+          console.log(`[NEW GROUP] ${update.subject} - Waiting for activation`);
+        }
+      } catch (error) {
+        console.error('[GROUP UPDATE ERROR]', error.message);
+      }
+    }
+  });
+
+  // Handle participant updates
+  sock.ev.on('group-participants.update', (update) => {
+    console.log(`${config.COLORS.CYAN}👥 Group participants update in ${update.id}${config.COLORS.RESET}`);
+  });
+
+  // Handle errors
+  sock.ev.on('error', (error) => {
+    console.error('[SOCKET ERROR]', error);
   });
 
   return sock;
 }
 
 async function main() {
-  console.log('\n🤖 TetsuBot - WhatsApp Bot\n');
+  console.log(`${config.COLORS.BLUE}🤖 TetsuBot - Otaku RPG WhatsApp Bot${config.COLORS.RESET}`);
+  console.log(`${config.COLORS.BLUE}═══════════════════════════════════${config.COLORS.RESET}\n`);
 
-  // Connexion à MongoDB
+  // Connect to database
   await connectDatabase();
 
-  // Charger les commandes
+  // Load commands
   loadCommands();
 
-  // Connexion à WhatsApp
+  // Connect to WhatsApp
   sock = await connectToWhatsApp();
 }
 
-// Arrêt gracieux
+// Handle graceful shutdown
 process.on('SIGINT', async () => {
-  console.log('\n⏸️  Arrêt...');
+  console.log(`\n${config.COLORS.YELLOW}⏸️  Shutting down...${config.COLORS.RESET}`);
   if (sock) {
     await sock.end();
   }
@@ -187,6 +197,6 @@ process.on('SIGINT', async () => {
 });
 
 main().catch(error => {
-  console.error('❌ Erreur:', error.message);
+  console.error(`${config.COLORS.RED}❌ Fatal Error: ${error.message}${config.COLORS.RESET}`);
   process.exit(1);
 });

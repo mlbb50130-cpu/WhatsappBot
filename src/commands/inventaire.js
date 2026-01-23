@@ -4,7 +4,7 @@ module.exports = {
   category: 'LOOT',
   usage: '!inventaire',
   adminOnly: false,
-  groupOnly: false,
+  groupOnly: true,
   cooldown: 3,
 
   async execute(sock, message, args, user, isGroup, groupData) {

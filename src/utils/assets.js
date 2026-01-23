@@ -1,3 +1,18 @@
+// Utility to load asset files as buffer (for local files)
+function getAssetBuffer(folderName, fileName) {
+  const path = require('path');
+  const fs = require('fs');
+  
+  const assetPath = path.join(__dirname, '../asset', folderName, fileName);
+  
+  if (!fs.existsSync(assetPath)) {
+    console.error(`Asset not found: ${assetPath}`);
+    return null;
+  }
+  
+  return fs.readFileSync(assetPath);
+}
+
 // Utility to generate asset URLs
 function getAssetUrl(folderName, fileName, isLocal = false) {
   if (isLocal || process.env.NODE_ENV === 'development') {
@@ -11,4 +26,4 @@ function getAssetUrl(folderName, fileName, isLocal = false) {
   return `${baseUrl}/assets/${folderName}/${fileName}`;
 }
 
-module.exports = { getAssetUrl };
+module.exports = { getAssetUrl, getAssetBuffer };

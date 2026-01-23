@@ -39,15 +39,17 @@ module.exports = {
         }
       }
 
+      const caption = isGroup ? '🎬 *GIF Anime!*\n\n✨ +5 XP 💫' : '🎬 *GIF Anime!*';
+      
       if (gifUrl) {
         try {
           await sock.sendMessage(senderJid, {
             image: { url: gifUrl },
-            caption: '🎬 *GIF Anime!*\n\n✨ +5 XP 💫'
+            caption: caption
           });
         } catch (sendError) {
           await sock.sendMessage(senderJid, {
-            text: '🎬 *Un GIF anime rigolo!*\n\n✨ +5 XP 💫'
+            text: caption
           });
         }
       } else {
@@ -56,7 +58,7 @@ module.exports = {
         });
       }
 
-      user.xp += 5;
+      if (isGroup) if (isGroup) user.xp += 5; // Seulement en groupe // Seulement en groupe
       await user.save();
 
     } catch (error) {

@@ -4,7 +4,7 @@ module.exports = {
   category: 'QUÊTES',
   usage: '!hebdo',
   adminOnly: false,
-  groupOnly: false,
+  groupOnly: true,
   cooldown: 604800, // 7 jours
 
   async execute(sock, message, args, user, isGroup, groupData) {

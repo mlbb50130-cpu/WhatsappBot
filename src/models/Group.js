@@ -18,6 +18,13 @@ const groupSchema = new mongoose.Schema({
     type: String,
     default: '!'
   },
+  // Activation du bot
+  isActive: {
+    type: Boolean,
+    default: false
+  },
+  activatedBy: String,
+  activatedAt: Date,
   // Features activées/désactivées
   features: {
     xpSystem: { type: Boolean, default: true },

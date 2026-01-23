@@ -6,7 +6,7 @@ module.exports = {
   category: 'MINI-JEUX',
   usage: '!roulette',
   adminOnly: false,
-  groupOnly: false,
+  groupOnly: true,
   cooldown: 10,
 
   async execute(sock, message, args, user, isGroup, groupData) {

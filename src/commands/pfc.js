@@ -6,7 +6,7 @@ module.exports = {
   category: 'MINI-JEUX',
   usage: '!pfc pierre',
   adminOnly: false,
-  groupOnly: false,
+  groupOnly: true,
   cooldown: 5,
 
   choices: ['pierre', 'feuille', 'ciseaux'],

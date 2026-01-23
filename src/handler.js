@@ -26,17 +26,17 @@ function loadCommands() {
           const command = require(filePath);
           if (command.name) {
             commands.set(command.name.toLowerCase(), command);
-            console.log(`📄 Commande chargée: ${command.name}`);
+            console.log(`${config.COLORS.CYAN}📄 Command loaded: ${command.name}${config.COLORS.RESET}`);
           }
         } catch (error) {
-          console.error(`❌ Erreur chargement ${file}: ${error.message}`);
+          console.error(`${config.COLORS.RED}❌ Error loading command ${file}: ${error.message}${config.COLORS.RESET}`);
         }
       }
     }
   };
   
   loadDir(commandsPath);
-  console.log(`✅ ${commands.size} commandes chargées`);
+  console.log(`${config.COLORS.GREEN}✅ ${commands.size} commands loaded${config.COLORS.RESET}`);
 }
 
 // Get or create user
@@ -109,7 +109,16 @@ async function addXP(jid, amount = config.XP_PER_MESSAGE) {
 // Main message handler
 async function handleMessage(sock, message, isGroup, groupData) {
   try {
-    const messageContent = message.body || '';
+    // Extract message content (Baileys 7.0 compatible)
+    let messageContent = '';
+    if (message.message?.conversation) {
+      messageContent = message.message.conversation;
+    } else if (message.message?.extendedTextMessage?.text) {
+      messageContent = message.message.extendedTextMessage.text;
+    } else {
+      return; // Ignore if no text message
+    }
+
     const senderJid = message.key.remoteJid;
     const participantJid = message.key.participant || senderJid;
     const username = message.pushName || 'Anonymous';
@@ -117,14 +126,11 @@ async function handleMessage(sock, message, isGroup, groupData) {
     // Ignore bot's own messages
     if (message.key.fromMe) return;
 
-    // Check if message starts with prefix
-    if (!messageContent.startsWith(config.PREFIX)) {
-      // Add XP for regular messages
-      if (isGroup) {
-        await addXP(participantJid);
-      }
-      return;
-    }
+    console.log(`[HANDLER] Message: "${messageContent}"`);
+    console.log(`[HANDLER] From: ${participantJid}`);
+    console.log(`[HANDLER] Group/Chat JID: ${senderJid}`);
+    console.log(`[HANDLER] Is Group: ${isGroup}`);
+    console.log(`---`);
 
     // Parse command
     const args = messageContent.slice(config.PREFIX.length).trim().split(/\s+/);
@@ -134,6 +140,28 @@ async function handleMessage(sock, message, isGroup, groupData) {
     const command = commands.get(commandName);
     if (!command) {
       return;
+    }
+
+    // Check if group is active (SEULEMENT EN GROUPE - finissant par @g.us)
+    // MAIS permettre activatebot même si pas activé
+    if (commandName !== 'activatebot' && messageContent.startsWith(config.PREFIX) && senderJid.endsWith('@g.us')) {
+      try {
+        const Group = require('./models/Group');
+        const group = await Group.findOne({ groupJid: senderJid });
+        
+        // Si le groupe n'est pas activé, rejeter
+        if (!group || !group.isActive) {
+          const ownerJid = '74690085318855@s.whatsapp.net';
+          await sock.sendMessage(senderJid, {
+            text: '🚫 *Le bot n\'est pas activé dans ce groupe.*\n\n📞 Contactez le propriétaire:\n@74690085318855\n\nIl peut activer le bot avec: `!activatebot`',
+            mentions: [ownerJid]
+          });
+          return;
+        }
+      } catch (error) {
+        console.log('Warning: Could not check group activation:', error.message);
+        // Continue anyway
+      }
     }
 
     // Get or create user
@@ -186,7 +214,7 @@ async function handleMessage(sock, message, isGroup, groupData) {
     await command.execute(sock, message, args, user, isGroup, groupData);
 
   } catch (error) {
-    console.error(`❌ Erreur handler: ${error.message}`);
+    console.error(`${config.COLORS.RED}❌ Handler Error: ${error.message}${config.COLORS.RESET}`);
     try {
       const senderJid = message.key.remoteJid;
       await sock.sendMessage(senderJid, {

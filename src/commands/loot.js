@@ -6,8 +6,8 @@ module.exports = {
   category: 'LOOT',
   usage: '!loot',
   adminOnly: false,
-  groupOnly: false,
-  cooldown: 10,
+  groupOnly: true,
+  cooldown: 36000,
 
   lootTable: [
     { name: 'Kunai Ninja', rarity: 'common', emoji: '🔪', weight: 40, xp: 10 },
