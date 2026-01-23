@@ -73,6 +73,10 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  powerLevel: {
+    type: Number,
+    default: 100
+  },
   createdAt: {
     type: Date,
     default: Date.now

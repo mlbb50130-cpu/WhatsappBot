@@ -66,8 +66,8 @@ module.exports = {
     user.chakra -= chakraCost;
 
     // Create duel
-    const attackerPower = user.level * 10 + RandomUtils.range(10, 50);
-    const defenderPower = opponent.level * 10 + RandomUtils.range(10, 50);
+    const attackerPower = (user.powerLevel || 100) + user.level * 10 + RandomUtils.range(10, 50);
+    const defenderPower = (opponent.powerLevel || 100) + opponent.level * 10 + RandomUtils.range(10, 50);
 
     const winner = attackerPower > defenderPower ? 'attacker' : 'defender';
     const difference = Math.abs(attackerPower - defenderPower);
@@ -77,11 +77,13 @@ module.exports = {
     if (winner === 'attacker') {
       user.stats.wins += 1;
       user.xp += 30;
+      user.powerLevel = (user.powerLevel || 100) + 5; // +5 power per win
       opponent.stats.losses += 1;
     } else {
       user.stats.losses += 1;
       opponent.stats.wins += 1;
       opponent.xp += 30;
+      opponent.powerLevel = (opponent.powerLevel || 100) + 5; // +5 power per win
     }
 
     await user.save();
