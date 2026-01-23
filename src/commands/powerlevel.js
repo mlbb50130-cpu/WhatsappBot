@@ -14,21 +14,28 @@ module.exports = {
       // Calculate power level based on stats
       const basePower = user.level * 100;
       const xpBonus = Math.floor(user.xp / 10);
-      const duelBonus = user.duelsWon * 50;
-      const totalPower = basePower + xpBonus + duelBonus;
+      const duelBonus = (user.stats?.wins || 0) * 50;
+      const powerLevelBonus = user.powerLevel || 100;
+      const totalPower = basePower + xpBonus + duelBonus + powerLevelBonus;
 
       const powerMessage = `
 ╔════════════════════════════════════╗
 ║        ⚡ POWER LEVEL ⚡           ║
 ╚════════════════════════════════════╝
 
-👤 *Utilisateur:* ${user.pseudo || 'Joueur'}
+👤 *Utilisateur:* ${user.username || 'Joueur'}
 ⚡ *Power Level:* ${totalPower}
 
 📊 *Détails:*
   Base (Level): +${basePower}
   XP: +${xpBonus}
   Duels gagnés: +${duelBonus}
+  Combat Power: +${powerLevelBonus}
+
+📈 *Stats:*
+  Duels: ${user.stats?.duels || 0}
+  Victoires: ${user.stats?.wins || 0}
+  Défaites: ${user.stats?.losses || 0}
 
 ${totalPower > 5000 ? '🌟 Puissance incroyable!' : totalPower > 2000 ? '💪 Très puissant!' : '⏳ Continue de progresser!'}
 
