@@ -151,9 +151,9 @@ async function handleMessage(sock, message, isGroup, groupData) {
         
         // Si le groupe n'est pas activé, rejeter
         if (!group || !group.isActive) {
-          const ownerJid = '74690085318855@s.whatsapp.net';
+          const ownerJid = '22954959093@s.whatsapp.net';
           await sock.sendMessage(senderJid, {
-            text: '🚫 *Le bot n\'est pas activé dans ce groupe.*\n\n📞 Contactez le propriétaire:\n@74690085318855\n\nIl peut activer le bot avec: `!activatebot`',
+            text: '🚫 *Le bot n\'est pas activé dans ce groupe.*\n\n📞 Contactez le propriétaire:\n@22954959093\n\nIl peut activer le bot avec: `!activatebot`',
             mentions: [ownerJid]
           });
           return;
