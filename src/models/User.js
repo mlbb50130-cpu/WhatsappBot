@@ -69,6 +69,10 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 100
   },
+  maxChakra: {
+    type: Number,
+    default: 100
+  },
   lastChakraReset: {
     type: Date,
     default: Date.now

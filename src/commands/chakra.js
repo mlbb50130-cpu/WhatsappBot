@@ -11,7 +11,13 @@ module.exports = {
     const senderJid = message.key.remoteJid;
 
     try {
-      const maxChakra = 100;
+      // Calculer maxChakra basé sur le niveau: 100 + (niveau - 1) * 10
+      const maxChakra = 100 + (user.level - 1) * 10;
+      
+      // Mettre à jour maxChakra si changé
+      if (user.maxChakra !== maxChakra) {
+        user.maxChakra = maxChakra;
+      }
       
       // Reset chakra if 24h passed
       const now = new Date();
@@ -24,7 +30,8 @@ module.exports = {
         await user.save();
       }
       
-      const currentChakra = user.chakra || maxChakra;
+      // Si chakra > maxChakra après level up, le limiter
+      const currentChakra = Math.min(user.chakra || maxChakra, maxChakra);
       const chakraPercent = Math.round((currentChakra / maxChakra) * 100);
       const hoursUntilReset = Math.ceil(24 - hoursDiff);
 
@@ -36,7 +43,8 @@ module.exports = {
 ╚════════════════════════════════════╝
 
 👤 *${user.username || 'Joueur'}*
-🔵 *Chakra:* ${currentChakra}/${maxChakra}
+� *Niveau:* ${user.level}
+�🔵 *Chakra:* ${currentChakra}/${maxChakra}
 
 *Niveau de pouvoir:*
 ${chakraBar}

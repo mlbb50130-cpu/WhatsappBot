@@ -87,6 +87,11 @@ async function addXP(jid, amount = config.XP_PER_MESSAGE) {
     if (levelInfo.level > oldLevel) {
       const rankInfo = XPSystem.getRank(levelInfo.level);
       user.rank = rankInfo.rank;
+      
+      // Augmenter le maxChakra quand on level up: +10 par niveau
+      const newMaxChakra = 100 + (levelInfo.level - 1) * 10;
+      user.maxChakra = newMaxChakra;
+      
       return {
         user: await user.save(),
         leveledUp: true,
