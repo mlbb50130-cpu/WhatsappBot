@@ -13,7 +13,7 @@ module.exports = {
     const senderJid = message.key.remoteJid;
 
     const levelInfo = XPSystem.calculateLevelFromXp(user.xp);
-    const rankInfo = XPSystem.getRank(user.level);
+    const rankInfo = XPSystem.getRank(levelInfo.level);
     
     const progressBar = this.getProgressBar(levelInfo.currentLevelXp, levelInfo.requiredXp, 15);
     
@@ -31,7 +31,7 @@ module.exports = {
 *📍 Titre:* ${user.title}
 
 *📊 STATISTIQUES*
-  ├─ 🎯 Niveau: ${user.level}
+  ├─ 🎯 Niveau: ${levelInfo.level}
   ├─ ⭐ XP: ${user.xp}
   ├─ 💬 Messages: ${user.stats.messages}
   ├─ 🎯 Quiz: ${user.stats.quiz}
