@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const ImageRotationSystem = require('../utils/imageRotation');
+const Group = require('../models/Group');
 
 module.exports = {
   name: 'nino',

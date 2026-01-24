@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const ImageRotationSystem = require('../utils/imageRotation');
+const Group = require('../models/Group');
 
 module.exports = {
   name: 'livai',
@@ -28,8 +29,27 @@ module.exports = {
         return;
       }
 
-      const selectedFile = ImageRotationSystem.getNextImage(user, 'livai', files);
-      await user.save(); // Save image rotation tracking
+      // Get group data if in group for group-level image rotation
+      let imageTracker = user;
+      if (isGroup) {
+        try {
+          let group = await Group.findOne({ groupJid: senderJid });
+          if (!group) {
+            group = new Group({
+              groupJid: senderJid,
+              groupName: groupData?.groupName || 'Unknown'
+            });
+            await group.save();
+          }
+          imageTracker = group;
+        } catch (error) {
+          console.log('Note: Using user-level image tracking for this command');
+          imageTracker = user;
+        }
+      }
+
+      const selectedFile = ImageRotationSystem.getNextImage(imageTracker, 'livai', files);
+      await imageTracker.save(); // Save image rotation tracking
       const imagePath = path.join(assetPath, selectedFile);
       const imageBuffer = fs.readFileSync(imagePath);
 

@@ -1,15 +1,15 @@
 class ImageRotationSystem {
   // Check if daily image tracking needs reset (24h)
-  static needsDailyReset(user) {
-    if (!user.dailyImages || !user.dailyImages.lastReset) return true;
+  static needsDailyReset(object) {
+    if (!object.dailyImages || !object.dailyImages.lastReset) return true;
     const now = Date.now();
-    const lastReset = new Date(user.dailyImages.lastReset).getTime();
+    const lastReset = new Date(object.dailyImages.lastReset).getTime();
     return (now - lastReset) >= (24 * 60 * 60 * 1000);
   }
 
   // Reset daily images
-  static resetDailyImages(user) {
-    user.dailyImages = {
+  static resetDailyImages(object) {
+    object.dailyImages = {
       lastReset: new Date(),
       used: {
         naruto: [],
@@ -17,31 +17,47 @@ class ImageRotationSystem {
         miku: [],
         nino: [],
         yoruichi: [],
-        bleach: []
+        bleach: [],
+        zerotwo: [],
+        yami: [],
+        tsunade: [],
+        tengen: [],
+        sukuna: [],
+        rengokudemon: [],
+        makima: [],
+        mikunakano: [],
+        livai: [],
+        nsfw: [],
+        jinwoo: [],
+        husbando: [],
+        gokuui: [],
+        gojo: [],
+        deku: [],
+        boahancook: []
       }
     };
   }
 
-  // Get next available image for a command
-  static getNextImage(user, commandName, availableFiles) {
-    if (!user.dailyImages) {
-      this.resetDailyImages(user);
+  // Get next available image for a command (supports user or group)
+  static getNextImage(object, commandName, availableFiles) {
+    if (!object.dailyImages) {
+      this.resetDailyImages(object);
     }
 
-    if (this.needsDailyReset(user)) {
-      this.resetDailyImages(user);
+    if (this.needsDailyReset(object)) {
+      this.resetDailyImages(object);
     }
 
     // Initialize command if not exists
-    if (!user.dailyImages.used[commandName]) {
-      user.dailyImages.used[commandName] = [];
+    if (!object.dailyImages.used[commandName]) {
+      object.dailyImages.used[commandName] = [];
     }
 
-    const usedImages = user.dailyImages.used[commandName] || [];
+    const usedImages = object.dailyImages.used[commandName] || [];
     
     // Si toutes les images ont été utilisées, réinitialiser la liste
     if (usedImages.length >= availableFiles.length) {
-      user.dailyImages.used[commandName] = [];
+      object.dailyImages.used[commandName] = [];
     }
 
     // Trouver une image non utilisée
@@ -50,11 +66,11 @@ class ImageRotationSystem {
     // Si aucune image disponible (ne devrait pas arriver ici), en prendre une au hasard
     if (!availableImage) {
       availableImage = availableFiles[Math.floor(Math.random() * availableFiles.length)];
-      user.dailyImages.used[commandName] = [];
+      object.dailyImages.used[commandName] = [];
     }
 
     // Ajouter l'image à la liste des utilisées
-    user.dailyImages.used[commandName].push(availableImage);
+    object.dailyImages.used[commandName].push(availableImage);
 
     return availableImage;
   }

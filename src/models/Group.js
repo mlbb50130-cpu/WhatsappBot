@@ -90,6 +90,35 @@ const groupSchema = new mongoose.Schema({
     logDeletes: { type: Boolean, default: true }
   },
 
+  // Daily image rotation per group (24h)
+  dailyImages: {
+    lastReset: { type: Date, default: Date.now },
+    used: {
+      naruto: { type: [String], default: [] },
+      madara: { type: [String], default: [] },
+      miku: { type: [String], default: [] },
+      nino: { type: [String], default: [] },
+      yoruichi: { type: [String], default: [] },
+      bleach: { type: [String], default: [] },
+      zerotwo: { type: [String], default: [] },
+      yami: { type: [String], default: [] },
+      tsunade: { type: [String], default: [] },
+      tengen: { type: [String], default: [] },
+      sukuna: { type: [String], default: [] },
+      rengokudemon: { type: [String], default: [] },
+      makima: { type: [String], default: [] },
+      mikunakano: { type: [String], default: [] },
+      livai: { type: [String], default: [] },
+      nsfw: { type: [String], default: [] },
+      jinwoo: { type: [String], default: [] },
+      husbando: { type: [String], default: [] },
+      gokuui: { type: [String], default: [] },
+      gojo: { type: [String], default: [] },
+      deku: { type: [String], default: [] },
+      boahancook: { type: [String], default: [] }
+    }
+  },
+
   createdAt: {
     type: Date,
     default: Date.now

@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const RandomUtils = require('../utils/random');
 const ImageRotationSystem = require('../utils/imageRotation');
+const Group = require('../models/Group');
 
 module.exports = {
   name: 'naruto',
@@ -29,9 +30,29 @@ module.exports = {
         return;
       }
 
+      // Get group data if in group for group-level image rotation
+      let imageTracker = user;
+      if (isGroup) {
+        try {
+          let group = await Group.findOne({ groupJid: senderJid });
+          if (!group) {
+            // Create group if doesn't exist
+            group = new Group({
+              groupJid: senderJid,
+              groupName: groupData?.groupName || 'Unknown'
+            });
+            await group.save();
+          }
+          imageTracker = group;
+        } catch (error) {
+          console.log('Note: Using user-level image tracking for this command');
+          imageTracker = user;
+        }
+      }
+
       // Get next available image (no duplicates today)
-      const selectedFile = ImageRotationSystem.getNextImage(user, 'naruto', files);
-      await user.save(); // Save image rotation tracking
+      const selectedFile = ImageRotationSystem.getNextImage(imageTracker, 'naruto', files);
+      await imageTracker.save(); // Save image rotation tracking
       const imagePath = path.join(assetPath, selectedFile);
       const imageBuffer = fs.readFileSync(imagePath);
 
