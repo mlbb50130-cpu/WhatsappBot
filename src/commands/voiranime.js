@@ -108,7 +108,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       const scriptPath = path.join(__dirname, '../..', 'scripts', 'voiranime_scraper.py');
       
-      // Use Python from venv if available, otherwise system Python
+      // Try venv first (local development), then system Python (Railway)
       let pythonCmd = 'python';
       
       if (os.platform() === 'win32') {
@@ -120,17 +120,17 @@ module.exports = {
           pythonCmd = 'python';
         }
       } else {
-        // On Unix/Linux/Mac
+        // On Unix/Linux/Mac (including Railway)
         const venvPython = path.join(__dirname, '../..', '.venv', 'bin', 'python');
         if (require('fs').existsSync(venvPython)) {
           pythonCmd = venvPython;
         } else {
+          // Fallback to system Python (works on Railway)
           pythonCmd = 'python3';
         }
       }
 
       console.log(`[VOIRANIME] Using python command: ${pythonCmd}`);
-      console.log(`[VOIRANIME] Script path: ${scriptPath}`);
       console.log(`[VOIRANIME] Anime: ${animeName}, Episode: ${episodeNum}`);
 
       const pythonProcess = spawn(pythonCmd, [scriptPath, animeName, episodeNum.toString()], {
