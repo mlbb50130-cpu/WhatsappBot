@@ -1,4 +1,6 @@
 const RandomUtils = require('../utils/random');
+const fs = require('fs');
+const path = require('path');
 
 module.exports = {
   name: 'quiz',
@@ -9,50 +11,48 @@ module.exports = {
   groupOnly: true,
   cooldown: 10,
 
-  quizzes: [
-    {
-      question: '🤔 Quel est le pouvoir spécial de Naruto?',
-      options: ['Sharingan', 'Rinnegan', 'Kurama', 'Mangekyou'],
-      correct: 2,
-      reward: 25
-    },
-    {
-      question: '🤔 Quel est le capitaine de la 4ème division de la Soul Society?',
-      options: ['Kenpachi', 'Retsu Unohana', 'Jushiro Ukitake', 'Shunsui Kyoraku'],
-      correct: 1,
-      reward: 20
-    },
-    {
-      question: '🤔 Comment s\'appelle le pouvoir de Tanjiro?',
-      options: ['Breathing Styles', 'Demon Slayer Mark', 'Nichirin Sword', 'Hinokami Kagura'],
-      correct: 0,
-      reward: 30
-    },
-    {
-      question: '🤔 Quel est le nom du mentor de Luffy?',
-      options: ['Garp', 'Shanks', 'Rayleigh', 'Zoro'],
-      correct: 2,
-      reward: 25
-    },
-    {
-      question: '🤔 Quel est le type de magie d\'Erza Scarlet?',
-      options: ['Archive Magic', 'Requip Magic', 'Celestial Spirit Magic', 'Earth Magic'],
-      correct: 1,
-      reward: 20
-    },
-    {
-      question: '🤔 Comment s\'appelle le village ninja d\'Aizawa?',
-      options: ['Konohagakure', 'Kirigakure', 'Sunagakure', 'Iwagakure'],
-      correct: 0,
-      reward: 15
+  // Charger tous les quizzes depuis le fichier JSON
+  getQuizzes() {
+    try {
+      const quizzesPath = path.join(__dirname, '../data/quizzes.json');
+      const data = fs.readFileSync(quizzesPath, 'utf8');
+      return JSON.parse(data);
+    } catch (error) {
+      console.error('Error loading quizzes:', error);
+      return [];
     }
-  ],
+  },
 
   async execute(sock, message, args, user, isGroup, groupData) {
     const senderJid = message.key.remoteJid;
     const participantJid = message.key.participant || senderJid;
 
-    const quiz = RandomUtils.choice(this.quizzes);
+    // Charger tous les quizzes
+    const allQuizzes = this.getQuizzes();
+    if (allQuizzes.length === 0) {
+      await sock.sendMessage(senderJid, { text: '❌ Aucun quiz disponible.' });
+      return;
+    }
+
+    // Charger l'historique des quizzes répondus
+    if (!user.quizHistory) user.quizHistory = [];
+
+    // Trouver un quiz qui n'a pas été répondu
+    let quiz = null;
+    let availableQuizzes = allQuizzes.filter((_, index) => !user.quizHistory.includes(index));
+    
+    // Si tous les quizzes ont été répondus, réinitialiser
+    if (availableQuizzes.length === 0) {
+      user.quizHistory = [];
+      availableQuizzes = allQuizzes;
+    }
+
+    // Choisir un quiz aléatoire parmi les disponibles
+    const randomIndex = Math.floor(Math.random() * availableQuizzes.length);
+    quiz = availableQuizzes[randomIndex];
+    
+    // Trouver l'index réel du quiz dans le tableau complet
+    const actualIndex = allQuizzes.findIndex(q => q.question === quiz.question);
     
     let options = '';
     quiz.options.forEach((option, index) => {
@@ -78,12 +78,14 @@ ${options}
 
     await sock.sendMessage(senderJid, { text: question });
 
-    // Store quiz session
+    // Store quiz session avec l'index réel
     if (!global.quizSessions) global.quizSessions = new Map();
     global.quizSessions.set(participantJid, {
       quiz,
+      quizIndex: actualIndex,
       timestamp: Date.now(),
-      answered: false
+      answered: false,
+      userJid: participantJid
     });
 
     // Auto-delete session after 30 seconds

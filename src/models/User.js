@@ -46,11 +46,11 @@ const userSchema = new mongoose.Schema({
     addedAt: { type: Date, default: Date.now }
   }],
   stats: {
-    messages: { type: Number, default: 0 },
-    quiz: { type: Number, default: 0 },
-    wins: { type: Number, default: 0 },
-    losses: { type: Number, default: 0 },
-    duels: { type: Number, default: 0 }
+    messages: { type: Number, default: 0, min: 0 },
+    quiz: { type: Number, default: 0, min: 0 },
+    wins: { type: Number, default: 0, min: 0 },
+    losses: { type: Number, default: 0, min: 0 },
+    duels: { type: Number, default: 0, min: 0 }
   },
   warnings: {
     type: Number,
@@ -76,6 +76,10 @@ const userSchema = new mongoose.Schema({
   powerLevel: {
     type: Number,
     default: 100
+  },
+  quizHistory: {
+    type: [Number],
+    default: []
   },
   createdAt: {
     type: Date,

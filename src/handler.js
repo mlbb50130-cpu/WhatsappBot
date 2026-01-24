@@ -76,7 +76,7 @@ async function addXP(jid, amount = config.XP_PER_MESSAGE) {
     }
 
     user.xp += amount;
-    user.stats.messages++;
+    user.stats.messages++; // Les messages sont déjà comptés dans handler
     user.lastXpTime = new Date();
 
     // Check level up
@@ -132,9 +132,24 @@ async function handleMessage(sock, message, isGroup, groupData) {
     console.log(`[HANDLER] Is Group: ${isGroup}`);
     console.log(`---`);
 
+    // TOUJOURS enregistrer les messages (même les non-commandes)
+    const user = await getOrCreateUser(participantJid, username);
+    if (user) {
+      user.stats.messages++;
+      await user.save();
+    }
+
+    // Check if it's a command
+    if (!messageContent.startsWith(config.PREFIX)) {
+      return;
+    }
+
     // Parse command
     const args = messageContent.slice(config.PREFIX.length).trim().split(/\s+/);
-    const commandName = args.shift().toLowerCase();
+    let commandName = args.shift().toLowerCase();
+    
+    // Normaliser les accents dans le nom de la commande
+    commandName = commandName.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
     // Get command
     const command = commands.get(commandName);
@@ -164,9 +179,9 @@ async function handleMessage(sock, message, isGroup, groupData) {
       }
     }
 
-    // Get or create user
-    const user = await getOrCreateUser(participantJid, username);
-    if (!user) {
+    // User already retrieved and message count updated above
+    const userLatest = await User.findOne({ jid: participantJid });
+    if (!userLatest) {
       await sock.sendMessage(senderJid, {
         text: '❌ Erreur lors de la récupération du profil. Essayez à nouveau.'
       });
@@ -211,7 +226,7 @@ async function handleMessage(sock, message, isGroup, groupData) {
     CooldownManager.set(participantJid, commandName, command.cooldown * 1000 || 3000);
 
     // Execute command
-    await command.execute(sock, message, args, user, isGroup, groupData);
+    await command.execute(sock, message, args, userLatest, isGroup, groupData);
 
   } catch (error) {
     console.error(`${config.COLORS.RED}❌ Handler Error: ${error.message}${config.COLORS.RESET}`);

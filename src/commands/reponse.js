@@ -54,6 +54,13 @@ module.exports = {
       // Correct answer
       user.xp += session.quiz.reward;
       user.stats.quiz += 1;
+      
+      // Enregistrer ce quiz comme répondu
+      if (!user.quizHistory) user.quizHistory = [];
+      if (!user.quizHistory.includes(session.quizIndex)) {
+        user.quizHistory.push(session.quizIndex);
+      }
+      
       await user.save();
 
       await sock.sendMessage(senderJid, {
@@ -63,7 +70,10 @@ Tu as gagné +${session.quiz.reward} XP!
 Bonne réponse: ${String.fromCharCode(65 + session.quiz.correct)}. ${session.quiz.options[session.quiz.correct]}`
       });
     } else {
-      // Wrong answer
+      // Wrong answer - ne pas ajouter à l'historique
+      user.stats.quiz += 1;
+      await user.save();
+      
       await sock.sendMessage(senderJid, {
         text: `❌ Mauvaise réponse!
 
