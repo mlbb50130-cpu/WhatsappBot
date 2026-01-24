@@ -107,10 +107,35 @@ module.exports = {
   callPythonScraper(animeName, episodeNum) {
     return new Promise((resolve, reject) => {
       const scriptPath = path.join(__dirname, '../..', 'scripts', 'voiranime_scraper.py');
-      const python = os.platform() === 'win32' ? 'python' : 'python3';
       
-      const pythonProcess = spawn(python, [scriptPath, animeName, episodeNum.toString()], {
-        timeout: 30000
+      // Use Python from venv if available, otherwise system Python
+      let pythonCmd = 'python';
+      
+      if (os.platform() === 'win32') {
+        // Try venv Python first on Windows
+        const venvPython = path.join(__dirname, '../..', '.venv', 'Scripts', 'python.exe');
+        if (require('fs').existsSync(venvPython)) {
+          pythonCmd = venvPython;
+        } else {
+          pythonCmd = 'python';
+        }
+      } else {
+        // On Unix/Linux/Mac
+        const venvPython = path.join(__dirname, '../..', '.venv', 'bin', 'python');
+        if (require('fs').existsSync(venvPython)) {
+          pythonCmd = venvPython;
+        } else {
+          pythonCmd = 'python3';
+        }
+      }
+
+      console.log(`[VOIRANIME] Using python command: ${pythonCmd}`);
+      console.log(`[VOIRANIME] Script path: ${scriptPath}`);
+      console.log(`[VOIRANIME] Anime: ${animeName}, Episode: ${episodeNum}`);
+
+      const pythonProcess = spawn(pythonCmd, [scriptPath, animeName, episodeNum.toString()], {
+        timeout: 30000,
+        stdio: ['pipe', 'pipe', 'pipe']
       });
 
       let output = '';
@@ -122,11 +147,14 @@ module.exports = {
 
       pythonProcess.stderr.on('data', (data) => {
         errorOutput += data.toString();
+        console.error(`[VOIRANIME] Python stderr: ${data.toString()}`);
       });
 
       pythonProcess.on('close', (code) => {
+        console.log(`[VOIRANIME] Python process exited with code: ${code}`);
+        
         if (code !== 0) {
-          reject(new Error(`Python script failed: ${errorOutput || 'Unknown error'}`));
+          reject(new Error(`Python script failed (code ${code}): ${errorOutput || 'Unknown error'}`));
           return;
         }
 
@@ -134,12 +162,14 @@ module.exports = {
           const result = JSON.parse(output);
           resolve(result);
         } catch (e) {
+          console.error(`[VOIRANIME] Failed to parse JSON: ${output}`);
           reject(new Error(`Failed to parse Python output: ${output}`));
         }
       });
 
       pythonProcess.on('error', (err) => {
-        reject(new Error(`Failed to spawn Python process: ${err.message}`));
+        console.error(`[VOIRANIME] Failed to spawn Python: ${err.message}`);
+        reject(new Error(`Failed to spawn Python process: ${err.message}\n\nMake sure Python is installed and in your PATH.\nInstall with: pip install requests beautifulsoup4`));
       });
     });
   }
