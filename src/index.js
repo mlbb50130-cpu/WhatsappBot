@@ -140,13 +140,18 @@ async function connectToWhatsApp() {
           await sock.sendMessage(update.id, {
             text: '👋 *Bienvenue!* 🎉\n\n' +
                   'Je suis **TetsuBot** - Un bot RPG Otaku pour votre groupe!\n\n' +
+                  '📚 *DOCUMENTATION COMPLÈTE:*\n' +
+                  'Tape `!documentation` pour lire la documentation détaillée\n' +
+                  '(Accessible même sans activation!)\n\n' +
                   '⚙️ *Pour m\'activer dans ce groupe:*\n' +
-                  'Mon propriétaire doit envoyer la commande `!activatebot`\n\n' +
-                  '📞 Contactez: @22954959093\n\n' +
+                  'Mon propriétaire doit envoyer: `!activatebot`\n\n' +
+                  '📞 Contactez le propriétaire: @22954959093\n\n' +
                   '🚀 Une fois activé, vous pourrez:\n' +
-                  '• Gagner de l\'XP\n' +
-                  '• Participer à des quêtes\n' +
-                  '• Affronter d\'autres joueurs\n' +
+                  '• Gagner de l\'XP et monter de niveau\n' +
+                  '• Participer à des quêtes quotidiennes\n' +
+                  '• Affronter d\'autres joueurs en duel\n' +
+                  '• Ouvrir des loots aléatoires\n' +
+                  '• Voir des images anime\n' +
                   '• Et bien plus!\n\n' +
                   '⏳ En attente d\'activation...',
             mentions: ['22954959093@s.whatsapp.net']

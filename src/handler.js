@@ -176,8 +176,10 @@ async function handleMessage(sock, message, isGroup, groupData) {
     }
 
     // Check if group is active (SEULEMENT EN GROUPE - finissant par @g.us)
-    // MAIS permettre activatebot même si pas activé
-    if (commandName !== 'activatebot' && messageContent.startsWith(config.PREFIX) && senderJid.endsWith('@g.us')) {
+    // MAIS permettre activatebot, documentation, et help même si pas activé
+    const allowedWithoutActivation = ['activatebot', 'documentation', 'help', 'assets', 'whoami'];
+    
+    if (!allowedWithoutActivation.includes(commandName) && messageContent.startsWith(config.PREFIX) && senderJid.endsWith('@g.us')) {
       try {
         const Group = require('./models/Group');
         const group = await Group.findOne({ groupJid: senderJid });
@@ -186,7 +188,7 @@ async function handleMessage(sock, message, isGroup, groupData) {
         if (!group || !group.isActive) {
           const ownerJid = '22954959093@s.whatsapp.net';
           await sock.sendMessage(senderJid, {
-            text: '🚫 *Le bot n\'est pas activé dans ce groupe.*\n\n📞 Contactez le propriétaire:\n@22954959093\n\nIl peut activer le bot avec: `!activatebot`',
+            text: '🚫 *Le bot n\'est pas activé dans ce groupe.*\n\n📚 Lisez la documentation avec: `!documentation`\n\n📞 Contactez le propriétaire:\n@22954959093\n\nIl peut activer le bot avec: `!activatebot`',
             mentions: [ownerJid]
           });
           return;
