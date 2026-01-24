@@ -117,7 +117,8 @@ const groupSchema = new mongoose.Schema({
       gokuui: { type: [String], default: [] },
       gojo: { type: [String], default: [] },
       deku: { type: [String], default: [] },
-      boahancook: { type: [String], default: [] }
+      boahancook: { type: [String], default: [] },
+      waifu: { type: [String], default: [] }
     }
   },
 
