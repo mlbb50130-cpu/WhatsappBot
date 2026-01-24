@@ -49,12 +49,15 @@ module.exports = {
     const lastReset = user.lastChakraReset ? new Date(user.lastChakraReset) : now;
     const hoursDiff = (now - lastReset) / (1000 * 60 * 60);
     
+    // Calculer le maxChakra basé sur le niveau
+    const maxChakra = 100 + (user.level - 1) * 10;
+    
     if (hoursDiff >= 24) {
-      user.chakra = 100;
+      user.chakra = maxChakra;
       user.lastChakraReset = now;
+      await user.save();
     }
 
-    const maxChakra = 100;
     if (user.chakra <= 0) {
       await sock.sendMessage(senderJid, {
         text: `❌ Ton chakra est épuisé (${user.chakra}/${maxChakra})!\n⏰ Il se réinitialisera en ${Math.ceil(24 - hoursDiff)}h`
