@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const RandomUtils = require('../utils/random');
-const { getAssetBuffer } = require('../utils/assets');
+const ImageRotationSystem = require('../utils/imageRotation');
 
 module.exports = {
   name: 'miku',
@@ -29,8 +29,9 @@ module.exports = {
         return;
       }
 
-      const randomFile = RandomUtils.choice(files);
-      const imageBuffer = getAssetBuffer('Miku', randomFile);
+      const selectedFile = ImageRotationSystem.getNextImage(user, 'miku', files);
+      const imagePath = path.join(assetPath, selectedFile);
+      const imageBuffer = fs.readFileSync(imagePath);
 
       if (!imageBuffer) {
         await sock.sendMessage(senderJid, { text: '❌ Erreur lors du chargement!' });

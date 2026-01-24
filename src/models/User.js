@@ -108,6 +108,17 @@ const userSchema = new mongoose.Schema({
     },
     completed: { type: [Number], default: [] }
   },
+  dailyImages: {
+    lastReset: { type: Date, default: Date.now },
+    used: {
+      naruto: { type: [String], default: [] },
+      madara: { type: [String], default: [] },
+      miku: { type: [String], default: [] },
+      nino: { type: [String], default: [] },
+      yoruichi: { type: [String], default: [] },
+      bleach: { type: [String], default: [] }
+    }
+  },
   createdAt: {
     type: Date,
     default: Date.now

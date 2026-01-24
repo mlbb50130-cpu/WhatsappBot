@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const RandomUtils = require('../utils/random');
+const ImageRotationSystem = require('../utils/imageRotation');
 
 module.exports = {
   name: 'madara',
@@ -28,9 +29,9 @@ module.exports = {
         return;
       }
 
-      // Select random image
-      const randomFile = files[Math.floor(Math.random() * files.length)];
-      const imagePath = path.join(assetPath, randomFile);
+      // Get next available image (no duplicates today)
+      const selectedFile = ImageRotationSystem.getNextImage(user, 'madara', files);
+      const imagePath = path.join(assetPath, selectedFile);
       const imageBuffer = fs.readFileSync(imagePath);
 
       // Send image with caption
