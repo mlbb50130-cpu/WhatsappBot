@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const RandomUtils = require('../utils/random');
-const { getAssetBuffer } = require('../utils/assets');
+const ImageRotationSystem = require('../utils/imageRotation');
 
 module.exports = {
   name: 'gokuui',
@@ -14,7 +13,7 @@ module.exports = {
 
   async execute(sock, message, args, user, isGroup, groupData) {
     const senderJid = message.key.remoteJid;
-    const assetPath = path.join(__dirname, '../asset/GokuUI');
+    const assetPath = path.join(__dirname, '../asset/GokuUi');
 
     try {
       if (!fs.existsSync(assetPath)) {
@@ -29,16 +28,19 @@ module.exports = {
         return;
       }
 
-      const randomFile = RandomUtils.choice(files);
-      const imageBuffer = getAssetBuffer('GokuUI', randomFile);
+      const selectedFile = ImageRotationSystem.getNextImage(user, 'gokuui', files);
+      const imagePath = path.join(assetPath, selectedFile);
+      const imageBuffer = fs.readFileSync(imagePath);
 
       if (!imageBuffer) {
         await sock.sendMessage(senderJid, { text: '❌ Erreur lors du chargement!' });
         return;
       }
 
-      if (isGroup) if (isGroup) user.xp += 2; // Seulement en groupe // Seulement en groupe
-      await user.save();
+      if (isGroup) {
+        user.xp += 2;
+        await user.save();
+      }
 
       await sock.sendMessage(senderJid, {
         image: imageBuffer,

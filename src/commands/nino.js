@@ -42,7 +42,7 @@ module.exports = {
       
       await sock.sendMessage(senderJid, {
         image: fs.readFileSync(imagePath),
-        caption: `🎨 *NINO NAKANO*\n${randomFile}${xpMessage}`
+        caption: `🎨 *NINO NAKANO*\n${selectedFile}${xpMessage}`
       });
 
       // Award XP in groups only

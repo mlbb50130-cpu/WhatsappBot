@@ -38,8 +38,10 @@ module.exports = {
         return;
       }
 
-      if (isGroup) if (isGroup) user.xp += 2; // Seulement en groupe // Seulement en groupe
-      await user.save();
+      if (isGroup) {
+        user.xp += 2;
+        await user.save();
+      }
 
       await sock.sendMessage(senderJid, {
         image: imageBuffer,

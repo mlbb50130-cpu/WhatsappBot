@@ -32,6 +32,11 @@ class ImageRotationSystem {
       this.resetDailyImages(user);
     }
 
+    // Initialize command if not exists
+    if (!user.dailyImages.used[commandName]) {
+      user.dailyImages.used[commandName] = [];
+    }
+
     const usedImages = user.dailyImages.used[commandName] || [];
     
     // Si toutes les images ont été utilisées, réinitialiser la liste

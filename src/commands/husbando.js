@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { getAssetBuffer } = require('../utils/assets');
+const ImageRotationSystem = require('../utils/imageRotation');
 
 module.exports = {
   name: 'husbando',
@@ -29,7 +29,9 @@ module.exports = {
       }
 
       const randomFile = files[Math.floor(Math.random() * files.length)];
-      const imageBuffer = getAssetBuffer('Husbando', randomFile);
+      const selectedFile = ImageRotationSystem.getNextImage(user, 'husbando', files);
+      const imagePath = path.join(assetPath, selectedFile);
+      const imageBuffer = fs.readFileSync(imagePath);
 
       if (!imageBuffer) {
         await sock.sendMessage(senderJid, {
@@ -43,8 +45,10 @@ module.exports = {
         caption: isGroup ? '😍 *Un beau Husbando!*\n\n➕ 5 XP ✨' : '😍 *Un beau Husbando!*\n\n'
       });
 
-      if (isGroup) if (isGroup) user.xp += 5; // Seulement en groupe // Seulement en groupe
-      await user.save();
+      if (isGroup) {
+        user.xp += 5;
+        await user.save();
+      }
 
     } catch (error) {
       console.error('Error fetching husbando:', error.message);
