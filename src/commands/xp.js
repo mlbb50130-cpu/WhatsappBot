@@ -1,3 +1,5 @@
+const XPSystem = require('../utils/xpSystem');
+
 module.exports = {
   name: 'xp',
   description: 'Voir ton XP actuel',
@@ -16,15 +18,13 @@ module.exports = {
         return;
       }
 
-      const level = user.level || 1;
-      const userXp = user.xp || 0;
-      const nextLevelXp = level * 100;
+      // Utiliser le système XP réel
+      const levelInfo = XPSystem.calculateLevelFromXp(user.xp || 0);
+      const rankInfo = XPSystem.getRank(levelInfo.level);
       
-      // Capper la progression à 100% maximum
-      const percentProgress = Math.min(1, userXp / nextLevelXp);
-      const filled = Math.round(percentProgress * 10);
-      const empty = 10 - filled;
-      const progressPercent = Math.round(percentProgress * 100);
+      const progressPercent = Math.round((levelInfo.currentLevelXp / levelInfo.requiredXp) * 100);
+      const filled = Math.round((progressPercent / 100) * 15);
+      const empty = 15 - filled;
       const progressBar = `[${('█').repeat(filled)}${('░').repeat(empty)}] ${progressPercent}%`;
       
       const xpMessage = `
@@ -33,13 +33,14 @@ module.exports = {
 ╚════════════════════════════════════╝
 
 👤 *Utilisateur:* ${user.username || 'Joueur'}
-📊 *Niveau:* ${level}
-✨ *XP Actuel:* ${userXp}/${nextLevelXp}
+${rankInfo.emoji} *Niveau:* ${levelInfo.level} - ${rankInfo.rank}
+✨ *XP Actuel:* ${levelInfo.currentLevelXp}/${levelInfo.requiredXp}
+📊 *XP Total:* ${user.xp || 0}
 
-*Progression:*
+*Progression vers le niveau ${levelInfo.level + 1}:*
 ${progressBar}
 
-${userXp >= nextLevelXp ? '🎉 Tu es prêt pour le levelup!' : '⏳ Continue pour progresser!'}
+${progressPercent === 100 ? '🎉 Tu es prêt pour le levelup!' : '⏳ Continue pour progresser!'}
 
 ═════════════════════════════════════`;
 

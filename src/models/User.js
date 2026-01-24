@@ -85,6 +85,12 @@ const userSchema = new mongoose.Schema({
     type: [Number],
     default: []
   },
+  equipped: {
+    head: { itemId: String, name: String },
+    body: { itemId: String, name: String },
+    hands: { itemId: String, name: String },
+    feet: { itemId: String, name: String }
+  },
   createdAt: {
     type: Date,
     default: Date.now
