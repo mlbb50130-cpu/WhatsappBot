@@ -1,6 +1,7 @@
 const axios = require('axios');
 const { spawn } = require('child_process');
 const path = require('path');
+const os = require('os');
 
 module.exports = {
   name: 'voiranime',
@@ -106,24 +107,24 @@ module.exports = {
   callPythonScraper(animeName, episodeNum) {
     return new Promise((resolve, reject) => {
       const scriptPath = path.join(__dirname, '../..', 'scripts', 'voiranime_scraper.py');
-      const python = process.platform === 'win32' ? 'python' : 'python3';
+      const python = os.platform() === 'win32' ? 'python' : 'python3';
       
-      const process = spawn(python, [scriptPath, animeName, episodeNum.toString()], {
+      const pythonProcess = spawn(python, [scriptPath, animeName, episodeNum.toString()], {
         timeout: 30000
       });
 
       let output = '';
       let errorOutput = '';
 
-      process.stdout.on('data', (data) => {
+      pythonProcess.stdout.on('data', (data) => {
         output += data.toString();
       });
 
-      process.stderr.on('data', (data) => {
+      pythonProcess.stderr.on('data', (data) => {
         errorOutput += data.toString();
       });
 
-      process.on('close', (code) => {
+      pythonProcess.on('close', (code) => {
         if (code !== 0) {
           reject(new Error(`Python script failed: ${errorOutput || 'Unknown error'}`));
           return;
@@ -137,7 +138,7 @@ module.exports = {
         }
       });
 
-      process.on('error', (err) => {
+      pythonProcess.on('error', (err) => {
         reject(new Error(`Failed to spawn Python process: ${err.message}`));
       });
     });
