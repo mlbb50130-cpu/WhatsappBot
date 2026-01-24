@@ -1,5 +1,6 @@
 const axios = require('axios');
-const cheerio = require('cheerio');
+const { spawn } = require('child_process');
+const path = require('path');
 
 module.exports = {
   name: 'voiranime',
@@ -41,101 +42,36 @@ module.exports = {
 
     try {
       await sock.sendMessage(senderJid, {
-        text: `🔍 Recherche "${animeName}" épisode ${episodeNum} sur VoirAnime...`
+        text: `🔍 Recherche "${animeName}" épisode ${episodeNum}...\n⏳ Cela peut prendre quelques secondes`
       });
 
-      // Search anime
-      const searchUrl = `https://www.voiranime.com/search?q=${encodeURIComponent(animeName)}`;
-      
-      const searchResponse = await axios.get(searchUrl, {
-        timeout: 10000,
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+      // Call Python scraper
+      const result = await this.callPythonScraper(animeName, episodeNum);
+
+      if (!result.success) {
+        let errorMsg = `❌ ${result.error}`;
+        if (result.available) {
+          errorMsg += `\n\n📊 Seulement ${result.available} épisode(s) disponible(s)`;
         }
-      });
-
-      const $ = cheerio.load(searchResponse.data);
-      let firstAnimeLink = null;
-
-      // Get first result
-      $('a.film-poster').first().each((index, element) => {
-        const $element = $(element);
-        const link = $element.attr('href');
-        
-        if (link) {
-          firstAnimeLink = link.startsWith('http') ? link : `https://www.voiranime.com${link}`;
-        }
-      });
-
-      if (!firstAnimeLink) {
-        await sock.sendMessage(senderJid, {
-          text: `❌ Anime "${animeName}" non trouvé sur VoirAnime`
-        });
+        await sock.sendMessage(senderJid, { text: errorMsg });
         return;
       }
-
-      // Fetch anime page to get episodes
-      await sock.sendMessage(senderJid, {
-        text: `📺 Récupération de l'épisode ${episodeNum}...`
-      });
-
-      const animeResponse = await axios.get(firstAnimeLink, {
-        timeout: 10000,
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-        }
-      });
-
-      const $anime = cheerio.load(animeResponse.data);
-      const episodes = [];
-
-      // Parse episodes from the page
-      $anime('a.ep-item, a.episode-link, div.episode a, .episode-link').each((index, element) => {
-        const $element = $anime(element);
-        const episodeText = $element.text().trim();
-        const episodeLink = $element.attr('href');
-        
-        if (episodeText && episodeLink) {
-          episodes.push({
-            num: episodes.length + 1,
-            title: episodeText,
-            link: episodeLink.startsWith('http') ? episodeLink : `https://www.voiranime.com${episodeLink}`
-          });
-        }
-      });
-
-      if (episodes.length === 0) {
-        await sock.sendMessage(senderJid, {
-          text: `❌ Impossible de récupérer les épisodes de "${animeName}"`
-        });
-        return;
-      }
-
-      // Find the requested episode
-      if (episodeNum > episodes.length) {
-        await sock.sendMessage(senderJid, {
-          text: `❌ L'épisode ${episodeNum} n'existe pas.\n\n` +
-                `📊 Seulement ${episodes.length} épisode(s) disponible(s)`
-        });
-        return;
-      }
-
-      const targetEpisode = episodes[episodeNum - 1];
 
       // Send to DM
       const dmJid = isGroup ? userJid : senderJid;
-      let dm_text = `🎌 *${animeName}*\n`;
-      dm_text += `📺 *Épisode ${episodeNum}*\n\n`;
-      dm_text += `${targetEpisode.title}\n\n`;
-      dm_text += `🔗 Lien: ${targetEpisode.link}\n\n`;
-      dm_text += `📖 Ouvrez ce lien pour regarder l'épisode`;
+      let dm_text = `🎌 *${result.anime}*\n`;
+      dm_text += `📺 *Épisode ${result.episode}*\n\n`;
+      dm_text += `${result.title}\n\n`;
+      dm_text += `🔗 Lien: ${result.link}\n\n`;
+      dm_text += `📖 Ouvrez ce lien pour regarder l'épisode\n\n`;
+      dm_text += `_${result.total_episodes} épisodes disponibles_`;
 
       await new Promise(r => setTimeout(r, 300));
       await sock.sendMessage(dmJid, { text: dm_text });
 
       if (isGroup) {
         await sock.sendMessage(senderJid, {
-          text: `✅ Le lien de "${animeName}" épisode ${episodeNum} a été envoyé en DM`
+          text: `✅ Le lien de "${result.anime}" épisode ${result.episode} a été envoyé en DM`
         });
       } else {
         await sock.sendMessage(senderJid, {
@@ -145,15 +81,65 @@ module.exports = {
 
     } catch (error) {
       console.error('Error in voiranime command:', error.message);
-      await sock.sendMessage(senderJid, {
-        text: '❌ Erreur lors de la recherche.\n\n' +
-              'Causes possibles:\n' +
-              '• VoirAnime est bloqué/indisponible\n' +
-              '• Site temporairement down\n' +
-              '• Trop de requêtes (attendre 1 min)\n' +
-              '• Anime inexistant sur le site\n\n' +
-              'Réessayez dans quelques minutes!'
-      });
+      
+      let errorMsg = '❌ Erreur lors de la recherche.\n\n';
+      
+      if (error.message.includes('ENOENT') || error.message.includes('python')) {
+        errorMsg += '⚠️ Python n\'est pas installé ou pas trouvé\n\n';
+        errorMsg += 'Installation:\n';
+        errorMsg += '`pip install requests beautifulsoup4`';
+      } else if (error.message.includes('timeout')) {
+        errorMsg += '⏱️ Timeout - VoirAnime met trop de temps à répondre\n';
+        errorMsg += 'Réessayez dans quelques secondes';
+      } else {
+        errorMsg += 'Causes possibles:\n';
+        errorMsg += '• VoirAnime indisponible\n';
+        errorMsg += '• Anime inexistant\n';
+        errorMsg += '• Problème de connexion\n\n';
+        errorMsg += 'Réessayez dans quelques minutes!';
+      }
+      
+      await sock.sendMessage(senderJid, { text: errorMsg });
     }
+  },
+
+  callPythonScraper(animeName, episodeNum) {
+    return new Promise((resolve, reject) => {
+      const scriptPath = path.join(__dirname, '../..', 'scripts', 'voiranime_scraper.py');
+      const python = process.platform === 'win32' ? 'python' : 'python3';
+      
+      const process = spawn(python, [scriptPath, animeName, episodeNum.toString()], {
+        timeout: 30000
+      });
+
+      let output = '';
+      let errorOutput = '';
+
+      process.stdout.on('data', (data) => {
+        output += data.toString();
+      });
+
+      process.stderr.on('data', (data) => {
+        errorOutput += data.toString();
+      });
+
+      process.on('close', (code) => {
+        if (code !== 0) {
+          reject(new Error(`Python script failed: ${errorOutput || 'Unknown error'}`));
+          return;
+        }
+
+        try {
+          const result = JSON.parse(output);
+          resolve(result);
+        } catch (e) {
+          reject(new Error(`Failed to parse Python output: ${output}`));
+        }
+      });
+
+      process.on('error', (err) => {
+        reject(new Error(`Failed to spawn Python process: ${err.message}`));
+      });
+    });
   }
 };
