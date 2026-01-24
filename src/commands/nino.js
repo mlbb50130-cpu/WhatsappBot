@@ -36,6 +36,7 @@ module.exports = {
       }
 
       const selectedFile = ImageRotationSystem.getNextImage(user, 'nino', files);
+      await user.save(); // Save image rotation tracking
       const imagePath = path.join(assetPath, selectedFile);
 
       const xpMessage = isGroup ? ' +15 XP' : '';

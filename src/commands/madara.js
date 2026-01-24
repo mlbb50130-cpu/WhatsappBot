@@ -31,6 +31,7 @@ module.exports = {
 
       // Get next available image (no duplicates today)
       const selectedFile = ImageRotationSystem.getNextImage(user, 'madara', files);
+      await user.save(); // Save image rotation tracking
       const imagePath = path.join(assetPath, selectedFile);
       const imageBuffer = fs.readFileSync(imagePath);
 

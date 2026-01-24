@@ -33,6 +33,7 @@ module.exports = {
       }
 
       const selectedFile = ImageRotationSystem.getNextImage(user, 'yoruichi', files);
+      await user.save(); // Save image rotation tracking
       const imagePath = path.join(assetPath, selectedFile);
       const imageBuffer = fs.readFileSync(imagePath);
 
