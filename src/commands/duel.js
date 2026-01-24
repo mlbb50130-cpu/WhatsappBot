@@ -104,6 +104,9 @@ module.exports = {
       opponent.stats.losses += 1;
       
       // Update daily quest - gained a duel win
+      if (QuestSystem.needsDailyReset(user)) {
+        QuestSystem.resetDailyQuests(user);
+      }
       QuestSystem.updateDailyProgress(user, 'duels', 1);
     } else {
       user.stats.losses += 1;

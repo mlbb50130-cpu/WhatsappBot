@@ -25,6 +25,8 @@ const groupSchema = new mongoose.Schema({
   },
   activatedBy: String,
   activatedAt: Date,
+  deactivatedBy: String,
+  deactivatedAt: Date,
   // Features activées/désactivées
   features: {
     xpSystem: { type: Boolean, default: true },
