@@ -175,6 +175,18 @@ async function handleMessage(sock, message, isGroup, groupData) {
       return;
     }
 
+    // 🏆 Vérifier si un tournoi est en cours dans ce groupe
+    if (global.tournaments && global.tournaments.has(senderJid)) {
+      const tournament = global.tournaments.get(senderJid);
+      if (tournament.isActive && commandName !== 'reponse') {
+        // Seule la commande 'reponse' est autorisée pendant un tournoi
+        await sock.sendMessage(senderJid, {
+          text: '🏆 ⛔ Un tournoi est en cours! Seule la commande \`!reponse\` est autorisée.'
+        });
+        return;
+      }
+    }
+
     // Check if group is active (SEULEMENT EN GROUPE - finissant par @g.us)
     // MAIS permettre activatebot, documentation, et help même si pas activé
     const allowedWithoutActivation = ['activatebot', 'documentation', 'help', 'assets', 'whoami'];

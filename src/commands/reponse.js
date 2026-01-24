@@ -13,11 +13,19 @@ module.exports = {
   async execute(sock, message, args, user, isGroup, groupData) {
     const senderJid = message.key.remoteJid;
     const participantJid = message.key.participant || senderJid;
+    const username = message.pushName || user.username || 'Unknown';
 
     if (!args[0]) {
       await sock.sendMessage(senderJid, {
         text: '❌ Utilisation: \`!reponse A\` (A, B, C ou D)'
       });
+      return;
+    }
+
+    // Vérifier si un tournoi est en cours
+    if (global.tournaments && global.tournaments.has(senderJid)) {
+      // Gérer la réponse du tournoi
+      await this.handleTournamentAnswer(sock, message, args, user, senderJid, participantJid, username);
       return;
     }
 
@@ -95,5 +103,60 @@ Bonne réponse: ${String.fromCharCode(65 + session.quiz.correct)}. ${session.qui
     }
 
     global.quizSessions.delete(participantJid);
+  },
+
+  async handleTournamentAnswer(sock, message, args, user, senderJid, participantJid, username) {
+    const tournament = global.tournaments.get(senderJid);
+    
+    if (!tournament || !tournament.isActive) {
+      await sock.sendMessage(senderJid, {
+        text: '❌ Aucun tournoi en cours.'
+      });
+      return;
+    }
+
+    const sessionKey = `${senderJid}_${tournament.currentRound}`;
+    const session = global.tournamentSessions.get(sessionKey);
+
+    if (!session || !session.isActive) {
+      await sock.sendMessage(senderJid, {
+        text: '❌ Question fermée. Attendez la prochaine question.'
+      });
+      return;
+    }
+
+    // Vérifier si l'utilisateur a déjà répondu
+    if (session.answerers.has(participantJid)) {
+      await sock.sendMessage(senderJid, {
+        text: '❌ Vous avez déjà répondu à cette question.'
+      });
+      return;
+    }
+
+    const answer = args[0].toUpperCase();
+    const answerIndex = answer.charCodeAt(0) - 65;
+
+    if (answerIndex < 0 || answerIndex > 3) {
+      await sock.sendMessage(senderJid, {
+        text: '❌ Réponse invalide. Utilisez A, B, C ou D.'
+      });
+      return;
+    }
+
+    const isCorrect = answerIndex === session.quiz.correct;
+
+    // Enregistrer la réponse
+    session.answerers.set(participantJid, {
+      name: username,
+      answer: answer,
+      isCorrect: isCorrect
+    });
+
+    // Feedback immédiat
+    if (isCorrect) {
+      await sock.sendMessage(senderJid, {
+        text: `✅ ${username} a répondu correctement!`
+      });
+    }
   }
 };
