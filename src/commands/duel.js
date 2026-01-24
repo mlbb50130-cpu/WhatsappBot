@@ -52,7 +52,17 @@ module.exports = {
     // Calculer le maxChakra basé sur le niveau
     const maxChakra = 100 + (user.level - 1) * 10;
     
-    if (hoursDiff >= 24) {
+    // Initialiser maxChakra si non défini
+    if (!user.maxChakra) {
+      user.maxChakra = maxChakra;
+    }
+    
+    // Initialiser chakra à maxChakra si undefined ou si 24h ont passé
+    if (!user.chakra || user.chakra === undefined) {
+      user.chakra = maxChakra;
+      user.lastChakraReset = now;
+      await user.save();
+    } else if (hoursDiff >= 24) {
       user.chakra = maxChakra;
       user.lastChakraReset = now;
       await user.save();

@@ -24,7 +24,12 @@ module.exports = {
       const lastReset = user.lastChakraReset ? new Date(user.lastChakraReset) : now;
       const hoursDiff = (now - lastReset) / (1000 * 60 * 60);
       
-      if (hoursDiff >= 24) {
+      // Initialiser chakra si undefined
+      if (!user.chakra || user.chakra === undefined) {
+        user.chakra = maxChakra;
+        user.lastChakraReset = now;
+        await user.save();
+      } else if (hoursDiff >= 24) {
         user.chakra = maxChakra;
         user.lastChakraReset = now;
         await user.save();
