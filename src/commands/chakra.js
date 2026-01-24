@@ -55,6 +55,8 @@ ${chakraPercent === 100 ? '⚡ Chakra au maximum!' : chakraPercent >= 75 ? '💪
 
 ═════════════════════════════════════`;
 
+      // Toujours sauvegarder les changements
+      await user.save();
       await sock.sendMessage(senderJid, { text: chakraMessage });
     } catch (error) {
       console.error('Error in chakra command:', error.message);
