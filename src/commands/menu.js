@@ -80,6 +80,10 @@ Et bien d'autres...
 \`!topmanga\` - Top 10 des mangas
 \`!classement level\` - Classement par niveau
 
+🎬 *ANIME & STREAMING*
+\`!anime [nom]\` - Infos anime sur AniList
+\`!voiranime [nom]\` - Rechercher sur VoirAnime (lien dans les DM)
+
 📌 *BOT*
 \`!ping\` - Latence du bot
 \`!info\` - Info du bot

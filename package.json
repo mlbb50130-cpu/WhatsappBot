@@ -21,9 +21,11 @@
   "dependencies": {
     "@whiskeysockets/baileys": "^7.0.0-rc.9",
     "axios": "^1.6.0",
+    "cheerio": "^1.0.0-rc.12",
     "dotenv": "^16.3.1",
     "moment": "^2.29.4",
     "mongoose": "^8.0.0",
+    "node-telegram-bot-api": "^0.67.0",
     "pino": "^8.16.0",
     "qrcode-terminal": "^0.12.0"
   },
