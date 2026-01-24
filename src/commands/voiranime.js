@@ -109,16 +109,13 @@ module.exports = {
       const scriptPath = path.join(__dirname, '../..', 'scripts', 'voiranime_scraper.py');
       const fs = require('fs');
       
-      // Determine Python command
-      let pythonCmd = 'python'; // Default for Railway
+      // Determine Python command based on platform
+      let pythonCmd = 'python3'; // Default for Docker/Railway/Linux
       
       if (os.platform() === 'win32') {
         // Windows: try venv first, then system python
         const venvPython = path.join(__dirname, '../..', '.venv', 'Scripts', 'python.exe');
         pythonCmd = fs.existsSync(venvPython) ? venvPython : 'python';
-      } else {
-        // Unix/Linux/Mac/Railway: use system python (Railway installs as 'python')
-        pythonCmd = 'python';
       }
 
       console.log(`[VOIRANIME] Platform: ${os.platform()}`);
