@@ -91,6 +91,23 @@ const userSchema = new mongoose.Schema({
     hands: { itemId: String, name: String },
     feet: { itemId: String, name: String }
   },
+  dailyQuests: {
+    lastReset: { type: Date, default: Date.now },
+    progress: {
+      messages: { type: Number, default: 0 },
+      duels: { type: Number, default: 0 },
+      quizCorrect: { type: Number, default: 0 }
+    },
+    completed: { type: [Number], default: [] }
+  },
+  weeklyQuests: {
+    lastReset: { type: Date, default: Date.now },
+    progress: {
+      loots: { type: Number, default: 0 },
+      level: { type: Number, default: 1 }
+    },
+    completed: { type: [Number], default: [] }
+  },
   createdAt: {
     type: Date,
     default: Date.now

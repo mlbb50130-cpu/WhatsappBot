@@ -1,4 +1,5 @@
 const RandomUtils = require('../utils/random');
+const QuestSystem = require('../utils/questSystem');
 
 module.exports = {
   name: 'duel',
@@ -74,16 +75,34 @@ module.exports = {
 
     // Update stats
     user.stats.duels += 1;
+    
+    // Update quest progress
+    if (QuestSystem.needsDailyReset(user)) {
+      QuestSystem.resetDailyQuests(user);
+    }
+    if (QuestSystem.needsWeeklyReset(user)) {
+      QuestSystem.resetWeeklyQuests(user);
+    }
+    
     if (winner === 'attacker') {
       user.stats.wins += 1;
       user.xp += 30;
       user.powerLevel = (user.powerLevel || 100) + 5; // +5 power per win
       opponent.stats.losses += 1;
+      
+      // Update daily quest - gained a duel win
+      QuestSystem.updateDailyProgress(user, 'duels', 1);
     } else {
       user.stats.losses += 1;
       opponent.stats.wins += 1;
       opponent.xp += 30;
       opponent.powerLevel = (opponent.powerLevel || 100) + 5; // +5 power per win
+      
+      // Update daily quest for opponent
+      if (QuestSystem.needsDailyReset(opponent)) {
+        QuestSystem.resetDailyQuests(opponent);
+      }
+      QuestSystem.updateDailyProgress(opponent, 'duels', 1);
     }
 
     await user.save();

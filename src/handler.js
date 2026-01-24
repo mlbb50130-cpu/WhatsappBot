@@ -5,6 +5,7 @@ const User = require('./models/User');
 const CooldownManager = require('./utils/cooldown');
 const XPSystem = require('./utils/xpSystem');
 const PermissionManager = require('./utils/permissions');
+const QuestSystem = require('./utils/questSystem');
 
 const commands = new Map();
 
@@ -141,6 +142,18 @@ async function handleMessage(sock, message, isGroup, groupData) {
     const user = await getOrCreateUser(participantJid, username);
     if (user) {
       user.stats.messages++;
+      
+      // Reset et update des quêtes journalières/hebdomadaires
+      if (QuestSystem.needsDailyReset(user)) {
+        QuestSystem.resetDailyQuests(user);
+      }
+      if (QuestSystem.needsWeeklyReset(user)) {
+        QuestSystem.resetWeeklyQuests(user);
+      }
+      
+      // Update daily quest progress
+      QuestSystem.updateDailyProgress(user, 'messages', 1);
+      
       await user.save();
     }
 

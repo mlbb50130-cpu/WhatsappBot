@@ -1,4 +1,5 @@
 const RandomUtils = require('../utils/random');
+const QuestSystem = require('../utils/questSystem');
 
 module.exports = {
   name: 'reponse',
@@ -54,6 +55,17 @@ module.exports = {
       // Correct answer
       user.xp += session.quiz.reward;
       user.stats.quiz += 1;
+      
+      // Reset quests si nécessaire
+      if (QuestSystem.needsDailyReset(user)) {
+        QuestSystem.resetDailyQuests(user);
+      }
+      if (QuestSystem.needsWeeklyReset(user)) {
+        QuestSystem.resetWeeklyQuests(user);
+      }
+      
+      // Update quest progress
+      QuestSystem.updateDailyProgress(user, 'quizCorrect', 1);
       
       // Enregistrer ce quiz comme répondu
       if (!user.quizHistory) user.quizHistory = [];
