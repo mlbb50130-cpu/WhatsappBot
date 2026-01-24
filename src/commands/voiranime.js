@@ -107,30 +107,22 @@ module.exports = {
   callPythonScraper(animeName, episodeNum) {
     return new Promise((resolve, reject) => {
       const scriptPath = path.join(__dirname, '../..', 'scripts', 'voiranime_scraper.py');
+      const fs = require('fs');
       
-      // Try venv first (local development), then system Python (Railway)
-      let pythonCmd = 'python';
+      // Determine Python command
+      let pythonCmd = 'python3'; // Default for Linux/Railway
       
       if (os.platform() === 'win32') {
-        // Try venv Python first on Windows
+        // Windows: try venv first, then system python
         const venvPython = path.join(__dirname, '../..', '.venv', 'Scripts', 'python.exe');
-        if (require('fs').existsSync(venvPython)) {
-          pythonCmd = venvPython;
-        } else {
-          pythonCmd = 'python';
-        }
+        pythonCmd = fs.existsSync(venvPython) ? venvPython : 'python';
       } else {
-        // On Unix/Linux/Mac (including Railway)
-        const venvPython = path.join(__dirname, '../..', '.venv', 'bin', 'python');
-        if (require('fs').existsSync(venvPython)) {
-          pythonCmd = venvPython;
-        } else {
-          // Fallback to system Python (works on Railway)
-          pythonCmd = 'python3';
-        }
+        // Unix/Linux/Mac/Railway: use system python3
+        pythonCmd = 'python3';
       }
 
-      console.log(`[VOIRANIME] Using python command: ${pythonCmd}`);
+      console.log(`[VOIRANIME] Platform: ${os.platform()}`);
+      console.log(`[VOIRANIME] Using python: ${pythonCmd}`);
       console.log(`[VOIRANIME] Anime: ${animeName}, Episode: ${episodeNum}`);
 
       const pythonProcess = spawn(pythonCmd, [scriptPath, animeName, episodeNum.toString()], {
