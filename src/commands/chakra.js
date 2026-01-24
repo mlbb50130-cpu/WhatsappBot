@@ -22,24 +22,28 @@ module.exports = {
       // Reset chakra if 24h passed
       const now = new Date();
       let needsUpdate = false;
+      let hoursDiff = 0;
       
       // Initialize chakra and lastChakraReset if undefined
       if (!user.chakra || user.chakra === undefined || user.chakra === null) {
         user.chakra = maxChakra;
         user.lastChakraReset = now;
         needsUpdate = true;
+        hoursDiff = 0;
       } else if (!user.lastChakraReset) {
         // If lastChakraReset is not set, set it to now
         user.lastChakraReset = now;
         needsUpdate = true;
+        hoursDiff = 0;
       } else {
         // Check if 24 hours have passed since last reset
         const lastReset = new Date(user.lastChakraReset);
-        const hoursDiff = (now - lastReset) / (1000 * 60 * 60);
+        hoursDiff = (now - lastReset) / (1000 * 60 * 60);
         
         if (hoursDiff >= 24) {
           user.chakra = maxChakra;
           user.lastChakraReset = now;
+          hoursDiff = 0; // Reset the counter after reset
           needsUpdate = true;
         }
       }
@@ -51,10 +55,6 @@ module.exports = {
       
       // Ensure chakra doesn't exceed maxChakra after level up
       const currentChakra = Math.min(user.chakra || maxChakra, maxChakra);
-      
-      // Calculate hours until reset
-      const lastReset = user.lastChakraReset ? new Date(user.lastChakraReset) : now;
-      const hoursDiff = (now - lastReset) / (1000 * 60 * 60);
       const hoursUntilReset = Math.max(1, Math.ceil(24 - hoursDiff));
       
       const chakraPercent = Math.round((currentChakra / maxChakra) * 100);

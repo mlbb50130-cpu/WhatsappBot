@@ -31,6 +31,7 @@ module.exports = {
       }
 
       // Get group data if in group for group-level image rotation
+      // Even in DM, we use user tracking for rotation
       let imageTracker = user;
       if (isGroup) {
         try {
@@ -48,6 +49,9 @@ module.exports = {
           console.log('Note: Using user-level image tracking for this command');
           imageTracker = user;
         }
+      } else {
+        // In DM, always use user for image rotation
+        imageTracker = user;
       }
 
       // Get next available image (no duplicates today)
