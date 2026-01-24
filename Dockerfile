@@ -15,7 +15,7 @@ RUN npm install --omit=dev --legacy-peer-deps
 COPY scripts/requirements.txt ./scripts/
 
 # Installer les dépendances Python
-RUN pip3 install --no-cache-dir -r scripts/requirements.txt
+RUN pip3 install --no-cache-dir --break-system-packages -r scripts/requirements.txt
 # Créer les dossiers nécessaires
 RUN mkdir -p logs sessions whatsapp_auth
 
