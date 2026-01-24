@@ -25,7 +25,7 @@ module.exports = {
       let hoursDiff = 0;
       
       // Initialize chakra and lastChakraReset if undefined
-      if (!user.chakra || user.chakra === undefined || user.chakra === null) {
+      if (user.chakra === undefined || user.chakra === null) {
         user.chakra = maxChakra;
         user.lastChakraReset = now;
         needsUpdate = true;

@@ -56,7 +56,7 @@ module.exports = {
     }
     
     // Check if chakra needs to be reset
-    if (!user.chakra || user.chakra === undefined || user.chakra === null) {
+    if (user.chakra === undefined || user.chakra === null) {
       user.chakra = maxChakra;
       user.lastChakraReset = now;
       needsChakraReset = true;
