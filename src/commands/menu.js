@@ -90,6 +90,21 @@ Et bien d'autres...
 \`!regles\` - Règles du groupe
 \`!help [commande]\` - Aide sur une commande
 
+🔐 *COMMANDES ADMIN*
+\`!tournoisquiz\` - Lancer un tournoi de quiz automatique
+\`!promote @user\` - Promouvoir un utilisateur en admin
+\`!demote @user\` - Retirer le statut admin
+\`!kick @user\` - Expulser un utilisateur
+\`!mute @user\` - Rendre muet un utilisateur
+\`!unmute @user\` - Retirer le silence
+\`!warn @user\` - Avertir un utilisateur
+\`!lock\` - Verrouiller le groupe
+\`!unlock\` - Deverrouiller le groupe
+\`!clear\` - Nettoyer le chat
+\`!setxp @user [montant]\` - Définir l'XP d'un utilisateur
+\`!groupinfo\` - Info du groupe
+\`!admins\` - Liste des administrateurs
+
 ═════════════════════════════════════════
 
 *Utilise le préfixe !*

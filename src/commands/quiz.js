@@ -41,8 +41,12 @@ module.exports = {
     let quiz = null;
     let availableQuizzes = allQuizzes.filter((_, index) => !user.quizHistory.includes(index));
     
-    // Si tous les quizzes ont été répondus, réinitialiser
+    // Si TOUS les quizzes ont été répondus, afficher un message
     if (availableQuizzes.length === 0) {
+      await sock.sendMessage(senderJid, {
+        text: `🎉 Congratulations! Vous avez répondu à TOUS les ${allQuizzes.length} quizzes! 🎉\n\n👑 Vous êtes un vrai maître du quiz otaku!\n\nRéinitialisation de l'historique pour recommencer...`
+      });
+      // Réinitialiser SEULEMENT après avoir affiché le message
       user.quizHistory = [];
       availableQuizzes = allQuizzes;
     }
