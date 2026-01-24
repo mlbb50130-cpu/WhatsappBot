@@ -46,25 +46,35 @@ module.exports = {
 
     // Reset chakra if 24h passed
     const now = new Date();
-    const lastReset = user.lastChakraReset ? new Date(user.lastChakraReset) : now;
-    const hoursDiff = (now - lastReset) / (1000 * 60 * 60);
-    
-    // Calculer le maxChakra basé sur le niveau
     const maxChakra = 100 + (user.level - 1) * 10;
+    let needsChakraReset = false;
     
-    // Initialiser maxChakra si non défini
+    // Initialize maxChakra if not defined
     if (!user.maxChakra) {
       user.maxChakra = maxChakra;
     }
     
-    // Initialiser chakra à maxChakra si undefined ou si 24h ont passé
-    if (!user.chakra || user.chakra === undefined) {
+    // Check if chakra needs to be reset
+    if (!user.chakra || user.chakra === undefined || user.chakra === null) {
       user.chakra = maxChakra;
       user.lastChakraReset = now;
-      await user.save();
-    } else if (hoursDiff >= 24) {
-      user.chakra = maxChakra;
+      needsChakraReset = true;
+    } else if (!user.lastChakraReset) {
       user.lastChakraReset = now;
+      needsChakraReset = true;
+    } else {
+      // Only reset if 24 hours have passed
+      const lastReset = new Date(user.lastChakraReset);
+      const hoursDiff = (now - lastReset) / (1000 * 60 * 60);
+      if (hoursDiff >= 24) {
+        user.chakra = maxChakra;
+        user.lastChakraReset = now;
+        needsChakraReset = true;
+      }
+    }
+    
+    // Only save if chakra was reset
+    if (needsChakraReset) {
       await user.save();
     }
 

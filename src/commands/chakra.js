@@ -21,25 +21,43 @@ module.exports = {
       
       // Reset chakra if 24h passed
       const now = new Date();
-      const lastReset = user.lastChakraReset ? new Date(user.lastChakraReset) : now;
-      const hoursDiff = (now - lastReset) / (1000 * 60 * 60);
+      let needsUpdate = false;
       
-      // Initialiser chakra si undefined
-      if (!user.chakra || user.chakra === undefined) {
+      // Initialize chakra and lastChakraReset if undefined
+      if (!user.chakra || user.chakra === undefined || user.chakra === null) {
         user.chakra = maxChakra;
         user.lastChakraReset = now;
-        await user.save();
-      } else if (hoursDiff >= 24) {
-        user.chakra = maxChakra;
+        needsUpdate = true;
+      } else if (!user.lastChakraReset) {
+        // If lastChakraReset is not set, set it to now
         user.lastChakraReset = now;
+        needsUpdate = true;
+      } else {
+        // Check if 24 hours have passed since last reset
+        const lastReset = new Date(user.lastChakraReset);
+        const hoursDiff = (now - lastReset) / (1000 * 60 * 60);
+        
+        if (hoursDiff >= 24) {
+          user.chakra = maxChakra;
+          user.lastChakraReset = now;
+          needsUpdate = true;
+        }
+      }
+      
+      // Save if changes were made
+      if (needsUpdate) {
         await user.save();
       }
       
-      // Si chakra > maxChakra après level up, le limiter
+      // Ensure chakra doesn't exceed maxChakra after level up
       const currentChakra = Math.min(user.chakra || maxChakra, maxChakra);
+      
+      // Calculate hours until reset
+      const lastReset = user.lastChakraReset ? new Date(user.lastChakraReset) : now;
+      const hoursDiff = (now - lastReset) / (1000 * 60 * 60);
+      const hoursUntilReset = Math.max(1, Math.ceil(24 - hoursDiff));
+      
       const chakraPercent = Math.round((currentChakra / maxChakra) * 100);
-      const hoursUntilReset = Math.ceil(24 - hoursDiff);
-
       const chakraBar = this.createChakraBar(chakraPercent, 15);
 
       const chakraMessage = `
@@ -60,8 +78,7 @@ ${chakraPercent === 100 ? '⚡ Chakra au maximum!' : chakraPercent >= 75 ? '💪
 
 ═════════════════════════════════════`;
 
-      // Toujours sauvegarder les changements
-      await user.save();
+      // Only send message (no duplicate save)
       await sock.sendMessage(senderJid, { text: chakraMessage });
     } catch (error) {
       console.error('Error in chakra command:', error.message);
