@@ -1,5 +1,6 @@
 const RandomUtils = require('../utils/random');
 const QuestSystem = require('../utils/questSystem');
+const MessageFormatter = require('../utils/messageFormatter');
 
 module.exports = {
   name: 'reponse',
@@ -17,7 +18,7 @@ module.exports = {
 
     if (!args[0]) {
       await sock.sendMessage(senderJid, {
-        text: '❌ Utilisation: \`!reponse A\` (A, B, C ou D)'
+        text: MessageFormatter.error('Utilisation: !reponse A (A, B, C ou D)')
       });
       return;
     }
@@ -35,14 +36,14 @@ module.exports = {
 
     if (!session) {
       await sock.sendMessage(senderJid, {
-        text: '❌ Aucun quiz en cours. Utilise \`!quiz\` pour commencer!'
+        text: MessageFormatter.error('Aucun quiz en cours. Utilise !quiz pour commencer!')
       });
       return;
     }
 
     if (session.answered) {
       await sock.sendMessage(senderJid, {
-        text: '❌ Vous avez déjà répondu à ce quiz.'
+        text: MessageFormatter.warning('Vous avez déjà répondu à ce quiz.')
       });
       return;
     }
@@ -52,7 +53,7 @@ module.exports = {
 
     if (answerIndex < 0 || answerIndex > 3) {
       await sock.sendMessage(senderJid, {
-        text: '❌ Réponse invalide. Utilisez A, B, C ou D.'
+        text: MessageFormatter.error('Réponse invalide. Utilisez A, B, C ou D.')
       });
       return;
     }
@@ -84,10 +85,7 @@ module.exports = {
       await user.save();
 
       await sock.sendMessage(senderJid, {
-        text: `✅ CORRECT! 
-        
-Tu as gagné +${session.quiz.reward} XP!
-Bonne réponse: ${String.fromCharCode(65 + session.quiz.correct)}. ${session.quiz.options[session.quiz.correct]}`
+        text: MessageFormatter.success(`Tu as gagné +${session.quiz.reward} XP!\nBonne réponse: ${String.fromCharCode(65 + session.quiz.correct)}. ${session.quiz.options[session.quiz.correct]}`)
       });
     } else {
       // Wrong answer - ne pas ajouter à l'historique
@@ -95,10 +93,7 @@ Bonne réponse: ${String.fromCharCode(65 + session.quiz.correct)}. ${session.qui
       await user.save();
       
       await sock.sendMessage(senderJid, {
-        text: `❌ Mauvaise réponse!
-
-Ta réponse: ${answer}. ${session.quiz.options[answerIndex]}
-Bonne réponse: ${String.fromCharCode(65 + session.quiz.correct)}. ${session.quiz.options[session.quiz.correct]}`
+        text: MessageFormatter.error(`Ta réponse: ${answer}. ${session.quiz.options[answerIndex]}\nBonne réponse: ${String.fromCharCode(65 + session.quiz.correct)}. ${session.quiz.options[session.quiz.correct]}`)
       });
     }
 
@@ -110,7 +105,14 @@ Bonne réponse: ${String.fromCharCode(65 + session.quiz.correct)}. ${session.qui
     
     if (!tournament || !tournament.isActive) {
       await sock.sendMessage(senderJid, {
-        text: '❌ Aucun tournoi en cours.'
+        text: MessageFormatter.error('Aucun tournoi en cours.')
+      });
+      return;
+    }
+
+    if (!global.tournamentSessions) {
+      await sock.sendMessage(senderJid, {
+        text: MessageFormatter.error('Erreur du système: sessions manquantes.')
       });
       return;
     }
@@ -120,7 +122,7 @@ Bonne réponse: ${String.fromCharCode(65 + session.quiz.correct)}. ${session.qui
 
     if (!session || !session.isActive) {
       await sock.sendMessage(senderJid, {
-        text: '❌ Question fermée. Attendez la prochaine question.'
+        text: MessageFormatter.warning('Question fermée. Attendez la prochaine question.')
       });
       return;
     }
@@ -128,7 +130,7 @@ Bonne réponse: ${String.fromCharCode(65 + session.quiz.correct)}. ${session.qui
     // Vérifier si l'utilisateur a déjà répondu
     if (session.answerers.has(participantJid)) {
       await sock.sendMessage(senderJid, {
-        text: '❌ Vous avez déjà répondu à cette question.'
+        text: MessageFormatter.warning('Vous avez déjà répondu à cette question.')
       });
       return;
     }
@@ -138,7 +140,7 @@ Bonne réponse: ${String.fromCharCode(65 + session.quiz.correct)}. ${session.qui
 
     if (answerIndex < 0 || answerIndex > 3) {
       await sock.sendMessage(senderJid, {
-        text: '❌ Réponse invalide. Utilisez A, B, C ou D.'
+        text: MessageFormatter.error('Réponse invalide. Utilisez A, B, C ou D.')
       });
       return;
     }
@@ -155,7 +157,11 @@ Bonne réponse: ${String.fromCharCode(65 + session.quiz.correct)}. ${session.qui
     // Feedback immédiat
     if (isCorrect) {
       await sock.sendMessage(senderJid, {
-        text: `✅ ${username} a répondu correctement!`
+        text: `✅ ${username} a répondu correctement! (${answer})`
+      });
+    } else {
+      await sock.sendMessage(senderJid, {
+        text: `❌ ${username} a répondu: ${answer} (incorrect)`
       });
     }
   }
