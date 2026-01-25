@@ -10,39 +10,39 @@ module.exports = {
   description: 'Convertir une image en sticker WhatsApp (512x512 WebP)',
   usage: '!sticker [en réponse à une image ou en pièce jointe]',
 
-  async execute(sock, msg, args, user, group) {
-    const chat = msg.key.remoteJid;
+  async execute(sock, message, args, user, isGroup, groupData) {
+    const senderJid = message.key.remoteJid;
     let imageMessage = null;
 
     try {
       // Cas 1: Image en réponse
-      if (msg.message?.extendedTextMessage?.contextInfo?.quotedMessage) {
-        const quotedMsg = msg.message.extendedTextMessage.contextInfo.quotedMessage;
+      if (message.message?.extendedTextMessage?.contextInfo?.quotedMessage) {
+        const quotedMsg = message.message.extendedTextMessage.contextInfo.quotedMessage;
         imageMessage = quotedMsg.imageMessage || quotedMsg.documentMessage;
         
         if (!imageMessage) {
-          return sock.sendMessage(chat, {
+          return sock.sendMessage(senderJid, {
             text: '❌ Veuillez répondre à une image valide'
-          }, { quoted: msg });
+          }, { quoted: message });
         }
       }
       // Cas 2: Image en pièce jointe
-      else if (msg.message?.imageMessage) {
-        imageMessage = msg.message.imageMessage;
+      else if (message.message?.imageMessage) {
+        imageMessage = message.message.imageMessage;
       }
       else {
-        return sock.sendMessage(chat, {
+        return sock.sendMessage(senderJid, {
           text: '❌ Utilisation: `!sticker`\n\n• Réponds à une image avec `!sticker`\n• Ou envoie une image puis `!sticker`'
-        }, { quoted: msg });
+        }, { quoted: message });
       }
 
       // Télécharger l'image depuis WhatsApp
-      const imageBuffer = await sock.downloadMediaMessage(imageMessage || msg.message?.imageMessage);
+      const imageBuffer = await sock.downloadMediaMessage(imageMessage || message.message?.imageMessage);
       
       if (!imageBuffer) {
-        return sock.sendMessage(chat, {
+        return sock.sendMessage(senderJid, {
           text: '❌ Impossible de télécharger l\'image'
-        }, { quoted: msg });
+        }, { quoted: message });
       }
 
       // Créer un dossier temporaire s'il n'existe pas
@@ -66,14 +66,14 @@ module.exports = {
       const stickerBuffer = fs.readFileSync(tempFilePath);
 
       // Envoyer comme sticker WhatsApp
-      await sock.sendMessage(chat, {
+      await sock.sendMessage(senderJid, {
         sticker: stickerBuffer
-      }, { quoted: msg });
+      }, { quoted: message });
 
       // Message de confirmation
-      await sock.sendMessage(chat, {
+      await sock.sendMessage(senderJid, {
         text: '✅ Sticker créé avec succès! 🎨'
-      }, { quoted: msg });
+      }, { quoted: message });
 
       // Nettoyer le fichier temporaire
       fs.unlink(tempFilePath, (err) => {
@@ -83,9 +83,9 @@ module.exports = {
     } catch (error) {
       console.error('[STICKER] Erreur:', error);
       
-      return sock.sendMessage(chat, {
+      return sock.sendMessage(senderJid, {
         text: `❌ Erreur: ${error.message || 'Impossible de créer le sticker'}`
-      }, { quoted: msg });
+      }, { quoted: message });
     }
   }
 };
