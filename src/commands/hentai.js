@@ -67,10 +67,30 @@ module.exports = {
       }
 
       // Get next available image with daily limit (2x per day, no duplicates)
-      const selectedFile = ImageRotationSystem.getImageWithDailyLimit(imageTracker, 'hentai', files, 2);
+      // First check daily limit manually
+      const now = new Date();
       
-      if (!selectedFile) {
-        const now = new Date();
+      if (!imageTracker.dailyImages) {
+        ImageRotationSystem.initializeDailyImages(imageTracker);
+      }
+      
+      if (!imageTracker.dailyImages.dailyLimits) {
+        imageTracker.dailyImages.dailyLimits = {
+          hentai: { usedToday: 0, lastReset: new Date() },
+          hentaivd: { usedToday: 0, lastReset: new Date() }
+        };
+      }
+      
+      const hentaiLimit = imageTracker.dailyImages.dailyLimits.hentai;
+      
+      // Reset if 24 hours have passed
+      if (ImageRotationSystem.needsDailyReset(hentaiLimit.lastReset)) {
+        hentaiLimit.usedToday = 0;
+        hentaiLimit.lastReset = new Date();
+      }
+      
+      // Check limit
+      if (hentaiLimit.usedToday >= 2) {
         const nextDay = new Date(now);
         nextDay.setDate(nextDay.getDate() + 1);
         nextDay.setHours(0, 0, 0, 0);
@@ -81,6 +101,24 @@ module.exports = {
         });
         return;
       }
+      
+      // Get next image without duplicates
+      const selectedFile = ImageRotationSystem.getNextImage(imageTracker, 'hentai', files);
+      
+      if (!selectedFile) {
+        const nextDay = new Date(now);
+        nextDay.setDate(nextDay.getDate() + 1);
+        nextDay.setHours(0, 0, 0, 0);
+        const timeUntilReset = Math.ceil((nextDay - now) / (1000 * 60 * 60));
+        
+        await sock.sendMessage(senderJid, {
+          text: `❌ Tu as utilisé !hentai 2 fois aujourd'hui!\n⏰ Reviens demain (dans ${timeUntilReset}h)`
+        });
+        return;
+      }
+      
+      // Increment counter
+      hentaiLimit.usedToday++;
       
       // Save tracking changes
       try {
