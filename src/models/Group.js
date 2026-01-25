@@ -54,7 +54,8 @@ const groupSchema = new mongoose.Schema({
     onlyAdminsCanUseCommands: { type: Boolean, default: false },
     onlyMembersCanDuel: { type: Boolean, default: true },
     blockInviteLinks: { type: Boolean, default: false },
-    blockNSFW: { type: Boolean, default: true }
+    blockNSFW: { type: Boolean, default: true },
+    allowHentai: { type: Boolean, default: true }
   },
 
   // Messages personnalisés

@@ -124,6 +124,7 @@ async function connectToWhatsApp() {
       
       try {
         const Group = require('./models/Group');
+        const ModuleManager = require('./utils/ModuleManager');
         let group = await Group.findOne({ groupJid: update.id });
         
         // Si le groupe n'existe pas encore (nouveau groupe)
@@ -135,6 +136,13 @@ async function connectToWhatsApp() {
             isActive: false
           });
           await group.save();
+
+          // Initialiser les modules du groupe
+          const groupModules = {};
+          Object.keys(ModuleManager.MODULES).forEach(key => {
+            groupModules[key] = ModuleManager.MODULES[key].enabled;
+          });
+          ModuleManager.setGroupModules(update.id, groupModules);
           
           // Envoyer un message d'accueil
           await sock.sendMessage(update.id, {

@@ -44,6 +44,14 @@ class ImageRotationSystem {
           hentaivd: { usedToday: 0, lastReset: new Date() }
         }
       };
+    } else {
+      // Ensure dailyLimits exists for existing objects
+      if (!object.dailyImages.dailyLimits) {
+        object.dailyImages.dailyLimits = {
+          hentai: { usedToday: 0, lastReset: new Date() },
+          hentaivd: { usedToday: 0, lastReset: new Date() }
+        };
+      }
     }
   }
 

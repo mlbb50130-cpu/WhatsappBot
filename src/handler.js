@@ -6,6 +6,7 @@ const CooldownManager = require('./utils/cooldown');
 const XPSystem = require('./utils/xpSystem');
 const PermissionManager = require('./utils/permissions');
 const QuestSystem = require('./utils/questSystem');
+const ModuleManager = require('./utils/ModuleManager');
 
 const commands = new Map();
 
@@ -208,6 +209,17 @@ async function handleMessage(sock, message, isGroup, groupData) {
       } catch (error) {
         console.log('Warning: Could not check group activation:', error.message);
         // Continue anyway
+      }
+    }
+
+    // Vérifier si le module de la commande est activé en groupe
+    const allowedWithoutModule = ['setmodule', 'modules', 'help', 'menu', 'activatebot', 'documentation', 'assets', 'whoami'];
+    if (isGroup && senderJid.endsWith('@g.us') && !allowedWithoutModule.includes(commandName)) {
+      if (!ModuleManager.isCommandAllowed(senderJid, commandName)) {
+        await sock.sendMessage(senderJid, {
+          text: `❌ Cette commande n'est pas activée dans ce groupe.\n\n!setmodule status - Voir les modules\n!setmodule on <module> - Activer un module`
+        });
+        return;
       }
     }
 

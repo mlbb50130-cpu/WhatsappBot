@@ -20,7 +20,7 @@ module.exports = {
       if (isGroup) {
         try {
           let group = await Group.findOne({ groupJid: senderJid });
-          if (group && group.settings && group.settings.hentaiAllowed === false) {
+          if (group && group.permissions && group.permissions.allowHentai === false) {
             await sock.sendMessage(senderJid, {
               text: '❌ Les commandes hentai ne sont pas autorisées dans ce groupe!\n\n💬 Demande à un admin d\'utiliser: !allowhentai on'
             });

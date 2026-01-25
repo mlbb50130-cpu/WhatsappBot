@@ -1,0 +1,1123 @@
+{
+  "heroes": {
+    "ling": {
+      "name": "Ling",
+      "role": ["Assassin", "Fighter"],
+      "lane": "Jungle",
+      "difficulty": "Hard",
+      "attribute": {
+        "hp": 2568,
+        "mana": 480,
+        "atk": 145,
+        "def": 20,
+        "asp": 0.96
+      },
+      "build": {
+        "damage": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Blade of Despair", "Malefic Roar", "Endless Battle"],
+        "balanced": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Immortality", "Malefic Roar", "Endless Battle"],
+        "burst": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Blade of Despair", "Black Mamba", "Malefic Roar"]
+      },
+      "counters": ["Lolita", "Alice", "Diggie"],
+      "beaten_by": ["Natalia", "Helcurt", "Fanny"],
+      "skills": {
+        "passive": "Wall mobility and enhanced abilities",
+        "s1": "Mark enemies with strikes",
+        "s2": "Multi-hit spinning attack",
+        "ult": "Invisible dash with extreme damage"
+      }
+    },
+    "brody": {
+      "name": "Brody",
+      "role": ["Marksman"],
+      "lane": "Bottom",
+      "difficulty": "Medium",
+      "attribute": {
+        "hp": 2580,
+        "mana": 520,
+        "atk": 151,
+        "def": 19,
+        "asp": 0.88
+      },
+      "build": {
+        "crit": ["Ranger's Bow", "Warrior Boots", "Windtalker", "Berserker's Fury", "Blade of Despair", "Malefic Roar"],
+        "damage": ["Ranger's Bow", "Warrior Boots", "Windtalker", "Berserker's Fury", "Endless Battle", "Malefic Roar"],
+        "balanced": ["Ranger's Bow", "Warrior Boots", "Windtalker", "Berserker's Fury", "Immortality", "Malefic Roar"]
+      },
+      "counters": ["Hanabi", "Lesley", "Granger"],
+      "beaten_by": ["Natalia", "Fanny", "Ling"],
+      "skills": {
+        "passive": "Marks with enhanced damage output",
+        "s1": "Piercing bullet attack",
+        "s2": "Explosive tracking bomb",
+        "ult": "Multi-round burst fire"
+      }
+    },
+    "alice": {
+      "name": "Alice",
+      "role": ["Mage", "Support"],
+      "lane": "Mid",
+      "difficulty": "Easy",
+      "attribute": {
+        "hp": 2850,
+        "mana": 550,
+        "atk": 125,
+        "def": 20,
+        "asp": 0.8
+      },
+      "build": {
+        "magic": ["Enchanted Talisman", "Arcane Boots", "Holy Crystal", "Divine Glaive", "Genius Wand", "Concentrated Energy"],
+        "tank": ["Enchanted Talisman", "Arcane Boots", "Oracle", "Athena's Shield", "Immortality", "Cursed Helmet"],
+        "support": ["Enchanted Talisman", "Arcane Boots", "Oracle", "Immortality", "Holy Crystal", "Fleeting Time"]
+      },
+      "counters": ["Valir", "Eudora", "Pharsa"],
+      "beaten_by": ["Brody", "Wanwan", "Moskov"],
+      "skills": {
+        "passive": "Heals on damage dealt",
+        "s1": "Stun projectile",
+        "s2": "Silence field effect",
+        "ult": "Healing vortex control"
+      }
+    },
+    "valir": {
+      "name": "Valir",
+      "role": ["Mage"],
+      "lane": "Mid",
+      "difficulty": "Medium",
+      "attribute": {
+        "hp": 2544,
+        "mana": 580,
+        "atk": 128,
+        "def": 20,
+        "asp": 0.8
+      },
+      "build": {
+        "magic": ["Enchanted Talisman", "Arcane Boots", "Holy Crystal", "Divine Glaive", "Genius Wand", "Concentrated Energy"],
+        "control": ["Enchanted Talisman", "Arcane Boots", "Holy Crystal", "Immortality", "Divine Glaive", "Fleeting Time"],
+        "burst": ["Enchanted Talisman", "Arcane Boots", "Holy Crystal", "Concentrated Energy", "Divine Glaive", "Genius Wand"]
+      },
+      "counters": ["Ling", "Fanny", "Hayabusa"],
+      "beaten_by": ["Lunox", "Chang'e", "Pharsa"],
+      "skills": {
+        "passive": "Burn damage stacking",
+        "s1": "Flame burst projectile",
+        "s2": "Fire zone control",
+        "ult": "Massive explosion damage"
+      }
+    },
+    "natalia": {
+      "name": "Natalia",
+      "role": ["Assassin"],
+      "lane": "Jungle",
+      "difficulty": "Medium",
+      "attribute": {
+        "hp": 2448,
+        "mana": 480,
+        "atk": 148,
+        "def": 18,
+        "asp": 0.96
+      },
+      "build": {
+        "damage": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Blade of Despair", "Malefic Roar", "Endless Battle"],
+        "assassin": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Black Mamba", "Blade of Despair", "Malefic Roar"],
+        "burst": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Blade of Despair", "Malefic Roar", "Endless Battle"]
+      },
+      "counters": ["Ling", "Helcurt", "Hayabusa"],
+      "beaten_by": ["Alice", "Esmeralda", "Uranus"],
+      "skills": {
+        "passive": "Invisibility when not attacking",
+        "s1": "Mark and dash attack",
+        "s2": "Silence and slow effect",
+        "ult": "Invisible deadly strike"
+      }
+    },
+    "hanabi": {
+      "name": "Hanabi",
+      "role": ["Marksman"],
+      "lane": "Bottom",
+      "difficulty": "Medium",
+      "attribute": {
+        "hp": 2649,
+        "mana": 480,
+        "atk": 152,
+        "def": 20,
+        "asp": 0.92
+      },
+      "build": {
+        "crit": ["Ranger's Bow", "Warrior Boots", "Windtalker", "Berserker's Fury", "Blade of Despair", "Endless Battle"],
+        "damage": ["Ranger's Bow", "Warrior Boots", "Windtalker", "Berserker's Fury", "Malefic Roar", "Blade of Despair"],
+        "balanced": ["Ranger's Bow", "Warrior Boots", "Windtalker", "Berserker's Fury", "Immortality", "Malefic Roar"]
+      },
+      "counters": ["Brody", "Moskov", "Karrie"],
+      "beaten_by": ["Lolita", "Diggie", "Rafaela"],
+      "skills": {
+        "passive": "Mark enhance ability",
+        "s1": "Multi-arrow burst",
+        "s2": "Circular skill area",
+        "ult": "Arrow rain damage"
+      }
+    },
+    "moskov": {
+      "name": "Moskov",
+      "role": ["Marksman"],
+      "lane": "Bottom",
+      "difficulty": "Easy",
+      "attribute": {
+        "hp": 2580,
+        "mana": 0,
+        "atk": 156,
+        "def": 19,
+        "asp": 0.92
+      },
+      "build": {
+        "crit": ["Ranger's Bow", "Warrior Boots", "Windtalker", "Berserker's Fury", "Blade of Despair", "Malefic Roar"],
+        "attack": ["Ranger's Bow", "Warrior Boots", "Windtalker", "Berserker's Fury", "Endless Battle", "Malefic Roar"],
+        "balanced": ["Ranger's Bow", "Warrior Boots", "Windtalker", "Berserker's Fury", "Immortality", "Malefic Roar"]
+      },
+      "counters": ["Hanabi", "Wanwan", "Granger"],
+      "beaten_by": ["Diggie", "Natan", "Estes"],
+      "skills": {
+        "passive": "Spear piercing effect",
+        "s1": "Spear throw area",
+        "s2": "Piercing line attack",
+        "ult": "Spear storm rain"
+      }
+    },
+    "lolita": {
+      "name": "Lolita",
+      "role": ["Support", "Tank"],
+      "lane": "Bottom",
+      "difficulty": "Easy",
+      "attribute": {
+        "hp": 2880,
+        "mana": 480,
+        "atk": 122,
+        "def": 26,
+        "asp": 0.8
+      },
+      "build": {
+        "tank": ["Warrior Boots", "Cursed Helmet", "Athena's Shield", "Oracle", "Immortality", "Brute Force Breastplate"],
+        "support": ["Warrior Boots", "Oracle", "Cursed Helmet", "Immortality", "Athena's Shield", "Fleeting Time"],
+        "cc": ["Warrior Boots", "Oracle", "Cursed Helmet", "Athena's Shield", "Immortality", "Brute Force Breastplate"]
+      },
+      "counters": ["Ling", "Fanny", "Helcurt"],
+      "beaten_by": ["Brody", "Wanwan", "Karrie"],
+      "skills": {
+        "passive": "Projectile blocking",
+        "s1": "Shield stun effect",
+        "s2": "Rotating shield CC",
+        "ult": "Protective barrier deploy"
+      }
+    },
+    "esmeralda": {
+      "name": "Esmeralda",
+      "role": ["Fighter", "Mage"],
+      "lane": "Top",
+      "difficulty": "Medium",
+      "attribute": {
+        "hp": 2850,
+        "mana": 520,
+        "atk": 130,
+        "def": 25,
+        "asp": 0.84
+      },
+      "build": {
+        "magic": ["Enchanted Talisman", "Arcane Boots", "Holy Crystal", "Divine Glaive", "Genius Wand", "Immortality"],
+        "tank": ["Enchanted Talisman", "Arcane Boots", "Oracle", "Immortality", "Athena's Shield", "Cursed Helmet"],
+        "hybrid": ["Enchanted Talisman", "Arcane Boots", "Holy Crystal", "Oracle", "Divine Glaive", "Immortality"]
+      },
+      "counters": ["Natalia", "Lunox", "Pharsa"],
+      "beaten_by": ["Ling", "Roger", "Alucard"],
+      "skills": {
+        "passive": "Spell shield generation",
+        "s1": "Projectile damage",
+        "s2": "Chain enemy control",
+        "ult": "Large barrier field"
+      }
+    },
+    "fanny": {
+      "name": "Fanny",
+      "role": ["Assassin"],
+      "lane": "Jungle",
+      "difficulty": "Hard",
+      "attribute": {
+        "hp": 2400,
+        "mana": 0,
+        "atk": 142,
+        "def": 19,
+        "asp": 0.94
+      },
+      "build": {
+        "damage": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Blade of Despair", "Malefic Roar", "Endless Battle"],
+        "burst": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Blade of Despair", "Black Mamba", "Malefic Roar"],
+        "balanced": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Immortality", "Malefic Roar", "Endless Battle"]
+      },
+      "counters": ["Yve", "Rafaela", "Nanan"],
+      "beaten_by": ["Alice", "Diggie", "Uranus"],
+      "skills": {
+        "passive": "Rope swing mobility",
+        "s1": "Chain rope damage",
+        "s2": "Rope spiral attack",
+        "ult": "Rope whirlwind kill"
+      }
+    },
+    "hayabusa": {
+      "name": "Hayabusa",
+      "role": ["Assassin"],
+      "lane": "Jungle",
+      "difficulty": "Medium",
+      "attribute": {
+        "hp": 2490,
+        "mana": 420,
+        "atk": 140,
+        "def": 19,
+        "asp": 0.94
+      },
+      "build": {
+        "damage": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Blade of Despair", "Malefic Roar", "Endless Battle"],
+        "burst": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Black Mamba", "Blade of Despair", "Malefic Roar"],
+        "balanced": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Immortality", "Malefic Roar", "Endless Battle"]
+      },
+      "counters": ["Natalia", "Ling", "Fanny"],
+      "beaten_by": ["Alice", "Esmeralda", "Uranus"],
+      "skills": {
+        "passive": "Shadow clone generation",
+        "s1": "Clone strike damage",
+        "s2": "Clone explosion area",
+        "ult": "Multi-clone shadow barrage"
+      }
+    },
+    "helcurt": {
+      "name": "Helcurt",
+      "role": ["Assassin"],
+      "lane": "Jungle",
+      "difficulty": "Hard",
+      "attribute": {
+        "hp": 2520,
+        "mana": 480,
+        "atk": 142,
+        "def": 20,
+        "asp": 0.92
+      },
+      "build": {
+        "damage": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Blade of Despair", "Malefic Roar", "Endless Battle"],
+        "burst": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Black Mamba", "Blade of Despair", "Malefic Roar"],
+        "balanced": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Immortality", "Malefic Roar", "Endless Battle"]
+      },
+      "counters": ["Natalia", "Ling", "Hayabusa"],
+      "beaten_by": ["Alice", "Lolita", "Diggie"],
+      "skills": {
+        "passive": "Darkness shadow control",
+        "s1": "Shadow dash attack",
+        "s2": "Dark zone fear",
+        "ult": "Map darkness blind ultimate"
+      }
+    },
+    "alucard": {
+      "name": "Alucard",
+      "role": ["Fighter"],
+      "lane": "Jungle/Top",
+      "difficulty": "Medium",
+      "attribute": {
+        "hp": 2750,
+        "mana": 0,
+        "atk": 138,
+        "def": 22,
+        "asp": 0.94
+      },
+      "build": {
+        "damage": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Blade of Despair", "Malefic Roar", "Endless Battle"],
+        "balanced": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Immortality", "Malefic Roar", "Endless Battle"],
+        "tank": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Oracle", "Immortality", "Malefic Roar"]
+      },
+      "counters": ["Roger", "Silvanna", "Hilda"],
+      "beaten_by": ["Diggie", "Alice", "Uranus"],
+      "skills": {
+        "passive": "Lifesteal vampiric sustain",
+        "s1": "Slash attack speed",
+        "s2": "Spin dash mobility",
+        "ult": "Berserk rampage damage"
+      }
+    },
+    "roger": {
+      "name": "Roger",
+      "role": ["Fighter"],
+      "lane": "Jungle/Top",
+      "difficulty": "Hard",
+      "attribute": {
+        "hp": 2800,
+        "mana": 0,
+        "atk": 136,
+        "def": 23,
+        "asp": 0.90
+      },
+      "build": {
+        "damage": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Blade of Despair", "Malefic Roar", "Endless Battle"],
+        "balanced": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Immortality", "Malefic Roar", "Endless Battle"],
+        "tank": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Oracle", "Immortality", "Brute Force Breastplate"]
+      },
+      "counters": ["Alucard", "Thamuz", "Chou"],
+      "beaten_by": ["Diggie", "Alice", "Uranus"],
+      "skills": {
+        "passive": "Form switch human/wolf",
+        "s1": "Dual form attacks",
+        "s2": "Form-based abilities",
+        "ult": "Wolf berserk mode"
+      }
+    },
+    "chou": {
+      "name": "Chou",
+      "role": ["Fighter"],
+      "lane": "Top",
+      "difficulty": "Medium",
+      "attribute": {
+        "hp": 2700,
+        "mana": 0,
+        "atk": 132,
+        "def": 23,
+        "asp": 0.88
+      },
+      "build": {
+        "damage": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Blade of Despair", "Malefic Roar", "Endless Battle"],
+        "balanced": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Immortality", "Malefic Roar", "Endless Battle"],
+        "tank": ["Raptor Machete", "Warrior Boots", "Oracle", "Immortality", "Athena's Shield", "Brute Force Breastplate"]
+      },
+      "counters": ["Khufra", "Tigreal", "Gloo"],
+      "beaten_by": ["Ling", "Natalia", "Fanny"],
+      "skills": {
+        "passive": "Stance switching martial arts",
+        "s1": "Multi-hit combo kicks",
+        "s2": "Stance-based powers",
+        "ult": "Flying kick execute damage"
+      }
+    },
+    "silvanna": {
+      "name": "Silvanna",
+      "role": ["Fighter"],
+      "lane": "Top",
+      "difficulty": "Medium",
+      "attribute": {
+        "hp": 2750,
+        "mana": 450,
+        "atk": 130,
+        "def": 24,
+        "asp": 0.86
+      },
+      "build": {
+        "damage": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Blade of Despair", "Malefic Roar", "Endless Battle"],
+        "balanced": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Immortality", "Malefic Roar", "Endless Battle"],
+        "tank": ["Raptor Machete", "Warrior Boots", "Oracle", "Immortality", "Athena's Shield", "Brute Force Breastplate"]
+      },
+      "counters": ["Alucard", "Roger", "Chou"],
+      "beaten_by": ["Ling", "Natalia", "Helcurt"],
+      "skills": {
+        "passive": "Chain-based abilities",
+        "s1": "Chain drag damage",
+        "s2": "Chain bind control",
+        "ult": "Chain imprisonment stun"
+      }
+    },
+    "hilda": {
+      "name": "Hilda",
+      "role": ["Fighter"],
+      "lane": "Jungle",
+      "difficulty": "Easy",
+      "attribute": {
+        "hp": 2850,
+        "mana": 0,
+        "atk": 130,
+        "def": 25,
+        "asp": 0.86
+      },
+      "build": {
+        "damage": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Blade of Despair", "Malefic Roar", "Endless Battle"],
+        "balanced": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Immortality", "Malefic Roar", "Endless Battle"],
+        "tank": ["Raptor Machete", "Warrior Boots", "Oracle", "Immortality", "Athena's Shield", "Brute Force Breastplate"]
+      },
+      "counters": ["Alucard", "Roger", "Thamuz"],
+      "beaten_by": ["Ling", "Natalia", "Fanny"],
+      "skills": {
+        "passive": "Jungle threat detection",
+        "s1": "Heavy axe swing",
+        "s2": "Executioner's judgment",
+        "ult": "Executioner's rampage damage"
+      }
+    },
+    "thamuz": {
+      "name": "Thamuz",
+      "role": ["Fighter"],
+      "lane": "Top",
+      "difficulty": "Medium",
+      "attribute": {
+        "hp": 2800,
+        "mana": 420,
+        "atk": 131,
+        "def": 24,
+        "asp": 0.84
+      },
+      "build": {
+        "damage": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Blade of Despair", "Malefic Roar", "Endless Battle"],
+        "balanced": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Immortality", "Malefic Roar", "Endless Battle"],
+        "tank": ["Raptor Machete", "Warrior Boots", "Oracle", "Immortality", "Athena's Shield", "Brute Force Breastplate"]
+      },
+      "counters": ["Silvanna", "Chou", "Gloo"],
+      "beaten_by": ["Ling", "Natalia", "Helcurt"],
+      "skills": {
+        "passive": "Fire brand burn damage",
+        "s1": "Fire spike slash",
+        "s2": "Immolate explosion",
+        "ult": "Fire rampage inferno"
+      }
+    },
+    "lunox": {
+      "name": "Lunox",
+      "role": ["Mage"],
+      "lane": "Mid",
+      "difficulty": "Hard",
+      "attribute": {
+        "hp": 2550,
+        "mana": 600,
+        "atk": 120,
+        "def": 20,
+        "asp": 0.78
+      },
+      "build": {
+        "magic": ["Enchanted Talisman", "Arcane Boots", "Holy Crystal", "Divine Glaive", "Genius Wand", "Concentrated Energy"],
+        "control": ["Enchanted Talisman", "Arcane Boots", "Holy Crystal", "Immortality", "Divine Glaive", "Fleeting Time"],
+        "burst": ["Enchanted Talisman", "Arcane Boots", "Holy Crystal", "Concentrated Energy", "Divine Glaive", "Genius Wand"]
+      },
+      "counters": ["Valir", "Alice", "Esmeralda"],
+      "beaten_by": ["Ling", "Natalia", "Fanny"],
+      "skills": {
+        "passive": "Darkness/Light balance meter",
+        "s1": "Dual form light/dark skills",
+        "s2": "Balance power shift",
+        "ult": "Full power execution damage"
+      }
+    },
+    "chang": {
+      "name": "Chang'e",
+      "role": ["Mage", "Support"],
+      "lane": "Mid",
+      "difficulty": "Easy",
+      "attribute": {
+        "hp": 2580,
+        "mana": 620,
+        "atk": 118,
+        "def": 19,
+        "asp": 0.78
+      },
+      "build": {
+        "magic": ["Enchanted Talisman", "Arcane Boots", "Holy Crystal", "Divine Glaive", "Genius Wand", "Concentrated Energy"],
+        "support": ["Enchanted Talisman", "Arcane Boots", "Oracle", "Immortality", "Holy Crystal", "Fleeting Time"],
+        "control": ["Enchanted Talisman", "Arcane Boots", "Holy Crystal", "Immortality", "Divine Glaive", "Fleeting Time"]
+      },
+      "counters": ["Valir", "Alice", "Eudora"],
+      "beaten_by": ["Ling", "Natalia", "Fanny"],
+      "skills": {
+        "passive": "Moonlight charge mechanic",
+        "s1": "Moonlight projectile",
+        "s2": "Moon healing zone",
+        "ult": "Full moon goddess power"
+      }
+    },
+    "pharsa": {
+      "name": "Pharsa",
+      "role": ["Mage"],
+      "lane": "Mid",
+      "difficulty": "Medium",
+      "attribute": {
+        "hp": 2600,
+        "mana": 620,
+        "atk": 119,
+        "def": 19,
+        "asp": 0.78
+      },
+      "build": {
+        "magic": ["Enchanted Talisman", "Arcane Boots", "Holy Crystal", "Divine Glaive", "Genius Wand", "Concentrated Energy"],
+        "burst": ["Enchanted Talisman", "Arcane Boots", "Holy Crystal", "Concentrated Energy", "Divine Glaive", "Genius Wand"],
+        "control": ["Enchanted Talisman", "Arcane Boots", "Holy Crystal", "Immortality", "Divine Glaive", "Fleeting Time"]
+      },
+      "counters": ["Valir", "Alice", "Lunox"],
+      "beaten_by": ["Ling", "Natalia", "Fanny"],
+      "skills": {
+        "passive": "Flying bird summon",
+        "s1": "Bird strike attack",
+        "s2": "Bird swarm damage",
+        "ult": "Phoenix fire descent"
+      }
+    },
+    "eudora": {
+      "name": "Eudora",
+      "role": ["Mage"],
+      "lane": "Mid",
+      "difficulty": "Easy",
+      "attribute": {
+        "hp": 2550,
+        "mana": 600,
+        "atk": 118,
+        "def": 19,
+        "asp": 0.78
+      },
+      "build": {
+        "magic": ["Enchanted Talisman", "Arcane Boots", "Holy Crystal", "Divine Glaive", "Genius Wand", "Concentrated Energy"],
+        "burst": ["Enchanted Talisman", "Arcane Boots", "Holy Crystal", "Concentrated Energy", "Divine Glaive", "Genius Wand"],
+        "control": ["Enchanted Talisman", "Arcane Boots", "Holy Crystal", "Immortality", "Divine Glaive", "Fleeting Time"]
+      },
+      "counters": ["Valir", "Alice", "Pharsa"],
+      "beaten_by": ["Ling", "Natalia", "Fanny"],
+      "skills": {
+        "passive": "Lightning chain reaction",
+        "s1": "Lightning bolt strike",
+        "s2": "Chain lightning burst",
+        "ult": "Lightning destruction storm"
+      }
+    },
+    "yve": {
+      "name": "Yve",
+      "role": ["Mage", "Support"],
+      "lane": "Mid",
+      "difficulty": "Medium",
+      "attribute": {
+        "hp": 2340,
+        "mana": 620,
+        "atk": 118,
+        "def": 18,
+        "asp": 0.8
+      },
+      "build": {
+        "magic": ["Enchanted Talisman", "Arcane Boots", "Holy Crystal", "Divine Glaive", "Genius Wand", "Concentrated Energy"],
+        "control": ["Enchanted Talisman", "Arcane Boots", "Holy Crystal", "Immortality", "Divine Glaive", "Fleeting Time"],
+        "support": ["Enchanted Talisman", "Arcane Boots", "Oracle", "Immortality", "Holy Crystal", "Fleeting Time"]
+      },
+      "counters": ["Ling", "Fanny", "Natalia"],
+      "beaten_by": ["Lunox", "Pharsa", "Eudora"],
+      "skills": {
+        "passive": "Distance stun enhancement",
+        "s1": "Slow projectile launch",
+        "s2": "Control area deploy",
+        "ult": "Giant stun field zone"
+      }
+    },
+    "rafaela": {
+      "name": "Rafaela",
+      "role": ["Support", "Mage"],
+      "lane": "Bottom",
+      "difficulty": "Medium",
+      "attribute": {
+        "hp": 2550,
+        "mana": 580,
+        "atk": 120,
+        "def": 19,
+        "asp": 0.78
+      },
+      "build": {
+        "support": ["Enchanted Talisman", "Arcane Boots", "Oracle", "Immortality", "Holy Crystal", "Fleeting Time"],
+        "magic": ["Enchanted Talisman", "Arcane Boots", "Holy Crystal", "Divine Glaive", "Genius Wand", "Immortality"],
+        "control": ["Enchanted Talisman", "Arcane Boots", "Holy Crystal", "Immortality", "Divine Glaive", "Fleeting Time"]
+      },
+      "counters": ["Moskov", "Brody", "Hanabi"],
+      "beaten_by": ["Ling", "Natalia", "Fanny"],
+      "skills": {
+        "passive": "Healing light aura",
+        "s1": "Light strike shield",
+        "s2": "Holy zone protection",
+        "ult": "Divine blessing heal"
+      }
+    },
+    "estes": {
+      "name": "Estes",
+      "role": ["Support", "Mage"],
+      "lane": "Bottom",
+      "difficulty": "Easy",
+      "attribute": {
+        "hp": 2700,
+        "mana": 680,
+        "atk": 118,
+        "def": 20,
+        "asp": 0.74
+      },
+      "build": {
+        "support": ["Enchanted Talisman", "Arcane Boots", "Oracle", "Immortality", "Holy Crystal", "Fleeting Time"],
+        "magic": ["Enchanted Talisman", "Arcane Boots", "Holy Crystal", "Divine Glaive", "Genius Wand", "Immortality"],
+        "tank": ["Enchanted Talisman", "Arcane Boots", "Oracle", "Immortality", "Athena's Shield", "Cursed Helmet"]
+      },
+      "counters": ["Moskov", "Brody", "Hanabi"],
+      "beaten_by": ["Ling", "Natalia", "Fanny"],
+      "skills": {
+        "passive": "Healing spring resource",
+        "s1": "Healing projectile shot",
+        "s2": "Regeneration zone field",
+        "ult": "Massive team heal purify"
+      }
+    },
+    "angela": {
+      "name": "Angela",
+      "role": ["Support"],
+      "lane": "Bottom",
+      "difficulty": "Medium",
+      "attribute": {
+        "hp": 2400,
+        "mana": 600,
+        "atk": 115,
+        "def": 18,
+        "asp": 0.76
+      },
+      "build": {
+        "support": ["Enchanted Talisman", "Arcane Boots", "Oracle", "Immortality", "Holy Crystal", "Fleeting Time"],
+        "magic": ["Enchanted Talisman", "Arcane Boots", "Holy Crystal", "Divine Glaive", "Genius Wand", "Immortality"],
+        "tank": ["Enchanted Talisman", "Arcane Boots", "Oracle", "Immortality", "Athena's Shield", "Cursed Helmet"]
+      },
+      "counters": ["Moskov", "Brody", "Wanwan"],
+      "beaten_by": ["Ling", "Natalia", "Fanny"],
+      "skills": {
+        "passive": "Partner link mechanic",
+        "s1": "Love protection support",
+        "s2": "Healing boost enhance",
+        "ult": "Perfect couple unity"
+      }
+    },
+    "diggie": {
+      "name": "Diggie",
+      "role": ["Support"],
+      "lane": "Bottom",
+      "difficulty": "Easy",
+      "attribute": {
+        "hp": 2550,
+        "mana": 520,
+        "atk": 120,
+        "def": 19,
+        "asp": 0.76
+      },
+      "build": {
+        "support": ["Enchanted Talisman", "Arcane Boots", "Oracle", "Immortality", "Holy Crystal", "Fleeting Time"],
+        "tank": ["Enchanted Talisman", "Arcane Boots", "Oracle", "Immortality", "Athena's Shield", "Cursed Helmet"],
+        "cc": ["Enchanted Talisman", "Arcane Boots", "Oracle", "Immortality", "Athena's Shield", "Fleeting Time"]
+      },
+      "counters": ["Ling", "Fanny", "Helcurt"],
+      "beaten_by": ["Brody", "Wanwan", "Karrie"],
+      "skills": {
+        "passive": "Egg revival mechanic",
+        "s1": "Stun projectile egg",
+        "s2": "Protective shield zone",
+        "ult": "Egg hatching invincibility"
+      }
+    },
+    "nana": {
+      "name": "Nana",
+      "role": ["Support"],
+      "lane": "Bottom",
+      "difficulty": "Medium",
+      "attribute": {
+        "hp": 2450,
+        "mana": 560,
+        "atk": 118,
+        "def": 18,
+        "asp": 0.76
+      },
+      "build": {
+        "support": ["Enchanted Talisman", "Arcane Boots", "Oracle", "Immortality", "Holy Crystal", "Fleeting Time"],
+        "magic": ["Enchanted Talisman", "Arcane Boots", "Holy Crystal", "Divine Glaive", "Genius Wand", "Immortality"],
+        "tank": ["Enchanted Talisman", "Arcane Boots", "Oracle", "Immortality", "Athena's Shield", "Cursed Helmet"]
+      },
+      "counters": ["Moskov", "Brody", "Wanwan"],
+      "beaten_by": ["Ling", "Natalia", "Fanny"],
+      "skills": {
+        "passive": "Cat support summoning",
+        "s1": "Cat strike attack",
+        "s2": "Cat CC crowd control",
+        "ult": "Teleport cat help"
+      }
+    },
+    "lesley": {
+      "name": "Lesley",
+      "role": ["Marksman"],
+      "lane": "Bottom",
+      "difficulty": "Medium",
+      "attribute": {
+        "hp": 2550,
+        "mana": 480,
+        "atk": 150,
+        "def": 19,
+        "asp": 0.90
+      },
+      "build": {
+        "crit": ["Ranger's Bow", "Warrior Boots", "Windtalker", "Berserker's Fury", "Blade of Despair", "Malefic Roar"],
+        "damage": ["Ranger's Bow", "Warrior Boots", "Windtalker", "Berserker's Fury", "Endless Battle", "Malefic Roar"],
+        "balanced": ["Ranger's Bow", "Warrior Boots", "Windtalker", "Berserker's Fury", "Immortality", "Malefic Roar"]
+      },
+      "counters": ["Brody", "Granger", "Karrie"],
+      "beaten_by": ["Lolita", "Diggie", "Rafaela"],
+      "skills": {
+        "passive": "Sniper focus mechanics",
+        "s1": "Sniper rifle shot",
+        "s2": "Bullet marker zone",
+        "ult": "Sniper execution shot"
+      }
+    },
+    "granger": {
+      "name": "Granger",
+      "role": ["Marksman"],
+      "lane": "Bottom",
+      "difficulty": "Hard",
+      "attribute": {
+        "hp": 2520,
+        "mana": 500,
+        "atk": 148,
+        "def": 18,
+        "asp": 0.88
+      },
+      "build": {
+        "crit": ["Ranger's Bow", "Warrior Boots", "Windtalker", "Berserker's Fury", "Blade of Despair", "Malefic Roar"],
+        "damage": ["Ranger's Bow", "Warrior Boots", "Windtalker", "Berserker's Fury", "Endless Battle", "Malefic Roar"],
+        "burst": ["Ranger's Bow", "Warrior Boots", "Windtalker", "Berserker's Fury", "Blade of Despair", "Malefic Roar"]
+      },
+      "counters": ["Brody", "Lesley", "Wanwan"],
+      "beaten_by": ["Lolita", "Diggie", "Rafaela"],
+      "skills": {
+        "passive": "Loaded magazine mechanic",
+        "s1": "Pistol burst fire",
+        "s2": "Magazine reload power",
+        "ult": "Dual gun barrage"
+      }
+    },
+    "karrie": {
+      "name": "Karrie",
+      "role": ["Marksman"],
+      "lane": "Bottom",
+      "difficulty": "Easy",
+      "attribute": {
+        "hp": 2490,
+        "mana": 0,
+        "atk": 154,
+        "def": 18,
+        "asp": 0.94
+      },
+      "build": {
+        "crit": ["Ranger's Bow", "Warrior Boots", "Windtalker", "Berserker's Fury", "Blade of Despair", "Malefic Roar"],
+        "attack": ["Ranger's Bow", "Warrior Boots", "Windtalker", "Berserker's Fury", "Endless Battle", "Malefic Roar"],
+        "balanced": ["Ranger's Bow", "Warrior Boots", "Windtalker", "Berserker's Fury", "Immortality", "Malefic Roar"]
+      },
+      "counters": ["Brody", "Granger", "Lesley"],
+      "beaten_by": ["Lolita", "Diggie", "Rafaela"],
+      "skills": {
+        "passive": "Puppet stun buildup",
+        "s1": "Puppet master strike",
+        "s2": "Doll control area",
+        "ult": "Doll explosion execute"
+      }
+    },
+    "wanwan": {
+      "name": "Wanwan",
+      "role": ["Marksman"],
+      "lane": "Bottom",
+      "difficulty": "Hard",
+      "attribute": {
+        "hp": 2520,
+        "mana": 0,
+        "atk": 150,
+        "def": 19,
+        "asp": 0.92
+      },
+      "build": {
+        "crit": ["Ranger's Bow", "Warrior Boots", "Windtalker", "Berserker's Fury", "Blade of Despair", "Malefic Roar"],
+        "attack": ["Ranger's Bow", "Warrior Boots", "Windtalker", "Berserker's Fury", "Endless Battle", "Malefic Roar"],
+        "balanced": ["Ranger's Bow", "Warrior Boots", "Windtalker", "Berserker's Fury", "Immortality", "Malefic Roar"]
+      },
+      "counters": ["Brody", "Granger", "Lesley"],
+      "beaten_by": ["Lolita", "Diggie", "Rafaela"],
+      "skills": {
+        "passive": "Weakness mark system",
+        "s1": "Crossbow pin strike",
+        "s2": "Pin location marker",
+        "ult": "Pin explosion execute"
+      }
+    },
+    "uranus": {
+      "name": "Uranus",
+      "role": ["Tank"],
+      "lane": "Top/Jungle",
+      "difficulty": "Hard",
+      "attribute": {
+        "hp": 3300,
+        "mana": 600,
+        "atk": 120,
+        "def": 28,
+        "asp": 0.74
+      },
+      "build": {
+        "tank": ["Warrior Boots", "Cursed Helmet", "Oracle", "Athena's Shield", "Immortality", "Brute Force Breastplate"],
+        "magic_tank": ["Enchanted Talisman", "Arcane Boots", "Oracle", "Immortality", "Athena's Shield", "Cursed Helmet"],
+        "sustain": ["Warrior Boots", "Cursed Helmet", "Oracle", "Immortality", "Athena's Shield", "Fleeting Time"]
+      },
+      "counters": ["Ling", "Natalia", "Fanny"],
+      "beaten_by": ["Brody", "Wanwan", "Moskov"],
+      "skills": {
+        "passive": "Shield star generation",
+        "s1": "Star shield protection",
+        "s2": "Star burst damage",
+        "ult": "Celestial blessing team shield"
+      }
+    },
+    "tigreal": {
+      "name": "Tigreal",
+      "role": ["Tank"],
+      "lane": "Top",
+      "difficulty": "Easy",
+      "attribute": {
+        "hp": 3200,
+        "mana": 520,
+        "atk": 118,
+        "def": 27,
+        "asp": 0.72
+      },
+      "build": {
+        "tank": ["Warrior Boots", "Cursed Helmet", "Oracle", "Athena's Shield", "Immortality", "Brute Force Breastplate"],
+        "cc": ["Warrior Boots", "Oracle", "Cursed Helmet", "Athena's Shield", "Immortality", "Fleeting Time"],
+        "support": ["Warrior Boots", "Oracle", "Cursed Helmet", "Immortality", "Athena's Shield", "Fleeting Time"]
+      },
+      "counters": ["Khufra", "Gloo", "Chou"],
+      "beaten_by": ["Ling", "Natalia", "Helcurt"],
+      "skills": {
+        "passive": "Roar fear effect",
+        "s1": "Charge tackle dash",
+        "s2": "Whirlwind spin control",
+        "ult": "Reversal suppress ultimate"
+      }
+    },
+    "khufra": {
+      "name": "Khufra",
+      "role": ["Tank"],
+      "lane": "Top",
+      "difficulty": "Hard",
+      "attribute": {
+        "hp": 3100,
+        "mana": 480,
+        "atk": 120,
+        "def": 27,
+        "asp": 0.72
+      },
+      "build": {
+        "tank": ["Warrior Boots", "Cursed Helmet", "Oracle", "Athena's Shield", "Immortality", "Brute Force Breastplate"],
+        "cc": ["Warrior Boots", "Oracle", "Cursed Helmet", "Athena's Shield", "Immortality", "Fleeting Time"],
+        "support": ["Warrior Boots", "Oracle", "Cursed Helmet", "Immortality", "Athena's Shield", "Fleeting Time"]
+      },
+      "counters": ["Tigreal", "Gloo", "Chou"],
+      "beaten_by": ["Ling", "Natalia", "Fanny"],
+      "skills": {
+        "passive": "Bulwark reflection damage",
+        "s1": "Swing knockback hit",
+        "s2": "Body slam engage",
+        "ult": "Divine slam stun zone"
+      }
+    },
+    "gloo": {
+      "name": "Gloo",
+      "role": ["Tank"],
+      "lane": "Top",
+      "difficulty": "Medium",
+      "attribute": {
+        "hp": 3200,
+        "mana": 500,
+        "atk": 118,
+        "def": 27,
+        "asp": 0.70
+      },
+      "build": {
+        "tank": ["Warrior Boots", "Cursed Helmet", "Oracle", "Athena's Shield", "Immortality", "Brute Force Breastplate"],
+        "magic_tank": ["Enchanted Talisman", "Arcane Boots", "Oracle", "Immortality", "Athena's Shield", "Cursed Helmet"],
+        "support": ["Warrior Boots", "Oracle", "Cursed Helmet", "Immortality", "Athena's Shield", "Fleeting Time"]
+      },
+      "counters": ["Khufra", "Tigreal", "Chou"],
+      "beaten_by": ["Ling", "Natalia", "Fanny"],
+      "skills": {
+        "passive": "Slime body stretch",
+        "s1": "Slime attack grab",
+        "s2": "Slime jump mobility",
+        "ult": "Slime absorption control"
+      }
+    },
+    "horus": {
+      "name": "Horus",
+      "role": ["Tank"],
+      "lane": "Top",
+      "difficulty": "Medium",
+      "attribute": {
+        "hp": 3150,
+        "mana": 520,
+        "atk": 122,
+        "def": 27,
+        "asp": 0.70
+      },
+      "build": {
+        "tank": ["Warrior Boots", "Cursed Helmet", "Oracle", "Athena's Shield", "Immortality", "Brute Force Breastplate"],
+        "magic_tank": ["Enchanted Talisman", "Arcane Boots", "Oracle", "Immortality", "Athena's Shield", "Cursed Helmet"],
+        "support": ["Warrior Boots", "Oracle", "Cursed Helmet", "Immortality", "Athena's Shield", "Fleeting Time"]
+      },
+      "counters": ["Khufra", "Gloo", "Tigreal"],
+      "beaten_by": ["Ling", "Natalia", "Fanny"],
+      "skills": {
+        "passive": "Eye of horus vision",
+        "s1": "Falcon strike attack",
+        "s2": "Falcon wing shield",
+        "ult": "Falcon dive execute"
+      }
+    },
+    "natan": {
+      "name": "Natan",
+      "role": ["Marksman"],
+      "lane": "Bottom",
+      "difficulty": "Hard",
+      "attribute": {
+        "hp": 2600,
+        "mana": 520,
+        "atk": 148,
+        "def": 19,
+        "asp": 0.88
+      },
+      "build": {
+        "crit": ["Ranger's Bow", "Warrior Boots", "Windtalker", "Berserker's Fury", "Blade of Despair", "Malefic Roar"],
+        "damage": ["Ranger's Bow", "Warrior Boots", "Windtalker", "Berserker's Fury", "Endless Battle", "Malefic Roar"],
+        "balanced": ["Ranger's Bow", "Warrior Boots", "Windtalker", "Berserker's Fury", "Immortality", "Malefic Roar"]
+      },
+      "counters": ["Brody", "Granger", "Lesley"],
+      "beaten_by": ["Lolita", "Diggie", "Rafaela"],
+      "skills": {
+        "passive": "Heat mechanic system",
+        "s1": "Fire shot attack",
+        "s2": "Heat explosion zone",
+        "ult": "Overheated cannon fire"
+      }
+    },
+    "selena": {
+      "name": "Selena",
+      "role": ["Assassin", "Mage"],
+      "lane": "Jungle",
+      "difficulty": "Hard",
+      "attribute": {
+        "hp": 2450,
+        "mana": 500,
+        "atk": 138,
+        "def": 18,
+        "asp": 0.92
+      },
+      "build": {
+        "damage": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Blade of Despair", "Malefic Roar", "Endless Battle"],
+        "magic": ["Enchanted Talisman", "Arcane Boots", "Holy Crystal", "Divine Glaive", "Genius Wand", "Concentrated Energy"],
+        "balanced": ["Raptor Machete", "Warrior Boots", "Bloodlust Axe", "Immortality", "Malefic Roar", "Endless Battle"]
+      },
+      "counters": ["Ling", "Fanny", "Hayabusa"],
+      "beaten_by": ["Alice", "Esmeralda", "Uranus"],
+      "skills": {
+        "passive": "Abyssal form switch",
+        "s1": "Dual form attacks",
+        "s2": "Form transformation power",
+        "ult": "Abyssal form rampage"
+      }
+    }
+  },
+  "items": {
+    "offensive": [
+      "Blade of Despair",
+      "Malefic Roar",
+      "Bloodlust Axe",
+      "Holy Crystal",
+      "Divine Glaive",
+      "Genius Wand",
+      "Concentrated Energy",
+      "Endless Battle",
+      "Berserker's Fury",
+      "Windtalker"
+    ],
+    "defensive": [
+      "Oracle",
+      "Immortality",
+      "Athena's Shield",
+      "Cursed Helmet",
+      "Brute Force Breastplate",
+      "Guardian Angel",
+      "Radiant Armor"
+    ],
+    "utility": [
+      "Enchanted Talisman",
+      "Fleeting Time",
+      "Demon Hunter Sword",
+      "Raptor Machete",
+      "Warrior Boots",
+      "Arcane Boots",
+      "Tough Boots"
+    ]
+  },
+  "lanes": {
+    "top": {
+      "name": "Jalur Atas (Top Lane)",
+      "roles": ["Fighter", "Tank"],
+      "info": "Solo lane - Farm seul et harasser l'ennemi. Role: créer de la pression et défendre la tour."
+    },
+    "mid": {
+      "name": "Jalur Tengah (Mid Lane)",
+      "roles": ["Mage", "Fighter", "Assassin"],
+      "info": "Lane important - Roamer et ganker les autres lanes. Control map et vision."
+    },
+    "bottom": {
+      "name": "Jalur Bawah (Bot Lane)",
+      "roles": ["Marksman", "Support"],
+      "info": "Duo lane - ADC farm, Support protect et CC. Winning bot lane = pression objectif."
+    },
+    "jungle": {
+      "name": "Hutan (Jungle)",
+      "roles": ["Assassin", "Fighter"],
+      "info": "Farm jungle et gank 3 lanes. Plus important pour early game = vision et objectives."
+    }
+  },
+  "meta": {
+    "current_patch": "1.8.56",
+    "s_tier": ["Ling", "Brody", "Uranus", "Alice", "Lolita"],
+    "a_tier": ["Natalia", "Hanabi", "Esmeralda", "Yve", "Moskov", "Valir", "Fanny", "Helcurt"],
+    "b_tier": ["Roger", "Lunox", "Chang'e", "Pharsa", "Diggie", "Chou", "Silvanna", "Rafaela"],
+    "notes": "Meta 1.8.56: Assassins dominent, Tanks OP contre AD, mages control important"
+  },
+  "combos": {
+    "ling_combo": {
+      "hero": "Ling",
+      "combo": ["Wall positioning → S2 (spin) → S1 (mark) → AA → Ultimate (invisible dash)"],
+      "damage": "Très élevé",
+      "explanation": "Utilise le wall pour positionnement optimal, combo skill pour burst damage max. Ultimate pour kill sure."
+    },
+    "brody_combo": {
+      "hero": "Brody",
+      "combo": ["S2 (mark bomb) → S1 (piercing shot) → AA chains → Ultimate (barrage)"],
+      "damage": "Extrême",
+      "explanation": "Marquer avec S2, chase avec S1, Ultimate pour execute damage. Chase jusqu'à mort."
+    },
+    "alice_combo": {
+      "hero": "Alice",
+      "combo": ["S2 (silence) → S1 (stun) → AA → Ulti (heal vortex)"],
+      "damage": "Moyen-Élevé",
+      "explanation": "Silence l'ennemi, damage combo, ulti pour sustain et team fight control."
+    },
+    "valir_combo": {
+      "hero": "Valir",
+      "combo": ["S1 (flame) → S2 (zone) → AA (burn stack) → Ultimate (explosion)"],
+      "damage": "Élevé",
+      "explanation": "Stack burn damage progressif, ultimate pour full combo execute damage."
+    },
+    "natalia_combo": {
+      "hero": "Natalia",
+      "combo": ["Invisibility approach → S2 (silence) → S1 (mark) → Ultimate (invisible strike)"],
+      "damage": "Très élevé",
+      "explanation": "Approche invisible, silence l'ennemi, combo rapide kill. Ulti garantit le burst."
+    },
+    "fanny_combo": {
+      "hero": "Fanny",
+      "combo": ["Rope swing → S1 (chain damage) → S2 (spiral) → AA → Ultimate"],
+      "damage": "Très élevé",
+      "explanation": "Rope mobility pour approach, full skill combo pour burst. Chain damage stacking."
+    },
+    "khufra_combo": {
+      "hero": "Khufra",
+      "combo": ["S1 (swing) → S2 (slam) → AA → Ultimate (divine slam zone)"],
+      "damage": "Élevé (Tank)",
+      "explanation": "Engage avec swing, slam pour knockback, ultimate pour stun area teamfight."
+    }
+  }
+}

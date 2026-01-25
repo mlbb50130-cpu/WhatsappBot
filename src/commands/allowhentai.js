@@ -1,5 +1,5 @@
 const Group = require('../models/Group');
-const { isGroupAdmin } = require('../utils/adminUtils');
+const AdminActions = require('../utils/adminActions');
 
 module.exports = {
   name: 'allowhentai',
@@ -16,8 +16,8 @@ module.exports = {
 
     try {
       // Only allow group admins to use this command
-      const isAdmin = await isGroupAdmin(sock, senderJid, senderNumber);
-      if (!isAdmin) {
+      const adminCheck = await AdminActions.isUserAdmin(sock, senderJid, senderNumber);
+      if (!adminCheck.isAdmin) {
         await sock.sendMessage(senderJid, {
           text: '❌ Seul les admins du groupe peuvent utiliser cette commande!'
         });
@@ -49,16 +49,15 @@ module.exports = {
         });
       }
 
-      // Initialize hentai settings if not exists
-      if (!group.settings) {
-        group.settings = {};
+      // Initialize permissions if not exists
+      if (!group.permissions) {
+        group.permissions = {};
       }
 
       const isAllowed = action === 'on';
-      group.settings.hentaiAllowed = isAllowed;
+      group.permissions.allowHentai = isAllowed;
       await group.save();
 
-      const statusText = isAllowed ? '✅ Autorisé' : '❌ Interdit';
       const message_text = isAllowed 
         ? `✅ Les commandes !hentai et !hentaivd sont maintenant **autorisées** dans ce groupe!`
         : `❌ Les commandes !hentai et !hentaivd sont maintenant **interdites** dans ce groupe!`;
