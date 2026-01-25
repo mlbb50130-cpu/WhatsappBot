@@ -54,11 +54,17 @@ module.exports = {
         imageTracker = user;
       }
 
-      // Get next available image (no duplicates today)
+      // Get next available image (no duplicates)
       const selectedFile = ImageRotationSystem.getNextImage(imageTracker, 'vegito', files);
-      await imageTracker.save(); // Save image rotation tracking
       const imagePath = path.join(assetPath, selectedFile);
       const imageBuffer = fs.readFileSync(imagePath);
+
+      // Save image rotation tracking
+      try {
+        await imageTracker.save();
+      } catch (saveError) {
+        console.log('Note: Could not save image tracking for this context');
+      }
 
       // Send image with caption
       const caption = isGroup 

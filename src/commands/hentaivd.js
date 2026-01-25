@@ -16,6 +16,21 @@ module.exports = {
     const senderJid = message.key.remoteJid;
 
     try {
+      // Check if hentai is allowed in this group
+      if (isGroup) {
+        try {
+          let group = await Group.findOne({ groupJid: senderJid });
+          if (group && group.settings && group.settings.hentaiAllowed === false) {
+            await sock.sendMessage(senderJid, {
+              text: '❌ Les commandes hentai ne sont pas autorisées dans ce groupe!\n\n💬 Demande à un admin d\'utiliser: !allowhentai on'
+            });
+            return;
+          }
+        } catch (error) {
+          console.log('Note: Could not check group hentai settings');
+        }
+      }
+
       // Get all image/video files from HentaiVD folder
       const assetPath = path.join(__dirname, '../asset/HentaiVD');
       const files = fs.readdirSync(assetPath).filter(file => 
@@ -67,7 +82,13 @@ module.exports = {
         return;
       }
       
-      await imageTracker.save();
+      // Save tracking changes
+      try {
+        await imageTracker.save();
+      } catch (saveError) {
+        console.log('Note: Could not save image tracking for this context');
+      }
+      
       const imagePath = path.join(assetPath, selectedFile);
       const fileBuffer = fs.readFileSync(imagePath);
 
