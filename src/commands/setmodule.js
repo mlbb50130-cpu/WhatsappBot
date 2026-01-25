@@ -127,8 +127,11 @@ function showStatus(sock, jid) {
 
   for (const [moduleName, data] of Object.entries(status)) {
     const emoji = data.enabled ? '✅' : '❌';
-    text += `${emoji} ${data.name}\n`;
+    text += `${emoji} *${data.name}* (${moduleName})\n`;
+    text += `   ${data.commands.slice(0, 5).join(', ')}${data.commands.length > 5 ? '...' : ''}\n\n`;
   }
 
+  text += `*Pour activer/désactiver:*\n!setmodule on <module>\n!setmodule off <module>`;
+  
   return sock.sendMessage(jid, { text });
 }
