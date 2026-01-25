@@ -16,35 +16,6 @@ module.exports = {
     const senderJid = message.key.remoteJid;
 
     try {
-      // Check daily limit in groups (2 times per day)
-      if (isGroup) {
-        const now = new Date();
-        const today = now.toDateString();
-        
-        // Initialize hentaivd counter if not exists
-        if (!user.hentaivdUsedToday) {
-          user.hentaivdUsedToday = { date: today, count: 0 };
-        }
-        
-        // Reset counter if new day
-        if (user.hentaivdUsedToday.date !== today) {
-          user.hentaivdUsedToday = { date: today, count: 0 };
-        }
-        
-        // Check if limit reached (2 times per day)
-        if (user.hentaivdUsedToday.count >= 2) {
-          const nextDay = new Date(now);
-          nextDay.setDate(nextDay.getDate() + 1);
-          nextDay.setHours(0, 0, 0, 0);
-          const timeUntilReset = Math.ceil((nextDay - now) / (1000 * 60 * 60));
-          
-          await sock.sendMessage(senderJid, {
-            text: `❌ Tu as utilisé !hentaivd 2 fois aujourd'hui!\n⏰ Reviens demain (dans ${timeUntilReset}h)`
-          });
-          return;
-        }
-      }
-
       // Get all image/video files from HentaiVD folder
       const assetPath = path.join(__dirname, '../asset/HentaiVD');
       const files = fs.readdirSync(assetPath).filter(file => 
@@ -80,9 +51,23 @@ module.exports = {
         imageTracker = user;
       }
 
-      // Get next available image/video (no duplicates today)
-      const selectedFile = ImageRotationSystem.getNextImage(imageTracker, 'hentaivd', files);
-      await imageTracker.save(); // Save image rotation tracking
+      // Get next available image/video with daily limit (2x per day, no duplicates)
+      const selectedFile = ImageRotationSystem.getImageWithDailyLimit(imageTracker, 'hentaivd', files, 2);
+      
+      if (!selectedFile) {
+        const now = new Date();
+        const nextDay = new Date(now);
+        nextDay.setDate(nextDay.getDate() + 1);
+        nextDay.setHours(0, 0, 0, 0);
+        const timeUntilReset = Math.ceil((nextDay - now) / (1000 * 60 * 60));
+        
+        await sock.sendMessage(senderJid, {
+          text: `❌ Tu as utilisé !hentaivd 2 fois aujourd'hui!\n⏰ Reviens demain (dans ${timeUntilReset}h)`
+        });
+        return;
+      }
+      
+      await imageTracker.save();
       const imagePath = path.join(assetPath, selectedFile);
       const fileBuffer = fs.readFileSync(imagePath);
 
@@ -94,7 +79,6 @@ module.exports = {
       if (isGroup) {
         caption += '\n\n➕ 300 XP ✨';
         user.xp += 300;
-        user.hentaivdUsedToday.count += 1;
       }
 
       if (isVideo) {

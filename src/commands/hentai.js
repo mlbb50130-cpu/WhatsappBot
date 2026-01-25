@@ -16,35 +16,6 @@ module.exports = {
     const senderJid = message.key.remoteJid;
 
     try {
-      // Check daily limit in groups (2 times per day)
-      if (isGroup) {
-        const now = new Date();
-        const today = now.toDateString();
-        
-        // Initialize hentai counter if not exists
-        if (!user.hentaiUsedToday) {
-          user.hentaiUsedToday = { date: today, count: 0 };
-        }
-        
-        // Reset counter if new day
-        if (user.hentaiUsedToday.date !== today) {
-          user.hentaiUsedToday = { date: today, count: 0 };
-        }
-        
-        // Check if limit reached (2 times per day)
-        if (user.hentaiUsedToday.count >= 2) {
-          const nextDay = new Date(now);
-          nextDay.setDate(nextDay.getDate() + 1);
-          nextDay.setHours(0, 0, 0, 0);
-          const timeUntilReset = Math.ceil((nextDay - now) / (1000 * 60 * 60));
-          
-          await sock.sendMessage(senderJid, {
-            text: `❌ Tu as utilisé !hentai 2 fois aujourd'hui!\n⏰ Reviens demain (dans ${timeUntilReset}h)`
-          });
-          return;
-        }
-      }
-
       // Get all image files from Hentai folder
       const assetPath = path.join(__dirname, '../asset/Hentai');
       const files = fs.readdirSync(assetPath).filter(file => 
@@ -80,9 +51,23 @@ module.exports = {
         imageTracker = user;
       }
 
-      // Get next available image (no duplicates today)
-      const selectedFile = ImageRotationSystem.getNextImage(imageTracker, 'hentai', files);
-      await imageTracker.save(); // Save image rotation tracking
+      // Get next available image with daily limit (2x per day, no duplicates)
+      const selectedFile = ImageRotationSystem.getImageWithDailyLimit(imageTracker, 'hentai', files, 2);
+      
+      if (!selectedFile) {
+        const now = new Date();
+        const nextDay = new Date(now);
+        nextDay.setDate(nextDay.getDate() + 1);
+        nextDay.setHours(0, 0, 0, 0);
+        const timeUntilReset = Math.ceil((nextDay - now) / (1000 * 60 * 60));
+        
+        await sock.sendMessage(senderJid, {
+          text: `❌ Tu as utilisé !hentai 2 fois aujourd'hui!\n⏰ Reviens demain (dans ${timeUntilReset}h)`
+        });
+        return;
+      }
+      
+      await imageTracker.save();
       const imagePath = path.join(assetPath, selectedFile);
       const imageBuffer = fs.readFileSync(imagePath);
 
@@ -91,7 +76,6 @@ module.exports = {
       if (isGroup) {
         caption += '\n\n➕ 300 XP ✨';
         user.xp += 300;
-        user.hentaiUsedToday.count += 1;
       }
 
       await sock.sendMessage(senderJid, {
