@@ -120,7 +120,8 @@ const groupSchema = new mongoose.Schema({
       boahancook: { type: [String], default: [] },
       waifu: { type: [String], default: [] },
       hentai: { type: [String], default: [] },
-      hentaivd: { type: [String], default: [] }
+      hentaivd: { type: [String], default: [] },
+      vegito: { type: [String], default: [] }
     }
   },
 

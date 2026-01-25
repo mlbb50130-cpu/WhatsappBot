@@ -33,7 +33,8 @@ module.exports = {
       { name: '!waifu', emoji: '🥰', description: 'Waifu aléatoire' },
       { name: '!yami', emoji: '🖤', description: 'Yami (Black Clover)' },
       { name: '!yoruichi', emoji: '🌙', description: 'Yoriuichi (Demon Slayer)' },
-      { name: '!zerotwo', emoji: '💕', description: 'Zero Two (Darling in the Franxx)' }
+      { name: '!zerotwo', emoji: '💕', description: 'Zero Two (Darling in the Franxx)' },
+      { name: '!vegito', emoji: '🔵', description: 'Vegito (Dragon Ball Z)' }
     ];
 
     const adultCommands = [

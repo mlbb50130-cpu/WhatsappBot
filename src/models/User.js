@@ -135,7 +135,8 @@ const userSchema = new mongoose.Schema({
       boahancook: { type: [String], default: [] },
       waifu: { type: [String], default: [] },
       hentai: { type: [String], default: [] },
-      hentaivd: { type: [String], default: [] }
+      hentaivd: { type: [String], default: [] },
+      vegito: { type: [String], default: [] }
     }
   },
   createdAt: {
