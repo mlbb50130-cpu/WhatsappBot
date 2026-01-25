@@ -32,18 +32,29 @@ module.exports = {
       { name: '!tsunade', emoji: '💛', description: 'Tsunade (Naruto)' },
       { name: '!waifu', emoji: '🥰', description: 'Waifu aléatoire' },
       { name: '!yami', emoji: '🖤', description: 'Yami (Black Clover)' },
-      { name: '!yoruihi', emoji: '🌙', description: 'Yoriichi (Demon Slayer)' },
+      { name: '!yoruichi', emoji: '🌙', description: 'Yoriuichi (Demon Slayer)' },
       { name: '!zerotwo', emoji: '💕', description: 'Zero Two (Darling in the Franxx)' }
+    ];
+
+    const adultCommands = [
+      { name: '!hentai', emoji: '🔥', description: 'Hentai (2x/jour en groupe, 300 XP)' },
+      { name: '!hentaivd', emoji: '🔞', description: 'Vidéos Hentai (2x/jour en groupe, 300 XP)' }
     ];
 
     let message_text = '📸 *COMMANDES ASSET DISPONIBLES*\n\n';
     message_text += '_Tapez n\'importe quelle commande pour voir une image aléatoire_\n\n';
 
+    message_text += '*🎌 IMAGES CLASSIQUES*\n';
     for (const cmd of assetCommands) {
       message_text += `${cmd.emoji} ${cmd.name} - ${cmd.description}\n`;
     }
 
-    message_text += '\n💡 Chaque image rapporte 2-5 XP!\n';
+    message_text += '\n*🔥 HENTAI (18+)*\n';
+    for (const cmd of adultCommands) {
+      message_text += `${cmd.emoji} ${cmd.name} - ${cmd.description}\n`;
+    }
+
+    message_text += '\n💡 Chaque image rapporte 2-5 XP (sauf hentai/hentaivd = 300 XP en groupe)!\n';
     message_text += '⏱️ Cooldown: 3-5 secondes';
 
     await sock.sendMessage(senderJid, { text: message_text });

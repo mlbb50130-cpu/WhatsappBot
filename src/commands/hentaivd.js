@@ -6,7 +6,7 @@ const Group = require('../models/Group');
 module.exports = {
   name: 'hentaivd',
   description: 'Vidéos hentai (2x/jour en groupe, 300 XP)',
-  category: 'IMAGES',
+  category: 'HENTAI',
   usage: '!hentaivd',
   adminOnly: false,
   groupOnly: false,
