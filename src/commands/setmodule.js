@@ -18,20 +18,21 @@ module.exports = {
       const jid = message.key.remoteJid;
 
       if (!args.length) {
-        return showModulesList(sock, jid);
+        await showModulesList(sock, jid);
+        return;
       }
 
       const subcommand = args[0].toLowerCase();
 
       if (subcommand === 'on' || subcommand === 'enable') {
-        return await enableModule(sock, jid, args[1]);
+        await enableModule(sock, jid, args[1]);
       } else if (subcommand === 'off' || subcommand === 'disable') {
-        return await disableModule(sock, jid, args[1]);
+        await disableModule(sock, jid, args[1]);
       } else if (subcommand === 'status') {
-        return showStatus(sock, jid);
+        await showStatus(sock, jid);
+      } else {
+        await showModulesList(sock, jid);
       }
-
-      return showModulesList(sock, jid);
     } catch (error) {
       console.error('Erreur setmodule:', error);
       await sock.sendMessage(message.key.remoteJid, { text: '❌ Erreur: ' + error.message });
@@ -39,7 +40,7 @@ module.exports = {
   }
 };
 
-function showModulesList(sock, jid) {
+async function showModulesList(sock, jid) {
   let text = `⚙️ *MODULES DISPONIBLES*\n\n`;
 
   for (const [key, module] of Object.entries(ModuleManager.MODULES)) {
@@ -54,16 +55,18 @@ function showModulesList(sock, jid) {
   text += `!setmodule off <module> - Désactiver un module\n`;
   text += `!setmodule status - Voir l'état du groupe`;
 
-  return sock.sendMessage(jid, { text });
+  await sock.sendMessage(jid, { text });
 }
 
 async function enableModule(sock, jid, moduleName) {
   if (!moduleName) {
-    return sock.sendMessage(jid, { text: '❌ Spécifie un module' });
+    await sock.sendMessage(jid, { text: '❌ Spécifie un module' });
+    return;
   }
 
   if (!ModuleManager.MODULES[moduleName.toLowerCase()]) {
-    return sock.sendMessage(jid, { text: `❌ Module "${moduleName}" non trouvé` });
+    await sock.sendMessage(jid, { text: `❌ Module "${moduleName}" non trouvé` });
+    return;
   }
 
   const modules = ModuleManager.loadModules();
@@ -78,18 +81,20 @@ async function enableModule(sock, jid, moduleName) {
   ModuleManager.saveModules(modules);
 
   const module = ModuleManager.MODULES[moduleName.toLowerCase()];
-  return sock.sendMessage(jid, {
+  await sock.sendMessage(jid, {
     text: `✅ Module *${module.name}* activé!\n\n${module.commands.join(', ')}`
   });
 }
 
 async function disableModule(sock, jid, moduleName) {
   if (!moduleName) {
-    return sock.sendMessage(jid, { text: '❌ Spécifie un module' });
+    await sock.sendMessage(jid, { text: '❌ Spécifie un module' });
+    return;
   }
 
   if (!ModuleManager.MODULES[moduleName.toLowerCase()]) {
-    return sock.sendMessage(jid, { text: `❌ Module "${moduleName}" non trouvé` });
+    await sock.sendMessage(jid, { text: `❌ Module "${moduleName}" non trouvé` });
+    return;
   }
 
   const modules = ModuleManager.loadModules();
@@ -104,12 +109,12 @@ async function disableModule(sock, jid, moduleName) {
   ModuleManager.saveModules(modules);
 
   const module = ModuleManager.MODULES[moduleName.toLowerCase()];
-  return sock.sendMessage(jid, {
+  await sock.sendMessage(jid, {
     text: `🔴 Module *${module.name}* désactivé!`
   });
 }
 
-function showStatus(sock, jid) {
+async function showStatus(sock, jid) {
   const status = ModuleManager.getGroupStatus(jid);
   let text = `📊 *État des modules du groupe*\n\n`;
 
@@ -121,5 +126,5 @@ function showStatus(sock, jid) {
 
   text += `*Pour activer/désactiver:*\n!setmodule on <module>\n!setmodule off <module>`;
   
-  return sock.sendMessage(jid, { text });
+  await sock.sendMessage(jid, { text });
 }
