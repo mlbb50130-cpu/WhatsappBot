@@ -80,13 +80,16 @@ module.exports = {
         imageTracker = user;
       }
 
-      // Get next available image (no duplicates today)
+      // Get next available image/video (no duplicates today)
       const selectedFile = ImageRotationSystem.getNextImage(imageTracker, 'hentaivd', files);
       await imageTracker.save(); // Save image rotation tracking
       const imagePath = path.join(assetPath, selectedFile);
-      const imageBuffer = fs.readFileSync(imagePath);
+      const fileBuffer = fs.readFileSync(imagePath);
 
-      // Send image with caption
+      // Detect file type
+      const isVideo = /\.(mp4|webm|mov)$/i.test(selectedFile);
+      
+      // Send image or video with caption
       let caption = '🔥 *HentaiVD* 🔥';
       if (isGroup) {
         caption += '\n\n➕ 300 XP ✨';
@@ -94,10 +97,20 @@ module.exports = {
         user.hentaivdUsedToday.count += 1;
       }
 
-      await sock.sendMessage(senderJid, {
-        image: imageBuffer,
-        caption: caption
-      });
+      if (isVideo) {
+        // Send as video
+        await sock.sendMessage(senderJid, {
+          video: fileBuffer,
+          caption: caption,
+          mimetype: 'video/mp4'
+        });
+      } else {
+        // Send as image
+        await sock.sendMessage(senderJid, {
+          image: fileBuffer,
+          caption: caption
+        });
+      }
 
       // Save user changes
       await user.save();
