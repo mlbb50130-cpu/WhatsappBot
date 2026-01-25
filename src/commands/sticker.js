@@ -13,12 +13,13 @@ module.exports = {
   async execute(sock, message, args, user, isGroup, groupData) {
     const senderJid = message.key.remoteJid;
     let imageMessage = null;
+    let quotedMessage = null;
 
     try {
       // Cas 1: Image en réponse
       if (message.message?.extendedTextMessage?.contextInfo?.quotedMessage) {
-        const quotedMsg = message.message.extendedTextMessage.contextInfo.quotedMessage;
-        imageMessage = quotedMsg.imageMessage || quotedMsg.documentMessage;
+        quotedMessage = message.message.extendedTextMessage.contextInfo.quotedMessage;
+        imageMessage = quotedMessage.imageMessage;
         
         if (!imageMessage) {
           return sock.sendMessage(senderJid, {
@@ -26,7 +27,7 @@ module.exports = {
           }, { quoted: message });
         }
       }
-      // Cas 2: Image en pièce jointe
+      // Cas 2: Image en pièce jointe dans le même message
       else if (message.message?.imageMessage) {
         imageMessage = message.message.imageMessage;
       }
@@ -37,9 +38,23 @@ module.exports = {
       }
 
       // Télécharger l'image depuis WhatsApp
-      const imageBuffer = await sock.downloadMediaMessage(imageMessage || message.message?.imageMessage);
+      let imageBuffer = null;
+      try {
+        if (quotedMessage) {
+          // Pour les messages en réponse
+          imageBuffer = await sock.downloadMediaMessage(quotedMessage);
+        } else {
+          // Pour les pièces jointes
+          imageBuffer = await sock.downloadMediaMessage(message);
+        }
+      } catch (downloadErr) {
+        console.error('[STICKER] Erreur téléchargement:', downloadErr);
+        return sock.sendMessage(senderJid, {
+          text: '❌ Impossible de télécharger l\'image'
+        }, { quoted: message });
+      }
       
-      if (!imageBuffer) {
+      if (!imageBuffer || imageBuffer.length === 0) {
         return sock.sendMessage(senderJid, {
           text: '❌ Impossible de télécharger l\'image'
         }, { quoted: message });
@@ -54,21 +69,35 @@ module.exports = {
       // Convertir en WebP 512x512 avec fond transparent
       const tempFilePath = path.join(tempDir, `sticker_${Date.now()}.webp`);
       
-      await sharp(imageBuffer)
-        .resize(512, 512, {
-          fit: 'contain',
-          background: { r: 255, g: 255, b: 255, alpha: 0 }
-        })
-        .webp({ quality: 80 })
-        .toFile(tempFilePath);
+      try {
+        await sharp(imageBuffer)
+          .resize(512, 512, {
+            fit: 'contain',
+            background: { r: 255, g: 255, b: 255, alpha: 0 }
+          })
+          .webp({ quality: 80 })
+          .toFile(tempFilePath);
+      } catch (convertErr) {
+        console.error('[STICKER] Erreur conversion:', convertErr);
+        return sock.sendMessage(senderJid, {
+          text: '❌ Erreur lors de la conversion de l\'image'
+        }, { quoted: message });
+      }
 
       // Lire le fichier WebP converti
       const stickerBuffer = fs.readFileSync(tempFilePath);
 
       // Envoyer comme sticker WhatsApp
-      await sock.sendMessage(senderJid, {
-        sticker: stickerBuffer
-      }, { quoted: message });
+      try {
+        await sock.sendMessage(senderJid, {
+          sticker: stickerBuffer
+        }, { quoted: message });
+      } catch (stickerErr) {
+        console.error('[STICKER] Erreur envoi sticker:', stickerErr);
+        return sock.sendMessage(senderJid, {
+          text: '❌ Erreur lors de l\'envoi du sticker'
+        }, { quoted: message });
+      }
 
       // Message de confirmation
       await sock.sendMessage(senderJid, {
@@ -81,7 +110,7 @@ module.exports = {
       });
 
     } catch (error) {
-      console.error('[STICKER] Erreur:', error);
+      console.error('[STICKER] Erreur générale:', error);
       
       return sock.sendMessage(senderJid, {
         text: `❌ Erreur: ${error.message || 'Impossible de créer le sticker'}`
