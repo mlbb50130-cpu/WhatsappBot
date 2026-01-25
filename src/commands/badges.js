@@ -28,16 +28,16 @@ module.exports = {
       if (user.level >= 5) earnedBadges.push(badges.adventurer);
       if (user.level >= 10) earnedBadges.push(badges.warrior);
       if (user.level >= 25) earnedBadges.push(badges.legend);
-      if (user.duelsWon >= 10) earnedBadges.push(badges.duelist);
-      if (user.lootsOpened >= 50) earnedBadges.push(badges.collector);
-      if (user.quizWon >= 10) earnedBadges.push(badges.scholar);
+      if (user.stats && user.stats.wins >= 10) earnedBadges.push(badges.duelist);
+      if (user.inventory && user.inventory.length >= 50) earnedBadges.push(badges.collector);
+      if (user.stats && user.stats.quiz >= 10) earnedBadges.push(badges.scholar);
 
       let badgeMessage = `
 ╔════════════════════════════════════╗
 ║        🎖️ TES BADGES 🎖️           ║
 ╚════════════════════════════════════╝
 
-👤 *${user.pseudo || 'Joueur'}*
+👤 *${user.username || 'Joueur'}*
 🏆 *Badges obtenus:* ${earnedBadges.length}/8
 
 ═════════════════════════════════════`;
