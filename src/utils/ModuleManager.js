@@ -113,7 +113,7 @@ class ModuleManager {
     }
     
     // Commandes par défaut toujours autorisées
-    const alwaysAllowed = ['help', 'ping', 'setmodule', 'modules', 'menu'];
+    const alwaysAllowed = ['help', 'ping', 'modules', 'menu'];
     return alwaysAllowed.includes(commandName);
   }
 

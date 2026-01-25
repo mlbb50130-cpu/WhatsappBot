@@ -39,9 +39,7 @@ module.exports = {
 
       text += `*ACTIVÉS:*\n${enabledMods.join('\n')}\n\n`;
       text += `*DÉSACTIVÉS:*\n${disabledMods.join('\n')}\n\n`;
-      text += `*Commandes (Admin):*\n`;
-      text += `!setmodule on <module> - Activer\n`;
-      text += `!setmodule off <module> - Désactiver`;
+      text += `*Note:*\nLes modules ne peuvent être gérés que via la base de données.\nContactez l'administrateur du bot.`;
 
       return sock.sendMessage(jid, { text });
     } catch (error) {
