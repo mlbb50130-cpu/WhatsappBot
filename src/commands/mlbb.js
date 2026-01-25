@@ -1,33 +1,8 @@
-const fs = require('fs');
-const path = require('path');
-const MLBBProfile = require('../../models/MLBBProfile');
+// ⚠️ DEPRECATED: Ce fichier est un alias pour la commande MLBB
+// Les vraies commandes MLBB sont dans le dossier ./mlbb/
+// Ce fichier charge simplement la commande depuis le dossier mlbb/
 
-const mlbbData = JSON.parse(fs.readFileSync(path.join(__dirname, '../../data/mlbb.json'), 'utf8'));
-
-module.exports = {
-  name: 'mlbb',
-  aliases: [],
-  category: 'gaming',
-  description: 'Commandes MLBB',
-  cooldown: 3,
-
-  async execute(sock, msg, args) {
-    try {
-      const jid = msg.key.remoteJid;
-      const fromMe = msg.key.fromMe;
-      const sender = msg.key.participant || jid;
-      const isGroup = jid.endsWith('@g.us');
-      
-      if (!isGroup) {
-        return sock.sendMessage(jid, {
-          text: '❌ Cette commande ne fonctionne que en groupe'
-        });
-      }
-
-      if (!args.length) {
-        return sock.sendMessage(jid, {
-          text: `🎮 *Commandes MLBB disponibles:*
-          
+module.exports = require('./mlbb/index.js');
 !mlbb set <rang> <role> - Enregistrer ton profil
 !mlbb me - Voir ton profil
 !hero <nom> - Infos d'un héros

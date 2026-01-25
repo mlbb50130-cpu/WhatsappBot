@@ -6,7 +6,6 @@ const CooldownManager = require('./utils/cooldown');
 const XPSystem = require('./utils/xpSystem');
 const PermissionManager = require('./utils/permissions');
 const QuestSystem = require('./utils/questSystem');
-const ModuleManager = require('./utils/ModuleManager');
 
 const commands = new Map();
 
@@ -183,41 +182,6 @@ async function handleMessage(sock, message, isGroup, groupData) {
         // Seule la commande 'reponse' est autorisée pendant un tournoi
         await sock.sendMessage(senderJid, {
           text: '🏆 ⛔ Un tournoi est en cours! Seule la commande \`!reponse\` est autorisée.'
-        });
-        return;
-      }
-    }
-
-    // Check if group is active (SEULEMENT EN GROUPE - finissant par @g.us)
-    // MAIS permettre activatebot, documentation, et help même si pas activé
-    const allowedWithoutActivation = ['activatebot', 'documentation', 'help', 'assets', 'whoami'];
-    
-    if (!allowedWithoutActivation.includes(commandName) && messageContent.startsWith(config.PREFIX) && senderJid.endsWith('@g.us')) {
-      try {
-        const Group = require('./models/Group');
-        const group = await Group.findOne({ groupJid: senderJid });
-        
-        // Si le groupe n'est pas activé, rejeter
-        if (!group || !group.isActive) {
-          const ownerJid = '22954959093@s.whatsapp.net';
-          await sock.sendMessage(senderJid, {
-            text: '🚫 *Le bot n\'est pas activé dans ce groupe.*\n\n📚 Lisez la documentation avec: `!documentation`\n\n📞 Contactez le propriétaire:\n@22954959093\n\nIl peut activer le bot avec: `!activatebot`',
-            mentions: [ownerJid]
-          });
-          return;
-        }
-      } catch (error) {
-        console.log('Warning: Could not check group activation:', error.message);
-        // Continue anyway
-      }
-    }
-
-    // Vérifier si le module de la commande est activé en groupe
-    const allowedWithoutModule = ['modules', 'help', 'menu', 'activatebot', 'documentation', 'assets', 'whoami'];
-    if (isGroup && senderJid.endsWith('@g.us') && !allowedWithoutModule.includes(commandName)) {
-      if (!ModuleManager.isCommandAllowed(senderJid, commandName)) {
-        await sock.sendMessage(senderJid, {
-          text: `❌ Cette commande n'est pas activée dans ce groupe.\n\nContactez un administrateur pour activer les modules.`
         });
         return;
       }
