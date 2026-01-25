@@ -45,37 +45,41 @@ module.exports = {
             await group.save();
           }
           imageTracker = group;
-        } catch (err) {
-          console.error('Error managing group:', err);
+        } catch (error) {
+          console.log('Note: Using user-level image tracking for this command');
+          imageTracker = user;
         }
+      } else {
+        // In DM, always use user for image rotation
+        imageTracker = user;
       }
 
-      // Use image rotation system to avoid duplicates in 24h
-      const result = await ImageRotationSystem.getImageFromFolder(
-        imageTracker,
-        files,
-        assetPath,
-        'vegito'
-      );
+      // Get next available image (no duplicates today)
+      const selectedFile = ImageRotationSystem.getNextImage(imageTracker, 'vegito', files);
+      await imageTracker.save(); // Save image rotation tracking
+      const imagePath = path.join(assetPath, selectedFile);
+      const imageBuffer = fs.readFileSync(imagePath);
 
-      if (!result.imagePath) {
-        await sock.sendMessage(senderJid, {
-          text: `❌ ${result.message || 'Impossible de charger l\'image.'}`
-        });
-        return;
-      }
+      // Send image with caption
+      const caption = isGroup 
+        ? '🔵 *Vegito - Dragon Ball Z* 🔵\n\n➕ 15 XP ✨' 
+        : '🔵 *Vegito - Dragon Ball Z* 🔵';
 
-      // Send image
-      const imageBuffer = fs.readFileSync(result.imagePath);
       await sock.sendMessage(senderJid, {
         image: imageBuffer,
-        caption: `🔥 **VEGITO** - Dragon Ball Z\n\n${result.imagePath.split('/').pop()}\n\n✨ Image ${result.currentIndex}/${files.length}`
-      }, { quoted: message });
+        caption: caption
+      });
+
+      // Add XP only if in group
+      if (isGroup) {
+        user.xp += 15;
+        await user.save();
+      }
 
     } catch (error) {
       console.error('Erreur commande vegito:', error);
       await sock.sendMessage(senderJid, {
-        text: `❌ Erreur: ${error.message}`
+        text: `❌ Erreur lors du chargement de l\'image.`
       });
     }
   }
