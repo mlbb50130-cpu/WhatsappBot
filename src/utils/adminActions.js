@@ -7,14 +7,40 @@ const config = require('../config');
 
 class AdminActionsManager {
   /**
+   * Get bot JID correctly from sock.user.id
+   */
+  static getBotJid(sock) {
+    try {
+      let botJid = sock.user.id;
+      // If it contains a colon, extract just the number part
+      if (botJid.includes(':')) {
+        botJid = botJid.split(':')[0] + '@s.whatsapp.net';
+      }
+      // Make sure it ends with @s.whatsapp.net
+      if (!botJid.includes('@')) {
+        botJid = botJid + '@s.whatsapp.net';
+      }
+      return botJid;
+    } catch (error) {
+      console.error('Error getting bot JID:', error.message);
+      return null;
+    }
+  }
+
+  /**
    * Check if bot is admin in the group
    */
   static async isBotAdmin(sock, groupJid) {
     try {
       const groupMetadata = await sock.groupMetadata(groupJid);
-      const botNumber = sock.user.id.split(':')[0] + '@s.whatsapp.net';
+      const botJid = this.getBotJid(sock);
       
-      const botParticipant = groupMetadata.participants.find(p => p.id === botNumber);
+      if (!botJid) {
+        console.error('Could not determine bot JID');
+        return false;
+      }
+      
+      const botParticipant = groupMetadata.participants.find(p => p.id === botJid);
       return botParticipant && (botParticipant.admin === 'admin' || botParticipant.admin === 'superadmin');
     } catch (error) {
       console.error('Error checking bot admin status:', error.message);
@@ -38,8 +64,8 @@ class AdminActionsManager {
       }
 
       // Check if target is the bot itself
-      const botNumber = sock.user.id.split(':')[0] + '@s.whatsapp.net';
-      if (userJid === botNumber) {
+      const botJid = this.getBotJid(sock);
+      if (userJid === botJid) {
         return {
           success: false,
           error: 'Le bot ne peut pas s\'expulser lui-même',
@@ -80,8 +106,8 @@ class AdminActionsManager {
         };
       }
 
-      const botNumber = sock.user.id.split(':')[0] + '@s.whatsapp.net';
-      if (userJid === botNumber) {
+      const botJid = this.getBotJid(sock);
+      if (userJid === botJid) {
         return {
           success: false,
           error: 'Le bot ne peut pas se promouvoir lui-même',
@@ -121,8 +147,8 @@ class AdminActionsManager {
         };
       }
 
-      const botNumber = sock.user.id.split(':')[0] + '@s.whatsapp.net';
-      if (userJid === botNumber) {
+      const botJid = this.getBotJid(sock);
+      if (userJid === botJid) {
         return {
           success: false,
           error: 'Le bot ne peut pas se rétrograder lui-même',
