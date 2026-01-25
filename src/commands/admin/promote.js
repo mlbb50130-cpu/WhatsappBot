@@ -12,17 +12,9 @@ module.exports = {
 
   async execute(sock, message, args, user, isGroup, groupData) {
     const senderJid = message.key.remoteJid;
-    const participantJid = message.key.participant;
 
-    // Check if sender is owner or super admin
-    const isUserAdmin = await AdminActionsManager.isUserAdmin(sock, senderJid, participantJid);
-    
-    if (!isUserAdmin.isAdmin) {
-      await sock.sendMessage(senderJid, {
-        text: '🚫 Seuls les administrateurs peuvent utiliser cette commande.'
-      });
-      return;
-    }
+    // La vérification admin est déjà faite par le handler
+    // Pas besoin de revérifier
 
     // Parse mention
     const mentions = message.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
@@ -35,6 +27,7 @@ module.exports = {
     }
 
     const userToPromote = mentions[0];
+    const participantJid = message.key.participant;
 
     if (userToPromote === participantJid) {
       await sock.sendMessage(senderJid, {

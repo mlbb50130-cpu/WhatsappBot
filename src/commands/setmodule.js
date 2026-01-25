@@ -5,29 +5,17 @@ module.exports = {
   aliases: ['module', 'modules'],
   category: 'admin',
   description: 'Gérer les modules du groupe',
+  usage: '!setmodule [on|off|status] [module]',
+  adminOnly: true,
+  groupOnly: true,
   cooldown: 3,
 
-  async execute(sock, msg, args) {
+  async execute(sock, message, args, user, isGroup, groupData) {
+    // La vérification admin est déjà faite par le handler
+    // Pas besoin de revérifier
+    
     try {
-      const jid = msg.key.remoteJid;
-      const sender = msg.key.participant || jid;
-      const isGroup = jid.endsWith('@g.us');
-
-      if (!isGroup) {
-        return sock.sendMessage(jid, {
-          text: '❌ Cette commande ne fonctionne que en groupe'
-        });
-      }
-
-      // Vérifier si l'utilisateur est admin du groupe
-      const groupMetadata = await sock.groupMetadata(jid);
-      const isAdmin = groupMetadata.participants.find(p => p.id === sender)?.admin;
-
-      if (!isAdmin && sender !== jid.split('@')[0]) {
-        return sock.sendMessage(jid, {
-          text: '❌ Seuls les admins du groupe peuvent modifier les modules'
-        });
-      }
+      const jid = message.key.remoteJid;
 
       if (!args.length) {
         return showModulesList(sock, jid);
@@ -46,7 +34,7 @@ module.exports = {
       return showModulesList(sock, jid);
     } catch (error) {
       console.error('Erreur setmodule:', error);
-      sock.sendMessage(msg.key.remoteJid, { text: '❌ Erreur: ' + error.message });
+      await sock.sendMessage(message.key.remoteJid, { text: '❌ Erreur: ' + error.message });
     }
   }
 };

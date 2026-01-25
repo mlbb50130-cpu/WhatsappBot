@@ -10,27 +10,12 @@ module.exports = {
   groupOnly: true,
   cooldown: 5,
 
-  async execute(sock, msg, args) {
-    const jid = msg.key.remoteJid;
-    const sender = msg.key.participant || jid;
-    const isGroup = jid.endsWith('@g.us');
-
-    if (!isGroup) {
-      return sock.sendMessage(jid, {
-        text: '❌ Cette commande ne fonctionne que en groupe'
-      });
-    }
+  async execute(sock, message, args, user, isGroup, groupData) {
+    const jid = message.key.remoteJid;
 
     try {
-      // Vérifier si admin
-      const groupMetadata = await sock.groupMetadata(jid);
-      const senderIsAdmin = groupMetadata.participants.find(p => p.id === sender)?.admin;
-
-      if (!senderIsAdmin) {
-        return sock.sendMessage(jid, {
-          text: '🚫 Seuls les administrateurs peuvent utiliser cette commande.'
-        });
-      }
+      // La vérification admin est déjà faite par le handler
+      // Donc on peut procéder directement
 
       if (!args.length) {
         return sock.sendMessage(jid, {
@@ -69,7 +54,7 @@ module.exports = {
 
     } catch (error) {
       console.error(`[ALLOWHENTAI] Error: ${error.message}`);
-      sock.sendMessage(jid, { text: '❌ Erreur lors de la mise à jour des paramètres.' });
+      await sock.sendMessage(jid, { text: '❌ Erreur lors de la mise à jour des paramètres.' });
     }
   }
 };

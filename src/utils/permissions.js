@@ -22,10 +22,14 @@ class PermissionManager {
   static canUseCommand(jid, commandConfig, isGroup, groupJid, userJid, participants) {
     // Check if user is bot admin
     const isBotAdmin = this.isAdmin(jid || userJid);
+    
+    // Check if user is group admin
+    const isGroupAdmin = this.isGroupAdmin(groupJid, userJid, participants);
+    const isGroupOwner = this.isGroupOwner(groupJid, userJid, participants);
 
-    // If command requires admin
+    // If command requires admin - accept both bot admin and group admin
     if (commandConfig.adminOnly) {
-      return isBotAdmin;
+      return isBotAdmin || isGroupAdmin || isGroupOwner;
     }
 
     // If command requires group

@@ -15,15 +15,8 @@ module.exports = {
     const senderJid = message.key.remoteJid;
     const participantJid = message.key.participant;
 
-    // Check permissions - Must be admin or moderator
-    const isUserAdmin = await AdminActionsManager.isUserAdmin(sock, senderJid, participantJid);
-    
-    if (!isUserAdmin.isAdmin) {
-      await sock.sendMessage(senderJid, {
-        text: '🚫 Seuls les administrateurs peuvent utiliser cette commande.'
-      });
-      return;
-    }
+    // La vérification admin est déjà faite par le handler
+    // Pas besoin de revérifier
 
     // Parse mention
     const mentions = message.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
