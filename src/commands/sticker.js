@@ -1,6 +1,7 @@
 const sharp = require('sharp');
 const { Sticker } = require('wa-sticker-formatter');
 const axios = require('axios');
+const Jimp = require('jimp');
 
 module.exports = {
   name: 'sticker',
@@ -44,10 +45,10 @@ module.exports = {
         }, { quoted: message });
       }
 
-      // Télécharger via l'URL du média
+      // Télécharger via l'URL du média avec Jimp
       let imageBuffer = null;
       try {
-        imageBuffer = await downloadMediaFromUrl(mediaMessage);
+        imageBuffer = await downloadMediaWithJimp(mediaMessage);
       } catch (downloadErr) {
         console.error('[STICKER] Erreur téléchargement:', downloadErr.message);
         return sock.sendMessage(senderJid, {
@@ -131,29 +132,25 @@ module.exports = {
 };
 
 /**
- * Télécharge un media depuis son URL
+ * Télécharge une image via Jimp (supporte les URLs WebP et autres formats)
  * @param {*} mediaMessage - Message média contenant l'URL
- * @returns {Promise<Buffer>} Buffer du média
+ * @returns {Promise<Buffer>} Buffer de l'image en PNG
  */
-async function downloadMediaFromUrl(mediaMessage) {
+async function downloadMediaWithJimp(mediaMessage) {
   try {
     // Extraire l'URL du message média
-    const mediaUrl = mediaMessage?.url || mediaMessage?.directPath;
+    const mediaUrl = mediaMessage?.url;
     
     if (!mediaUrl) {
       throw new Error('URL du média non trouvée');
     }
 
-    // Télécharger via axios
-    const response = await axios.get(mediaUrl, {
-      responseType: 'arraybuffer',
-      timeout: 30000,
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-      }
-    });
-
-    return Buffer.from(response.data);
+    // Charger l'image avec Jimp depuis l'URL
+    const image = await Jimp.read(mediaUrl);
+    
+    // Convertir en PNG (qui est plus universel) et retourner le buffer
+    const buffer = await image.getBuffer('image/png');
+    return buffer;
   } catch (error) {
     throw new Error(`Téléchargement échoué: ${error.message}`);
   }
