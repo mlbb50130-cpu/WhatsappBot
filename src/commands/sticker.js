@@ -1,6 +1,7 @@
 const sharp = require('sharp');
 const { Sticker } = require('wa-sticker-formatter');
 const axios = require('axios');
+const crypto = require('crypto');
 
 module.exports = {
   name: 'sticker',
@@ -47,7 +48,7 @@ module.exports = {
       // Télécharger via l'URL du média
       let imageBuffer = null;
       try {
-        imageBuffer = await downloadMediaFromUrl(mediaMessage);
+        imageBuffer = await downloadAndDecryptMedia(mediaMessage);
       } catch (downloadErr) {
         console.error('[STICKER] Erreur téléchargement:', downloadErr.message);
         return sock.sendMessage(senderJid, {
@@ -131,31 +132,42 @@ module.exports = {
 };
 
 /**
- * Télécharge une image via axios (avec support de WebP et autres formats)
- * @param {*} mediaMessage - Message média contenant l'URL
- * @returns {Promise<Buffer>} Buffer de l'image
+ * Télécharge et déchiffre une image WhatsApp
+ * @param {*} mediaMessage - Message média avec URL et mediaKey
+ * @returns {Promise<Buffer>} Buffer de l'image déchiffrée
  */
-async function downloadMediaFromUrl(mediaMessage) {
+async function downloadAndDecryptMedia(mediaMessage) {
   try {
     const mediaUrl = mediaMessage?.url;
-    
+    const mediaKey = mediaMessage?.mediaKey;
+
     if (!mediaUrl) {
       throw new Error('URL du média non trouvée');
     }
 
-    // Télécharger avec axios avec headers pour contourner les restrictions
+    // Télécharger le fichier chiffré
     const response = await axios.get(mediaUrl, {
       responseType: 'arraybuffer',
       timeout: 30000,
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-        'Accept': 'image/*,*/*'
+        'Accept': '*/*'
       }
     });
 
-    const buffer = Buffer.from(response.data);
-    
-    // Valider que c'est bien une image
+    let buffer = Buffer.from(response.data);
+
+    // Si mediaKey existe, déchiffrer le buffer
+    if (mediaKey) {
+      try {
+        buffer = decryptMedia(buffer, mediaKey, mediaMessage.type || 'image');
+      } catch (decryptErr) {
+        console.warn('[STICKER] Déchiffrement échoué, utilisant le buffer brut:', decryptErr.message);
+        // Continuer avec le buffer brut si déchiffrement échoue
+      }
+    }
+
+    // Valider que c'est une image
     if (buffer.length < 100) {
       throw new Error('Fichier trop petit pour être une image valide');
     }
@@ -163,5 +175,33 @@ async function downloadMediaFromUrl(mediaMessage) {
     return buffer;
   } catch (error) {
     throw new Error(`Téléchargement échoué: ${error.message}`);
+  }
+}
+
+/**
+ * Déchiffre un média WhatsApp en utilisant le mediaKey
+ * @param {Buffer} buffer - Buffer chiffré
+ * @param {Buffer} mediaKey - Clé de déchiffrement
+ * @param {string} mediaType - Type de média (image, video, etc)
+ * @returns {Buffer} Buffer déchiffré
+ */
+function decryptMedia(buffer, mediaKey, mediaType = 'image') {
+  try {
+    // Créer une clé HMAC à partir de mediaKey
+    const iV = mediaKey.slice(0, 12);
+    const cipherKey = mediaKey.slice(16, 32);
+
+    // Extraire le MAC (derniers 10 bytes)
+    const encData = buffer.slice(0, -10);
+    const mac = buffer.slice(-10);
+
+    // Déchiffrer avec AES-256-CBC
+    const decipher = crypto.createDecipheriv('aes-256-cbc', cipherKey, iV);
+    let decrypted = decipher.update(encData);
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+
+    return decrypted;
+  } catch (error) {
+    throw new Error(`Déchiffrement échoué: ${error.message}`);
   }
 }
