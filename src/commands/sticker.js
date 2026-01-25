@@ -1,7 +1,6 @@
 const sharp = require('sharp');
 const { Sticker } = require('wa-sticker-formatter');
 const axios = require('axios');
-const Jimp = require('jimp');
 
 module.exports = {
   name: 'sticker',
@@ -45,10 +44,10 @@ module.exports = {
         }, { quoted: message });
       }
 
-      // Télécharger via l'URL du média avec Jimp
+      // Télécharger via l'URL du média
       let imageBuffer = null;
       try {
-        imageBuffer = await downloadMediaWithJimp(mediaMessage);
+        imageBuffer = await downloadMediaFromUrl(mediaMessage);
       } catch (downloadErr) {
         console.error('[STICKER] Erreur téléchargement:', downloadErr.message);
         return sock.sendMessage(senderJid, {
@@ -132,24 +131,35 @@ module.exports = {
 };
 
 /**
- * Télécharge une image via Jimp (supporte les URLs WebP et autres formats)
+ * Télécharge une image via axios (avec support de WebP et autres formats)
  * @param {*} mediaMessage - Message média contenant l'URL
- * @returns {Promise<Buffer>} Buffer de l'image en PNG
+ * @returns {Promise<Buffer>} Buffer de l'image
  */
-async function downloadMediaWithJimp(mediaMessage) {
+async function downloadMediaFromUrl(mediaMessage) {
   try {
-    // Extraire l'URL du message média
     const mediaUrl = mediaMessage?.url;
     
     if (!mediaUrl) {
       throw new Error('URL du média non trouvée');
     }
 
-    // Charger l'image avec Jimp depuis l'URL
-    const image = await Jimp.read(mediaUrl);
+    // Télécharger avec axios avec headers pour contourner les restrictions
+    const response = await axios.get(mediaUrl, {
+      responseType: 'arraybuffer',
+      timeout: 30000,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Accept': 'image/*,*/*'
+      }
+    });
+
+    const buffer = Buffer.from(response.data);
     
-    // Convertir en PNG (qui est plus universel) et retourner le buffer
-    const buffer = await image.getBuffer('image/png');
+    // Valider que c'est bien une image
+    if (buffer.length < 100) {
+      throw new Error('Fichier trop petit pour être une image valide');
+    }
+
     return buffer;
   } catch (error) {
     throw new Error(`Téléchargement échoué: ${error.message}`);
