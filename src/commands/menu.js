@@ -69,6 +69,7 @@ Et bien d'autres...
 \`!roast @user\` - Faire un roast
 \`!chance\` - Voir ta chance du jour
 \`!ship @user1 @user2\` - Shipper deux personnes
+\`!sticker\` - Convertir une image en sticker WhatsApp
 
 📺 *ANIME & MANGA*
 \`!anime Naruto\` - Info sur un anime
