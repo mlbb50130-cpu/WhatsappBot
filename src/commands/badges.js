@@ -1,3 +1,5 @@
+const BadgeSystem = require('../../utils/badgeSystem');
+
 module.exports = {
   name: 'badges',
   description: 'Voir tes badges et réalisations',
@@ -11,26 +13,11 @@ module.exports = {
     const senderJid = message.key.remoteJid;
 
     try {
-      const badges = {
-        newbie: { emoji: '👶', name: 'Nouveau joueur', condition: 'Level 1' },
-        adventurer: { emoji: '⚔️', name: 'Aventurier', condition: 'Level 5' },
-        warrior: { emoji: '🗡️', name: 'Guerrier', condition: 'Level 10' },
-        legend: { emoji: '👑', name: 'Légende', condition: 'Level 25' },
-        duelist: { emoji: '🤺', name: 'Dueliste', condition: '10 Duels gagnés' },
-        collector: { emoji: '💎', name: 'Collectionneur', condition: '50 Loots' },
-        scholar: { emoji: '📚', name: 'Erudit', condition: '10 Quiz réussis' },
-        lucky: { emoji: '🍀', name: 'Chanceux', condition: 'Jackpot une fois' }
-      };
+      // Vérifier et déverrouiller les nouveaux badges
+      await BadgeSystem.checkAndUnlockBadges(sock, user, senderJid);
 
-      let earnedBadges = [];
-      
-      if (user.level >= 1) earnedBadges.push(badges.newbie);
-      if (user.level >= 5) earnedBadges.push(badges.adventurer);
-      if (user.level >= 10) earnedBadges.push(badges.warrior);
-      if (user.level >= 25) earnedBadges.push(badges.legend);
-      if (user.stats && user.stats.wins >= 10) earnedBadges.push(badges.duelist);
-      if (user.inventory && user.inventory.length >= 50) earnedBadges.push(badges.collector);
-      if (user.stats && user.stats.quiz >= 10) earnedBadges.push(badges.scholar);
+      // Obtenir le statut des badges
+      const { earned, locked } = BadgeSystem.getBadgeStatus(user);
 
       let badgeMessage = `
 ╔════════════════════════════════════╗
@@ -38,19 +25,31 @@ module.exports = {
 ╚════════════════════════════════════╝
 
 👤 *${user.username || 'Joueur'}*
-🏆 *Badges obtenus:* ${earnedBadges.length}/8
+🏆 *Badges obtenus:* ${earned.length}/8
 
-═════════════════════════════════════`;
+═════════════════════════════════════
 
-      earnedBadges.forEach(badge => {
-        badgeMessage += `\n${badge.emoji} *${badge.name}* - ${badge.condition}`;
-      });
+*BADGES DÉVERROUILLÉS:*`;
 
-      if (earnedBadges.length === 0) {
+      if (earned.length > 0) {
+        earned.forEach(badge => {
+          badgeMessage += `\n${badge.emoji} *${badge.name}* ✓`;
+        });
+      } else {
         badgeMessage += '\n❌ Aucun badge pour le moment...';
       }
 
-      badgeMessage += `\n═════════════════════════════════════`;
+      badgeMessage += `
+
+*BADGES À DÉBLOQUER:*`;
+      
+      locked.forEach(badge => {
+        badgeMessage += `\n🔒 ${badge.name} - ${badge.condition}`;
+      });
+
+      badgeMessage += `
+
+═════════════════════════════════════`;
 
       await sock.sendMessage(senderJid, { text: badgeMessage });
     } catch (error) {

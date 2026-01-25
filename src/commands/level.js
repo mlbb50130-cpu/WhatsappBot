@@ -1,4 +1,5 @@
 const XPSystem = require('../utils/xpSystem');
+const MessageFormatter = require('../utils/messageFormatter');
 
 module.exports = {
   name: 'level',
@@ -16,17 +17,14 @@ module.exports = {
     const rankInfo = XPSystem.getRank(user.level);
     const nextRankXp = XPSystem.getTotalXpForLevel(user.level + 1);
     
-    const progressBar = this.getProgressBar(levelInfo.currentLevelXp, levelInfo.requiredXp, 20);
+    const progressBar = MessageFormatter.progressBar(levelInfo.currentLevelXp, levelInfo.requiredXp, 20);
 
-    const text = `
-╔════════════════════════════════════════╗
-║           🎖️ TON NIVEAU 🎖️            ║
-╚════════════════════════════════════════╝
-
-*📊 NIVEAU ACTUEL*
-  ├─ 🎯 Niveau: \`${user.level}\`
-  ├─ 🎌 Rang: ${rankInfo.emoji} ${rankInfo.rank}
-  └─ ⭐ Total XP: \`${user.xp}\`
+    const content = `
+${MessageFormatter.section('NIVEAU ACTUEL', [
+  { label: '🎯 Niveau', value: user.level },
+  { label: '🎌 Rang', value: `${rankInfo.emoji} ${rankInfo.rank}` },
+  { label: '⭐ Total XP', value: user.xp }
+])}
 
 *📈 PROGRESSION VERS NIVEAU ${user.level + 1}*
 ${progressBar}
@@ -34,7 +32,7 @@ ${progressBar}
   ├─ XP requis: \`${levelInfo.requiredXp}\`
   └─ XP manquant: \`${levelInfo.requiredXp - levelInfo.currentLevelXp}\`
 
-*🏆 RANGS DISPONIBLES*
+${MessageFormatter.section('RANGS DISPONIBLES', [])}
   ├─ 🥋 Lv 1-5: Genin Otaku
   ├─ 🎌 Lv 6-10: Chuunin Otaku
   ├─ ⚔️ Lv 11-20: Jounin Otaku
@@ -42,12 +40,15 @@ ${progressBar}
   ├─ ✨ Lv 31-50: Légende Otaku
   └─ 👑 Lv 51+: Dieu Otaku
 
-*💡 CONSEILS*
+${MessageFormatter.section('CONSEILS POUR PROGRESSER', [])}
   ├─ 💬 Gagne 5 XP par message (cooldown 5s)
   ├─ 🎯 Complète les quêtes (+50 XP)
   ├─ 🎯 Gagne les quiz (+25 XP)
   ├─ ⚔️ Gagne les duels (+30 XP)
   └─ 🎁 Ouvre les loots (+10 XP)
+`;
+
+    const text = MessageFormatter.box('🎖️ TON NIVEAU 🎖️', content);
 
 ════════════════════════════════════════
 `;

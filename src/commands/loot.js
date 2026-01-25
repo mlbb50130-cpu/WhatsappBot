@@ -1,4 +1,5 @@
 const RandomUtils = require('../utils/random');
+const MessageFormatter = require('../utils/messageFormatter');
 
 module.exports = {
   name: 'loot',
@@ -43,29 +44,26 @@ module.exports = {
     user.xp += loot.xp;
     await user.save();
 
-    const rarityColors = {
+    const rarityEmojis = {
       common: '⚪',
       rare: '🔵',
       epic: '🟣',
       legendary: '🟡'
     };
 
-    const result = `
-╔════════════════════════════════════════╗
-║           🎁 LOOT OBTENU 🎁           ║
-╚════════════════════════════════════════╝
-
+    const content = `
 ${loot.emoji} *${loot.name}*
-${rarityColors[loot.rarity]} Rareté: ${loot.rarity.toUpperCase()}
+${rarityEmojis[loot.rarity]} *RARETÉ*: ${loot.rarity.toUpperCase()}
 
-*RÉCOMPENSES:*
-  ├─ ✨ XP: +${loot.xp}
-  └─ 📦 Objet ajouté à l'inventaire
+${MessageFormatter.section('RÉCOMPENSES', [
+  { label: '✨ XP', value: `+${loot.xp}` },
+  { label: '📦 Objet', value: 'Ajouté à l\'inventaire' }
+])}
 
-════════════════════════════════════════
-Inventaire: ${user.inventory.length}/50
-════════════════════════════════════════
+📊 *INVENTAIRE*: ${user.inventory.length}/50
 `;
+
+    const result = MessageFormatter.box('🎁 LOOT OBTENU 🎁', content);
 
     await sock.sendMessage(senderJid, { text: result });
   }

@@ -6,6 +6,7 @@ const CooldownManager = require('./utils/cooldown');
 const XPSystem = require('./utils/xpSystem');
 const PermissionManager = require('./utils/permissions');
 const QuestSystem = require('./utils/questSystem');
+const BadgeSystem = require('./utils/badgeSystem');
 
 const commands = new Map();
 
@@ -93,8 +94,10 @@ async function addXP(jid, amount = config.XP_PER_MESSAGE) {
       const newMaxChakra = 100 + (levelInfo.level - 1) * 10;
       user.maxChakra = newMaxChakra;
       
+      await user.save();
+      
       return {
-        user: await user.save(),
+        user,
         leveledUp: true,
         oldLevel,
         newLevel: levelInfo.level,
@@ -102,8 +105,9 @@ async function addXP(jid, amount = config.XP_PER_MESSAGE) {
       };
     }
 
+    await user.save();
     return {
-      user: await user.save(),
+      user,
       leveledUp: false
     };
   } catch (error) {

@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const MessageFormatter = require('../utils/messageFormatter');
 const ImageRotationSystem = require('../utils/imageRotation');
 const Group = require('../models/Group');
 
@@ -18,14 +19,14 @@ module.exports = {
 
     try {
       if (!fs.existsSync(assetPath)) {
-        await sock.sendMessage(senderJid, { text: '❌ Aucune photo trouvée!' });
+        await sock.sendMessage(senderJid, { text: MessageFormatter.error('Aucune photo trouvée!') });
         return;
       }
 
       const files = fs.readdirSync(assetPath).filter(f => /\.(jpg|jpeg|png|gif|webp)$/i.test(f));
       
       if (files.length === 0) {
-        await sock.sendMessage(senderJid, { text: '❌ Aucune photo trouvée!' });
+        await sock.sendMessage(senderJid, { text: MessageFormatter.error('Aucune photo trouvée!') });
         return;
       }
 
@@ -58,7 +59,7 @@ module.exports = {
       const imageBuffer = fs.readFileSync(imagePath);
 
       if (!imageBuffer) {
-        await sock.sendMessage(senderJid, { text: '❌ Erreur lors du chargement!' });
+        await sock.sendMessage(senderJid, { text: MessageFormatter.error('Erreur lors du chargement!') });
         return;
       }
 
@@ -69,11 +70,11 @@ module.exports = {
 
       await sock.sendMessage(senderJid, {
         image: imageBuffer,
-        caption: isGroup ? '⚪ *Bleach*\n\n➕ 2 XP ✨' : '⚪ *Bleach*\n\n'
+        caption: isGroup ? MessageFormatter.success('Bleach') + '\n➕ 2 XP ✨' : MessageFormatter.success('Bleach')
       });
     } catch (error) {
       console.error('Error in bleach command:', error.message);
-      await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      await sock.sendMessage(senderJid, { text: MessageFormatter.error('Erreur!') });
     }
   }
 };

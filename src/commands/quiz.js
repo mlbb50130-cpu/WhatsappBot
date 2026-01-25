@@ -1,4 +1,5 @@
 const RandomUtils = require('../utils/random');
+const MessageFormatter = require('../utils/messageFormatter');
 const fs = require('fs');
 const path = require('path');
 
@@ -30,7 +31,7 @@ module.exports = {
     // Charger tous les quizzes
     const allQuizzes = this.getQuizzes();
     if (allQuizzes.length === 0) {
-      await sock.sendMessage(senderJid, { text: '❌ Aucun quiz disponible.' });
+      await sock.sendMessage(senderJid, { text: MessageFormatter.error('Aucun quiz disponible.') });
       return;
     }
 
@@ -43,9 +44,8 @@ module.exports = {
     
     // Si TOUS les quizzes ont été répondus, afficher un message
     if (availableQuizzes.length === 0) {
-      await sock.sendMessage(senderJid, {
-        text: `🎉 Congratulations! Vous avez répondu à TOUS les ${allQuizzes.length} quizzes! 🎉\n\n👑 Vous êtes un vrai maître du quiz otaku!\n\nRéinitialisation de l'historique pour recommencer...`
-      });
+      const congratsMsg = MessageFormatter.box('🎉 FÉLICITATIONS! 🎉', `Vous avez répondu à TOUS les ${allQuizzes.length} quizzes!\n\n👑 Vous êtes un vrai maître du quiz otaku!\n\nRéinitialisation de l'historique pour recommencer...`);
+      await sock.sendMessage(senderJid, { text: congratsMsg });
       // Réinitialiser SEULEMENT après avoir affiché le message
       user.quizHistory = [];
       availableQuizzes = allQuizzes;
@@ -64,10 +64,6 @@ module.exports = {
     });
 
     const question = `
-╔════════════════════════════════════════╗
-║            📝 QUIZ OTAKU 📝            ║
-╚════════════════════════════════════════╝
-
 *QUESTION:*
 ${quiz.question}
 
@@ -76,11 +72,10 @@ ${options}
 *RÉPONDS:* \`!reponse A\` / \`!reponse B\` / \`!reponse C\` / \`!reponse D\`
 *TEMPS LIMITE:* 30 secondes ⏱️
 
-💡 Récompense: +${quiz.reward} XP
-════════════════════════════════════════
-`;
+💡 Récompense: +${quiz.reward} XP`;
 
-    await sock.sendMessage(senderJid, { text: question });
+    const quizMessage = MessageFormatter.box('📝 QUIZ OTAKU 📝', question);
+    await sock.sendMessage(senderJid, { text: quizMessage });
 
     // Store quiz session avec l'index réel
     if (!global.quizSessions) global.quizSessions = new Map();
@@ -98,7 +93,7 @@ ${options}
         const session = global.quizSessions.get(participantJid);
         if (!session.answered) {
           sock.sendMessage(senderJid, {
-            text: `⏰ Temps écoulé! La bonne réponse était: \`${String.fromCharCode(65 + session.quiz.correct)}\``
+            text: MessageFormatter.warning(`Temps écoulé! La bonne réponse était: \`${String.fromCharCode(65 + session.quiz.correct)}\``)
           });
           global.quizSessions.delete(participantJid);
         }

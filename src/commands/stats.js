@@ -1,3 +1,5 @@
+const MessageFormatter = require('../utils/messageFormatter');
+
 module.exports = {
   name: 'stats',
   description: 'Voir tes statistiques',
@@ -14,33 +16,32 @@ module.exports = {
       ? Math.round((user.stats.wins / user.stats.duels) * 100) 
       : 0;
 
-    const stats = `
-╔════════════════════════════════════════╗
-║         📊 TES STATISTIQUES 📊        ║
-╚════════════════════════════════════════╝
+    const content = `
+${MessageFormatter.section('ACTIVITÉ', [
+  { label: '💬 Messages', value: user.stats.messages },
+  { label: '🎯 Quizzes', value: user.stats.quiz },
+  { label: '⚔️ Duels', value: user.stats.duels }
+])}
 
-*💬 ACTIVITÉ*
-  ├─ Messages: ${user.stats.messages}
-  ├─ Quizzes complétés: ${user.stats.quiz}
-  └─ Duels participés: ${user.stats.duels}
+${MessageFormatter.section('COMBATS', [
+  { label: '✅ Victoires', value: user.stats.wins },
+  { label: '❌ Défaites', value: user.stats.losses },
+  { label: '📊 Taux de victoire', value: `${winRate}%` }
+])}
 
-*⚔️ COMBATS*
-  ├─ Victoires: ${user.stats.wins}
-  ├─ Défaites: ${user.stats.losses}
-  └─ Taux de victoire: ${winRate}%
+${MessageFormatter.section('PROGRESSION', [
+  { label: '🎯 Niveau', value: user.level },
+  { label: '⭐ XP total', value: user.xp },
+  { label: '🏆 Badges', value: user.badges.length },
+  { label: '📦 Objets', value: `${user.inventory.length}/50` }
+])}
 
-*📈 PROGRESSION*
-  ├─ Niveau: ${user.level}
-  ├─ XP total: ${user.xp}
-  ├─ Badges: ${user.badges.length}
-  └─ Objets: ${user.inventory.length}/50
-
-*⚠️ INFRACTIONS*
-  └─ Avertissements: ${user.warnings}/3
-
-════════════════════════════════════════
+${MessageFormatter.section('INFRACTIONS', [
+  { label: '⚠️ Avertissements', value: `${user.warnings}/3` }
+])}
 `;
 
+    const stats = MessageFormatter.box('📊 TES STATISTIQUES 📊', content);
     await sock.sendMessage(senderJid, { text: stats });
   }
 };

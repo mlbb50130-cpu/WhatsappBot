@@ -1,4 +1,5 @@
 const RandomUtils = require('../utils/random');
+const MessageFormatter = require('../utils/messageFormatter');
 
 module.exports = {
   name: 'roulette',
@@ -16,19 +17,9 @@ module.exports = {
     const win = chance > 2; // 4/6 chance de gagner
 
     const gold = 500;
-    const result = `
-╔════════════════════════════════════════╗
-║         🎰 ROULETTE RUSSE 🎰        ║
-╚════════════════════════════════════════╝
-
-🎲 Le cylindre tourne... \`*Clic*\`
-
-${win ? '✅ SURVÉCU!' : '💥 TOUCHÉ!'}
-
-${win ? `Tu as gagné 🪙 ${gold} gold!\n+100 XP` : `Tu as perdu 🪙 ${gold} gold!\nMais c'était amusant!`}
-
-════════════════════════════════════════
-`;
+    const resultText = `🎲 Le cylindre tourne... \`*Clic*\`\n\n${win ? '✅ SURVÉCU!' : '💥 TOUCHÉ!'}\n\n${win ? `Tu as gagné 🪙 ${gold} gold!\n+100 XP` : `Tu as perdu 🪙 ${gold} gold!\nMais c'était amusant!`}`;
+    
+    const result = MessageFormatter.box('🎰 ROULETTE RUSSE 🎰', resultText);
 
     user.xp += win ? 100 : 20;
     await user.save();

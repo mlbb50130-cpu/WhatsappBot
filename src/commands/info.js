@@ -1,3 +1,5 @@
+const MessageFormatter = require('../utils/messageFormatter');
+
 module.exports = {
   name: 'info',
   description: 'Information du bot',
@@ -10,12 +12,7 @@ module.exports = {
   async execute(sock, message, args, user, isGroup, groupData) {
     const senderJid = message.key.remoteJid;
 
-    const info = `
-╔════════════════════════════════════════╗
-║        🤖 INFO TETSUBOT 🤖           ║
-╚════════════════════════════════════════╝
-
-*BOT INFORMATION*
+    const infoContent = `*BOT INFORMATION*
   ├─ Nom: TetsuBot
   ├─ Version: 1.0.0
   ├─ Type: Otaku RPG WhatsApp Bot
@@ -48,11 +45,9 @@ module.exports = {
   ├─ Utilise \`!help\` pour l'aide
   └─ Utilise \`!menu\` pour le menu
 
-════════════════════════════════════════
-Bon jeu! 🎮 Amusez-vous bien!
-════════════════════════════════════════
-`;
+Bon jeu! 🎮 Amusez-vous bien!`;
 
+    const info = MessageFormatter.box('🤖 INFO TETSUBOT 🤖', infoContent);
     await sock.sendMessage(senderJid, { text: info });
   }
 };

@@ -1,4 +1,5 @@
 const RandomUtils = require('../utils/random');
+const MessageFormatter = require('../utils/messageFormatter');
 
 module.exports = {
   name: 'pfc',
@@ -23,7 +24,7 @@ module.exports = {
 
     if (!userChoice || !this.choices.includes(userChoice)) {
       await sock.sendMessage(senderJid, {
-        text: '❌ Utilisation: \`!pfc pierre\` / \`!pfc feuille\` / \`!pfc ciseaux\`'
+        text: MessageFormatter.error('Utilisation: \`!pfc pierre\` / \`!pfc feuille\` / \`!pfc ciseaux\`')
       });
       return;
     }
@@ -55,20 +56,14 @@ module.exports = {
     user.xp += reward;
     await user.save();
 
-    const text = `
-╔════════════════════════════════════════╗
-║     🎮 PIERRE-FEUILLE-CISEAUX 🎮     ║
-╚════════════════════════════════════════╝
-
-*TON CHOIX:* 🎴 ${userChoice.toUpperCase()}
+    const content = `*TON CHOIX:* 🎴 ${userChoice.toUpperCase()}
 *MON CHOIX:* 🤖 ${botChoice.toUpperCase()}
 
 ${result}
 
-*RÉCOMPENSE:* +${reward} XP
+*RÉCOMPENSE:* +${reward} XP`;
 
-════════════════════════════════════════
-`;
+    const text = MessageFormatter.box('🎮 PIERRE-FEUILLE-CISEAUX 🎮', content);
 
     await sock.sendMessage(senderJid, { text });
   }

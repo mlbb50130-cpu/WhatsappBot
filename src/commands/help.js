@@ -1,3 +1,5 @@
+const MessageFormatter = require('../utils/messageFormatter');
+
 module.exports = {
   name: 'help',
   description: 'Aide sur une commande',
@@ -12,17 +14,13 @@ module.exports = {
     const handler = require('../handler');
 
     if (!args[0]) {
-      const help = `
-╔════════════════════════════════════════╗
-║          📚 AIDE DU BOT 📚            ║
-╚════════════════════════════════════════╝
-
+      const content = `
 *UTILISATION GÉNÉRALE:*
 Prefix: \`!\`
 Exemple: \`!profil\`
 
-*CATÉGORIES:*
-  🟦 Utilise \`!help [catégorie]\`
+${MessageFormatter.section('CATÉGORIES', [])}
+🟦 Utilise \`!help [catégorie]\`
   ├─ PROFIL
   ├─ QUIZ
   ├─ COMBATS
@@ -32,7 +30,7 @@ Exemple: \`!profil\`
   ├─ ADMIN
   └─ BOT
 
-*COMMANDES POPULAIRES:*
+${MessageFormatter.section('COMMANDES POPULAIRES', [])}
   ├─ \`!profil\` - Ton profil
   ├─ \`!level\` - Ton niveau
   ├─ \`!duel @user\` - Défier
@@ -42,10 +40,10 @@ Exemple: \`!profil\`
   ├─ \`!chance\` - Chance du jour
   └─ \`!menu\` - Menu complet
 
-════════════════════════════════════════
 Tape \`!help [nom_commande]\` pour plus d'infos!
 `;
 
+      const help = MessageFormatter.box('📚 AIDE DU BOT 📚', content);
       await sock.sendMessage(senderJid, { text: help });
       return;
     }

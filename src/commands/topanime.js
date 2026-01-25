@@ -1,4 +1,5 @@
 const axios = require('axios');
+const MessageFormatter = require('../utils/messageFormatter');
 
 module.exports = {
   name: 'topanime',
@@ -19,32 +20,25 @@ module.exports = {
         });
 
         if (!response.data?.data || response.data.data.length === 0) {
-          await sock.sendMessage(senderJid, { text: '❌ Impossible de récupérer le top!' });
+          await sock.sendMessage(senderJid, { text: MessageFormatter.error('Impossible de récupérer le top!') });
           return;
         }
 
-        let topMessage = `
-╔════════════════════════════════════╗
-║     🏆 TOP 10 DES MEILLEURS 🏆   ║
-║          ANIMES 📺               ║
-╚════════════════════════════════════╝
-
-`;
+        let topMessage = ``;
 
         response.data.data.forEach((anime, i) => {
           const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}.`;
           topMessage += `${medal} *${anime.title}* (${anime.score}/10)\n`;
         });
 
-        topMessage += `
-═════════════════════════════════════
-💡 Utilise \`!anime [nom]\` pour plus d'infos!`;
+        topMessage += `\n💡 Utilise \`!anime [nom]\` pour plus d'infos!`;
 
-        await sock.sendMessage(senderJid, { text: topMessage });
+        const fullMessage = MessageFormatter.box('🏆 TOP 10 DES MEILLEURS ANIMES 🏆', topMessage);
+        await sock.sendMessage(senderJid, { text: fullMessage });
 
       } catch (apiError) {
         console.error('Jikan API error:', apiError.message);
-        await sock.sendMessage(senderJid, { text: '❌ Erreur lors de la récupération!' });
+        await sock.sendMessage(senderJid, { text: MessageFormatter.error('Erreur lors de la récupération!') });
         return;
       }
     } catch (error) {

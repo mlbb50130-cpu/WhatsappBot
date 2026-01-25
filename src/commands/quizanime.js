@@ -1,3 +1,5 @@
+const MessageFormatter = require('../utils/messageFormatter');
+
 module.exports = {
   name: 'quizanime',
   description: 'Quiz spécial anime',
@@ -155,18 +157,13 @@ module.exports = {
 
       const randomQuiz = quizzes[Math.floor(Math.random() * quizzes.length)];
 
-      let quizMessage = `
-╔════════════════════════════════════╗
-║       🎌 QUIZ ANIME 🎌            ║
-╚════════════════════════════════════╝
-
-❓ *${randomQuiz.question}*
+      let quizMessage = `❓ *${randomQuiz.question}*
 
 ${randomQuiz.options.map((opt, i) => `${String.fromCharCode(65 + i)}. ${opt}`).join('\n')}
 
-💡 Réponds avec: \`!reponse A\` (ou B, C, etc.)
+💡 Réponds avec: \`!reponse A\` (ou B, C, etc.)`;
 
-═════════════════════════════════════`;
+      const quiz = MessageFormatter.box('🎌 QUIZ ANIME 🎌', quizMessage);
 
       // Store quiz in sessions (compatible with reponse command)
       if (!global.quizSessions) global.quizSessions = new Map();
@@ -181,10 +178,11 @@ ${randomQuiz.options.map((opt, i) => `${String.fromCharCode(65 + i)}. ${opt}`).j
         timestamp: Date.now()
       });
 
-      await sock.sendMessage(senderJid, { text: quizMessage });
+      await sock.sendMessage(senderJid, { text: quiz });
     } catch (error) {
       console.error('Error in quizanime command:', error.message);
-      await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      await sock.sendMessage(senderJid, { text: MessageFormatter.error('Erreur!') });
     }
   }
+};
 };

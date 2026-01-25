@@ -1,3 +1,5 @@
+const MessageFormatter = require('../utils/messageFormatter');
+
 module.exports = {
   name: 'ping',
   description: 'Vérifier la latence du bot',
@@ -11,26 +13,19 @@ module.exports = {
     const senderJid = message.key.remoteJid;
     const startTime = Date.now();
 
-    const response = await sock.sendMessage(senderJid, {
+    await sock.sendMessage(senderJid, {
       text: '⏱️ Calcul de la latence...'
     });
 
     const latency = Date.now() - startTime;
-
     const status = latency < 100 ? '🟢' : latency < 500 ? '🟡' : '🔴';
 
-    const text = `
-╔════════════════════════════════════════╗
-║         🤖 BOT STATUS 🤖             ║
-╚════════════════════════════════════════╝
+    const content = `${status} *LATENCE*: \`${latency}ms\`
+✅ *STATUS*: En ligne
+📦 *VERSION*: 1.0.0
+⏳ *UPTIME*: ${this.getUptime()}`;
 
-*LATENCE:* ${status} ${latency}ms
-*STATUS:* ✅ En ligne
-*VERSION:* 1.0.0
-*UPTIME:* ${this.getUptime()}
-
-════════════════════════════════════════
-`;
+    const text = MessageFormatter.box('🤖 BOT STATUS 🤖', content);
 
     await sock.sendMessage(senderJid, {
       text

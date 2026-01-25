@@ -1,4 +1,5 @@
 const axios = require('axios');
+const MessageFormatter = require('../utils/messageFormatter');
 
 module.exports = {
   name: 'waifu',
@@ -41,10 +42,10 @@ module.exports = {
 
       // Si aucune image n'a pu être trouvée
       if (!imageUrl) {
-        await sock.sendMessage(senderJid, {
-          text: '🥰 *Une belle waifu pour toi!*\n\n(Les APIs image sont temporairement indisponibles)\n\n➕ 5 XP'
-        });
-        if (isGroup) if (isGroup) user.xp += 5; // Seulement en groupe // Seulement en groupe
+        const content = '(Les APIs image sont temporairement indisponibles)\n\n➕ 5 XP';
+        const text = MessageFormatter.box('🥰 UNE BELLE WAIFU POUR TOI! 🥰', content);
+        await sock.sendMessage(senderJid, { text });
+        if (isGroup) user.xp += 5;
         await user.save();
         return;
       }

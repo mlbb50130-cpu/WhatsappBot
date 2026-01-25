@@ -1,4 +1,5 @@
 const axios = require('axios');
+const MessageFormatter = require('../utils/messageFormatter');
 
 module.exports = {
   name: 'neko',
@@ -29,7 +30,7 @@ module.exports = {
         console.log('[NEKO] Nekos.best API failed:', apiError.message);
       }
 
-      const caption = isGroup ? '🐱 *Neko mignon!*\n\n✨ +5 XP 💫' : '🐱 *Neko mignon!*';
+      const caption = isGroup ? MessageFormatter.box('🐱 NEKO MIGNON! 🐱', '✨ +5 XP 💫') : MessageFormatter.box('🐱 NEKO MIGNON! 🐱', '🐾 Une mignonne petite neko');
       
       if (imageUrl) {
         try {

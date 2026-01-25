@@ -1,4 +1,5 @@
 const RandomUtils = require('../utils/random');
+const MessageFormatter = require('../utils/messageFormatter');
 
 module.exports = {
   name: 'ship',
@@ -16,7 +17,7 @@ module.exports = {
     
     if (mentions.length < 2) {
       await sock.sendMessage(senderJid, {
-        text: '❌ Utilisation: \`!ship @user1 @user2\`'
+        text: MessageFormatter.error('Utilisation: \`!ship @user1 @user2\`')
       });
       return;
     }
@@ -40,22 +41,14 @@ module.exports = {
       response = `💔 NON! ${compatibility}% de compatibilité.\nN'insiste pas!`;
     }
 
-    const ship = `
-╔════════════════════════════════════════╗
-║         💕 SHIP OTAKU 💕             ║
-╚════════════════════════════════════════╝
-
-👤 ${user1} +
+    const shipContent = `👤 ${user1} +
 👤 ${user2}
-═══════════════════════════════════════
 
 ${'❤️'.repeat(Math.floor(compatibility/10))}${'🤍'.repeat(10-Math.floor(compatibility/10))}
 
-${response}
+${response}`;
 
-════════════════════════════════════════
-`;
-
+    const ship = MessageFormatter.box('💕 SHIP OTAKU 💕', shipContent);
     await sock.sendMessage(senderJid, { text: ship });
   }
 };

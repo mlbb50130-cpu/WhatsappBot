@@ -2,6 +2,7 @@ const sharp = require('sharp');
 const { Sticker } = require('wa-sticker-formatter');
 const axios = require('axios');
 const crypto = require('crypto');
+const MessageFormatter = require('../utils/messageFormatter');
 
 module.exports = {
   name: 'sticker',

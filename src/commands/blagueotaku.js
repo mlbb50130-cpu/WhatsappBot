@@ -1,4 +1,5 @@
 const RandomUtils = require('../utils/random');
+const MessageFormatter = require('../utils/messageFormatter');
 
 module.exports = {
   name: 'blagueotaku',
@@ -27,17 +28,8 @@ module.exports = {
 
     const joke = RandomUtils.choice(this.jokes);
 
-    const text = `
-╔════════════════════════════════════════╗
-║       😂 BLAGUE OTAKU 😂             ║
-╚════════════════════════════════════════╝
-
-${joke}
-
-════════════════════════════════════════
-+5 XP pour avoir rigolé!
-════════════════════════════════════════
-`;
+    const jakeContent = `${joke}\n\n+5 XP pour avoir rigé!`;
+    const text = MessageFormatter.box('😂 BLAGUE OTAKU 😂', jakeContent);
 
     user.xp += 5;
     await user.save();

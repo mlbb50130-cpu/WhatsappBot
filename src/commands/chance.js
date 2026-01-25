@@ -1,4 +1,5 @@
 const RandomUtils = require('../utils/random');
+const MessageFormatter = require('../utils/messageFormatter');
 
 module.exports = {
   name: 'chance',
@@ -12,47 +13,55 @@ module.exports = {
   async execute(sock, message, args, user, isGroup, groupData) {
     const senderJid = message.key.remoteJid;
 
-    // Generate luck based on user JID and today's date
-    const today = new Date();
-    const dateString = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
-    const seed = parseInt(user.jid + dateString, 36) % 100;
+    try {
+      // Generate luck based on user JID and today's date
+      const today = new Date();
+      const dateString = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+      const seed = parseInt(user.jid + dateString, 36) % 100;
 
-    const luck = Math.max(0, Math.min(100, seed + RandomUtils.range(-20, 20)));
+      const luck = Math.max(0, Math.min(100, seed + RandomUtils.range(-20, 20)));
 
-    const luckyItems = [
-      { luck: 80, text: '✨ Chance EXTRÊME! Tu peux faire l\'impossible aujourd\'hui!' },
-      { luck: 60, text: '🍀 Bonne chance! Les étoiles sont avec toi!' },
-      { luck: 40, text: '😐 Chance moyenne. Un jour normal.' },
-      { luck: 20, text: '😰 Pas de chance... Mais ce n\'est qu\'un jour!' },
-      { luck: 0, text: '🔥 Très malchanceux! Reste prudent!' }
-    ];
+      const luckyItems = [
+        { luck: 80, text: '✨ Chance EXTRÊME! Tu peux faire l\'impossible aujourd\'hui!' },
+        { luck: 60, text: '🍀 Bonne chance! Les étoiles sont avec toi!' },
+        { luck: 40, text: '😐 Chance moyenne. Un jour normal.' },
+        { luck: 20, text: '😰 Pas de chance... Mais ce n\'est qu\'un jour!' },
+        { luck: 0, text: '🔥 Très malchanceux! Reste prudent!' }
+      ];
 
-    const message_luck = luckyItems.reduce((prev, curr) => 
-      luck >= curr.luck ? curr : prev
-    );
+      const message_luck = luckyItems.reduce((prev, curr) => 
+        luck >= curr.luck ? curr : prev
+      );
 
-    const lucky = `
-╔════════════════════════════════════════╗
-║         🍀 TA CHANCE DU JOUR 🍀       ║
-╚════════════════════════════════════════╝
+      const bar = MessageFormatter.progressBar(luck, 100, 20);
 
+      let advice = '';
+      if (luck > 75) {
+        advice = '🎁 C\'est un bon jour pour tenter un loot!';
+      } else if (luck > 50) {
+        advice = '⚔️ Essaie un duel!';
+      } else if (luck > 25) {
+        advice = '📚 Fais un quiz pour gagner de l\'XP!';
+      } else {
+        advice = '💤 Reste prudent et ne prends pas de risques!';
+      }
+
+      const content = `
 *NIVEAU DE CHANCE:*
-[${'█'.repeat(Math.floor(luck/5))}${'░'.repeat(20-Math.floor(luck/5))}] ${luck}%
+${bar}
 
 *PRÉDICTION:*
 ${message_luck.text}
 
 *CONSEIL:*
-`;
+${advice}`;
 
-    if (luck > 75) {
-      await sock.sendMessage(senderJid, { text: lucky + '🎁 C\'est un bon jour pour tenter un loot!' });
-    } else if (luck > 50) {
-      await sock.sendMessage(senderJid, { text: lucky + '⚔️ Essaie un duel!' });
-    } else if (luck > 25) {
-      await sock.sendMessage(senderJid, { text: lucky + '📚 Fais un quiz pour gagner de l\'XP!' });
-    } else {
-      await sock.sendMessage(senderJid, { text: lucky + '💤 Reste prudent et ne prends pas de risques!' });
+      const chanceMessage = MessageFormatter.box('🎲 TA CHANCE DU JOUR 🎲', content);
+
+      await sock.sendMessage(senderJid, { text: chanceMessage });
+    } catch (error) {
+      console.error('Error in chance command:', error.message);
+      await sock.sendMessage(senderJid, { text: MessageFormatter.error('Une erreur est survenue!') });
     }
   }
 };

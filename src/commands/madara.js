@@ -1,7 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const RandomUtils = require('../utils/random');
+const MessageFormatter = require('../utils/messageFormatter');
 const ImageRotationSystem = require('../utils/imageRotation');
+const Group = require('../models/Group');
 
 module.exports = {
   name: 'madara',
@@ -24,7 +26,7 @@ module.exports = {
 
       if (files.length === 0) {
         await sock.sendMessage(senderJid, {
-          text: '❌ Aucune image disponible pour Madara.'
+          text: MessageFormatter.error('Aucune image disponible pour Madara.')
         });
         return;
       }

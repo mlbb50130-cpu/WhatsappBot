@@ -1,5 +1,6 @@
 const RandomUtils = require('../utils/random');
 const QuestSystem = require('../utils/questSystem');
+const MessageFormatter = require('../utils/messageFormatter');
 
 module.exports = {
   name: 'duel',
@@ -139,10 +140,6 @@ module.exports = {
     await opponent.save();
 
     const result = `
-╔════════════════════════════════════════╗
-║             ⚔️ DUEL ⚔️                 ║
-╚════════════════════════════════════════╝
-
 *ATTAQUANT:*
   ├─ 👤 ${user.username}
   ├─ 🎖️ Niveau ${user.level}
@@ -155,16 +152,17 @@ module.exports = {
   ├─ 🎖️ Niveau ${opponent.level}
   └─ ⚡ Puissance: ${defenderPower}
 
-════════════════════════════════════════
+${winner === 'attacker' 
+  ? `🏆 ${user.username} GAGNE! (+30 XP)` 
+  : `🏆 ${opponent.username} GAGNE! (+30 XP)`}
 
-${winner === 'attacker' ? `🏆 ${user.username} GAGNE!\n+30 XP` : `🏆 ${opponent.username} GAGNE!\n+30 XP`}
-
-Différence: ${difference} points
+📊 Différence: ${difference} points
 🔵 Chakra utilisé: ${chakraCost}
 🔵 Chakra restant: ${user.chakra}/${maxChakra}
-════════════════════════════════════════
 `;
 
-    await sock.sendMessage(senderJid, { text: result });
+    const duelMessage = MessageFormatter.box('⚔️ DUEL ⚔️', result);
+
+    await sock.sendMessage(senderJid, { text: duelMessage });
   }
 };

@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const RandomUtils = require('../utils/random');
+const MessageFormatter = require('../utils/messageFormatter');
 const ImageRotationSystem = require('../utils/imageRotation');
 const Group = require('../models/Group');
 
@@ -25,7 +26,7 @@ module.exports = {
 
       if (files.length === 0) {
         await sock.sendMessage(senderJid, {
-          text: '❌ Aucune image disponible pour Naruto.'
+          text: MessageFormatter.error('Aucune image disponible pour Naruto.')
         });
         return;
       }
@@ -62,8 +63,8 @@ module.exports = {
 
       // Send image with caption
       const caption = isGroup 
-        ? '🧡 *Naruto Uzumaki* 🧡\n\n➕ 15 XP ✨' 
-        : '🧡 *Naruto Uzumaki* 🧡';
+        ? MessageFormatter.success('Naruto Uzumaki') + '\n➕ 15 XP ✨'
+        : MessageFormatter.success('Naruto Uzumaki');
 
       await sock.sendMessage(senderJid, {
         image: imageBuffer,
@@ -79,7 +80,7 @@ module.exports = {
     } catch (error) {
       console.error(`[NARUTO] Error: ${error.message}`);
       await sock.sendMessage(senderJid, {
-        text: '❌ Erreur lors du chargement de l\'image.'
+        text: MessageFormatter.error('Erreur lors du chargement de l\'image.')
       });
     }
   }

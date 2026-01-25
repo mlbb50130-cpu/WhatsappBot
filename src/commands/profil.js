@@ -1,4 +1,5 @@
 const XPSystem = require('../utils/xpSystem');
+const MessageFormatter = require('../utils/messageFormatter');
 
 module.exports = {
   name: 'profil',
@@ -15,47 +16,42 @@ module.exports = {
     const levelInfo = XPSystem.calculateLevelFromXp(user.xp);
     const rankInfo = XPSystem.getRank(levelInfo.level);
     
-    const progressBar = this.getProgressBar(levelInfo.currentLevelXp, levelInfo.requiredXp, 15);
+    const progressBar = MessageFormatter.progressBar(levelInfo.currentLevelXp, levelInfo.requiredXp, 15);
     
     const badges = user.badges.length > 0 
       ? user.badges.map(b => `${b.emoji} ${b.name}`).join(', ')
       : '❌ Aucun badge';
 
-    const profile = `
-╔════════════════════════════════════════╗
-║         👤 TON PROFIL OTAKU 👤        ║
-╚════════════════════════════════════════╝
+    const content = `
+👤 *NOM*: \`${user.username}\`
+🎌 *RANG*: ${rankInfo.emoji} ${user.rank}
+📍 *TITRE*: ${user.title}
 
-*👤 Nom:* ${user.username}
-*🎌 Rang:* ${rankInfo.emoji} ${user.rank}
-*📍 Titre:* ${user.title}
-
-*📊 STATISTIQUES*
-  ├─ 🎯 Niveau: ${levelInfo.level}
-  ├─ ⭐ XP: ${user.xp}
-  ├─ 💬 Messages: ${user.stats.messages}
-  ├─ 🎯 Quiz: ${user.stats.quiz}
-  ├─ ⚔️ Duels: ${user.stats.duels}
-  ├─ 🏆 Victoires: ${user.stats.wins}
-  └─ 💔 Défaites: ${user.stats.losses}
+${MessageFormatter.section('STATISTIQUES', [
+  { label: '🎯 Niveau', value: levelInfo.level },
+  { label: '⭐ XP', value: user.xp },
+  { label: '💬 Messages', value: user.stats.messages },
+  { label: '🎯 Quiz', value: user.stats.quiz },
+  { label: '⚔️ Duels', value: user.stats.duels },
+  { label: '🏆 Victoires', value: user.stats.wins },
+  { label: '💔 Défaites', value: user.stats.losses }
+])}
 
 *🎖️ PROGRESSION*
 ${progressBar} ${levelInfo.currentLevelXp}/${levelInfo.requiredXp}
 
-*🏅 BADGES*
+${MessageFormatter.section('BADGES', [])}
 ${badges}
 
-*⚖️ INVENTAIRE*
-  ├─ 📦 Objets: ${user.inventory.length}
-  └─ 🎁 Emplacements: ${user.inventory.length}/50
+${MessageFormatter.section('INVENTAIRE', [
+  { label: '📦 Objets', value: user.inventory.length },
+  { label: '🎁 Emplacements', value: `${user.inventory.length}/50` }
+])}
 
-*📅 COMPTE*
-  └─ 📆 Créé le: ${new Date(user.createdAt).toLocaleDateString('fr-FR')}
-
-════════════════════════════════════════
-Utilise \`!help\` pour voir les commandes!
-════════════════════════════════════════
+📆 *COMPTE CRÉÉ LE*: \`${new Date(user.createdAt).toLocaleDateString('fr-FR')}\`
 `;
+
+    const profile = MessageFormatter.box('👤 TON PROFIL OTAKU 👤', content);
 
     await sock.sendMessage(senderJid, { text: profile });
   },

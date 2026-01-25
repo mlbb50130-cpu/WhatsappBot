@@ -1,4 +1,5 @@
 const RandomUtils = require('../utils/random');
+const MessageFormatter = require('../utils/messageFormatter');
 
 module.exports = {
   name: 'roast',
@@ -38,18 +39,10 @@ module.exports = {
     }
 
     const roast = RandomUtils.choice(this.roasts);
+    const roastContent = `*À:* ${targetUser.username}
 
-    const text = `
-╔════════════════════════════════════════╗
-║           🔥 ROAST OTAKU 🔥           ║
-╚════════════════════════════════════════╝
-
-*À:* ${targetUser.username}
-
-*🎤 ${roast}*
-
-════════════════════════════════════════
-`;
+*🎤 ${roast}*`;
+    const text = MessageFormatter.box('🔥 ROAST OTAKU 🔥', roastContent);
 
     await sock.sendMessage(senderJid, { text });
   }

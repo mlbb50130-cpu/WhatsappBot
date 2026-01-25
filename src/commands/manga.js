@@ -1,4 +1,5 @@
 const axios = require('axios');
+const MessageFormatter = require('../utils/messageFormatter');
 
 module.exports = {
   name: 'manga',
@@ -14,7 +15,7 @@ module.exports = {
 
     try {
       if (!args || args.length === 0) {
-        await sock.sendMessage(senderJid, { text: '❌ Utilise: !manga [nom]' });
+        await sock.sendMessage(senderJid, { text: MessageFormatter.error('Utilise: !manga [nom]') });
         return;
       }
 
@@ -26,37 +27,31 @@ module.exports = {
         });
 
         if (!response.data?.data || response.data.data.length === 0) {
-          await sock.sendMessage(senderJid, { text: '❌ Manga non trouvé!' });
+          await sock.sendMessage(senderJid, { text: MessageFormatter.error('Manga non trouvé!') });
           return;
         }
 
         const manga = response.data.data[0];
 
         let mangaMessage = `
-╔════════════════════════════════════╗
-║       📚 INFOS MANGA 📚           ║
-╚════════════════════════════════════╝
-
 *${manga.title}*
 📝 Titre anglais: ${manga.title_english || 'N/A'}
 
-🎯 *Informations:*
-  Type: ${manga.type || 'N/A'}
-  Chapitres: ${manga.chapters || '?'}
-  Tomes: ${manga.volumes || '?'}
-  Statut: ${manga.status || 'N/A'}
-  Note: ${manga.score ? manga.score + '/10' : 'N/A'}
-  Année: ${manga.year || 'N/A'}
+🎯 *Type:* ${manga.type || 'N/A'}
+📖 *Chapitres:* ${manga.chapters || '?'}
+📚 *Tomes:* ${manga.volumes || '?'}
+✅ *Statut:* ${manga.status || 'N/A'}
+⭐ *Note:* ${manga.score ? manga.score + '/10' : 'N/A'}
+📅 *Année:* ${manga.year || 'N/A'}
 
-📖 *Synopsis:* ${manga.synopsis ? manga.synopsis.substring(0, 150) + '...' : 'N/A'}
+📖 *Synopsis:* ${manga.synopsis ? manga.synopsis.substring(0, 150) + '...' : 'N/A'}`;
 
-═════════════════════════════════════`;
-
-        await sock.sendMessage(senderJid, { text: mangaMessage });
+        const content = MessageFormatter.box('📚 INFOS MANGA 📚', mangaMessage);
+        await sock.sendMessage(senderJid, { text: content });
 
       } catch (apiError) {
         console.error('Jikan API error:', apiError.message);
-        await sock.sendMessage(senderJid, { text: '❌ Erreur lors de la récupération des données!' });
+        await sock.sendMessage(senderJid, { text: MessageFormatter.error('Erreur lors de la récupération des données!') });
         return;
       }
     } catch (error) {

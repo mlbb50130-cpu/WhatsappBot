@@ -1,3 +1,5 @@
+const MessageFormatter = require('../utils/messageFormatter');
+
 module.exports = {
   name: 'menu',
   description: 'Affiche le menu principal du bot',
@@ -11,13 +13,9 @@ module.exports = {
     const senderJid = message.key.remoteJid;
     
     const menu = `
-╔════════════════════════════════════════╗
-║     � TETSUBOT - OTAKU RPG BOT 🎌    ║
-╚════════════════════════════════════════╝
-
 📚 *CATÉGORIES DE COMMANDES*
 
-� *PROFIL & LEVEL*
+👤 *PROFIL & LEVEL*
 \`!profil\` - Voir ton profil
 \`!level\` - Voir ton niveau
 \`!xp\` - Voir ton XP
@@ -52,7 +50,7 @@ module.exports = {
 \`!neko\` - Image chat anime
 \`!animegif\` - GIF anime aléatoire
 
-� *PERSONNAGES SPÉCIAUX*
+🌟 *PERSONNAGES SPÉCIAUX*
 \`!assets\` - Liste de tous les personnages disponibles
 \`!bleach\` - Images Bleach
 \`!naruto\` - Images Naruto
@@ -77,12 +75,12 @@ Et bien d'autres...
 \`!manga OnePiece\` - Info sur un manga
 \`!personnage Gojo\` - Info sur un personnage
 
-� *CLASSEMENTS*
+🏆 *CLASSEMENTS*
 \`!topanime\` - Top 10 des animes
 \`!topmanga\` - Top 10 des mangas
 \`!classement level\` - Classement par niveau
 
-� *ANIME & STREAMING*
+🎬 *ANIME & STREAMING*
 \`!anime [nom]\` - Infos anime sur AniList
 \`!voiranime [nom]\` - Rechercher sur VoirAnime (lien dans les DM)
 
@@ -107,18 +105,14 @@ Et bien d'autres...
 \`!groupinfo\` - Info du groupe
 \`!admins\` - Liste des administrateurs
 
-═════════════════════════════════════════
-
 *Utilise le préfixe !*
 Exemple: \`!profil\`
 
 💎 Gagne de l'XP en parlant dans le chat!
 🎯 Complète des quêtes et des missions!
-⚡ Affronte d'autres joueurs en duel!
+⚡ Affronte d'autres joueurs en duel!`;
 
-═════════════════════════════════════════
-`;
-
-    await sock.sendMessage(senderJid, { text: menu });
+    const content = MessageFormatter.box('🎌 TETSUBOT - OTAKU RPG BOT 🎌', menu);
+    await sock.sendMessage(senderJid, { text: content });
   }
 };

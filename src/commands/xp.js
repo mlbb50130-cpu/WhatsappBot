@@ -1,4 +1,5 @@
 const XPSystem = require('../utils/xpSystem');
+const MessageFormatter = require('../utils/messageFormatter');
 
 module.exports = {
   name: 'xp',
@@ -14,36 +15,32 @@ module.exports = {
 
     try {
       if (!user) {
-        await sock.sendMessage(senderJid, { text: '❌ Utilisateur introuvable!' });
+        await sock.sendMessage(senderJid, { text: MessageFormatter.error('Utilisateur introuvable!') });
         return;
       }
 
-      // Utiliser le système XP réel
       const levelInfo = XPSystem.calculateLevelFromXp(user.xp || 0);
       const rankInfo = XPSystem.getRank(levelInfo.level);
       
       const progressPercent = Math.round((levelInfo.currentLevelXp / levelInfo.requiredXp) * 100);
-      const filled = Math.round((progressPercent / 100) * 15);
-      const empty = 15 - filled;
-      const progressBar = `[${('█').repeat(filled)}${('░').repeat(empty)}] ${progressPercent}%`;
+      const progressBar = MessageFormatter.progressBar(levelInfo.currentLevelXp, levelInfo.requiredXp, 15);
       
-      const xpMessage = `
-╔════════════════════════════════════╗
-║          💫 TON XP ACTUEL 💫       ║
-╚════════════════════════════════════╝
+      const content = `
+👤 *UTILISATEUR*: ${user.username || 'Joueur'}
+${rankInfo.emoji} *NIVEAU*: ${levelInfo.level} - ${rankInfo.rank}
 
-👤 *Utilisateur:* ${user.username || 'Joueur'}
-${rankInfo.emoji} *Niveau:* ${levelInfo.level} - ${rankInfo.rank}
-✨ *XP Actuel:* ${levelInfo.currentLevelXp}/${levelInfo.requiredXp}
-📊 *XP Total:* ${user.xp || 0}
+${MessageFormatter.section('XP', [
+  { label: '✨ Actuel', value: `${levelInfo.currentLevelXp}/${levelInfo.requiredXp}` },
+  { label: '📊 Total', value: user.xp || 0 }
+])}
 
-*Progression vers le niveau ${levelInfo.level + 1}:*
+*PROGRESSION VERS LE NIVEAU ${levelInfo.level + 1}:*
 ${progressBar}
 
 ${progressPercent === 100 ? '🎉 Tu es prêt pour le levelup!' : '⏳ Continue pour progresser!'}
+`;
 
-═════════════════════════════════════`;
-
+      const xpMessage = MessageFormatter.box('💫 TON XP ACTUEL 💫', content);
       await sock.sendMessage(senderJid, { text: xpMessage });
     } catch (error) {
       console.error('Error in xp command:', error.message);
