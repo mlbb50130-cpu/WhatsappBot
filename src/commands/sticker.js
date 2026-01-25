@@ -1,5 +1,6 @@
 const sharp = require('sharp');
 const { Sticker } = require('wa-sticker-formatter');
+const axios = require('axios');
 
 module.exports = {
   name: 'sticker',
@@ -13,33 +14,16 @@ module.exports = {
     const senderJid = message.key.remoteJid;
     
     try {
-      let imageBuffer = null;
-      let mediaType = null;
+      let mediaMessage = null;
 
       // Cas 1: Image en réponse
       if (message.message?.extendedTextMessage?.contextInfo?.quotedMessage) {
         const quotedMsg = message.message.extendedTextMessage.contextInfo.quotedMessage;
         
         if (quotedMsg.imageMessage) {
-          mediaType = 'image';
-          try {
-            imageBuffer = await downloadMedia(sock, quotedMsg.imageMessage);
-          } catch (downloadErr) {
-            console.error('[STICKER] Erreur téléchargement réponse:', downloadErr.message);
-            return sock.sendMessage(senderJid, {
-              text: '❌ Impossible de télécharger l\'image. Réessaie.'
-            }, { quoted: message });
-          }
+          mediaMessage = quotedMsg.imageMessage;
         } else if (quotedMsg.videoMessage) {
-          mediaType = 'video';
-          try {
-            imageBuffer = await downloadMedia(sock, quotedMsg.videoMessage);
-          } catch (downloadErr) {
-            console.error('[STICKER] Erreur téléchargement vidéo:', downloadErr.message);
-            return sock.sendMessage(senderJid, {
-              text: '❌ Impossible de télécharger la vidéo. Réessaie.'
-            }, { quoted: message });
-          }
+          mediaMessage = quotedMsg.videoMessage;
         } else {
           return sock.sendMessage(senderJid, {
             text: '❌ Veuillez répondre à une image ou une vidéo valide'
@@ -48,31 +32,26 @@ module.exports = {
       }
       // Cas 2: Image directement attachée
       else if (message.message?.imageMessage) {
-        mediaType = 'image';
-        try {
-          imageBuffer = await downloadMedia(sock, message.message.imageMessage);
-        } catch (downloadErr) {
-          console.error('[STICKER] Erreur téléchargement image directe:', downloadErr.message);
-          return sock.sendMessage(senderJid, {
-            text: '❌ Impossible de télécharger l\'image. Réessaie.'
-          }, { quoted: message });
-        }
+        mediaMessage = message.message.imageMessage;
       }
       // Cas 3: Vidéo directement attachée
       else if (message.message?.videoMessage) {
-        mediaType = 'video';
-        try {
-          imageBuffer = await downloadMedia(sock, message.message.videoMessage);
-        } catch (downloadErr) {
-          console.error('[STICKER] Erreur téléchargement vidéo directe:', downloadErr.message);
-          return sock.sendMessage(senderJid, {
-            text: '❌ Impossible de télécharger la vidéo. Réessaie.'
-          }, { quoted: message });
-        }
+        mediaMessage = message.message.videoMessage;
       }
       else {
         return sock.sendMessage(senderJid, {
-          text: '❌ Usage: Réponds à une image/vidéo avec `!sticker`\n\nOu envoie une image avec le message'
+          text: '❌ Usage: Réponds à une image/vidéo avec `!sticker`'
+        }, { quoted: message });
+      }
+
+      // Télécharger via l'URL du média
+      let imageBuffer = null;
+      try {
+        imageBuffer = await downloadMediaFromUrl(mediaMessage);
+      } catch (downloadErr) {
+        console.error('[STICKER] Erreur téléchargement:', downloadErr.message);
+        return sock.sendMessage(senderJid, {
+          text: '❌ Impossible de télécharger le média. Réessaie.'
         }, { quoted: message });
       }
 
@@ -152,25 +131,29 @@ module.exports = {
 };
 
 /**
- * Télécharge un media depuis WhatsApp
- * @param {*} sock - Socket Baileys
- * @param {*} mediaMessage - Message média
+ * Télécharge un media depuis son URL
+ * @param {*} mediaMessage - Message média contenant l'URL
  * @returns {Promise<Buffer>} Buffer du média
  */
-async function downloadMedia(sock, mediaMessage) {
+async function downloadMediaFromUrl(mediaMessage) {
   try {
-    const stream = await sock.downloadMediaMessage(mediaMessage);
+    // Extraire l'URL du message média
+    const mediaUrl = mediaMessage?.url || mediaMessage?.directPath;
     
-    if (Buffer.isBuffer(stream)) {
-      return stream;
+    if (!mediaUrl) {
+      throw new Error('URL du média non trouvée');
     }
 
-    const chunks = [];
-    return new Promise((resolve, reject) => {
-      stream.on('data', chunk => chunks.push(chunk));
-      stream.on('end', () => resolve(Buffer.concat(chunks)));
-      stream.on('error', reject);
+    // Télécharger via axios
+    const response = await axios.get(mediaUrl, {
+      responseType: 'arraybuffer',
+      timeout: 30000,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+      }
     });
+
+    return Buffer.from(response.data);
   } catch (error) {
     throw new Error(`Téléchargement échoué: ${error.message}`);
   }
