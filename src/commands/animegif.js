@@ -1,4 +1,5 @@
 const axios = require('axios');
+const MessageFormatter = require('../utils/messageFormatter');
 
 module.exports = {
   name: 'animegif',

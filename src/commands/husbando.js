@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const MessageFormatter = require('../utils/messageFormatter');
 const ImageRotationSystem = require('../utils/imageRotation');
 
 module.exports = {
