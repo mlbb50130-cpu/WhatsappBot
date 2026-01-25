@@ -45,10 +45,10 @@ module.exports = {
         }
       }
 
-      // Get all image files from HentaiVD folder
+      // Get all image/video files from HentaiVD folder
       const assetPath = path.join(__dirname, '../asset/HentaiVD');
       const files = fs.readdirSync(assetPath).filter(file => 
-        /\.(jpg|jpeg|png|gif)$/i.test(file)
+        /\.(jpg|jpeg|png|gif|mp4|webm|mov)$/i.test(file)
       );
 
       if (files.length === 0) {
