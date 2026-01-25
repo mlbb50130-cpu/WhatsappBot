@@ -213,11 +213,11 @@ async function handleMessage(sock, message, isGroup, groupData) {
     }
 
     // Vérifier si le module de la commande est activé en groupe
-    const allowedWithoutModule = ['setmodule', 'modules', 'help', 'menu', 'activatebot', 'documentation', 'assets', 'whoami'];
+    const allowedWithoutModule = ['modules', 'help', 'menu', 'activatebot', 'documentation', 'assets', 'whoami'];
     if (isGroup && senderJid.endsWith('@g.us') && !allowedWithoutModule.includes(commandName)) {
       if (!ModuleManager.isCommandAllowed(senderJid, commandName)) {
         await sock.sendMessage(senderJid, {
-          text: `❌ Cette commande n'est pas activée dans ce groupe.\n\n!setmodule status - Voir les modules\n!setmodule on <module> - Activer un module`
+          text: `❌ Cette commande n'est pas activée dans ce groupe.\n\nContactez un administrateur pour activer les modules.`
         });
         return;
       }
