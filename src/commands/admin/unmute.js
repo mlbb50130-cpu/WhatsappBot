@@ -2,10 +2,11 @@ const AdminActionsManager = require('../../utils/adminActions');
 
 module.exports = {
   name: 'unmute',
+  aliases: ['desimulet'],
   description: 'Rendre le groupe vivant - Tous les membres peuvent écrire',
-  category: 'ADMIN',
+  category: 'admin',
   usage: '!unmute',
-  adminOnly: false,
+  adminOnly: true,
   groupOnly: true,
   cooldown: 5,
 

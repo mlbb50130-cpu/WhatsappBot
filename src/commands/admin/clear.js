@@ -2,10 +2,11 @@ const PermissionManager = require('../../utils/permissions');
 
 module.exports = {
   name: 'clear',
+  aliases: ['nettoyer'],
   description: 'Effacer les messages du groupe',
-  category: 'ADMIN',
+  category: 'admin',
   usage: '!clear',
-  adminOnly: false,
+  adminOnly: true,
   groupOnly: true,
   cooldown: 10,
 

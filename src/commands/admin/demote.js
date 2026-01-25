@@ -2,10 +2,11 @@ const AdminActionsManager = require('../../utils/adminActions');
 
 module.exports = {
   name: 'demote',
+  aliases: ['retrograder'],
   description: 'Rétrograder un administrateur',
-  category: 'ADMIN',
-  usage: '!demote @admin',
-  adminOnly: false,
+  category: 'admin',
+  usage: '!demote @user',
+  adminOnly: true,
   groupOnly: true,
   cooldown: 5,
 

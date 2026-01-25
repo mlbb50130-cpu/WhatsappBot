@@ -2,8 +2,9 @@ const AdminActionsManager = require('../../utils/adminActions');
 
 module.exports = {
   name: 'admins',
+  aliases: ['admin'],
   description: 'Lister tous les administrateurs du groupe',
-  category: 'ADMIN',
+  category: 'admin',
   usage: '!admins',
   adminOnly: false,
   groupOnly: true,

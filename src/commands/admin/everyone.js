@@ -2,10 +2,11 @@ const AdminActionsManager = require('../../utils/adminActions');
 
 module.exports = {
   name: 'everyone',
+  aliases: ['all', 'tous'],
   description: 'Tagger tous les membres du groupe',
-  category: 'ADMIN',
+  category: 'admin',
   usage: '!everyone [message]',
-  adminOnly: false,
+  adminOnly: true,
   groupOnly: true,
   cooldown: 10,
 

@@ -2,8 +2,9 @@ const AdminActionsManager = require('../../utils/adminActions');
 
 module.exports = {
   name: 'groupinfo',
+  aliases: ['infogroupes', 'groupeinfo'],
   description: 'Afficher les informations du groupe',
-  category: 'ADMIN',
+  category: 'admin',
   usage: '!groupinfo',
   adminOnly: false,
   groupOnly: true,

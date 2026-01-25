@@ -3,8 +3,9 @@ const User = require('../../models/User');
 
 module.exports = {
   name: 'setxp',
+  aliases: ['fixerxp'],
   description: 'Définir l\'XP d\'un utilisateur (ADMIN)',
-  category: 'ADMIN',
+  category: 'admin',
   usage: '!setxp @user 500',
   adminOnly: true,
   groupOnly: false,

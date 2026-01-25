@@ -5,10 +5,11 @@ const config = require('../../config');
 
 module.exports = {
   name: 'tournoisquiz',
+  aliases: ['tourquiz', 'tournoi'],
   description: 'Lancer un tournoi de quiz automatique (Admin uniquement)',
-  category: 'ADMIN',
+  category: 'admin',
   usage: '!tournoisquiz',
-  adminOnly: false,
+  adminOnly: true,
   groupOnly: true,
   cooldown: 30,
   customAdminCheck: 'tournoisquiz', // Custom check pour admin tournoisquiz

@@ -2,10 +2,11 @@ const AdminActionsManager = require('../../utils/adminActions');
 
 module.exports = {
   name: 'mute',
+  aliases: ['silence'],
   description: 'Rendre le groupe muet - Seuls les admins peuvent écrire',
-  category: 'ADMIN',
+  category: 'admin',
   usage: '!mute',
-  adminOnly: false,
+  adminOnly: true,
   groupOnly: true,
   cooldown: 5,
 

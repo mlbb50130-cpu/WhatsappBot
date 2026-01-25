@@ -2,10 +2,11 @@ const AdminActionsManager = require('../../utils/adminActions');
 
 module.exports = {
   name: 'promote',
+  aliases: ['promouvoir'],
   description: 'Promouvoir un utilisateur en administrateur',
-  category: 'ADMIN',
+  category: 'admin',
   usage: '!promote @user',
-  adminOnly: false,
+  adminOnly: true,
   groupOnly: true,
   cooldown: 5,
 

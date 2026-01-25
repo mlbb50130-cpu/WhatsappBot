@@ -2,10 +2,11 @@ const AdminActionsManager = require('../../utils/adminActions');
 
 module.exports = {
   name: 'unlock',
-  description: 'Déverrouiller le groupe - Tous les membres peuvent modifier les paramètres',
-  category: 'ADMIN',
+  aliases: ['deverrouiller'],
+  description: 'Déverrouiller le groupe (tout le monde peut envoyer des messages)',
+  category: 'admin',
   usage: '!unlock',
-  adminOnly: false,
+  adminOnly: true,
   groupOnly: true,
   cooldown: 5,
 

@@ -3,10 +3,11 @@ const User = require('../../models/User');
 
 module.exports = {
   name: 'warn',
+  aliases: ['avertir'],
   description: 'Avertir un utilisateur - 3 avertissements = ban automatique',
-  category: 'ADMIN',
+  category: 'admin',
   usage: '!warn @user [raison]',
-  adminOnly: false,
+  adminOnly: true,
   groupOnly: true,
   cooldown: 5,
 

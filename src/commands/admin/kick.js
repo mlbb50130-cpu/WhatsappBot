@@ -3,10 +3,11 @@ const AdminActionsManager = require('../../utils/adminActions');
 
 module.exports = {
   name: 'kick',
+  aliases: ['expulser'],
   description: 'Expulser un utilisateur du groupe',
-  category: 'ADMIN',
+  category: 'admin',
   usage: '!kick @user [raison]',
-  adminOnly: false,
+  adminOnly: true,
   groupOnly: true,
   cooldown: 5,
 

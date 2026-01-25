@@ -2,10 +2,11 @@ const AdminActionsManager = require('../../utils/adminActions');
 
 module.exports = {
   name: 'lock',
-  description: 'Verrouiller le groupe - Seuls les admins peuvent modifier les paramètres',
-  category: 'ADMIN',
+  aliases: ['verrouiller'],
+  description: 'Verrouiller le groupe (seuls les admins peuvent envoyer des messages)',
+  category: 'admin',
   usage: '!lock',
-  adminOnly: false,
+  adminOnly: true,
   groupOnly: true,
   cooldown: 5,
 
