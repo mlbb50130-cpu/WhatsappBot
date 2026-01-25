@@ -133,7 +133,9 @@ const userSchema = new mongoose.Schema({
       gojo: { type: [String], default: [] },
       deku: { type: [String], default: [] },
       boahancook: { type: [String], default: [] },
-      waifu: { type: [String], default: [] }
+      waifu: { type: [String], default: [] },
+      hentai: { type: [String], default: [] },
+      hentaivd: { type: [String], default: [] }
     }
   },
   createdAt: {
