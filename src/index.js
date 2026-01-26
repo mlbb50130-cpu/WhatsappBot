@@ -181,9 +181,79 @@ async function connectToWhatsApp() {
     }
   });
 
-  // Handle participant updates
-  sock.ev.on('group-participants.update', (update) => {
+  // Handle participant updates (nouveau membre / membre qui part)
+  sock.ev.on('group-participants.update', async (update) => {
     console.log(`${config.COLORS.CYAN}👥 Group participants update in ${update.id}${config.COLORS.RESET}`);
+    
+    try {
+      const groupJid = update.id;
+      const action = update.action; // 'add' ou 'remove'
+      const participants = update.participants;
+      
+      // Récupérer les infos du groupe
+      let groupName = groupJid;
+      try {
+        const groupMetadata = await sock.groupMetadata(groupJid);
+        groupName = groupMetadata.subject;
+      } catch (e) {
+        // Ignore if group metadata fails
+      }
+      
+      if (action === 'add') {
+        // Nouveau membre
+        for (const participant of participants) {
+          const userName = participant.split('@')[0];
+          
+          await sock.sendMessage(groupJid, {
+            text: `
+╔════════════════════════════════════════╗
+║   👋 BIENVENUE DANS LE GROUPE! 🎉      ║
+╚════════════════════════════════════════╝
+
+Bienvenue @${userName.replace(/[^0-9]/g, '')} dans *${groupName}*! 🌟
+
+Je suis **TetsuBot** - Un bot RPG interactif pour WhatsApp!
+
+📚 *POUR COMMENCER:*
+Envoie \`!documentation\` pour voir toutes mes commandes
+(Accessible même sans activation du bot)
+
+📊 *CE QUE TU PEUX FAIRE:*
+✨ Gagner de l'XP et monter de niveau
+📜 Participer à des quêtes quotidiennes  
+⚔️ Affronter d'autres joueurs en duel
+🎲 Ouvrir des loots aléatoires
+📺 Voir des images anime
+🎮 Jouer à des quiz
+🏆 Participer à des tournois
+
+💡 *BESOIN D'AIDE?*
+Tape \`!help\` pour avoir les commandes disponibles
+
+Amusez-vous bien! 🎊`,
+            mentions: [participant]
+          });
+        }
+      } else if (action === 'remove') {
+        // Membre qui part
+        for (const participant of participants) {
+          const userName = participant.split('@')[0];
+          
+          await sock.sendMessage(groupJid, {
+            text: `
+╔════════════════════════════════════════╗
+║    👋 UN MEMBRE NOUS QUITTE 😢        ║
+╚════════════════════════════════════════╝
+
+@${userName.replace(/[^0-9]/g, '')} a quitté le groupe *${groupName}*
+
+Merci d'avoir participé! À bientôt! 🤗`
+          });
+        }
+      }
+    } catch (error) {
+      console.error('[PARTICIPANTS UPDATE ERROR]', error.message);
+    }
   });
 
   // Handle errors
