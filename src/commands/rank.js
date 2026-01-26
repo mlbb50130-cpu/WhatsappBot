@@ -23,32 +23,27 @@ module.exports = {
         const nextRank = RankSystem.getNextRank(user);
         const progress = RankSystem.getRankProgressPercentage(user);
 
-        let rankDetails = `
-╔════════════════════════════════════╗
-║      🎖️ INFORMATIONS RANG 🎖️       ║
+        let rankDetails = `╔════════════════════════════════════╗
+║        RANG OTAKU                 ║
 ╚════════════════════════════════════╝
-
-${rankInfo.emoji} *${rankInfo.name}*
+${rankInfo.emoji} ${rankInfo.name}
 ${rankInfo.description}
-
-├─ 📊 Niveau: *${user.level}*
-├─ ⭐ Condition: ${rankInfo.condition}
-├─ 🎖️ Catégorie: Otaku${nextRank ? `
-├─ 📈 Prochain Rang: ${nextRank.emoji} *${nextRank.name}*
-├─ 📊 Progression: ${progress}% ${getProgressBar(progress)}
-├─ 🎯 Niveau requis: ${nextRank.minLevel}
-└─ 🔄 Levels restants: ${nextRank.minLevel - user.level}` : `
-└─ 🏆 Vous avez atteint le rang maximum!`}
-
+├─ Niveau: ${user.level}
+├─ Condition: ${rankInfo.condition}
+├─ Catégorie: Otaku${nextRank ? `
+├─ Prochain: ${nextRank.emoji} ${nextRank.name}
+├─ Progression: ${progress}% ${getProgressBar(progress)}
+├─ Requis: L${nextRank.minLevel}
+└─ Restants: ${nextRank.minLevel - user.level}` : `
+└─ Rang maximum!`}
 ╔════════════════════════════════════╗
-║     🌟 Hiérarchie Otaku 🌟         ║
+║      HIÉRARCHIE OTAKU              ║
 ╚════════════════════════════════════╝`;
 
-        // Ajouter tous les rangs disponibles
         for (const [rankId, rank] of Object.entries(RankSystem.RANKS)) {
           const achieved = user.level >= rank.minLevel;
           const marker = achieved ? '✅' : '🔒';
-          rankDetails += `\n${marker} L${rank.minLevel}+ ${rank.emoji} *${rank.name}*`;
+          rankDetails += `\n${marker} L${rank.minLevel}+ ${rank.emoji} ${rank.name}`;
         }
 
         rankDetails += '\n═════════════════════════════════════';
@@ -79,25 +74,19 @@ ${rankInfo.description}
         userRank = allUsers.findIndex(u => u.jid === user.jid) + 1;
       }
 
-      let rankMessage = `
-╔════════════════════════════════════╗
-║           🏆 TON RANG 🏆           ║
+      let rankMessage = `╔════════════════════════════════════╗
+║           CLASSEMENT               ║
 ╚════════════════════════════════════╝
-
-👤 *${user.username || 'Joueur'}*
-🥇 *Rang:* ${userRank}/${allUsers.length}
-📊 *Niveau:* ${user.level}
-✨ *XP Total:* ${user.xp}
-
-═════════════════════════════════════
-*${topLabel}*
-═════════════════════════════════════
-`;
+👤 ${user.username || 'Joueur'}
+🥇 Rang: ${userRank}/${allUsers.length}
+📊 Niveau: ${user.level}
+✨ XP: ${user.xp}
+${topLabel}`;
 
       const mentions = [];
       allUsers.slice(0, 10).forEach((u, i) => {
         const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}.`;
-        rankMessage += `\n${medal} @${u.jid.split('@')[0]} - Lvl ${u.level} (${u.xp} XP)`;
+        rankMessage += `\n${medal} @${u.jid.split('@')[0]} - L${u.level} (${u.xp} XP)`;
         mentions.push(u.jid);
       });
 

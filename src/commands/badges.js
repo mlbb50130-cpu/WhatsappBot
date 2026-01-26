@@ -20,37 +20,29 @@ module.exports = {
       // Obtenir le statut des badges
       const { earned, locked } = BadgeSystem.getBadgeStatus(user);
 
-      let badgeMessage = `
-╔════════════════════════════════════╗
-║        🎖️ TES BADGES 🎖️           ║
+      let badgeMessage = `╔════════════════════════════════════╗
+║           BADGES                  ║
 ╚════════════════════════════════════╝
-
-👤 *${user.username || 'Joueur'}*
-🏆 *Badges obtenus:* ${earned.length}/8
-
-═════════════════════════════════════
-
-*BADGES DÉVERROUILLÉS:*`;
+👤 ${user.username || 'Joueur'}
+🏆 Obtenus: ${earned.length}/23
+`;
 
       if (earned.length > 0) {
         earned.forEach(badge => {
-          badgeMessage += `\n${badge.emoji} *${badge.name}* ✓`;
+          badgeMessage += `${badge.emoji} ${badge.name}\n`;
         });
       } else {
-        badgeMessage += '\n❌ Aucun badge pour le moment...';
+        badgeMessage += '❌ Aucun badge\n';
       }
 
       badgeMessage += `
-
-*BADGES À DÉBLOQUER:*`;
+À DÉBLOQUER:`;
       
       locked.forEach(badge => {
         badgeMessage += `\n🔒 ${badge.name} - ${badge.condition}`;
       });
 
-      badgeMessage += `
-
-═════════════════════════════════════`;
+      badgeMessage += `\n═════════════════════════════════════`;
 
       await sock.sendMessage(senderJid, { text: badgeMessage });
     } catch (error) {

@@ -40,7 +40,6 @@ module.exports = {
     let mainMenu = `╔════════════════════════════════════╗
 ║            MENU                   ║
 ╚════════════════════════════════════╝
-
 `;
 
     const categoryKeys = Object.keys(CATEGORIES);
@@ -52,7 +51,7 @@ module.exports = {
       mainMenu += `${prefix} ☆ ${key} - ${category.name}\n`;
     }
 
-    mainMenu += '\n═════════════════════════════════════';
+    mainMenu += '═════════════════════════════════════';
 
     await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(mainMenu));
   }

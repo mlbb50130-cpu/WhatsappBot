@@ -32,13 +32,8 @@ module.exports = {
         { label: '⭐ XP Total', value: user.xp || 0 }
       ];
 
-      const statusItems = [
-        progressPercent === 100 ? '🎉 Tu es prêt pour le levelup!' : '⏳ Continue pour progresser!'
-      ];
-
-      const xpMessage = `${MessageFormatter.elegantBox('💫 TON XP ACTUEL 💫', xpItems)}
-${progressBar}
-${MessageFormatter.elegantSection('📈 STATUT', statusItems)}`;
+      const xpMessage = `${MessageFormatter.elegantBox('XP ACTUEL', xpItems)}
+${progressBar}`;
 
       await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(xpMessage));
     } catch (error) {

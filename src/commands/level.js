@@ -44,10 +44,9 @@ module.exports = {
       '🎁 Loots +10 XP'
     ];
 
-    const level = `${MessageFormatter.elegantBox('⬆️ TON NIVEAU ⬆️', levelItems)}
+    const level = `${MessageFormatter.elegantBox('NIVEAU', levelItems)}
 ${progressBar}
-${MessageFormatter.elegantSection('⭐ RANGS', ranksItems)}
-${MessageFormatter.elegantSection('💡 CONSEILS', tipsItems)}`;
+${MessageFormatter.elegantSection('RANGS', ranksItems)}`;
 
     await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(level));
   },
