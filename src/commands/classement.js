@@ -1,5 +1,7 @@
 const User = require('../models/User');
 
+const MessageFormatter = require('../utils/messageFormatter');
+
 module.exports = {
   name: 'classement',
   description: 'Voir les classements',

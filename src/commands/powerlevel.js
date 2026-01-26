@@ -1,3 +1,5 @@
+const MessageFormatter = require('../utils/messageFormatter');
+
 module.exports = {
   name: 'powerlevel',
   description: 'Voir ton power level',

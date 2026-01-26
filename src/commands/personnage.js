@@ -33,22 +33,14 @@ module.exports = {
 
         const character = response.data.data[0];
 
-        let charMessage = `
-╔════════════════════════════════════╗
-║      👤 PERSONNAGE ANIME 👤      ║
-╚════════════════════════════════════╝
+        const charItems = [
+          { label: '🇯🇵 Nom Japonais', value: character.name_kanji || 'N/A' },
+          { label: '📝 Surnoms', value: character.nicknames ? character.nicknames.join(', ') : 'N/A' },
+          { label: '❤️ Favori', value: (character.favorites || '0') + ' fois' },
+          { label: '📖 Bio', value: character.about ? character.about.substring(0, 150) + '...' : 'Pas de bio' }
+        ];
 
-*${character.name}*
-🇯🇵 Nom japonais: ${character.name_kanji || 'N/A'}
-
-🎯 *Informations:*
-  Nicknames: ${character.nicknames ? character.nicknames.join(', ') : 'N/A'}
-  Favori: ${character.favorites || '0'} fois
-  
-📖 *Bio:* ${character.about ? character.about.substring(0, 150) + '...' : 'Pas de bio disponible'}
-
-═════════════════════════════════════`;
-
+        const charMessage = MessageFormatter.elegantBox(`👤 ${character.name}`, charItems);
         await sock.sendMessage(senderJid, { text: charMessage });
 
       } catch (apiError) {

@@ -1,3 +1,5 @@
+const MessageFormatter = require('../utils/messageFormatter');
+
 module.exports = {
   name: 'rank',
   description: 'Voir ton rang dans le classement',

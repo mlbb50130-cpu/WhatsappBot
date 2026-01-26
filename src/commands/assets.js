@@ -1,3 +1,5 @@
+const MessageFormatter = require('../utils/messageFormatter');
+
 module.exports = {
   name: 'assets',
   description: 'Affiche toutes les commandes asset disponibles',

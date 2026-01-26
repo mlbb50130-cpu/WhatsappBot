@@ -1,3 +1,5 @@
+const MessageFormatter = require('../utils/messageFormatter');
+
 module.exports = {
   name: 'regles',
   description: 'Affiche les règles du groupe',

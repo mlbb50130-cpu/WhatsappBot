@@ -1,3 +1,5 @@
+const MessageFormatter = require('../utils/messageFormatter');
+
 module.exports = {
   name: 'chakratest',
   description: 'Test command to check chakra status',

@@ -1,3 +1,5 @@
+const MessageFormatter = require('../utils/messageFormatter');
+
 module.exports = {
   name: 'chakra',
   description: 'Voir ton chakra et ta ressource de mana',

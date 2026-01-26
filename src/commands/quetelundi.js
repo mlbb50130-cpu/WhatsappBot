@@ -1,5 +1,7 @@
 const QuestSystem = require('../utils/questSystem');
 
+const MessageFormatter = require('../utils/messageFormatter');
+
 module.exports = {
   name: 'quetelundi',
   description: 'Voir tes quêtes hebdomadaires',

@@ -1,3 +1,5 @@
+const MessageFormatter = require('../utils/messageFormatter');
+
 module.exports = {
   name: 'hebdo',
   description: 'Mission hebdomadaire - 200 XP bonus',

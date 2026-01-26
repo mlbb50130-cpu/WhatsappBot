@@ -1,3 +1,5 @@
+const MessageFormatter = require('../utils/messageFormatter');
+
 module.exports = {
   name: 'deactivatebot',
   description: 'Désactiver le bot dans le groupe (admin only)',

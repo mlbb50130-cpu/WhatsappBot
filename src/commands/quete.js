@@ -1,5 +1,7 @@
 const QuestSystem = require('../utils/questSystem');
 
+const MessageFormatter = require('../utils/messageFormatter');
+
 module.exports = {
   name: 'quete',
   description: 'Voir les quêtes disponibles et ta progression',

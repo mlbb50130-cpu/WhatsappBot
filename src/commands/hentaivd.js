@@ -3,6 +3,8 @@ const path = require('path');
 const ImageRotationSystem = require('../utils/imageRotation');
 const ModuleManager = require('../utils/ModuleManager');
 
+const MessageFormatter = require('../utils/messageFormatter');
+
 module.exports = {
   name: 'hentaivd',
   description: 'Vidéos hentai (2x/jour en groupe, 300 XP)',

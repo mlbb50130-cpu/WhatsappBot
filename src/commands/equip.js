@@ -1,3 +1,5 @@
+const MessageFormatter = require('../utils/messageFormatter');
+
 module.exports = {
   name: 'equip',
   description: 'Équiper un objet de ton inventaire',

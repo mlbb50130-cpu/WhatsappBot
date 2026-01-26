@@ -1,3 +1,7 @@
+const MessageFormatter = require('../utils/messageFormatter');
+
+const MessageFormatter = require('../utils/messageFormatter');
+
 module.exports = {
   name: 'activatebot',
   description: 'Activer le bot dans ce groupe (Owner seulement)',

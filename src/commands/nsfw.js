@@ -3,6 +3,8 @@ const path = require('path');
 const ImageRotationSystem = require('../utils/imageRotation');
 const Group = require('../models/Group');
 
+const MessageFormatter = require('../utils/messageFormatter');
+
 module.exports = {
   name: 'nsfw',
   description: 'Photo aléatoire de NSFW',

@@ -1,4 +1,5 @@
 const ModuleManager = require('../utils/ModuleManager');
+const MessageFormatter = require('../utils/messageFormatter');
 
 module.exports = {
   name: 'allowhentai',
