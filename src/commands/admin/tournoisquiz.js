@@ -50,9 +50,8 @@ module.exports = {
     // Initialiser le tournoi global
     if (!global.tournaments) global.tournaments = new Map();
     if (!global.tournamentSessions) global.tournamentSessions = new Map();
+    if (!global.tournamentSetup) global.tournamentSetup = new Map();
 
-    const tournamentId = `${senderJid}_${Date.now()}`;
-    
     // Vérifier qu'un tournoi n'est pas déjà en cours dans ce groupe
     if (global.tournaments.has(senderJid)) {
       await sock.sendMessage(senderJid, {
@@ -61,44 +60,222 @@ module.exports = {
       return;
     }
 
-    // Créer le tournoi
-    const tournament = {
-      id: tournamentId,
-      groupJid: senderJid,
-      participants: new Map(), // jid -> { name, correct: 0, total: 0 }
-      currentRound: 0,
-      maxRounds: 7,
-      currentQuizIndex: 0,
-      isActive: true,
-      startTime: Date.now()
-    };
-
-    global.tournaments.set(senderJid, tournament);
-
-    // Annoncer le début du tournoi
-    const announcement = `
+    // Demander le nom du quiz
+    const setupMessage = `
 ╔════════════════════════════════════════╗
-║  🏆 TOURNOI QUIZ OTAKU 🏆             ║
+║  🏆 CONFIGURATION DU TOURNOI 🏆       ║
+╚════════════════════════════════════════╝
+
+*Étape 1/3: Quel type de quiz?*
+
+Répondez avec:
+• !tournoisquiz anime
+• !tournoisquiz manga
+• !tournoisquiz custom (ou un autre nom)
+
+════════════════════════════════════════
+`;
+
+    await sock.sendMessage(senderJid, { text: setupMessage });
+
+    // Stocker l'état de setup en attente
+    global.tournamentSetup.set(senderJid, {
+      step: 1,
+      initiatedBy: participantJid,
+      timestamp: Date.now()
+    });
+  },
+
+  async handleTournamentSetup(sock, message, args, senderJid, participantJid) {
+    if (!global.tournamentSetup) return false;
+    const setup = global.tournamentSetup.get(senderJid);
+    
+    if (!setup || setup.initiatedBy !== participantJid) return false;
+
+    // Vérifier le timeout (5 minutes)
+    if (Date.now() - setup.timestamp > 300000) {
+      global.tournamentSetup.delete(senderJid);
+      await sock.sendMessage(senderJid, {
+        text: '⏰ Configuration du tournoi expirée. Relancez !tournoisquiz'
+      });
+      return true;
+    }
+
+    if (setup.step === 1 && args.length > 0) {
+      setup.quizName = args[0].toLowerCase();
+      setup.step = 2;
+
+      const questionsMessage = `
+╔════════════════════════════════════════╗
+║  🏆 CONFIGURATION DU TOURNOI 🏆       ║
+╚════════════════════════════════════════╝
+
+*Étape 2/4: Nombre de questions*
+
+Combien de questions voulez-vous?
+
+Format: !tournoisquiz 7
+
+Options recommandées:
+• 5 questions - Court (2-3 min)
+• 7 questions - Standard (3-5 min)
+• 10 questions - Long (5-7 min)
+• 15 questions - Très long (7-10 min)
+
+════════════════════════════════════════
+`;
+
+      await sock.sendMessage(senderJid, { text: questionsMessage });
+      return true;
+    }
+
+    if (setup.step === 2 && args.length > 0) {
+      const numQuestions = parseInt(args[0]);
+      if (isNaN(numQuestions) || numQuestions < 1 || numQuestions > 50) {
+        await sock.sendMessage(senderJid, {
+          text: '❌ Le nombre de questions doit être entre 1 et 50!'
+        });
+        return true;
+      }
+      
+      setup.maxRounds = numQuestions;
+      setup.step = 3;
+
+      const rewardsMessage = `
+╔════════════════════════════════════════╗
+║  🏆 CONFIGURATION DU TOURNOI 🏆       ║
+╚════════════════════════════════════════╝
+
+*Étape 3/4: Récompenses XP*
+
+Entrez les récompenses pour les 5 premières places.
+
+Format: !tournoisquiz 100 80 60 40 20
+
+Exemple:
+• 1ère place: 100 XP
+• 2ème place: 80 XP
+• 3ème place: 60 XP
+• 4ème place: 40 XP
+• 5ème place: 20 XP
+
+════════════════════════════════════════
+`;
+
+      await sock.sendMessage(senderJid, { text: rewardsMessage });
+      return true;
+    }
+
+    if (setup.step === 3 && args.length === 5) {
+      const rewards = args.map(arg => {
+        const num = parseInt(arg);
+        return isNaN(num) ? null : num;
+      });
+
+      if (rewards.includes(null)) {
+        await sock.sendMessage(senderJid, {
+          text: '❌ Les récompenses doivent être des nombres. Réessayez!'
+        });
+        return true;
+      }
+
+      setup.rewards = {
+        first: rewards[0],
+        second: rewards[1],
+        third: rewards[2],
+        fourth: rewards[3],
+        fifth: rewards[4]
+      };
+      setup.step = 4;
+
+      const confirmMessage = `
+╔════════════════════════════════════════╗
+║  🏆 CONFIRMATION DU TOURNOI 🏆        ║
+╚════════════════════════════════════════╝
+
+*Quiz:* ${setup.quizName}
+*Questions:* ${setup.maxRounds}
+
+*Récompenses:*
+🥇 1ère place: ${setup.rewards.first} XP
+🥈 2ème place: ${setup.rewards.second} XP
+🥉 3ème place: ${setup.rewards.third} XP
+🎯 4ème place: ${setup.rewards.fourth} XP
+🎖️  5ème place: ${setup.rewards.fifth} XP
+
+Confirmez: !tournoisquiz confirm
+
+════════════════════════════════════════
+`;
+
+      await sock.sendMessage(senderJid, { text: confirmMessage });
+      return true;
+    }
+
+    if (setup.step === 4 && args.length > 0 && args[0].toLowerCase() === 'confirm') {
+      // Lancer le tournoi avec les paramètres configurés
+      const allQuizzes = this.getQuizzes();
+      const tournamentId = `${senderJid}_${Date.now()}`;
+
+      const tournament = {
+        id: tournamentId,
+        groupJid: senderJid,
+        quizName: setup.quizName,
+        rewards: setup.rewards,
+        participants: new Map(),
+        currentRound: 0,
+        maxRounds: setup.maxRounds,
+        currentQuizIndex: 0,
+        isActive: true,
+        startTime: Date.now()
+      };
+
+      global.tournaments.set(senderJid, tournament);
+      global.tournamentSetup.delete(senderJid);
+
+      const announcement = `
+╔════════════════════════════════════════╗
+║  🏆 TOURNOI QUIZ ${setup.quizName.toUpperCase()} 🏆  ║
 ╚════════════════════════════════════════╝
 
 🎮 Le tournoi va commencer!
 
+*Configuration:*
+📊 Questions: ${setup.maxRounds}
+
+*Récompenses:*
+🥇 1ère: ${setup.rewards.first} XP
+🥈 2ème: ${setup.rewards.second} XP
+🥉 3ème: ${setup.rewards.third} XP
+🎯 4ème: ${setup.rewards.fourth} XP
+🎖️  5ème: ${setup.rewards.fifth} XP
+
 📋 Règles:
-• 7 questions seront posées
-• Vous avez 15 secondes par question
-• Seules les réponses !reponse A/B/C/D sont autorisées
-• Les autres commandes sont BLOQUÉES pendant le tournoi
+• ${setup.maxRounds} questions seront posées
+• Vous avez 30 secondes par question
+• Répondez: a / b / c / d (minuscule)
 
 ⏱️ Le tournoi commence dans 3 secondes...
 ════════════════════════════════════════
 `;
 
-    await sock.sendMessage(senderJid, { text: announcement });
+      await sock.sendMessage(senderJid, { text: announcement });
 
-    // Attendre 3 secondes avant de commencer
-    setTimeout(() => {
-      this.startTournament(sock, senderJid, tournament, allQuizzes);
-    }, 3000);
+      setTimeout(() => {
+        this.startTournament(sock, senderJid, tournament, allQuizzes);
+      }, 3000);
+
+      return true;
+    }
+
+    if (setup.step > 0) {
+      await sock.sendMessage(senderJid, {
+        text: '⚠️ Erreur: données invalides. Utilisez le format attendu.'
+      });
+      return true;
+    }
+
+    return false;
   },
 
   async startTournament(sock, senderJid, tournament, allQuizzes) {
@@ -115,15 +292,31 @@ module.exports = {
       return;
     }
 
-    // Sélectionner un quiz aléatoire
-    const randomIndex = Math.floor(Math.random() * allQuizzes.length);
-    const quiz = allQuizzes[randomIndex];
+    // 🌍 Initialiser la liste globale des quiz répondus
+    if (!global.answeredQuizzes) global.answeredQuizzes = new Set();
 
-    tournament.currentQuizIndex = randomIndex;
+    // Sélectionner un quiz aléatoire (exclure les déjà répondus)
+    const availableQuizzes = allQuizzes.filter((_, index) => !global.answeredQuizzes.has(index));
+    
+    if (availableQuizzes.length === 0) {
+      // Tous les quiz ont été répondus
+      await sock.sendMessage(senderJid, {
+        text: '✅ Tous les quiz ont été répondus! Fin du tournoi.'
+      });
+      await this.endTournament(sock, senderJid, tournament);
+      return;
+    }
+
+    const randomIndex = Math.floor(Math.random() * availableQuizzes.length);
+    const quiz = availableQuizzes[randomIndex];
+    
+    // Trouver l'index réel du quiz dans le tableau complet
+    const actualIndex = allQuizzes.findIndex(q => q.question === quiz.question);
+    tournament.currentQuizIndex = actualIndex;
 
     let options = '';
     quiz.options.forEach((option, index) => {
-      options += `  ${String.fromCharCode(65 + index)}. ${option}\n`;
+      options += `  ${String.fromCharCode(97 + index)}. ${option}\n`;
     });
 
     const questionText = `
@@ -136,7 +329,7 @@ ${quiz.question}
 
 *OPTIONS:*
 ${options}
-*RÉPONDS:* \`!reponse A\` / \`!reponse B\` / \`!reponse C\` / \`!reponse D\`
+*RÉPONDS:* a / b / c / d (minuscule)
 *TEMPS LIMITE:* 30 secondes ⏱️
 
 ════════════════════════════════════════
@@ -149,7 +342,7 @@ ${options}
       tournamentId: tournament.id,
       round: tournament.currentRound,
       quiz,
-      quizIndex: randomIndex,
+      quizIndex: actualIndex,
       timestamp: Date.now(),
       answerers: new Map(), // jid -> { name, answer, isCorrect }
       isActive: true
@@ -165,6 +358,7 @@ ${options}
       questionSession.isActive = false;
 
       // Traiter les réponses
+      let hasCorrectAnswer = false;
       questionSession.answerers.forEach((answerer, jid) => {
         const participant = tournament.participants.get(jid) || {
           name: answerer.name,
@@ -175,10 +369,17 @@ ${options}
         participant.total += 1;
         if (answerer.isCorrect) {
           participant.correct += 1;
+          hasCorrectAnswer = true;
         }
 
         tournament.participants.set(jid, participant);
       });
+
+      // Enregistrer le quiz comme répondu globalement s'il y a eu une bonne réponse
+      if (hasCorrectAnswer) {
+        if (!global.answeredQuizzes) global.answeredQuizzes = new Set();
+        global.answeredQuizzes.add(questionSession.quizIndex);
+      }
 
       // Afficher les résultats de cette question
       this.showRoundResults(sock, senderJid, questionSession, tournament);
@@ -247,14 +448,24 @@ ${options}
 `;
 
     const medals = ['🥇', '🥈', '🥉'];
+    const rewardsList = [tournament.rewards.first, tournament.rewards.second, tournament.rewards.third, tournament.rewards.fourth, tournament.rewards.fifth];
+
     sortedParticipants.forEach((participant) => {
       const medal = medals[participant.rank - 1] || '🎯';
       const percentage = Math.round((participant.correct / participant.total) * 100);
+      const reward = rewardsList[participant.rank - 1] || 0;
+      
       finalResults += `
 ${medal} #${participant.rank} - ${participant.name}
    • ${participant.correct}/${participant.total} bonnes réponses
    • Score: ${percentage}%
+   • Récompense: +${reward} XP
 `;
+
+      // Ajouter les XP au gagnant
+      if (reward > 0) {
+        this.awardXP(participant.jid, reward);
+      }
     });
 
     finalResults += `
@@ -278,6 +489,18 @@ Total de participants: ${sortedParticipants.length}
       const keysToDelete = Array.from(global.tournamentSessions.keys())
         .filter(key => key.startsWith(senderJid));
       keysToDelete.forEach(key => global.tournamentSessions.delete(key));
+    }
+  },
+
+  awardXP(userJid, xpAmount) {
+    try {
+      const User = require('../../models/User');
+      // Obtenir ou créer l'utilisateur
+      const user = User.getOrCreate(userJid);
+      user.xp = (user.xp || 0) + xpAmount;
+      User.save(user);
+    } catch (error) {
+      console.error(`Error awarding XP to ${userJid}:`, error);
     }
   }
 };

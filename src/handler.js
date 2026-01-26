@@ -304,6 +304,15 @@ Cela activera les fonctions du bot dans ce groupe.
       return;
     }
 
+    // Vérifier si c'est une continuation du setup du tournoi
+    if (commandName === 'tournoisquiz' && global.tournamentSetup && global.tournamentSetup.has(senderJid)) {
+      const tournoisquizCommand = commands.get('tournoisquiz');
+      if (tournoisquizCommand && tournoisquizCommand.handleTournamentSetup) {
+        const handled = await tournoisquizCommand.handleTournamentSetup(sock, message, args, senderJid, participantJid);
+        if (handled) return;
+      }
+    }
+
     // Check cooldown
     if (CooldownManager.isOnCooldown(participantJid, commandName)) {
       const remaining = CooldownManager.getRemainingTime(participantJid, commandName);

@@ -35,12 +35,17 @@ module.exports = {
       return;
     }
 
-    // Charger l'historique des quizzes répondus
+    // Initialiser la liste globale des quiz répondus (jamais répétés)
+    if (!global.answeredQuizzes) global.answeredQuizzes = new Set();
+
+    // Charger l'historique des quizzes répondus (utilisateur)
     if (!user.quizHistory) user.quizHistory = [];
 
-    // Trouver un quiz qui n'a pas été répondu
+    // Trouver un quiz qui n'a pas été répondu (exclure aussi les quiz répondus globalement)
     let quiz = null;
-    let availableQuizzes = allQuizzes.filter((_, index) => !user.quizHistory.includes(index));
+    let availableQuizzes = allQuizzes.filter((_, index) => 
+      !user.quizHistory.includes(index) && !global.answeredQuizzes.has(index)
+    );
     
     // Si TOUS les quizzes ont été répondus, afficher un message
     if (availableQuizzes.length === 0) {
@@ -53,6 +58,7 @@ module.exports = {
       await sock.sendMessage(senderJid, { text: congratsMsg });
       // Réinitialiser SEULEMENT après avoir affiché le message
       user.quizHistory = [];
+      global.answeredQuizzes.clear();
       availableQuizzes = allQuizzes;
     }
 
