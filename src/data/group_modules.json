@@ -16,5 +16,59 @@
     "xp": true,
     "items": true,
     "quete": true
+  },
+  "test-group-otaku": {
+    "mlbb": false,
+    "anime": true,
+    "fun": true,
+    "nsfw": false,
+    "xp": true,
+    "items": true,
+    "quete": true
+  },
+  "test-group-gamin": {
+    "mlbb": false,
+    "anime": true,
+    "fun": true,
+    "nsfw": false,
+    "xp": true,
+    "items": true,
+    "quete": true
+  },
+  "test-group-complet": {
+    "mlbb": false,
+    "anime": true,
+    "fun": true,
+    "nsfw": false,
+    "xp": true,
+    "items": true,
+    "quete": true
+  },
+  "test-otaku": {
+    "mlbb": false,
+    "anime": true,
+    "fun": true,
+    "xp": true,
+    "items": true,
+    "quete": true,
+    "nsfw": false
+  },
+  "test-gamin": {
+    "mlbb": true,
+    "anime": false,
+    "fun": false,
+    "xp": false,
+    "items": false,
+    "quete": false,
+    "nsfw": false
+  },
+  "test-complet": {
+    "mlbb": true,
+    "anime": true,
+    "fun": true,
+    "xp": true,
+    "items": true,
+    "quete": true,
+    "nsfw": false
   }
 }

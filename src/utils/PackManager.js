@@ -4,53 +4,102 @@ const ModuleManager = require('./ModuleManager');
 // Définir les commandes par pack
 const PACK_COMMANDS = {
   otaku: [
+    // Profil & Niveau
     'profil', 'level', 'xp', 'rank', 'stats', 'badges',
+    // Duels & Combats
     'duel', 'powerlevel', 'chakra',
+    // Quêtes & RPG
     'quete', 'quotidien', 'hebdo', 'quetelundi',
+    // Quiz & Jeux
     'quiz', 'quizanime', 'pfc', 'roulette', 'reponse',
+    // Loot & Inventaire
     'loot', 'inventaire', 'equip', 'equipement', 'collection',
+    // Images Anime
     'waifu', 'husbando', 'neko', 'animegif', 'ship',
+    // Personnages (anime characters)
     'bleach', 'naruto', 'gojo', 'deku', 'madara', 'sukuna', 'vegito', 'miku', 'zerotwo',
     'gokuui', 'jinwoo', 'livai', 'makima', 'mikunakano', 'rengokudemon', 'tengen', 'tsunade', 'yami', 'yoruichi',
+    // Fun
     'blagueotaku', 'roast', 'chance', 'sticker',
+    // Anime & Manga
     'anime', 'manga', 'mangadex', 'personnage', 'voiranime',
+    // Classements
     'topanime', 'topmanga', 'classement',
+    // Admin & Système
     'theme', 'activatebot', 'admins', 'deactivatebot', 'allowhentai',
+    // Bot
     'ping', 'info', 'regles', 'help', 'documentation', 'menu', 'whoami'
   ],
   gamin: [
-    'mlbb', 'ml', 'legends', 'moba',
-    'hero', 'build', 'counter', 'combo',
-    'meta', 'lane', 'tip',
-    'team', 'join', 'leave',
+    // Profil MLBB
+    'mlbb', 'ml', 'legends', 'moba', 'mlbb-profile', 'mlbbprofile',
+    // Héros & Infos
+    'hero', 'heroe', 'champion', 'personnage',
+    'build', 'builds', 'items', 'set',
+    'counter', 'counters', 'beat', 'antiheroe',
+    'combo', 'combos',
+    // Meta & Stratégie
+    'meta', 'metagame', 'tier', 'tierlist',
+    'lane', 'lanes',
+    'tip', 'tips', 'conseil', 'conseils',
+    // Équipes
+    'team', 'equipe', 'squad', 'crew',
+    'join', 'j',
+    'leave', 'l',
+    // Menus & Guides
     'mlbbmenu', 'mlbbhelp', 'mlbbcommandes', 'mlbboptions',
     'heroes', 'heroslist', 'listheroe', 'herolist', 'heros',
+    // Admin
     'selectpack', 'setmodule',
     'activatebot', 'admins',
+    // Bot
     'ping', 'info', 'regles', 'help', 'documentation', 'menu'
   ],
   complet: [
-    // Tous les OTAKU + MLBB
+    // Profil & Niveau (OTAKU)
     'profil', 'level', 'xp', 'rank', 'stats', 'badges',
+    // Duels & Combats (OTAKU)
     'duel', 'powerlevel', 'chakra',
+    // Quêtes & RPG (OTAKU)
     'quete', 'quotidien', 'hebdo', 'quetelundi',
+    // Quiz & Jeux (OTAKU)
     'quiz', 'quizanime', 'pfc', 'roulette', 'reponse',
+    // Loot & Inventaire (OTAKU)
     'loot', 'inventaire', 'equip', 'equipement', 'collection',
+    // Images Anime (OTAKU)
     'waifu', 'husbando', 'neko', 'animegif', 'ship',
+    // Personnages Anime (OTAKU)
     'bleach', 'naruto', 'gojo', 'deku', 'madara', 'sukuna', 'vegito', 'miku', 'zerotwo',
     'gokuui', 'jinwoo', 'livai', 'makima', 'mikunakano', 'rengokudemon', 'tengen', 'tsunade', 'yami', 'yoruichi',
+    // Fun (OTAKU)
     'blagueotaku', 'roast', 'chance', 'sticker',
+    // Anime & Manga (OTAKU)
     'anime', 'manga', 'mangadex', 'personnage', 'voiranime',
+    // Classements (OTAKU)
     'topanime', 'topmanga', 'classement',
-    'mlbb', 'ml', 'legends', 'moba',
-    'hero', 'build', 'counter', 'combo',
-    'meta', 'lane', 'tip',
-    'team', 'join', 'leave',
+    // Profil MLBB (GAMIN)
+    'mlbb', 'ml', 'legends', 'moba', 'mlbb-profile', 'mlbbprofile',
+    // Héros & Infos (GAMIN)
+    'hero', 'heroe', 'champion',
+    'build', 'builds', 'items', 'set',
+    'counter', 'counters', 'beat', 'antiheroe',
+    'combo', 'combos',
+    // Meta & Stratégie (GAMIN)
+    'meta', 'metagame', 'tier', 'tierlist',
+    'lane', 'lanes',
+    'tip', 'tips', 'conseil', 'conseils',
+    // Équipes (GAMIN)
+    'team', 'equipe', 'squad', 'crew',
+    'join', 'j',
+    'leave', 'l',
+    // Menus & Guides (GAMIN)
     'mlbbmenu', 'mlbbhelp', 'mlbbcommandes', 'mlbboptions',
     'heroes', 'heroslist', 'listheroe', 'herolist', 'heros',
+    // Admin & Système
     'selectpack', 'setmodule',
     'theme', 'activatebot', 'admins', 'deactivatebot', 'allowhentai',
     'hentai', 'hentaivd', 'boahancook',
+    // Bot
     'ping', 'info', 'regles', 'help', 'documentation', 'menu', 'whoami', 'assets', 'nsfw', 'chakratest'
   ]
 };
