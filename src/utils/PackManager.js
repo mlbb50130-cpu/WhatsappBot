@@ -16,17 +16,20 @@ const PACK_COMMANDS = {
     'loot', 'inventaire', 'equip', 'equipement', 'collection',
     // Images Anime
     'waifu', 'husbando', 'neko', 'animegif', 'ship',
-    // Personnages (anime characters)
+    // Personnages (anime characters avec assets)
     'bleach', 'naruto', 'gojo', 'deku', 'madara', 'sukuna', 'vegito', 'miku', 'zerotwo',
     'gokuui', 'jinwoo', 'livai', 'makima', 'mikunakano', 'rengokudemon', 'tengen', 'tsunade', 'yami', 'yoruichi',
+    'nino',
     // Fun
-    'blagueotaku', 'roast', 'chance', 'sticker',
+    'blagueotaku', 'roast', 'chance', 'sticker', 's', 'stick',
     // Anime & Manga
     'anime', 'manga', 'mangadex', 'personnage', 'voiranime',
     // Classements
     'topanime', 'topmanga', 'classement',
-    // Admin & Système
-    'theme', 'activatebot', 'admins', 'deactivatebot', 'allowhentai',
+    // Admin & Système (OTAKU SEULEMENT - pas MLBB assets)
+    'theme', 'activatebot', 'admins', 'deactivatebot', 'allowhentai', 'authhentai', 'hentaiallow',
+    // NSFW
+    'hentai', 'hentaivd', 'boahancook', 'nsfw',
     // Bot
     'ping', 'info', 'regles', 'help', 'documentation', 'menu', 'whoami'
   ],
@@ -37,10 +40,10 @@ const PACK_COMMANDS = {
     'hero', 'heroe', 'champion', 'personnage',
     'build', 'builds', 'items', 'set',
     'counter', 'counters', 'beat', 'antiheroe',
-    'combo', 'combos',
+    'combo', 'combos', 'cc', 'rotation',
     // Meta & Stratégie
     'meta', 'metagame', 'tier', 'tierlist',
-    'lane', 'lanes',
+    'lane', 'lanes', 'guide', 'position', 'role',
     'tip', 'tips', 'conseil', 'conseils',
     // Équipes
     'team', 'equipe', 'squad', 'crew',
@@ -50,8 +53,8 @@ const PACK_COMMANDS = {
     'mlbbmenu', 'mlbbhelp', 'mlbbcommandes', 'mlbboptions',
     'heroes', 'heroslist', 'listheroe', 'herolist', 'heros',
     // Admin
-    'selectpack', 'setmodule',
-    'activatebot', 'admins',
+    'selectpack', 'setmodule', 'pack', 'packselect', 'choosepack',
+    'activatebot', 'admins', 'admin',
     // Bot
     'ping', 'info', 'regles', 'help', 'documentation', 'menu'
   ],
@@ -71,8 +74,9 @@ const PACK_COMMANDS = {
     // Personnages Anime (OTAKU)
     'bleach', 'naruto', 'gojo', 'deku', 'madara', 'sukuna', 'vegito', 'miku', 'zerotwo',
     'gokuui', 'jinwoo', 'livai', 'makima', 'mikunakano', 'rengokudemon', 'tengen', 'tsunade', 'yami', 'yoruichi',
+    'nino',
     // Fun (OTAKU)
-    'blagueotaku', 'roast', 'chance', 'sticker',
+    'blagueotaku', 'roast', 'chance', 'sticker', 's', 'stick',
     // Anime & Manga (OTAKU)
     'anime', 'manga', 'mangadex', 'personnage', 'voiranime',
     // Classements (OTAKU)
@@ -83,10 +87,10 @@ const PACK_COMMANDS = {
     'hero', 'heroe', 'champion',
     'build', 'builds', 'items', 'set',
     'counter', 'counters', 'beat', 'antiheroe',
-    'combo', 'combos',
+    'combo', 'combos', 'cc', 'rotation',
     // Meta & Stratégie (GAMIN)
     'meta', 'metagame', 'tier', 'tierlist',
-    'lane', 'lanes',
+    'lane', 'lanes', 'guide', 'position', 'role',
     'tip', 'tips', 'conseil', 'conseils',
     // Équipes (GAMIN)
     'team', 'equipe', 'squad', 'crew',
@@ -95,12 +99,18 @@ const PACK_COMMANDS = {
     // Menus & Guides (GAMIN)
     'mlbbmenu', 'mlbbhelp', 'mlbbcommandes', 'mlbboptions',
     'heroes', 'heroslist', 'listheroe', 'herolist', 'heros',
-    // Admin & Système
-    'selectpack', 'setmodule',
-    'theme', 'activatebot', 'admins', 'deactivatebot', 'allowhentai',
-    'hentai', 'hentaivd', 'boahancook',
+    // Admin & Modération (COMPLET SEULEMENT)
+    'selectpack', 'setmodule', 'pack', 'packselect', 'choosepack',
+    'warn', 'avertir', 'kick', 'expulser', 'lock', 'verrouiller', 'unlock', 'deverrouiller',
+    'mute', 'silence', 'desimulet', 'unmute', 'promote', 'promouvoir', 'demote', 'retrograder',
+    'clear', 'nettoyer', 'groupinfo', 'groupeinfo', 'infogroupes', 'everyone', 'all', 'tous',
+    'setxp', 'fixerxp', 'tournoisquiz', 'tournoi', 'tourquiz',
+    // Thème & Système
+    'theme', 'activatebot', 'admins', 'admin', 'deactivatebot', 'allowhentai', 'authhentai', 'hentaiallow',
+    // NSFW (COMPLET SEULEMENT)
+    'hentai', 'hentaivd', 'boahancook', 'nsfw',
     // Bot
-    'ping', 'info', 'regles', 'help', 'documentation', 'menu', 'whoami', 'assets', 'nsfw', 'chakratest'
+    'ping', 'info', 'regles', 'help', 'documentation', 'menu', 'whoami', 'assets', 'chakratest'
   ]
 };
 
@@ -108,7 +118,7 @@ class PackManager {
   static PACKS = {
     otaku: {
       name: '📺 RPG OTAKU',
-      description: 'Commandes Anime, RPG, Quêtes, Aventures',
+      description: 'Commandes Anime, RPG, Quêtes, Aventures, NSFW',
       emoji: '🎌',
       modules: {
         anime: true,
@@ -116,7 +126,7 @@ class PackManager {
         xp: true,
         items: true,
         quete: true,
-        nsfw: false,
+        nsfw: true,
         mlbb: false
       }
     },

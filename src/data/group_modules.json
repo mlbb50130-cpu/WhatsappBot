@@ -70,5 +70,32 @@
     "items": true,
     "quete": true,
     "nsfw": false
+  },
+  "120363293285843340@g.us": {
+    "mlbb": false,
+    "anime": true,
+    "fun": true,
+    "nsfw": false,
+    "xp": true,
+    "items": true,
+    "quete": true
+  },
+  "999999999999999999@g.us": {
+    "mlbb": true,
+    "anime": false,
+    "fun": false,
+    "xp": false,
+    "items": false,
+    "quete": false,
+    "nsfw": false
+  },
+  "888888888888888888@g.us": {
+    "mlbb": true,
+    "anime": true,
+    "fun": true,
+    "xp": true,
+    "items": true,
+    "quete": true,
+    "nsfw": false
   }
 }
