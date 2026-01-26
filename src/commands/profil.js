@@ -47,18 +47,12 @@ module.exports = {
     const createdDate = new Date(user.createdAt).toLocaleDateString('fr-FR');
 
     const profile = `${MessageFormatter.elegantBox('👤 TON PROFIL OTAKU 👤', profileInfo)}
-
 ${MessageFormatter.elegantSection('STATISTIQUES', statsInfo.map(s => `${s.label}: ${s.value}`))}
-
 *🎖️ PROGRESSION*
 ${progressBar} ${levelInfo.currentLevelXp}/${levelInfo.requiredXp}
-
 ${MessageFormatter.elegantSection('BADGES', [badges])}
-
 ${MessageFormatter.elegantSection('INVENTAIRE', inventoryInfo.map(i => `${i.label}: ${i.value}`))}
-
-📆 *COMPTE CRÉÉ*: \`${createdDate}\`
-`;
+📆 *COMPTE CRÉÉ*: \`${createdDate}\``;
 
     await sock.sendMessage(senderJid, { text: profile });
   },

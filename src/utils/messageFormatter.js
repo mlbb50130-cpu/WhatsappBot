@@ -181,16 +181,13 @@ ${content}`;
    */
   static elegantBox(title, items = []) {
     const lines = items.map((item, index) => {
-      return `├ ☆ ${item.label.padEnd(15)}: ${item.value}`;
+      return `├ ☆ ${item.label.padEnd(12)}: ${item.value}`;
     });
     
     const content = lines.join('\n');
     const borderLength = Math.max(title.length + 6, 30);
     
-    return `╭${'─'.repeat(borderLength)}╮
-├ ☆ ${title}
-${content}
-╰${'─'.repeat(borderLength)}╯`;
+    return `╭${'─'.repeat(borderLength)}╮\n├ ☆ ${title}\n${content}\n╰${'─'.repeat(borderLength)}╯`;
   }
 
   /**
@@ -207,9 +204,7 @@ ${content}
     const content = lines.join('\n');
     const borderLength = Math.max(title.length + 6, 30);
     
-    return `╭───⟪ ${title} ⟫───╮
-${content}
-╰${'─'.repeat(borderLength)}╯`;
+    return `╭───⟪ ${title} ⟫───╮\n${content}\n╰${'─'.repeat(borderLength)}╯`;
   }
 }
 
