@@ -51,20 +51,13 @@ module.exports = {
       legendary: '🟡'
     };
 
-    const content = `
-${loot.emoji} *${loot.name}*
-${rarityEmojis[loot.rarity]} *RARETÉ*: ${loot.rarity.toUpperCase()}
+    const content = MessageFormatter.elegantBox('🎁 LOOT OBTENU 🎁', [
+      { label: `${loot.emoji} Objet`, value: loot.name },
+      { label: `${rarityEmojis[loot.rarity]} Rareté`, value: loot.rarity.toUpperCase() },
+      { label: '✨ XP Gagné', value: `+${loot.xp}` },
+      { label: '📦 Inventaire', value: `${user.inventory.length}/50` }
+    ]);
 
-${MessageFormatter.section('RÉCOMPENSES', [
-  { label: '✨ XP', value: `+${loot.xp}` },
-  { label: '📦 Objet', value: 'Ajouté à l\'inventaire' }
-])}
-
-📊 *INVENTAIRE*: ${user.inventory.length}/50
-`;
-
-    const result = MessageFormatter.box('🎁 LOOT OBTENU 🎁', content);
-
-    await sock.sendMessage(senderJid, { text: result });
+    await sock.sendMessage(senderJid, { text: content });
   }
 };

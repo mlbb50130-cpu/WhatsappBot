@@ -14,18 +14,13 @@ module.exports = {
     const participantJid = message.key.participant || senderJid;
 
     try {
-      const content = `
-👤 *${user.username || 'Joueur'}*
+      const whoamiItems = [
+        { label: '👤 Nom', value: user.username || 'Joueur' },
+        { label: '🆔 JID', value: participantJid.substring(0, 30) + '...' },
+        { label: '📋 Instruction', value: 'Copie le JID pour les commandes admin' }
+      ];
 
-*TON JID:*
-\`\`\`
-${participantJid}
-\`\`\`
-
-📋 *INSTRUCTION*
-Copie ce JID et ajoute-le à ADMIN_JIDS dans .env pour avoir accès aux commandes admin.`;
-
-      const whoamiMessage = MessageFormatter.box('🆔 TON JID 🆔', content);
+      const whoamiMessage = MessageFormatter.elegantBox('🆔 TON JID 🆔', whoamiItems);
 
       await sock.sendMessage(senderJid, { text: whoamiMessage });
     } catch (error) {

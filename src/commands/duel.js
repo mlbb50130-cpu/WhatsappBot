@@ -139,30 +139,30 @@ module.exports = {
     await user.save();
     await opponent.save();
 
-    const result = `
-*ATTAQUANT:*
-  ├─ 👤 ${user.username}
-  ├─ 🎖️ Niveau ${user.level}
-  └─ ⚡ Puissance: ${attackerPower}
+    const result = [
+      `⚔️ DUEL ⚔️`,
+      ``,
+      `👥 COMBATTANTS:`,
+      `${MessageFormatter.elegantBox('🔴 ATTAQUANT', [
+        { label: '👤 Nom', value: user.username },
+        { label: '🎖️ Niveau', value: user.level.toString() },
+        { label: '⚡ Puissance', value: attackerPower.toString() }
+      ])}`,
+      ``,
+      `${MessageFormatter.elegantBox('🔵 DÉFENSEUR', [
+        { label: '👤 Nom', value: opponent.username },
+        { label: '🎖️ Niveau', value: opponent.level.toString() },
+        { label: '⚡ Puissance', value: defenderPower.toString() }
+      ])}`,
+      ``,
+      `${MessageFormatter.elegantBox(winner === 'attacker' ? '🏆 VICTOIRE!' : '💔 DÉFAITE!', [
+        { label: '👤 Gagnant', value: winner === 'attacker' ? user.username : opponent.username },
+        { label: '💫 Récompense', value: '+30 XP' },
+        { label: '📊 Différence', value: `${difference} points` },
+        { label: '🔵 Chakra', value: `${user.chakra}/${maxChakra}` }
+      ])}`
+    ].join('\n');
 
-*VS*
-
-*DÉFENSEUR:*
-  ├─ 👤 ${opponent.username}
-  ├─ 🎖️ Niveau ${opponent.level}
-  └─ ⚡ Puissance: ${defenderPower}
-
-${winner === 'attacker' 
-  ? `🏆 ${user.username} GAGNE! (+30 XP)` 
-  : `🏆 ${opponent.username} GAGNE! (+30 XP)`}
-
-📊 Différence: ${difference} points
-🔵 Chakra utilisé: ${chakraCost}
-🔵 Chakra restant: ${user.chakra}/${maxChakra}
-`;
-
-    const duelMessage = MessageFormatter.box('⚔️ DUEL ⚔️', result);
-
-    await sock.sendMessage(senderJid, { text: duelMessage });
+    await sock.sendMessage(senderJid, { text: result });
   }
 };

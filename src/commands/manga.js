@@ -33,20 +33,21 @@ module.exports = {
 
         const manga = response.data.data[0];
 
-        let mangaMessage = `
-*${manga.title}*
-📝 Titre anglais: ${manga.title_english || 'N/A'}
+        const mangaItems = [
+          { label: '📝 Titre', value: manga.title },
+          { label: '📝 Anglais', value: manga.title_english || 'N/A' },
+          { label: '🎯 Type', value: manga.type || 'N/A' },
+          { label: '📖 Chapitres', value: manga.chapters || '?' },
+          { label: '📚 Tomes', value: manga.volumes || '?' },
+          { label: '✅ Statut', value: manga.status || 'N/A' },
+          { label: '⭐ Note', value: manga.score ? `${manga.score}/10` : 'N/A' },
+          { label: '📅 Année', value: manga.year || 'N/A' }
+        ];
 
-🎯 *Type:* ${manga.type || 'N/A'}
-📖 *Chapitres:* ${manga.chapters || '?'}
-📚 *Tomes:* ${manga.volumes || '?'}
-✅ *Statut:* ${manga.status || 'N/A'}
-⭐ *Note:* ${manga.score ? manga.score + '/10' : 'N/A'}
-📅 *Année:* ${manga.year || 'N/A'}
+        const synopsis = manga.synopsis ? manga.synopsis.substring(0, 150) + '...' : 'N/A';
 
-📖 *Synopsis:* ${manga.synopsis ? manga.synopsis.substring(0, 150) + '...' : 'N/A'}`;
-
-        const content = MessageFormatter.box('📚 INFOS MANGA 📚', mangaMessage);
+        const content = `${MessageFormatter.elegantBox('📚 MANGA 📚', mangaItems)}
+📖 *Synopsis:* ${synopsis}`;
         await sock.sendMessage(senderJid, { text: content });
 
       } catch (apiError) {

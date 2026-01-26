@@ -24,16 +24,14 @@ module.exports = {
           return;
         }
 
-        let topMessage = ``;
-
+        let topList = [];
         response.data.data.forEach((anime, i) => {
           const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}.`;
-          topMessage += `${medal} *${anime.title}* (${anime.score}/10)\n`;
+          topList.push(`${medal} ${anime.title} (${anime.score}/10)`);
         });
 
-        topMessage += `\n💡 Utilise \`!anime [nom]\` pour plus d'infos!`;
-
-        const fullMessage = MessageFormatter.box('🏆 TOP 10 DES MEILLEURS ANIMES 🏆', topMessage);
+        const fullMessage = `${MessageFormatter.elegantSection('🏆 TOP 10 ANIMES 🏆', topList)}
+💡 Utilise \`!anime [nom]\` pour plus d'infos!`;
         await sock.sendMessage(senderJid, { text: fullMessage });
 
       } catch (apiError) {

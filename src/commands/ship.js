@@ -41,14 +41,12 @@ module.exports = {
       response = `💔 NON! ${compatibility}% de compatibilité.\nN'insiste pas!`;
     }
 
-    const shipContent = `👤 ${user1} +
-👤 ${user2}
+    const shipItems = [
+      { label: '❤️ Compatibilité', value: `${compatibility}%` },
+      { label: '💭 Verdict', value: response }
+    ];
 
-${'❤️'.repeat(Math.floor(compatibility/10))}${'🤍'.repeat(10-Math.floor(compatibility/10))}
-
-${response}`;
-
-    const ship = MessageFormatter.box('💕 SHIP OTAKU 💕', shipContent);
+    const ship = MessageFormatter.elegantBox('💕 SHIP 💕', shipItems);
     await sock.sendMessage(senderJid, { text: ship });
   }
 };

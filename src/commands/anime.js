@@ -33,19 +33,20 @@ module.exports = {
 
         const anime = response.data.data[0];
 
-        let animeMessage = `
-*${anime.title}*
-📝 Titre anglais: ${anime.title_english || 'N/A'}
+        const animeItems = [
+          { label: '📝 Titre', value: anime.title },
+          { label: '📝 Anglais', value: anime.title_english || 'N/A' },
+          { label: '🎯 Type', value: anime.type || 'N/A' },
+          { label: '📺 Episodes', value: anime.episodes || '?' },
+          { label: '✅ Statut', value: anime.status || 'N/A' },
+          { label: '⭐ Note', value: anime.score ? `${anime.score}/10` : 'N/A' },
+          { label: '📅 Année', value: anime.year || 'N/A' }
+        ];
 
-🎯 *Type:* ${anime.type || 'N/A'}
-📺 *Episodes:* ${anime.episodes || '?'}
-✅ *Statut:* ${anime.status || 'N/A'}
-⭐ *Note:* ${anime.score ? anime.score + '/10' : 'N/A'}
-📅 *Année:* ${anime.year || 'N/A'}
+        const synopsis = anime.synopsis ? anime.synopsis.substring(0, 150) + '...' : 'N/A';
 
-📖 *Synopsis:* ${anime.synopsis ? anime.synopsis.substring(0, 150) + '...' : 'N/A'}`;
-
-        const content = MessageFormatter.box('📺 INFOS ANIME 📺', animeMessage);
+        const content = `${MessageFormatter.elegantBox('📺 ANIME 📺', animeItems)}
+📖 *Synopsis:* ${synopsis}`;
         await sock.sendMessage(senderJid, { text: content });
 
       } catch (apiError) {

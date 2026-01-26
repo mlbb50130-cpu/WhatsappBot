@@ -24,16 +24,14 @@ module.exports = {
           return;
         }
 
-        let topMessage = ``;
-
+        let topList = [];
         response.data.data.forEach((manga, i) => {
           const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}.`;
-          topMessage += `${medal} *${manga.title}* (${manga.score}/10)\n`;
+          topList.push(`${medal} ${manga.title} (${manga.score}/10)`);
         });
 
-        topMessage += `\n💡 Utilise \`!manga [nom]\` pour plus d'infos!`;
-
-        const fullMessage = MessageFormatter.box('🏆 TOP 10 DES MEILLEURS MANGAS 🏆', topMessage);
+        const fullMessage = `${MessageFormatter.elegantSection('🏆 TOP 10 MANGAS 🏆', topList)}
+💡 Utilise \`!manga [nom]\` pour plus d'infos!`;
         await sock.sendMessage(senderJid, { text: fullMessage });
 
       } catch (apiError) {

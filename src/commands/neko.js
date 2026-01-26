@@ -30,7 +30,7 @@ module.exports = {
         console.log('[NEKO] Nekos.best API failed:', apiError.message);
       }
 
-      const caption = isGroup ? MessageFormatter.box('🐱 NEKO MIGNON! 🐱', '✨ +5 XP 💫') : MessageFormatter.box('🐱 NEKO MIGNON! 🐱', '🐾 Une mignonne petite neko');
+      const caption = isGroup ? MessageFormatter.elegantBox('🐱 NEKO 🐱', [{ label: '✨ Récompense', value: '+5 XP' }]) : MessageFormatter.elegantBox('🐱 NEKO 🐱', [{ label: '🐾 Type', value: 'Neko mignon' }]);
       
       if (imageUrl) {
         try {

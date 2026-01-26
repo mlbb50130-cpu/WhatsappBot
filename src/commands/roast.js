@@ -39,10 +39,13 @@ module.exports = {
     }
 
     const roast = RandomUtils.choice(this.roasts);
-    const roastContent = `*À:* ${targetUser.username}
+    
+    const roastItems = [
+      { label: '👤 Cible', value: targetUser.username },
+      { label: '🎤 Message', value: roast }
+    ];
 
-*🎤 ${roast}*`;
-    const text = MessageFormatter.box('🔥 ROAST OTAKU 🔥', roastContent);
+    const text = MessageFormatter.elegantBox('🔥 ROAST 🔥', roastItems);
 
     await sock.sendMessage(senderJid, { text });
   }

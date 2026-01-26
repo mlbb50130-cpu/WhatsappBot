@@ -46,17 +46,13 @@ module.exports = {
         advice = '💤 Reste prudent et ne prends pas de risques!';
       }
 
-      const content = `
-*NIVEAU DE CHANCE:*
-${bar}
+      const chanceItems = [
+        { label: '🎲 Chance', value: `${luck}%` },
+        { label: '🔮 Prédiction', value: message_luck.text },
+        { label: '💡 Conseil', value: advice }
+      ];
 
-*PRÉDICTION:*
-${message_luck.text}
-
-*CONSEIL:*
-${advice}`;
-
-      const chanceMessage = MessageFormatter.box('🎲 TA CHANCE DU JOUR 🎲', content);
+      const chanceMessage = `${bar}\n${MessageFormatter.elegantBox('🎲 TA CHANCE 🎲', chanceItems)}`;
 
       await sock.sendMessage(senderJid, { text: chanceMessage });
     } catch (error) {

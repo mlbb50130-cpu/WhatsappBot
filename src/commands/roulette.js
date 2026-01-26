@@ -17,9 +17,13 @@ module.exports = {
     const win = chance > 2; // 4/6 chance de gagner
 
     const gold = 500;
-    const resultText = `🎲 Le cylindre tourne... \`*Clic*\`\n\n${win ? '✅ SURVÉCU!' : '💥 TOUCHÉ!'}\n\n${win ? `Tu as gagné 🪙 ${gold} gold!\n+100 XP` : `Tu as perdu 🪙 ${gold} gold!\nMais c'était amusant!`}`;
+    const rouletteItems = [
+      { label: '🎲 Résultat', value: win ? '✅ SURVÉCU!' : '💥 TOUCHÉ!' },
+      { label: '💰 Or', value: win ? `+${gold} gold` : `-${gold} gold` },
+      { label: '⭐ XP', value: win ? '+100 XP' : '+20 XP' }
+    ];
     
-    const result = MessageFormatter.box('🎰 ROULETTE RUSSE 🎰', resultText);
+    const result = MessageFormatter.elegantBox('🎰 ROULETTE 🎰', rouletteItems);
 
     user.xp += win ? 100 : 20;
     await user.save();

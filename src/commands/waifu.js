@@ -42,8 +42,9 @@ module.exports = {
 
       // Si aucune image n'a pu être trouvée
       if (!imageUrl) {
-        const content = '(Les APIs image sont temporairement indisponibles)\n\n➕ 5 XP';
-        const text = MessageFormatter.box('🥰 UNE BELLE WAIFU POUR TOI! 🥰', content);
+        const waifuItems = [{ label: '⚠️ Status', value: 'APIs indisponibles' }];
+        const text = `${MessageFormatter.elegantBox('🥰 WAIFU 🥰', waifuItems)}
+➕ 5 XP`;
         await sock.sendMessage(senderJid, { text });
         if (isGroup) user.xp += 5;
         await user.save();
@@ -58,14 +59,16 @@ module.exports = {
         });
         const imageBuffer = Buffer.from(imageResponse.data, 'binary');
 
+        const caption = isGroup ? '🥰 *Une belle waifu!*\n\n➕ 5 XP ✨' : '🥰 *Une belle waifu!*';
+
         await sock.sendMessage(senderJid, {
           image: imageBuffer,
-          caption: isGroup ? '🥰 *Une belle waifu pour toi!*\n\n➕ 5 XP ✨' : '🥰 *Une belle waifu pour toi!*\n\n'
+          caption: caption
         });
       } catch (downloadErr) {
         console.error('[WAIFU] Error downloading image:', downloadErr.message);
         await sock.sendMessage(senderJid, {
-          text: '🥰 *Une belle waifu pour toi!*\n\n➕ 5 XP'
+          text: '🥰 Une belle waifu pour toi!\n\n➕ 5 XP'
         });
       }
 
@@ -75,7 +78,7 @@ module.exports = {
     } catch (error) {
       console.error('Error fetching waifu:', error.message);
       await sock.sendMessage(senderJid, {
-        text: '❌ Erreur lors de la récupération de l\'image. Réessaie!'
+        text: MessageFormatter.error('Erreur lors de la récupération!')
       });
     }
   }

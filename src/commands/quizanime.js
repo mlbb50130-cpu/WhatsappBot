@@ -157,13 +157,12 @@ module.exports = {
 
       const randomQuiz = quizzes[Math.floor(Math.random() * quizzes.length)];
 
-      let quizMessage = `❓ *${randomQuiz.question}*
+      let quizMessage = MessageFormatter.elegantBox('📝 QUIZ ANIME 📝', [
+        { label: '❓ Question', value: randomQuiz.question },
+        { label: '🎯 Options', value: randomQuiz.options.map((opt, i) => `${String.fromCharCode(65 + i)}. ${opt}`).join('\n') }
+      ]);
 
-${randomQuiz.options.map((opt, i) => `${String.fromCharCode(65 + i)}. ${opt}`).join('\n')}
-
-💡 Réponds avec: \`!reponse A\` (ou B, C, etc.)`;
-
-      const quiz = MessageFormatter.box('🎌 QUIZ ANIME 🎌', quizMessage);
+      const quiz = quizMessage;
 
       // Store quiz in sessions (compatible with reponse command)
       if (!global.quizSessions) global.quizSessions = new Map();

@@ -56,14 +56,14 @@ module.exports = {
     user.xp += reward;
     await user.save();
 
-    const content = `*TON CHOIX:* 🎴 ${userChoice.toUpperCase()}
-*MON CHOIX:* 🤖 ${botChoice.toUpperCase()}
+    const pfcItems = [
+      { label: '🎴 Ton choix', value: userChoice.toUpperCase() },
+      { label: '🤖 Mon choix', value: botChoice.toUpperCase() },
+      { label: '⚔️ Résultat', value: result },
+      { label: '⭐ Récompense', value: `+${reward} XP` }
+    ];
 
-${result}
-
-*RÉCOMPENSE:* +${reward} XP`;
-
-    const text = MessageFormatter.box('🎮 PIERRE-FEUILLE-CISEAUX 🎮', content);
+    const text = MessageFormatter.elegantBox('🎮 PFC 🎮', pfcItems);
 
     await sock.sendMessage(senderJid, { text });
   }

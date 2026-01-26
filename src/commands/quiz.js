@@ -44,7 +44,12 @@ module.exports = {
     
     // Si TOUS les quizzes ont été répondus, afficher un message
     if (availableQuizzes.length === 0) {
-      const congratsMsg = MessageFormatter.box('🎉 FÉLICITATIONS! 🎉', `Vous avez répondu à TOUS les ${allQuizzes.length} quizzes!\n\n👑 Vous êtes un vrai maître du quiz otaku!\n\nRéinitialisation de l'historique pour recommencer...`);
+      const congratsItems = [
+        { label: '🎉 Statut', value: `TOUS les ${allQuizzes.length} quizzes répondus!` },
+        { label: '👑 Titre', value: 'Maître du Quiz Otaku' },
+        { label: '🔄 Action', value: 'Historique réinitialisé' }
+      ];
+      const congratsMsg = MessageFormatter.elegantBox('🎉 FÉLICITATIONS! 🎉', congratsItems);
       await sock.sendMessage(senderJid, { text: congratsMsg });
       // Réinitialiser SEULEMENT après avoir affiché le message
       user.quizHistory = [];

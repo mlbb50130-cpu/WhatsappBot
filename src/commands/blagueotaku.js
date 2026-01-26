@@ -28,8 +28,12 @@ module.exports = {
 
     const joke = RandomUtils.choice(this.jokes);
 
-    const jakeContent = `${joke}\n\n+5 XP pour avoir rigé!`;
-    const text = MessageFormatter.box('😂 BLAGUE OTAKU 😂', jakeContent);
+    const jokeitems = [
+      { label: '😂 Blague', value: joke },
+      { label: '⭐ Récompense', value: '+5 XP' }
+    ];
+
+    const text = MessageFormatter.elegantBox('😂 BLAGUE OTAKU 😂', jokeitems);
 
     user.xp += 5;
     await user.save();
