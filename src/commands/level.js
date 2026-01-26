@@ -19,34 +19,38 @@ module.exports = {
     
     const progressBar = MessageFormatter.progressBar(levelInfo.currentLevelXp, levelInfo.requiredXp, 20);
 
-    const content = `
-${MessageFormatter.section('NIVEAU ACTUEL', [
-  { label: '🎯 Niveau', value: user.level },
-  { label: '🎌 Rang', value: `${rankInfo.emoji} ${rankInfo.rank}` },
-  { label: '⭐ Total XP', value: user.xp }
-])}
+    const levelItems = [
+      { label: '⬆️ Niveau', value: user.level },
+      { label: '⭐ Rang', value: `${rankInfo.emoji} ${rankInfo.rank}` },
+      { label: '🔥 Total XP', value: user.xp },
+      { label: '📈 Progression', value: `${levelInfo.currentLevelXp}/${levelInfo.requiredXp}` },
+      { label: '⏳ Manquant', value: levelInfo.requiredXp - levelInfo.currentLevelXp }
+    ];
 
-*📈 PROGRESSION VERS NIVEAU ${user.level + 1}*
+    const ranksItems = [
+      '🥋 Lv 1-5: Genin Otaku',
+      '🎌 Lv 6-10: Chuunin Otaku',
+      '⚔️ Lv 11-20: Jounin Otaku',
+      '👨‍🏫 Lv 21-30: Sensei Otaku',
+      '✨ Lv 31-50: Légende Otaku',
+      '👑 Lv 51+: Dieu Otaku'
+    ];
+
+    const tipsItems = [
+      '💭 5 XP par message (cooldown 5s)',
+      '📋 Quêtes +50 XP',
+      '🧠 Quiz +25 XP',
+      '⚡ Duels +30 XP',
+      '🎁 Loots +10 XP'
+    ];
+
+    const level = `${MessageFormatter.elegantBox('⬆️ TON NIVEAU ⬆️', levelItems)}
 ${progressBar}
-  ├─ XP gagné: \`${levelInfo.currentLevelXp}\`
-  ├─ XP requis: \`${levelInfo.requiredXp}\`
-  └─ XP manquant: \`${levelInfo.requiredXp - levelInfo.currentLevelXp}\`
+${MessageFormatter.elegantSection('⭐ RANGS', rangsItems)}
+${MessageFormatter.elegantSection('💡 CONSEILS', tipsItems)}`;
 
-${MessageFormatter.section('RANGS DISPONIBLES', [])}
-  ├─ 🥋 Lv 1-5: Genin Otaku
-  ├─ 🎌 Lv 6-10: Chuunin Otaku
-  ├─ ⚔️ Lv 11-20: Jounin Otaku
-  ├─ 👨‍🏫 Lv 21-30: Sensei Otaku
-  ├─ ✨ Lv 31-50: Légende Otaku
-  └─ 👑 Lv 51+: Dieu Otaku
-
-${MessageFormatter.section('CONSEILS POUR PROGRESSER', [])}
-  ├─ 💬 Gagne 5 XP par message (cooldown 5s)
-  ├─ 🎯 Complète les quêtes (+50 XP)
-  ├─ 🎯 Gagne les quiz (+25 XP)
-  ├─ ⚔️ Gagne les duels (+30 XP)
-  └─ 🎁 Ouvre les loots (+10 XP)
-`;
+    await sock.sendMessage(senderJid, { text: level });
+  }
 
     const text = MessageFormatter.box('🎖️ TON NIVEAU 🎖️', content);
 

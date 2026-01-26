@@ -12,42 +12,44 @@ module.exports = {
   async execute(sock, message, args, user, isGroup, groupData) {
     const senderJid = message.key.remoteJid;
 
-    const infoContent = `*BOT INFORMATION*
-  ├─ Nom: TetsuBot
-  ├─ Version: 1.0.0
-  ├─ Type: Otaku RPG WhatsApp Bot
-  ├─ Language: Node.js + JavaScript
-  ├─ Database: MongoDB + Mongoose
-  └─ Client: Baileys (Multi-Device)
+    const infoItems = [
+      { label: '📝 Nom', value: 'TetsuBot' },
+      { label: '📌 Version', value: '1.0.0' },
+      { label: '🎮 Type', value: 'Otaku RPG Bot' },
+      { label: '💻 Language', value: 'Node.js' },
+      { label: '💾 Database', value: 'MongoDB' }
+    ];
 
-*FONCTIONNALITÉS*
-  ├─ 🎖️ Système de niveaux et XP
-  ├─ 🎯 Quêtes et missions
-  ├─ ⚔️ Système de duel PvP
-  ├─ 📚 Quiz et mini-jeux
-  ├─ 🎁 Système de loot
-  ├─ 🎨 Images anime/manga
-  ├─ 🔐 Système d'avertissements
-  ├─ 👥 Gestion de groupe
-  └─ ⚙️ Commandes admin
+    const featuresItems = [
+      '🎖️ Système de niveaux',
+      '🎯 Quêtes et missions',
+      '⚡ Duels PvP',
+      '🧠 Quiz/mini-jeux',
+      '🎁 Système de loot',
+      '🎨 Images anime',
+      '🔐 Avertissements',
+      '👥 Gestion groupe',
+      '⚙️ Commandes admin'
+    ];
 
-*STATISTIQUES*
-  ├─ Utilisateurs actifs: ${user ? 'N/A' : '0'}
-  ├─ Groupes: N/A
-  ├─ Commandes: 30+
-  └─ Uptime: N/A
+    const statsItems = [
+      { label: '👤 Utilisateurs', value: 'N/A' },
+      { label: '👥 Groupes', value: 'N/A' },
+      { label: '🎮 Commandes', value: '150+' },
+      { label: '⏱️ Uptime', value: 'N/A' }
+    ];
 
-*CRÉATEUR*
-  └─ Développé par Shayne Dev
+    const creatorItems = [
+      '👨‍💻 Développé par: Shayne Dev',
+      '📞 Support: !help / !menu',
+      '🎮 Prefix: !'
+    ];
 
-*SUPPORT*
-  ├─ Prefix: \`!\`
-  ├─ Utilise \`!help\` pour l'aide
-  └─ Utilise \`!menu\` pour le menu
+    const info = `${MessageFormatter.elegantBox('🤖 INFO TETSUBOT 🤖', infoItems)}
+${MessageFormatter.elegantSection('✨ FONCTIONNALITÉS', featuresItems)}
+${MessageFormatter.elegantSection('📊 STATISTIQUES', statsItems)}
+${MessageFormatter.elegantSection('👨‍💻 CRÉATEUR', creatorItems)}`;
 
-Bon jeu! 🎮 Amusez-vous bien!`;
-
-    const info = MessageFormatter.box('🤖 INFO TETSUBOT 🤖', infoContent);
     await sock.sendMessage(senderJid, { text: info });
   }
 };

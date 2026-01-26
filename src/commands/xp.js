@@ -25,22 +25,21 @@ module.exports = {
       const progressPercent = Math.round((levelInfo.currentLevelXp / levelInfo.requiredXp) * 100);
       const progressBar = MessageFormatter.progressBar(levelInfo.currentLevelXp, levelInfo.requiredXp, 15);
       
-      const content = `
-👤 *UTILISATEUR*: ${user.username || 'Joueur'}
-${rankInfo.emoji} *NIVEAU*: ${levelInfo.level} - ${rankInfo.rank}
+      const xpItems = [
+        { label: '🧡 Utilisateur', value: user.username || 'Joueur' },
+        { label: '⬆️ Niveau', value: `${levelInfo.level} - ${rankInfo.rank}` },
+        { label: '🔥 XP Actuel', value: `${levelInfo.currentLevelXp}/${levelInfo.requiredXp}` },
+        { label: '⭐ XP Total', value: user.xp || 0 }
+      ];
 
-${MessageFormatter.section('XP', [
-  { label: '✨ Actuel', value: `${levelInfo.currentLevelXp}/${levelInfo.requiredXp}` },
-  { label: '📊 Total', value: user.xp || 0 }
-])}
+      const statusItems = [
+        progressPercent === 100 ? '🎉 Tu es prêt pour le levelup!' : '⏳ Continue pour progresser!'
+      ];
 
-*PROGRESSION VERS LE NIVEAU ${levelInfo.level + 1}:*
+      const xpMessage = `${MessageFormatter.elegantBox('💫 TON XP ACTUEL 💫', xpItems)}
 ${progressBar}
+${MessageFormatter.elegantSection('📈 STATUT', statusItems)}`;
 
-${progressPercent === 100 ? '🎉 Tu es prêt pour le levelup!' : '⏳ Continue pour progresser!'}
-`;
-
-      const xpMessage = MessageFormatter.box('💫 TON XP ACTUEL 💫', content);
       await sock.sendMessage(senderJid, { text: xpMessage });
     } catch (error) {
       console.error('Error in xp command:', error.message);

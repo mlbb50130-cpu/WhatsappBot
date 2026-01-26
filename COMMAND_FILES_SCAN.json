@@ -1,0 +1,550 @@
+{
+  "total_files": 104,
+  "scan_date": "2026-01-26",
+  "fichiers": [
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\help.js",
+      "priority": "HIGH",
+      "note": "MessageFormatter.box() + MessageFormatter.section() - À convertir"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\menu.js",
+      "priority": "HIGH",
+      "note": "MessageFormatter.box() - À convertir"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\rank.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - Probablement box()"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\ping.js",
+      "priority": "HIGH",
+      "note": "MessageFormatter.box() - À convertir"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\quiz.js",
+      "priority": "HIGH",
+      "note": "MessageFormatter.box() - À convertir (2 occurrences)"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\duel.js",
+      "priority": "HIGH",
+      "note": "MessageFormatter.box() - À convertir"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\loot.js",
+      "priority": "HIGH",
+      "note": "MessageFormatter.box() + MessageFormatter.section() - À convertir"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\badges.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\inventaire.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\quete.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\anime.js",
+      "priority": "HIGH",
+      "note": "MessageFormatter.box() - À convertir"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\manga.js",
+      "priority": "HIGH",
+      "note": "MessageFormatter.box() - À convertir"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\neko.js",
+      "priority": "HIGH",
+      "note": "MessageFormatter.box() - À convertir (2 occurrences)"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\pfc.js",
+      "priority": "HIGH",
+      "note": "MessageFormatter.box() - À convertir"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\quizanime.js",
+      "priority": "HIGH",
+      "note": "MessageFormatter.box() - À convertir"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\roast.js",
+      "priority": "HIGH",
+      "note": "MessageFormatter.box() - À convertir"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\roulette.js",
+      "priority": "HIGH",
+      "note": "MessageFormatter.box() - À convertir"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\ship.js",
+      "priority": "HIGH",
+      "note": "MessageFormatter.box() - À convertir"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\topanime.js",
+      "priority": "HIGH",
+      "note": "MessageFormatter.box() - À convertir"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\topmanga.js",
+      "priority": "HIGH",
+      "note": "MessageFormatter.box() - À convertir"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\waifu.js",
+      "priority": "HIGH",
+      "note": "MessageFormatter.box() - À convertir"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\whoami.js",
+      "priority": "HIGH",
+      "note": "MessageFormatter.box() - À convertir"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\chance.js",
+      "priority": "HIGH",
+      "note": "MessageFormatter.box() - À convertir"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\blagueotaku.js",
+      "priority": "HIGH",
+      "note": "MessageFormatter.box() - À convertir"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\level.js",
+      "priority": "HIGH",
+      "note": "MessageFormatter.box() - À convertir"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\activatebot.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\allowhentai.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\animegif.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\assets.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\bleach.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\boahancook.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\chakra.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\chakratest.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\classement.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\deactivatebot.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\deku.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\documentation.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\equip.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\equipement.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\gojo.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\gokuui.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\hebdo.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\hentai.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\hentaivd.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\husbando.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\info.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\jinwoo.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\livai.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\madara.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - Probablement sans MessageFormatter.box()"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\makima.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\miku.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\mikunakano.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\mlbb.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\naruto.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - Probablement sans MessageFormatter.box()"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\nino.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - Probablement sans MessageFormatter.box()"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\nsfw.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\personnage.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\powerlevel.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\profil.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\quetelundi.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\quotidien.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\regles.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\rengokudemon.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\reponse.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\stats.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\sticker.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\sukuna.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\tengen.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\tsunade.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\vegito.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\voiranime.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\xp.js",
+      "priority": "MEDIUM",
+      "note": "À scanner"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\yami.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - Probablement sans MessageFormatter.box()"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\yoruichi.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - Probablement sans MessageFormatter.box()"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\zerotwo.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - Probablement sans MessageFormatter.box()"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\admin\\admins.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - Admin command"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\admin\\clear.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - Admin command"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\admin\\demote.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - Admin command"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\admin\\everyone.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - Admin command"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\admin\\groupinfo.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - Admin command"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\admin\\kick.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - Admin command"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\admin\\lock.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - Admin command"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\admin\\mute.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - Admin command"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\admin\\promote.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - Admin command"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\admin\\setxp.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - Admin command"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\admin\\tournoisquiz.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - Admin command"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\admin\\unlock.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - Admin command"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\admin\\unmute.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - Admin command"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\admin\\warn.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - Admin command"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\mlbb\\build.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - MLBB command"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\mlbb\\combo.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - MLBB command"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\mlbb\\config.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - MLBB command"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\mlbb\\counter.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - MLBB command"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\mlbb\\handler.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - MLBB command"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\mlbb\\hero.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - MLBB command"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\mlbb\\index.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - MLBB command"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\mlbb\\join.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - MLBB command"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\mlbb\\lane.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - MLBB command"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\mlbb\\leave.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - MLBB command"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\mlbb\\meta.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - MLBB command"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\mlbb\\mlbb-profile.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - MLBB command"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\mlbb\\team.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - MLBB command"
+    },
+    {
+      "chemin": "c:\\Users\\Shayne\\Documents\\TetsuBot\\src\\commands\\mlbb\\tip.js",
+      "priority": "MEDIUM",
+      "note": "À scanner - MLBB command"
+    }
+  ],
+  "summary": {
+    "total_commands": 104,
+    "high_priority": 25,
+    "medium_priority": 79,
+    "status": "SCAN COMPLET"
+  },
+  "high_priority_files_with_box_or_section": [
+    "help.js - 3 appels (2x section, 1x box)",
+    "menu.js - 1 appel (1x box)",
+    "ping.js - 1 appel (1x box)",
+    "quiz.js - 2 appels (2x box)",
+    "duel.js - 1 appel (1x box)",
+    "loot.js - 2 appels (1x section, 1x box)",
+    "anime.js - 1 appel (1x box)",
+    "manga.js - 1 appel (1x box)",
+    "neko.js - 2 appels (2x box)",
+    "pfc.js - 1 appel (1x box)",
+    "quizanime.js - 1 appel (1x box)",
+    "roast.js - 1 appel (1x box)",
+    "roulette.js - 1 appel (1x box)",
+    "ship.js - 1 appel (1x box)",
+    "topanime.js - 1 appel (1x box)",
+    "topmanga.js - 1 appel (1x box)",
+    "waifu.js - 1 appel (1x box)",
+    "whoami.js - 1 appel (1x box)",
+    "chance.js - 1 appel (1x box)",
+    "blagueotaku.js - 1 appel (1x box)",
+    "level.js - 1 appel (1x box)"
+  ]
+}

@@ -14,36 +14,32 @@ module.exports = {
     const handler = require('../handler');
 
     if (!args[0]) {
-      const content = `
-*UTILISATION GÉNÉRALE:*
-Prefix: \`!\`
-Exemple: \`!profil\`
+      const categories = [
+        '🟦 PROFIL',
+        '🟦 QUIZ',
+        '🟦 COMBATS',
+        '🟦 LOOT',
+        '🟦 IMAGES',
+        '🟦 FUN',
+        '🟦 ADMIN',
+        '🟦 BOT'
+      ];
 
-${MessageFormatter.section('CATÉGORIES', [])}
-🟦 Utilise \`!help [catégorie]\`
-  ├─ PROFIL
-  ├─ QUIZ
-  ├─ COMBATS
-  ├─ LOOT
-  ├─ IMAGES
-  ├─ FUN
-  ├─ ADMIN
-  └─ BOT
+      const populars = [
+        '!profil - Ton profil',
+        '!level - Ton niveau',
+        '!duel @user - Défier',
+        '!quiz - Quiz otaku',
+        '!loot - Ouvrir un loot',
+        '!waifu - Image waifu',
+        '!chance - Chance du jour',
+        '!menu - Menu complet'
+      ];
 
-${MessageFormatter.section('COMMANDES POPULAIRES', [])}
-  ├─ \`!profil\` - Ton profil
-  ├─ \`!level\` - Ton niveau
-  ├─ \`!duel @user\` - Défier
-  ├─ \`!quiz\` - Quiz otaku
-  ├─ \`!loot\` - Ouvrir un loot
-  ├─ \`!waifu\` - Image waifu
-  ├─ \`!chance\` - Chance du jour
-  └─ \`!menu\` - Menu complet
+      const help = `${MessageFormatter.elegantSection('📚 CATÉGORIES', categories)}
+${MessageFormatter.elegantSection('⭐ POPULAIRES', populars)}
+💡 Tape \`!help [commande]\` pour plus d'infos!`;
 
-Tape \`!help [nom_commande]\` pour plus d'infos!
-`;
-
-      const help = MessageFormatter.box('📚 AIDE DU BOT 📚', content);
       await sock.sendMessage(senderJid, { text: help });
       return;
     }
