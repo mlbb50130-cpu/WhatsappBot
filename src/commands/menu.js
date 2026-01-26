@@ -14,15 +14,16 @@ module.exports = {
     
     const profil = ['!profil - Voir ton profil', '!level - Voir ton niveau', '!xp - Voir ton XP', '!rank - Voir ton rang', '!stats - Voir tes stats', '!badges - Voir tes badges'];
     const duels = ['!duel @user - Défier', '!powerlevel - Power level', '!chakra - Chakra'];
-    const quests = ['!quete - Quêtes', '!quotidien - Quotidienne', '!hebdo - Hebdomadaire'];
+    const quests = ['!quete - Quêtes', '!quotidien - Quotidienne', '!hebdo - Hebdomadaire', '!quetelundi - Quête lundi'];
     const quiz = ['!quiz - Quiz otaku', '!quizanime - Quiz anime', '!pfc - Pierre-Feuille-Ciseaux', '!roulette - Roulette russe'];
-    const loot = ['!loot - Lancer un loot', '!inventaire - Inventaire', '!collection - Collection'];
+    const loot = ['!loot - Lancer un loot', '!inventaire - Inventaire', '!equip - Équiper', '!collection - Collection'];
     const images = ['!waifu - Waifu', '!husbando - Husbando', '!neko - Chat anime', '!animegif - GIF anime'];
-    const special = ['!bleach - Bleach', '!naruto - Naruto', '!gojo - Gojo', '!deku - Deku', '!madara - Madara', '!sukuna - Sukuna', '!vegito - Vegito', '!miku - Miku'];
+    const special = ['!bleach - Bleach', '!naruto - Naruto', '!gojo - Gojo', '!deku - Deku', '!madara - Madara', '!sukuna - Sukuna', '!vegito - Vegito', '!miku - Miku', '!zerotwo - Zero Two'];
     const fun = ['!blagueotaku - Blague', '!roast @user - Roast', '!chance - Chance', '!ship - Ship', '!sticker - Sticker'];
-    const media = ['!anime [nom] - Info anime', '!manga [nom] - Info manga', '!personnage [nom] - Info perso'];
-    const top = ['!topanime - Top animes', '!topmanga - Top mangas', '!classement level - Classement'];
-    const bot = ['!ping - Latence', '!info - Info bot', '!regles - Règles', '!help [cmd] - Aide'];
+    const media = ['!anime [nom] - Info anime', '!manga [nom] - Info manga', '!personnage [nom] - Info perso', '!voiranime - Voir anime'];
+    const top = ['!topanime - Top animes', '!topmanga - Top mangas', '!classement - Classement'];
+    const admin = ['!theme [nom] - Changer theme (Admin)', '!activatebot - Activer bot (Owner)', '!admins - Admins group'];
+    const bot = ['!ping - Latence', '!info - Info bot', '!regles - Règles', '!help [cmd] - Aide', '!documentation - Documentation'];
 
     const menu = `${MessageFormatter.elegantSection('👤 PROFIL & LEVEL', profil)}
 ${MessageFormatter.elegantSection('⚔️ DUELS & COMBATS', duels)}
@@ -34,6 +35,7 @@ ${MessageFormatter.elegantSection('🌟 PERSONNAGES', special)}
 ${MessageFormatter.elegantSection('🎪 FUN', fun)}
 ${MessageFormatter.elegantSection('📺 ANIME & MANGA', media)}
 ${MessageFormatter.elegantSection('🏆 CLASSEMENTS', top)}
+${MessageFormatter.elegantSection('🛠️ ADMIN', admin)}
 ${MessageFormatter.elegantSection('📌 BOT', bot)}
 
 💎 Gagne du XP en parlant!
