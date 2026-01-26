@@ -34,7 +34,8 @@ module.exports = {
       if (!user.hentaiUsageToday) {
         user.hentaiUsageToday = {
           lastReset: new Date(),
-          count: 0
+          hentai: 0,
+          hentaivd: 0
         };
       }
       
@@ -44,12 +45,13 @@ module.exports = {
       
       if (hoursDiff >= 24) {
         // Réinitialiser le compteur
-        user.hentaiUsageToday.count = 0;
+        user.hentaiUsageToday.hentai = 0;
+        user.hentaiUsageToday.hentaivd = 0;
         user.hentaiUsageToday.lastReset = new Date();
       }
       
       // Vérifier la limite
-      if (user.hentaiUsageToday.count >= 2) {
+      if (user.hentaiUsageToday.hentai >= 2) {
         const nextDay = new Date(now);
         nextDay.setDate(nextDay.getDate() + 1);
         nextDay.setHours(0, 0, 0, 0);
@@ -79,8 +81,8 @@ module.exports = {
       const imagePath = path.join(assetPath, selectedFile);
       const imageBuffer = fs.readFileSync(imagePath);
 
-      // Incrémenter le compteur
-      user.hentaiUsageToday.count++;
+      // Incrémenter le compteur pour hentai
+      user.hentaiUsageToday.hentai++;
 
       // Send image with caption
       let caption = '🔥 *Hentai* 🔥';

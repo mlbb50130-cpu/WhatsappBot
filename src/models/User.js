@@ -141,7 +141,8 @@ const userSchema = new mongoose.Schema({
   },
   hentaiUsageToday: {
     lastReset: { type: Date, default: Date.now },
-    count: { type: Number, default: 0 }
+    hentai: { type: Number, default: 0 },
+    hentaivd: { type: Number, default: 0 }
   },
   createdAt: {
     type: Date,
