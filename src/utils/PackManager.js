@@ -27,7 +27,7 @@ const PACK_COMMANDS = {
     // Classements
     'topanime', 'topmanga', 'classement',
     // Admin & Système (OTAKU SEULEMENT - pas MLBB assets)
-    'theme', 'activatebot', 'admins', 'deactivatebot', 'allowhentai', 'authhentai', 'hentaiallow', 'everyone', 'all', 'tous',
+    'theme', 'activatebot', 'admins', 'deactivatebot', 'allowhentai', 'authhentai', 'hentaiallow', 'everyone', 'all', 'tous', 'setxp', 'fixerxp',
     // NSFW
     'hentai', 'hentaivd', 'boahancook', 'nsfw',
     // Bot
