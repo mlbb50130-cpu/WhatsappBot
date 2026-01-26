@@ -44,12 +44,10 @@ module.exports = {
       { name: '!hentaivd', emoji: '🔞', description: 'Vidéos Hentai (2x/jour en groupe, 300 XP)' }
     ];
 
-    let message_text = '📸 *COMMANDES ASSET DISPONIBLES*\n\n';
-    message_text += '_Tapez n\'importe quelle commande pour voir une image aléatoire_\n\n';
+    let assetList = assetCommands.map(cmd => `${cmd.emoji} ${cmd.name} - ${cmd.description}`);
+    let adultList = adultCommands.map(cmd => `${cmd.emoji} ${cmd.name} - ${cmd.description}`);
 
-    message_text += '*🎌 IMAGES CLASSIQUES*\n';
-    for (const cmd of assetCommands) {
-      message_text += `${cmd.emoji} ${cmd.name} - ${cmd.description}\n`;
+    const assetsMsg = `${MessageFormatter.elegantSection('🏛️ IMAGES CLASSIQUES', assetList)}\n\n${MessageFormatter.elegantSection('🔛 IMAGES ADUL
     }
 
     message_text += '\n*🔥 HENTAI (18+)*\n';

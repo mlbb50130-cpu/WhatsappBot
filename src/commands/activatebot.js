@@ -51,6 +51,14 @@ module.exports = {
 
       await group.save();
 
+      const activateItems = [
+        { label: '🎆 Groupe', value: groupData?.subject || senderJid },
+        { label: '✅ Statut', value: 'Bot activé' },
+        { label: '👤 Activé par', value: senderNumberOnly }
+      ];
+
+      const activateMsg = MessageFormatter.elegantBox('🤖 BOT ACTIVÉ 🤖', activateItems);
+
       await sock.sendMessage(senderJid, {
         text: '✅ *Bot activé avec succès!*\n\n🎉 Le bot a été activé dans ce groupe par le propriétaire.\n\n📋 Vous pouvez maintenant:\n• Gagner de l\'XP en utilisant les commandes\n• Accéder aux quêtes et défis\n• Participer aux duels\n• Consulter le classement\n• Et bien plus!\n\n🚀 Tapez `!menu` pour voir toutes les commandes disponibles.'
       });
