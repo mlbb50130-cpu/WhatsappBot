@@ -1,1 +1,20 @@
-{}
+{
+  "test-group-1": {
+    "mlbb": false,
+    "anime": true,
+    "fun": true,
+    "nsfw": false,
+    "xp": true,
+    "items": true,
+    "quete": true
+  },
+  "test-group-3": {
+    "mlbb": false,
+    "anime": true,
+    "fun": true,
+    "nsfw": false,
+    "xp": true,
+    "items": true,
+    "quete": true
+  }
+}

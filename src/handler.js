@@ -8,6 +8,7 @@ const PermissionManager = require('./utils/permissions');
 const QuestSystem = require('./utils/questSystem');
 const BadgeSystem = require('./utils/badgeSystem');
 const RankSystem = require('./utils/rankSystem');
+const PackManager = require('./utils/PackManager');
 
 const commands = new Map();
 
@@ -296,6 +297,17 @@ Cela activera les fonctions du bot dans ce groupe.
         text: '🚫 Vous n\'avez pas la permission d\'utiliser cette commande.'
       });
       return;
+    }
+
+    // Check pack access (only in groups)
+    if (isGroup && senderJid) {
+      const isAllowedInPack = PackManager.isCommandAllowedInPack(senderJid, commandName);
+      if (!isAllowedInPack) {
+        await sock.sendMessage(senderJid, {
+          text: PackManager.getUnauthorizedMessage(senderJid, commandName)
+        });
+        return;
+      }
     }
 
     // Check group only

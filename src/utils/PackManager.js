@@ -1,6 +1,57 @@
 // Gestionnaire de packs de commandes
 const ModuleManager = require('./ModuleManager');
 
+// Définir les commandes par pack
+const PACK_COMMANDS = {
+  otaku: [
+    'profil', 'level', 'xp', 'rank', 'stats', 'badges',
+    'duel', 'powerlevel', 'chakra',
+    'quete', 'quotidien', 'hebdo', 'quetelundi',
+    'quiz', 'quizanime', 'pfc', 'roulette',
+    'loot', 'inventaire', 'equip', 'equipement', 'collection',
+    'waifu', 'husbando', 'neko', 'animegif', 'ship',
+    'bleach', 'naruto', 'gojo', 'deku', 'madara', 'sukuna', 'vegito', 'miku', 'zerotwo',
+    'blagueotaku', 'roast', 'chance', 'sticker',
+    'anime', 'manga', 'mangadex', 'personnage', 'voiranime',
+    'topanime', 'topmanga', 'classement',
+    'theme', 'activatebot', 'admins',
+    'ping', 'info', 'regles', 'help', 'documentation', 'menu'
+  ],
+  gamin: [
+    'mlbb', 'ml', 'legends', 'moba',
+    'hero', 'build', 'counter', 'combo',
+    'meta', 'lane', 'tip',
+    'team', 'join', 'leave',
+    'mlbbmenu', 'mlbbhelp', 'mlbbcommandes', 'mlbboptions',
+    'heroes', 'heroslist', 'listheroe', 'herolist', 'heros',
+    'selectpack', 'setmodule',
+    'activatebot', 'admins',
+    'ping', 'info', 'regles', 'help', 'documentation', 'menu'
+  ],
+  complet: [
+    // Tous les OTAKU + MLBB
+    'profil', 'level', 'xp', 'rank', 'stats', 'badges',
+    'duel', 'powerlevel', 'chakra',
+    'quete', 'quotidien', 'hebdo', 'quetelundi',
+    'quiz', 'quizanime', 'pfc', 'roulette',
+    'loot', 'inventaire', 'equip', 'equipement', 'collection',
+    'waifu', 'husbando', 'neko', 'animegif', 'ship',
+    'bleach', 'naruto', 'gojo', 'deku', 'madara', 'sukuna', 'vegito', 'miku', 'zerotwo',
+    'blagueotaku', 'roast', 'chance', 'sticker',
+    'anime', 'manga', 'mangadex', 'personnage', 'voiranime',
+    'topanime', 'topmanga', 'classement',
+    'mlbb', 'ml', 'legends', 'moba',
+    'hero', 'build', 'counter', 'combo',
+    'meta', 'lane', 'tip',
+    'team', 'join', 'leave',
+    'mlbbmenu', 'mlbbhelp', 'mlbbcommandes', 'mlbboptions',
+    'heroes', 'heroslist', 'listheroe', 'herolist', 'heros',
+    'selectpack', 'setmodule',
+    'theme', 'activatebot', 'admins',
+    'ping', 'info', 'regles', 'help', 'documentation', 'menu'
+  ]
+};
+
 class PackManager {
   static PACKS = {
     otaku: {
@@ -184,6 +235,55 @@ Seul l'admin peut taper: \`!activatebot\``
     };
 
     return docs[packId.toLowerCase()] || null;
+  }
+
+  // Déterminer quel pack est actuellement actif pour un groupe
+  static getActivePack(groupJid) {
+    const groupModules = ModuleManager.getGroupModules(groupJid);
+    
+    const mlbbEnabled = groupModules.mlbb === true;
+    const animeEnabled = groupModules.anime !== false;
+    const xpEnabled = groupModules.xp !== false;
+    const queteEnabled = groupModules.quete !== false;
+    
+    if (mlbbEnabled && !animeEnabled && !xpEnabled && !queteEnabled) {
+      return 'gamin';
+    } else if (mlbbEnabled && animeEnabled && xpEnabled && queteEnabled) {
+      return 'complet';
+    }
+    
+    return 'otaku'; // Par défaut
+  }
+
+  // Vérifier si une commande est autorisée pour le pack du groupe
+  static isCommandAllowedInPack(groupJid, commandName) {
+    // Normaliser le nom de la commande
+    const normalizedCommand = commandName.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    
+    // Les commandes globales sont toujours autorisées
+    const globalCommands = ['ping', 'info', 'help', 'documentation', 'regles', 'menu', 'activatebot', 'admins', 'selectpack', 'setmodule', 'theme'];
+    if (globalCommands.includes(normalizedCommand)) {
+      return true;
+    }
+
+    const activePack = this.getActivePack(groupJid);
+    const allowedCommands = PACK_COMMANDS[activePack] || [];
+    
+    return allowedCommands.includes(normalizedCommand);
+  }
+
+  // Obtenir le message d'erreur pour une commande non autorisée
+  static getUnauthorizedMessage(groupJid, commandName) {
+    const activePack = this.getActivePack(groupJid);
+    const packInfo = this.PACKS[activePack];
+    
+    return `🚫 *Commande non disponible dans ce groupe*
+
+Le groupe utilise actuellement le pack: *${packInfo.name}*
+
+Cette commande n'est pas disponible dans ce pack.
+
+Pour changer de pack, l'admin peut utiliser: \`!selectpack\``;
   }
 }
 
