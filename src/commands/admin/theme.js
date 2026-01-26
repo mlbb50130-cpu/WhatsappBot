@@ -24,16 +24,31 @@ module.exports = {
         return;
       }
 
-      const themeName = args[0].toLowerCase();
+      const themeName = args[0];
       
-      // Vérifier que le dossier du theme existe
-      const themeDir = path.join(__dirname, '../../asset', themeName);
+      // Vérifier que le dossier du theme existe (case-insensitive)
+      let themeDir = path.join(__dirname, '../../asset', themeName);
       
+      // Si le dossier n'existe pas, essayer avec différentes variantes
       if (!fs.existsSync(themeDir)) {
-        await sock.sendMessage(senderJid, {
-          text: MessageFormatter.error(`Le theme "${themeName}" n'existe pas!`)
-        });
-        return;
+        // Chercher dans les dossiers existants (case-insensitive)
+        const assetDir = path.join(__dirname, '../../asset');
+        const folders = fs.readdirSync(assetDir).filter(f => 
+          fs.statSync(path.join(assetDir, f)).isDirectory()
+        );
+        
+        const matchingFolder = folders.find(f => 
+          f.toLowerCase() === themeName.toLowerCase()
+        );
+        
+        if (matchingFolder) {
+          themeDir = path.join(assetDir, matchingFolder);
+        } else {
+          await sock.sendMessage(senderJid, {
+            text: MessageFormatter.error(`Le theme "${themeName}" n'existe pas!\n\nThèmes disponibles: ${folders.join(', ')}`)
+          });
+          return;
+        }
       }
 
       // Récupérer toutes les images du dossier
