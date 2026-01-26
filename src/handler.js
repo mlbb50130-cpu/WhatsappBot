@@ -94,6 +94,9 @@ async function addXP(jid, amount = config.XP_PER_MESSAGE) {
       const newMaxChakra = 100 + (levelInfo.level - 1) * 10;
       user.maxChakra = newMaxChakra;
       
+      // Vérifier et mettre à jour le rang automatiquement
+      const rankUpdate = BadgeSystem.checkAndUpdateRank(user);
+      
       await user.save();
       
       return {
@@ -101,14 +104,22 @@ async function addXP(jid, amount = config.XP_PER_MESSAGE) {
         leveledUp: true,
         oldLevel,
         newLevel: levelInfo.level,
-        rankInfo
+        rankInfo,
+        rankUpdate: rankUpdate.rankChanged ? rankUpdate : null
       };
+    }
+
+    // Vérifier et mettre à jour le rang automatiquement à chaque message
+    const rankUpdate = BadgeSystem.checkAndUpdateRank(user);
+    if (rankUpdate.rankChanged) {
+      await user.save();
     }
 
     await user.save();
     return {
       user,
-      leveledUp: false
+      leveledUp: false,
+      rankUpdate: rankUpdate.rankChanged ? rankUpdate : null
     };
   } catch (error) {
     console.error(`Error adding XP: ${error.message}`);
