@@ -14,20 +14,18 @@ module.exports = {
 
     if (user.inventory.length === 0) {
       await sock.sendMessage(senderJid, {
-        text: '📦 Ton inventaire est vide. Utilise `!loot` pour obtenir des objets!'
+        text: '❌ Inventaire vide. Utilise !loot'
       });
       return;
     }
 
-    let inventoryText = `
-╔════════════════════════════════════╗
-║        📦 TON INVENTAIRE 📦        ║
+    let inventoryText = `╔════════════════════════════════════╗
+║        INVENTAIRE
 ╚════════════════════════════════════╝
+👤 ${user.username || 'Joueur'}
+📊 Objets: ${user.inventory.length}/50
 
-👤 *${user.username || 'Joueur'}*
-📊 *Objets:* ${user.inventory.length}/50
-
-*Tes items:*\n`;
+Tes items:`;
 
     const rarityEmoji = {
       'common': '⚪',
@@ -39,30 +37,14 @@ module.exports = {
     user.inventory.forEach((item, index) => {
       const emoji = rarityEmoji[item.rarity] || '⚪';
       const rarityText = item.rarity || 'common';
-      inventoryText += `\n*${index}.* ${emoji} ${item.name}`;
+      inventoryText += `\n${index}. ${emoji} ${item.name}`;
       if (item.quantity > 1) {
         inventoryText += ` x${item.quantity}`;
       }
-      inventoryText += `\n    └─ *Rareté:* ${rarityText}`;
+      inventoryText += ` (${rarityText})`;
     });
 
-    inventoryText += `
-
-═════════════════════════════════════
-
-*Pour équiper un item:*
-\`!equip <id> <slot>\`
-
-*Slots disponibles:*
-• head (tête)
-• body (corps)
-• hands (mains)
-• feet (pieds)
-
-*Voir ton équipement:*
-\`!equipement\`
-
-═════════════════════════════════════`;
+    inventoryText += `\n═════════════════════════════════════`;
 
     await sock.sendMessage(senderJid, { text: inventoryText });
   }

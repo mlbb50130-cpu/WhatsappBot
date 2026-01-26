@@ -69,13 +69,13 @@ module.exports = {
     });
 
     const questionItems = [
-      { label: '❓ Question', value: quiz.question },
-      { label: '🎯 Options', value: options.trim() },
-      { label: '⏱️ Temps Limite', value: '30 secondes' },
-      { label: '💡 Récompense', value: `+${quiz.reward} XP` }
+      { label: 'Question', value: quiz.question },
+      { label: 'Options', value: options.trim() },
+      { label: 'Temps', value: '30s' },
+      { label: 'Récompense', value: `+${quiz.reward} XP` }
     ];
 
-    const quizMessage = MessageFormatter.elegantBox('📝 QUIZ OTAKU 📝', questionItems);
+    const quizMessage = MessageFormatter.elegantBox('QUIZ OTAKU', questionItems);
     await sock.sendMessage(senderJid, { text: quizMessage });
 
     // Store quiz session avec l'index réel

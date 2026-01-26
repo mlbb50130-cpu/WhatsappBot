@@ -42,11 +42,11 @@ module.exports = {
     }
 
     const shipItems = [
-      { label: '❤️ Compatibilité', value: `${compatibility}%` },
-      { label: '💭 Verdict', value: response }
+      { label: 'Compatibilité', value: `${compatibility}%` },
+      { label: 'Verdict', value: response }
     ];
 
-    const ship = MessageFormatter.elegantBox('💕 SHIP 💕', shipItems);
+    const ship = MessageFormatter.elegantBox('SHIP', shipItems);
     await sock.sendMessage(senderJid, { text: ship });
   }
 };

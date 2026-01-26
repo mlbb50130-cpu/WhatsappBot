@@ -47,17 +47,16 @@ module.exports = {
       }
 
       const chanceItems = [
-        { label: '🎲 Chance', value: `${luck}%` },
-        { label: '🔮 Prédiction', value: message_luck.text },
-        { label: '💡 Conseil', value: advice }
+        { label: 'Chance', value: `${luck}%` },
+        { label: 'Statut', value: message_luck.text }
       ];
 
-      const chanceMessage = `${bar}\n${MessageFormatter.elegantBox('🎲 TA CHANCE 🎲', chanceItems)}`;
+      const chanceMessage = `${bar}\n${MessageFormatter.elegantBox('CHANCE', chanceItems)}`;
 
       await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(chanceMessage));
     } catch (error) {
       console.error('Error in chance command:', error.message);
-      await sock.sendMessage(senderJid, { text: MessageFormatter.error('Une erreur est survenue!') });
+      await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
     }
   }
 };

@@ -37,22 +37,21 @@ module.exports = {
           { label: '📝 Titre', value: manga.title },
           { label: '📝 Anglais', value: manga.title_english || 'N/A' },
           { label: '🎯 Type', value: manga.type || 'N/A' },
-          { label: '📖 Chapitres', value: manga.chapters || '?' },
-          { label: '📚 Tomes', value: manga.volumes || '?' },
-          { label: '✅ Statut', value: manga.status || 'N/A' },
-          { label: '⭐ Note', value: manga.score ? `${manga.score}/10` : 'N/A' },
-          { label: '📅 Année', value: manga.year || 'N/A' }
+          { label: 'Chapitres', value: manga.chapters || '?' },
+          { label: 'Tomes', value: manga.volumes || '?' },
+          { label: 'Statut', value: manga.status || 'N/A' },
+          { label: 'Note', value: manga.score ? `${manga.score}/10` : 'N/A' }
         ];
 
         const synopsis = manga.synopsis ? manga.synopsis.substring(0, 150) + '...' : 'N/A';
 
-        const content = `${MessageFormatter.elegantBox('📚 MANGA 📚', mangaItems)}
-📖 *Synopsis:* ${synopsis}`;
+        const content = `${MessageFormatter.elegantBox('MANGA', mangaItems)}
+Synopsis: ${synopsis}`;
         await sock.sendMessage(senderJid, { text: content });
 
       } catch (apiError) {
         console.error('Jikan API error:', apiError.message);
-        await sock.sendMessage(senderJid, { text: MessageFormatter.error('Erreur lors de la récupération des données!') });
+        await sock.sendMessage(senderJid, { text: '❌ Erreur API!' });
         return;
       }
     } catch (error) {

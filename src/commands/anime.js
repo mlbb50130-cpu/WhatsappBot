@@ -34,24 +34,22 @@ module.exports = {
         const anime = response.data.data[0];
 
         const animeItems = [
-          { label: '📝 Titre', value: anime.title },
-          { label: '📝 Anglais', value: anime.title_english || 'N/A' },
-          { label: '🎯 Type', value: anime.type || 'N/A' },
-          { label: '📺 Episodes', value: anime.episodes || '?' },
-          { label: '✅ Statut', value: anime.status || 'N/A' },
-          { label: '⭐ Note', value: anime.score ? `${anime.score}/10` : 'N/A' },
-          { label: '📅 Année', value: anime.year || 'N/A' }
+          { label: 'Titre', value: anime.title },
+          { label: 'Type', value: anime.type || 'N/A' },
+          { label: 'Episodes', value: anime.episodes || '?' },
+          { label: 'Statut', value: anime.status || 'N/A' },
+          { label: 'Note', value: anime.score ? `${anime.score}/10` : 'N/A' }
         ];
 
         const synopsis = anime.synopsis ? anime.synopsis.substring(0, 150) + '...' : 'N/A';
 
-        const content = `${MessageFormatter.elegantBox('📺 ANIME 📺', animeItems)}
-📖 *Synopsis:* ${synopsis}`;
+        const content = `${MessageFormatter.elegantBox('ANIME', animeItems)}
+Synopsis: ${synopsis}`;
         await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(content));
 
       } catch (apiError) {
         console.error('Jikan API error:', apiError.message);
-        await sock.sendMessage(senderJid, { text: MessageFormatter.error('Erreur lors de la récupération des données!') });
+        await sock.sendMessage(senderJid, { text: '❌ Erreur API!' });
         return;
       }
     } catch (error) {
