@@ -198,25 +198,34 @@ async function handleMessage(sock, message, isGroup, groupData) {
           if (pack) {
             global.packSelections[senderJid] = false;
 
-            const packModules = Object.entries(pack.modules)
-              .filter(([_, enabled]) => enabled)
-              .map(([name, _]) => `• ${name}`)
-              .join('\n');
+            // 1️⃣ Envoyer la documentation du pack
+            const doc = PackManager.getPackDocumentation(packId);
+            await sock.sendMessage(senderJid, { text: doc });
 
+            // 2️⃣ Envoyer la demande d'activation par l'admin
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Délai pour lisibilité
+            
             await sock.sendMessage(senderJid, {
               text: `
-✅ *Pack sélectionné!*
+╔═══════════════════════════════════╗
+║     ⚙️ ACTIVATION REQUISE ⚙️       ║
+╚═══════════════════════════════════╝
 
-${pack.emoji} *${pack.name}*
+👋 *Bienvenue dans TetsuBot!*
 
-🔧 *Modules activés:*
-${packModules}
+✅ Pack ${pack.emoji} *${pack.name}* **sélectionné avec succès!**
 
-💡 *Utilisez:*
-!setmodule on <module> - Activer un module
-!setmodule off <module> - Désactiver un module
-!setmodule status - Voir l'état actuel`
+🔐 *PROCHAINE ÉTAPE - ACTIVATION:*
+
+Seul l'**Admin** du groupe peut envoyer:
+
+\`!activatebot\`
+
+Cela activera les fonctions du bot dans ce groupe.
+
+💡 *Note:* Certaines commandes (!documentation, !help) fonctionnent même sans activation.`
             });
+            
             return;
           }
         }
