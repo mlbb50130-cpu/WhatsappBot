@@ -70,7 +70,7 @@ module.exports = {
 
       await sock.sendMessage(senderJid, {
         image: imageBuffer,
-        caption: isGroup ? '💛 *GokuUI*\n\n➕ 2 XP ✨' : '💛 *GokuUI*\n\n'
+        caption: isGroup ? MessageFormatter.elegantBox('📋 GOKU UI 📋', [{ label: '✨ Récompense', value: '+2 XP' }]) : MessageFormatter.elegantBox('📋 GOKU UI 📋', [{ label: '📺 Type', value: 'Personnage' }])
       });
     } catch (error) {
       console.error('Error in gokuui command:', error.message);

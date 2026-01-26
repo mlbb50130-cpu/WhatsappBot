@@ -52,7 +52,7 @@ module.exports = {
 
       await sock.sendMessage(senderJid, {
         image: imageBuffer,
-        caption: isGroup ? '💜 *Yoruichi* 💜\n\n➕ 15 XP ✨' : '💜 *Yoruichi* 💜'
+        caption: isGroup ? MessageFormatter.elegantBox('💜 YORUICHI 💜', [{ label: '✨ Récompense', value: '+15 XP' }]) : MessageFormatter.elegantBox('💜 YORUICHI 💜', [{ label: '📺 Type', value: 'Personnage' }])
       });
     } catch (error) {
       console.error('Error in yoruichi command:', error.message);

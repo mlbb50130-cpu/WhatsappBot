@@ -70,7 +70,7 @@ module.exports = {
 
       await sock.sendMessage(senderJid, {
         image: imageBuffer,
-        caption: isGroup ? '💪 *Tsunade*\n\n➕ 2 XP ✨' : '💪 *Tsunade*\n\n'
+        caption: isGroup ? MessageFormatter.elegantBox('💪 TSUNADE 💪', [{ label: '✨ Récompense', value: '+2 XP' }]) : MessageFormatter.elegantBox('💪 TSUNADE 💪', [{ label: '📺 Type', value: 'Personnage' }])
       });
     } catch (error) {
       console.error('Error in tsunade command:', error.message);

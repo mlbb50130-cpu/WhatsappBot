@@ -70,7 +70,7 @@ module.exports = {
 
       await sock.sendMessage(senderJid, {
         image: imageBuffer,
-        caption: isGroup ? '⚔️ *Livai*\n\n➕ 2 XP ✨' : '⚔️ *Livai*\n\n'
+        caption: isGroup ? MessageFormatter.elegantBox('⚔️ LIVAI ⚔️', [{ label: '✨ Récompense', value: '+2 XP' }]) : MessageFormatter.elegantBox('⚔️ LIVAI ⚔️', [{ label: '📺 Type', value: 'Personnage' }])
       });
     } catch (error) {
       console.error('Error in livai command:', error.message);

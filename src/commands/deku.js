@@ -70,7 +70,7 @@ module.exports = {
 
       await sock.sendMessage(senderJid, {
         image: imageBuffer,
-        caption: isGroup ? '💚 *Deku*\n\n➕ 2 XP ✨' : '💚 *Deku*\n\n'
+        caption: isGroup ? MessageFormatter.elegantBox('💚 DEKU 💚', [{ label: '✨ Récompense', value: '+2 XP' }]) : MessageFormatter.elegantBox('💚 DEKU 💚', [{ label: '📺 Type', value: 'Personnage' }])
       });
     } catch (error) {
       console.error('Error in deku command:', error.message);

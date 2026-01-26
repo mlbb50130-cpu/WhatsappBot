@@ -58,8 +58,8 @@ module.exports = {
 
       // Send image with caption
       const caption = isGroup 
-        ? '🌑 *Madara Uchiha* 🌑\n\n➕ 15 XP ✨' 
-        : '🌑 *Madara Uchiha* 🌑';
+        ? MessageFormatter.elegantBox('🌑 MADARA 🌑', [{ label: '✨ Récompense', value: '+15 XP' }])
+        : MessageFormatter.elegantBox('🌑 MADARA 🌑', [{ label: '📺 Type', value: 'Personnage' }]);
 
       await sock.sendMessage(senderJid, {
         image: imageBuffer,

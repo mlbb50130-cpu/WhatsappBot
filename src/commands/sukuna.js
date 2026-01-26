@@ -70,7 +70,7 @@ module.exports = {
 
       await sock.sendMessage(senderJid, {
         image: imageBuffer,
-        caption: isGroup ? '👹 *Sukuna*\n\n➕ 2 XP ✨' : '👹 *Sukuna*\n\n'
+        caption: isGroup ? MessageFormatter.elegantBox('😿 SUKUNA 😿', [{ label: '✨ Récompense', value: '+2 XP' }]) : MessageFormatter.elegantBox('😿 SUKUNA 😿', [{ label: '📺 Type', value: 'Personnage' }])
       });
     } catch (error) {
       console.error('Error in sukuna command:', error.message);

@@ -40,13 +40,14 @@ module.exports = {
         }
       }
 
-      const caption = isGroup ? '🎬 *GIF Anime!*\n\n✨ +5 XP 💫' : '🎬 *GIF Anime!*';
-      
       if (gifUrl) {
         try {
+          const captionMsg = isGroup 
+            ? MessageFormatter.elegantBox('🎬 GIF ANIME 🎬', [{ label: '✨ Récompense', value: '+5 XP' }])
+            : MessageFormatter.elegantBox('🎬 GIF ANIME 🎬', [{ label: '🎬 Type', value: 'GIF aléatoire' }]);
           await sock.sendMessage(senderJid, {
             image: { url: gifUrl },
-            caption: caption
+            caption: captionMsg
           });
         } catch (sendError) {
           await sock.sendMessage(senderJid, {
@@ -54,9 +55,8 @@ module.exports = {
           });
         }
       } else {
-        await sock.sendMessage(senderJid, {
-          text: '🎬 *Un GIF anime rigolo!*\n\n✨ +5 XP 💫'
-        });
+        const fallback = MessageFormatter.elegantBox('🎬 GIF ANIME 🎬', [{ label: '⚠️ Statut', value: 'GIF non disponible' }]);
+        await sock.sendMessage(senderJid, { text: fallback });
       }
 
       if (isGroup) if (isGroup) user.xp += 5; // Seulement en groupe // Seulement en groupe

@@ -70,7 +70,7 @@ module.exports = {
 
       await sock.sendMessage(senderJid, {
         image: imageBuffer,
-        caption: isGroup ? '👁️ *Gojo*\n\n➕ 2 XP ✨' : '👁️ *Gojo*\n\n'
+        caption: isGroup ? MessageFormatter.elegantBox('👁️ GOJO 👁️', [{ label: '✨ Récompense', value: '+2 XP' }]) : MessageFormatter.elegantBox('👁️ GOJO 👁️', [{ label: '📺 Type', value: 'Personnage' }])
       });
     } catch (error) {
       console.error('Error in gojo command:', error.message);

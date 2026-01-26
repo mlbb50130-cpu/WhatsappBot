@@ -70,7 +70,7 @@ module.exports = {
 
       await sock.sendMessage(senderJid, {
         image: imageBuffer,
-        caption: isGroup ? '🖤 *Yami*\n\n➕ 2 XP ✨' : '🖤 *Yami*\n\n'
+        caption: isGroup ? MessageFormatter.elegantBox('🛻 YAMI 🛻', [{ label: '✨ Récompense', value: '+2 XP' }]) : MessageFormatter.elegantBox('🛻 YAMI 🛻', [{ label: '📺 Type', value: 'Personnage' }])
       });
     } catch (error) {
       console.error('Error in yami command:', error.message);

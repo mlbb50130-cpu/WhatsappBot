@@ -70,7 +70,7 @@ module.exports = {
 
       await sock.sendMessage(senderJid, {
         image: imageBuffer,
-        caption: isGroup ? '💕 *Miku Nakano*\n\n➕ 2 XP ✨' : '💕 *Miku Nakano*\n\n'
+        caption: isGroup ? MessageFormatter.elegantBox('💕 MIKU NAKANO 💕', [{ label: '✨ Récompense', value: '+2 XP' }]) : MessageFormatter.elegantBox('💕 MIKU NAKANO 💕', [{ label: '📺 Type', value: 'Personnage' }])
       });
     } catch (error) {
       console.error('Error in mikunakano command:', error.message);

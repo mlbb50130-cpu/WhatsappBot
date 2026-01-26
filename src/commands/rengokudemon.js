@@ -70,7 +70,7 @@ module.exports = {
 
       await sock.sendMessage(senderJid, {
         image: imageBuffer,
-        caption: isGroup ? '🔥 *RengokuDemon*\n\n➕ 2 XP ✨' : '🔥 *RengokuDemon*\n\n'
+        caption: isGroup ? MessageFormatter.elegantBox('🔥 RENGOKU 🔥', [{ label: '✨ Récompense', value: '+2 XP' }]) : MessageFormatter.elegantBox('🔥 RENGOKU 🔥', [{ label: '📺 Type', value: 'Personnage' }])
       });
     } catch (error) {
       console.error('Error in rengokudemon command:', error.message);

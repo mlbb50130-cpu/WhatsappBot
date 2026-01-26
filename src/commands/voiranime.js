@@ -13,13 +13,12 @@ module.exports = {
   async execute(sock, message, args, user, isGroup, groupData) {
     const senderJid = message.key.remoteJid;
 
-    await sock.sendMessage(senderJid, {
-      text: '⚠️ Cette commande est temporairement désactivée.\n\n' +
-            'Pour regarder des animes, visitez:\n' +
-            '🔗 VoirAnime: https://www.voiranime.com\n' +
-            '🔗 AnimeFlv: https://www3.animeflv.net\n\n' +
-            '📊 Utilisez `!anime <nom>` pour chercher sur AniList'
-    });
+    const message = MessageFormatter.elegantBox('⚠️ VOIRANIME ⚠️', [
+      { label: '🔗 Lien', value: 'https://www.voiranime.com' },
+      { label: '🔍 Chercher', value: '!anime <nom>' }
+    ]);
+    
+    await sock.sendMessage(senderJid, { text: message });
   }
 };
 

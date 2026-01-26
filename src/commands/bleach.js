@@ -68,9 +68,12 @@ module.exports = {
         await user.save();
       }
 
+      const captionMsg = isGroup
+        ? MessageFormatter.elegantBox('⚔️ BLEACH ⚔️', [{ label: '✨ Récompense', value: '+2 XP' }])
+        : MessageFormatter.elegantBox('⚔️ BLEACH ⚔️', [{ label: '📺 Série', value: 'Bleach' }]);
       await sock.sendMessage(senderJid, {
         image: imageBuffer,
-        caption: isGroup ? MessageFormatter.success('Bleach') + '\n➕ 2 XP ✨' : MessageFormatter.success('Bleach')
+        caption: captionMsg
       });
     } catch (error) {
       console.error('Error in bleach command:', error.message);

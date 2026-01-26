@@ -41,11 +41,14 @@ module.exports = {
       await user.save(); // Save image rotation tracking
       const imagePath = path.join(assetPath, selectedFile);
 
-      const xpMessage = isGroup ? ' +15 XP' : '';
+      const xpMessage = isGroup ? ' (+15 XP)' : '';
+      const caption = isGroup
+        ? MessageFormatter.elegantBox('🎯 NINO NAKANO 🎯', [{ label: '✨ Récompense', value: '+15 XP' }])
+        : MessageFormatter.elegantBox('🎯 NINO NAKANO 🎯', [{ label: '📺 Type', value: 'Personnage' }]);
       
       await sock.sendMessage(senderJid, {
         image: fs.readFileSync(imagePath),
-        caption: `🎨 *NINO NAKANO*\n${selectedFile}${xpMessage}`
+        caption: caption
       });
 
       // Award XP in groups only

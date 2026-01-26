@@ -44,7 +44,7 @@ module.exports = {
 
       await sock.sendMessage(senderJid, {
         image: imageBuffer,
-        caption: isGroup ? '😍 *Un beau Husbando!*\n\n➕ 5 XP ✨' : '😍 *Un beau Husbando!*\n\n'
+        caption: isGroup ? MessageFormatter.elegantBox('😍 HUSBANDO 😍', [{ label: '✨ Récompense', value: '+5 XP' }]) : MessageFormatter.elegantBox('😍 HUSBANDO 😍', [{ label: '📺 Type', value: 'Personnage' }])
       });
 
       if (isGroup) {

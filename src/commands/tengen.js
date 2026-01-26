@@ -70,7 +70,7 @@ module.exports = {
 
       await sock.sendMessage(senderJid, {
         image: imageBuffer,
-        caption: isGroup ? '⚡ *Tengen*\n\n➕ 2 XP ✨' : '⚡ *Tengen*\n\n'
+        caption: isGroup ? MessageFormatter.elegantBox('⚡ TENGEN ⚡', [{ label: '✨ Récompense', value: '+2 XP' }]) : MessageFormatter.elegantBox('⚡ TENGEN ⚡', [{ label: '📺 Type', value: 'Personnage' }])
       });
     } catch (error) {
       console.error('Error in tengen command:', error.message);
