@@ -31,7 +31,7 @@ const PACK_COMMANDS = {
     // NSFW
     'hentai', 'hentaivd', 'boahancook', 'nsfw',
     // Bot
-    'ping', 'info', 'regles', 'help', 'documentation', 'menu', 'whoami'
+    'ping', 'info', 'regles', 'help', 'documentation', 'menu', 'whoami', 'assets'
   ],
   gamin: [
     // Profil MLBB
