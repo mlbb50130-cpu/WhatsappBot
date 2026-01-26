@@ -22,36 +22,43 @@ module.exports = {
       ? user.badges.map(b => `${b.emoji} ${b.name}`).join(', ')
       : '❌ Aucun badge';
 
-    const content = `
-👤 *NOM*: \`${user.username}\`
-🎌 *RANG*: ${rankInfo.emoji} ${user.rank}
-📍 *TITRE*: ${user.title}
+    // Main profile info
+    const profileInfo = [
+      { label: '👤 Nom', value: user.username },
+      { label: '🎌 Rang', value: `${rankInfo.emoji} ${user.rank}` },
+      { label: '📍 Titre', value: user.title || '❌ Aucun' },
+      { label: '⭐ XP', value: user.xp },
+      { label: '📊 Niveau', value: levelInfo.level }
+    ];
 
-${MessageFormatter.section('STATISTIQUES', [
-  { label: '🎯 Niveau', value: levelInfo.level },
-  { label: '⭐ XP', value: user.xp },
-  { label: '💬 Messages', value: user.stats.messages },
-  { label: '🎯 Quiz', value: user.stats.quiz },
-  { label: '⚔️ Duels', value: user.stats.duels },
-  { label: '🏆 Victoires', value: user.stats.wins },
-  { label: '💔 Défaites', value: user.stats.losses }
-])}
+    const statsInfo = [
+      { label: '💬 Messages', value: user.stats.messages },
+      { label: '🎯 Quiz', value: user.stats.quiz },
+      { label: '⚔️ Duels', value: user.stats.duels },
+      { label: '🏆 Victoires', value: user.stats.wins },
+      { label: '💔 Défaites', value: user.stats.losses }
+    ];
+
+    const inventoryInfo = [
+      { label: '📦 Objets', value: user.inventory.length },
+      { label: '🎁 Emplacements', value: `${user.inventory.length}/50` }
+    ];
+
+    const createdDate = new Date(user.createdAt).toLocaleDateString('fr-FR');
+
+    const profile = `${MessageFormatter.elegantBox('👤 TON PROFIL OTAKU 👤', profileInfo)}
+
+${MessageFormatter.elegantSection('STATISTIQUES', statsInfo.map(s => `${s.label}: ${s.value}`))}
 
 *🎖️ PROGRESSION*
 ${progressBar} ${levelInfo.currentLevelXp}/${levelInfo.requiredXp}
 
-${MessageFormatter.section('BADGES', [])}
-${badges}
+${MessageFormatter.elegantSection('BADGES', [badges])}
 
-${MessageFormatter.section('INVENTAIRE', [
-  { label: '📦 Objets', value: user.inventory.length },
-  { label: '🎁 Emplacements', value: `${user.inventory.length}/50` }
-])}
+${MessageFormatter.elegantSection('INVENTAIRE', inventoryInfo.map(i => `${i.label}: ${i.value}`))}
 
-📆 *COMPTE CRÉÉ LE*: \`${new Date(user.createdAt).toLocaleDateString('fr-FR')}\`
+📆 *COMPTE CRÉÉ*: \`${createdDate}\`
 `;
-
-    const profile = MessageFormatter.box('👤 TON PROFIL OTAKU 👤', content);
 
     await sock.sendMessage(senderJid, { text: profile });
   },

@@ -172,6 +172,45 @@ ${content}`;
   static menuItem(emoji, text, command = '') {
     return command ? `${emoji} ${text}\n   \`${command}\`` : `${emoji} ${text}`;
   }
+
+  /**
+   * Create an elegant styled box with star bullets
+   * @param {string} title - Title with emoji
+   * @param {Array<{label: string, value: string}>} items - Items to display
+   * @returns {string} Formatted elegant box
+   */
+  static elegantBox(title, items = []) {
+    const lines = items.map((item, index) => {
+      return `├ ☆ ${item.label.padEnd(15)}: ${item.value}`;
+    });
+    
+    const content = lines.join('\n');
+    const borderLength = Math.max(title.length + 6, 30);
+    
+    return `╭${'─'.repeat(borderLength)}╮
+├ ☆ ${title}
+${content}
+╰${'─'.repeat(borderLength)}╯`;
+  }
+
+  /**
+   * Create an elegant section with star bullets
+   * @param {string} title - Section title
+   * @param {Array<string>} items - Items to display
+   * @returns {string} Formatted elegant section
+   */
+  static elegantSection(title, items = []) {
+    const lines = items.map((item, index) => {
+      return `├ ☆ ${item}`;
+    });
+    
+    const content = lines.join('\n');
+    const borderLength = Math.max(title.length + 6, 30);
+    
+    return `╭───⟪ ${title} ⟫───╮
+${content}
+╰${'─'.repeat(borderLength)}╯`;
+  }
 }
 
 module.exports = MessageFormatter;
