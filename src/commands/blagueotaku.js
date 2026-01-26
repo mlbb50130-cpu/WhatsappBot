@@ -38,6 +38,6 @@ module.exports = {
     user.xp += 5;
     await user.save();
 
-    await sock.sendMessage(senderJid, { text });
+    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(text));
   }
 };

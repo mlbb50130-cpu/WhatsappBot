@@ -31,6 +31,6 @@ module.exports = {
     ];
 
     const stats = MessageFormatter.elegantBox('📊 TES STATISTIQUES 📊', statsItems);
-    await sock.sendMessage(senderJid, { text: stats });
+    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(stats));
   }
 };

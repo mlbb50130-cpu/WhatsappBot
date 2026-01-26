@@ -28,6 +28,6 @@ module.exports = {
     user.xp += win ? 100 : 20;
     await user.save();
 
-    await sock.sendMessage(senderJid, { text: result });
+    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(result));
   }
 };

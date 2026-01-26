@@ -49,7 +49,7 @@ ${progressBar}
 ${MessageFormatter.elegantSection('⭐ RANGS', ranksItems)}
 ${MessageFormatter.elegantSection('💡 CONSEILS', tipsItems)}`;
 
-    await sock.sendMessage(senderJid, { text: level });
+    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(level));
   },
 
   getProgressBar(current, max, length = 20) {

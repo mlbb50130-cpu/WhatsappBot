@@ -40,6 +40,6 @@ ${MessageFormatter.elegantSection('📌 BOT', bot)}
 🎯 Complète des quêtes!
 ⚡ Affronte d'autres joueurs!`;
 
-    await sock.sendMessage(senderJid, { text: menu });
+    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(menu));
   }
 };

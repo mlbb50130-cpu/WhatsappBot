@@ -206,6 +206,50 @@ ${content}`;
     
     return `╭───⟪ ${title} ⟫───╮\n${content}\n╰${'─'.repeat(borderLength)}╯`;
   }
+
+  /**
+   * Get a random image from LAKERSWaifu theme folder
+   * @returns {Buffer|null} Image buffer or null if no image found
+   */
+  static getRandomThemeImage() {
+    const fs = require('fs');
+    const path = require('path');
+
+    try {
+      const themeDir = path.join(__dirname, '../asset/LAKERSWaifu');
+      const images = fs.readdirSync(themeDir)
+        .filter(file => /\.(jpg|jpeg|png|gif)$/i.test(file))
+        .map(file => path.join(themeDir, file));
+
+      if (images.length === 0) return null;
+
+      const randomImage = images[Math.floor(Math.random() * images.length)];
+      return fs.readFileSync(randomImage);
+    } catch (error) {
+      console.error('Error getting theme image:', error.message);
+      return null;
+    }
+  }
+
+  /**
+   * Create a message object with image and caption
+   * @param {string} caption - Message caption
+   * @returns {Object} Message object with image or just text
+   */
+  static createMessageWithImage(caption) {
+    const image = this.getRandomThemeImage();
+    
+    if (image) {
+      return {
+        image: image,
+        caption: caption
+      };
+    } else {
+      return {
+        text: caption
+      };
+    }
+  }
 }
 
 module.exports = MessageFormatter;

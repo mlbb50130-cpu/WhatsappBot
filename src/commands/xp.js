@@ -40,7 +40,7 @@ module.exports = {
 ${progressBar}
 ${MessageFormatter.elegantSection('📈 STATUT', statusItems)}`;
 
-      await sock.sendMessage(senderJid, { text: xpMessage });
+      await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(xpMessage));
     } catch (error) {
       console.error('Error in xp command:', error.message);
       console.error('User object:', user);

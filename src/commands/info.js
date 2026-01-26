@@ -50,6 +50,6 @@ ${MessageFormatter.elegantSection('✨ FONCTIONNALITÉS', featuresItems)}
 ${MessageFormatter.elegantSection('📊 STATISTIQUES', statsItems)}
 ${MessageFormatter.elegantSection('👨‍💻 CRÉATEUR', creatorItems)}`;
 
-    await sock.sendMessage(senderJid, { text: info });
+    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(info));
   }
 };

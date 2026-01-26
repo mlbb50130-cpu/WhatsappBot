@@ -54,7 +54,7 @@ ${MessageFormatter.elegantSection('🌟 BADGES', [badges])}
 ${MessageFormatter.elegantSection('💎 INVENTAIRE', inventoryInfo.map(i => `${i.label}: ${i.value}`))}
 📅 *COMPTE CRÉÉ*: \`${createdDate}\``;
 
-    await sock.sendMessage(senderJid, { text: profile });
+    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(profile));
   },
 
   getProgressBar(current, max, length = 15) {

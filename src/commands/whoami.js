@@ -22,7 +22,7 @@ module.exports = {
 
       const whoamiMessage = MessageFormatter.elegantBox('🆔 TON JID 🆔', whoamiItems);
 
-      await sock.sendMessage(senderJid, { text: whoamiMessage });
+      await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(whoamiMessage));
     } catch (error) {
       console.error('Error in whoami command:', error.message);
       await sock.sendMessage(senderJid, { text: MessageFormatter.error('Une erreur est survenue!') });

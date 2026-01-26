@@ -47,6 +47,6 @@ module.exports = {
 
     const text = MessageFormatter.elegantBox('🔥 ROAST 🔥', roastItems);
 
-    await sock.sendMessage(senderJid, { text });
+    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(text));
   }
 };

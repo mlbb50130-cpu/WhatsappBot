@@ -29,9 +29,7 @@ module.exports = {
 
     const text = MessageFormatter.elegantBox('🤖 BOT STATUS 🤖', pingItems);
 
-    await sock.sendMessage(senderJid, {
-      text
-    });
+    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(text));
   },
 
   getUptime() {

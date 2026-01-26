@@ -47,7 +47,7 @@ module.exports = {
 
         const content = `${MessageFormatter.elegantBox('📺 ANIME 📺', animeItems)}
 📖 *Synopsis:* ${synopsis}`;
-        await sock.sendMessage(senderJid, { text: content });
+        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(content));
 
       } catch (apiError) {
         console.error('Jikan API error:', apiError.message);

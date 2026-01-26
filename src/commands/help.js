@@ -40,7 +40,7 @@ module.exports = {
 ${MessageFormatter.elegantSection('⭐ POPULAIRES', populars)}
 💡 Tape \`!help [commande]\` pour plus d'infos!`;
 
-      await sock.sendMessage(senderJid, { text: help });
+      await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(help));
       return;
     }
 
@@ -76,6 +76,6 @@ ${command.category}
 ════════════════════════════════════════
 `;
 
-    await sock.sendMessage(senderJid, { text: helpText });
+    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(helpText));
   }
 };

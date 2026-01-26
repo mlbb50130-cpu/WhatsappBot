@@ -18,7 +18,7 @@ module.exports = {
       { label: '🔍 Chercher', value: '!anime <nom>' }
     ]);
     
-    await sock.sendMessage(senderJid, { text: voiranimeMessage });
+    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(voiranimeMessage));
   }
 };
 

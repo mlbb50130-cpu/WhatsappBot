@@ -54,7 +54,7 @@ module.exports = {
 
       const chanceMessage = `${bar}\n${MessageFormatter.elegantBox('🎲 TA CHANCE 🎲', chanceItems)}`;
 
-      await sock.sendMessage(senderJid, { text: chanceMessage });
+      await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(chanceMessage));
     } catch (error) {
       console.error('Error in chance command:', error.message);
       await sock.sendMessage(senderJid, { text: MessageFormatter.error('Une erreur est survenue!') });
