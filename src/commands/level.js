@@ -50,14 +50,6 @@ ${MessageFormatter.elegantSection('⭐ RANGS', rangsItems)}
 ${MessageFormatter.elegantSection('💡 CONSEILS', tipsItems)}`;
 
     await sock.sendMessage(senderJid, { text: level });
-  }
-
-    const text = MessageFormatter.box('🎖️ TON NIVEAU 🎖️', content);
-
-════════════════════════════════════════
-`;
-
-    await sock.sendMessage(senderJid, { text });
   },
 
   getProgressBar(current, max, length = 20) {
