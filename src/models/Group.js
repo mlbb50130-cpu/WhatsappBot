@@ -126,6 +126,14 @@ const groupSchema = new mongoose.Schema({
     }
   },
 
+  // Theme du groupe
+  theme: {
+    type: String,
+    default: 'default'
+  },
+  themeChangedAt: Date,
+  themeChangedBy: String,
+
   createdAt: {
     type: Date,
     default: Date.now

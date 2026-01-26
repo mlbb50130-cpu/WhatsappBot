@@ -46,7 +46,7 @@ module.exports = {
 
     const level = `${MessageFormatter.elegantBox('⬆️ TON NIVEAU ⬆️', levelItems)}
 ${progressBar}
-${MessageFormatter.elegantSection('⭐ RANGS', rangsItems)}
+${MessageFormatter.elegantSection('⭐ RANGS', ranksItems)}
 ${MessageFormatter.elegantSection('💡 CONSEILS', tipsItems)}`;
 
     await sock.sendMessage(senderJid, { text: level });
