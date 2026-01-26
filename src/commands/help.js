@@ -14,17 +14,6 @@ module.exports = {
     const handler = require('../handler');
 
     if (!args[0]) {
-      const categories = [
-        '🟦 PROFIL',
-        '🟦 QUIZ',
-        '🟦 COMBATS',
-        '🟦 LOOT',
-        '🟦 IMAGES',
-        '🟦 FUN',
-        '🟦 ADMIN',
-        '🟦 BOT'
-      ];
-
       const populars = [
         '!profil - Ton profil',
         '!level - Ton niveau',
@@ -36,9 +25,8 @@ module.exports = {
         '!menu - Menu complet'
       ];
 
-      const help = `${MessageFormatter.elegantSection('📚 CATÉGORIES', categories)}
-${MessageFormatter.elegantSection('⭐ POPULAIRES', populars)}
-💡 Tape \`!help [commande]\` pour plus d'infos!`;
+      const help = `${MessageFormatter.elegantSection('POPULAIRES', populars)}
+Tape: !help [commande]`;
 
       await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(help));
       return;
@@ -54,27 +42,13 @@ ${MessageFormatter.elegantSection('⭐ POPULAIRES', populars)}
       return;
     }
 
-    const helpText = `
-╔════════════════════════════════════════╗
-║       📖 AIDE - ${command.name.toUpperCase()} 📖      ║
-╚════════════════════════════════════════╝
-
-*📝 DESCRIPTION:*
+    const helpText = `╔════════════════════════════════════╗
+║  AIDE - ${command.name.toUpperCase()}
+╚════════════════════════════════════╝
 ${command.description}
-
-*🎯 UTILISATION:*
-\`${command.usage}\`
-
-*📊 CATÉGORIE:*
-${command.category}
-
-*⚙️ PARAMÈTRES:*
-  ├─ Admin uniquement: ${command.adminOnly ? '✅' : '❌'}
-  ├─ Groupe requis: ${command.groupOnly ? '✅' : '❌'}
-  └─ Cooldown: ${command.cooldown}s
-
-════════════════════════════════════════
-`;
+Utilisation: ${command.usage}
+Catégorie: ${command.category}
+═════════════════════════════════════`;
 
     await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(helpText));
   }
