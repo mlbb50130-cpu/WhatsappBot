@@ -146,9 +146,6 @@ async function handleMessage(sock, message, isGroup, groupData) {
     const participantJid = message.key.participant || senderJid;
     const username = message.pushName || 'Anonymous';
 
-    // Ignore bot's own messages
-    if (message.key.fromMe) return;
-
     console.log(`[HANDLER] Message: "${messageContent}"`);
     console.log(`[HANDLER] From: ${participantJid}`);
     console.log(`[HANDLER] Group/Chat JID: ${senderJid}`);
