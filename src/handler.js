@@ -7,6 +7,7 @@ const XPSystem = require('./utils/xpSystem');
 const PermissionManager = require('./utils/permissions');
 const QuestSystem = require('./utils/questSystem');
 const BadgeSystem = require('./utils/badgeSystem');
+const RankSystem = require('./utils/rankSystem');
 
 const commands = new Map();
 
@@ -94,8 +95,8 @@ async function addXP(jid, amount = config.XP_PER_MESSAGE) {
       const newMaxChakra = 100 + (levelInfo.level - 1) * 10;
       user.maxChakra = newMaxChakra;
       
-      // Vérifier et mettre à jour le rang automatiquement
-      const rankUpdate = BadgeSystem.checkAndUpdateRank(user);
+      // Vérifier et mettre à jour le rang automatiquement avec RankSystem
+      const rankUpdate = RankSystem.checkAndUpdateRank(user);
       
       await user.save();
       
@@ -109,8 +110,8 @@ async function addXP(jid, amount = config.XP_PER_MESSAGE) {
       };
     }
 
-    // Vérifier et mettre à jour le rang automatiquement à chaque message
-    const rankUpdate = BadgeSystem.checkAndUpdateRank(user);
+    // Vérifier et mettre à jour le rang automatiquement à chaque message avec RankSystem
+    const rankUpdate = RankSystem.checkAndUpdateRank(user);
     if (rankUpdate.rankChanged) {
       await user.save();
     }
