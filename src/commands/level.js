@@ -12,14 +12,44 @@ module.exports = {
 
   async execute(sock, message, args, user, isGroup, groupData) {
     const senderJid = message.key.remoteJid;
+
     const levelInfo = XPSystem.calculateLevelFromXp(user.xp);
     const rankInfo = XPSystem.getRank(user.level);
-    const remaining = levelInfo.requiredXp - levelInfo.currentLevelXp;
+    const nextRankXp = XPSystem.getTotalXpForLevel(user.level + 1);
+    
+    const progressBar = MessageFormatter.progressBar(levelInfo.currentLevelXp, levelInfo.requiredXp, 20);
 
-    const level = `⬆️ Lvl ${user.level} | ${rankInfo.emoji} ${rankInfo.rank}
-📈 ${levelInfo.currentLevelXp}/${levelInfo.requiredXp} XP (${remaining} restant)`;
+    const levelItems = [
+      { label: '⛅️ Niveau', value: user.level.toString() },
+      { label: '⭐ Rang', value: `${rankInfo.emoji} ${rankInfo.rank}` },
+      { label: '� Total XP', value: user.xp.toString() },
+      { label: '�📈 Progression', value: `${levelInfo.currentLevelXp}/${levelInfo.requiredXp}` },
+      { label: '⏳ Manquant', value: (levelInfo.requiredXp - levelInfo.currentLevelXp).toString() }
+    ];
 
-    await sock.sendMessage(senderJid, { text: level });
+    const ranksItems = [
+      '🥋 Lv 1-5: Genin Otaku',
+      '🎌 Lv 6-10: Chuunin Otaku',
+      '⚔️ Lv 11-20: Jounin Otaku',
+      '👨‍🏫 Lv 21-30: Sensei Otaku',
+      '✨ Lv 31-50: Légende Otaku',
+      '👑 Lv 51+: Dieu Otaku'
+    ];
+
+    const tipsItems = [
+      '💭 5 XP par message (cooldown 5s)',
+      '📋 Quêtes +50 XP',
+      '🧠 Quiz +25 XP',
+      '⚡ Duels +30 XP',
+      '🎁 Loots +10 XP'
+    ];
+
+    const level = `${MessageFormatter.elegantBox('⬆️ TON NIVEAU ⬆️', levelItems)}
+${progressBar}
+${MessageFormatter.elegantSection('⭐ RANGS', ranksItems)}
+${MessageFormatter.elegantSection('💡 CONSEILS', tipsItems)}`;
+
+    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(level));
   },
 
   getProgressBar(current, max, length = 20) {
