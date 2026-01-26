@@ -12,107 +12,34 @@ module.exports = {
   async execute(sock, message, args, user, isGroup, groupData) {
     const senderJid = message.key.remoteJid;
     
-    const menu = `
-📚 *CATÉGORIES DE COMMANDES*
+    const profil = ['!profil - Voir ton profil', '!level - Voir ton niveau', '!xp - Voir ton XP', '!rank - Voir ton rang', '!stats - Voir tes stats', '!badges - Voir tes badges'];
+    const duels = ['!duel @user - Défier', '!powerlevel - Power level', '!chakra - Chakra'];
+    const quests = ['!quete - Quêtes', '!quotidien - Quotidienne', '!hebdo - Hebdomadaire'];
+    const quiz = ['!quiz - Quiz otaku', '!quizanime - Quiz anime', '!pfc - Pierre-Feuille-Ciseaux', '!roulette - Roulette russe'];
+    const loot = ['!loot - Lancer un loot', '!inventaire - Inventaire', '!collection - Collection'];
+    const images = ['!waifu - Waifu', '!husbando - Husbando', '!neko - Chat anime', '!animegif - GIF anime'];
+    const special = ['!bleach - Bleach', '!naruto - Naruto', '!gojo - Gojo', '!deku - Deku', '!madara - Madara', '!sukuna - Sukuna', '!vegito - Vegito', '!miku - Miku'];
+    const fun = ['!blagueotaku - Blague', '!roast @user - Roast', '!chance - Chance', '!ship - Ship', '!sticker - Sticker'];
+    const media = ['!anime [nom] - Info anime', '!manga [nom] - Info manga', '!personnage [nom] - Info perso'];
+    const top = ['!topanime - Top animes', '!topmanga - Top mangas', '!classement level - Classement'];
+    const bot = ['!ping - Latence', '!info - Info bot', '!regles - Règles', '!help [cmd] - Aide'];
 
-👤 *PROFIL & LEVEL*
-\`!profil\` - Voir ton profil
-\`!level\` - Voir ton niveau
-\`!xp\` - Voir ton XP
-\`!rank\` - Voir ton rang
-\`!stats\` - Voir tes stats
-\`!badges\` - Voir tes badges
+    const menu = `${MessageFormatter.elegantSection('👤 PROFIL & LEVEL', profil)}
+${MessageFormatter.elegantSection('⚔️ DUELS & COMBATS', duels)}
+${MessageFormatter.elegantSection('📖 QUÊTES & RPG', quests)}
+${MessageFormatter.elegantSection('🎯 QUIZ & JEUX', quiz)}
+${MessageFormatter.elegantSection('🎁 LOOT & INVENTAIRE', loot)}
+${MessageFormatter.elegantSection('🎨 IMAGES ANIME', images)}
+${MessageFormatter.elegantSection('🌟 PERSONNAGES', special)}
+${MessageFormatter.elegantSection('🎪 FUN', fun)}
+${MessageFormatter.elegantSection('📺 ANIME & MANGA', media)}
+${MessageFormatter.elegantSection('🏆 CLASSEMENTS', top)}
+${MessageFormatter.elegantSection('📌 BOT', bot)}
 
-⚔️ *DUELS & COMBATS*
-\`!duel @user\` - Défier un utilisateur
-\`!powerlevel\` - Voir ton power level
-\`!chakra\` - Voir ton chakra
+💎 Gagne du XP en parlant!
+🎯 Complète des quêtes!
+⚡ Affronte d'autres joueurs!`;
 
-📖 *QUÊTES & RPG*
-\`!quete\` - Voir les quêtes disponibles
-\`!quotidien\` - Mission quotidienne
-\`!hebdo\` - Mission hebdomadaire
-
-🎯 *QUIZ & MINI-JEUX*
-\`!quiz\` - Lancer un quiz otaku
-\`!quizanime\` - Quiz anime
-\`!pfc\` - Pierre-Feuille-Ciseaux
-\`!roulette\` - Roulette russe (500 gold)
-
-🎁 *LOOT & INVENTAIRE*
-\`!loot\` - Lancer un loot
-\`!inventaire\` - Voir ton inventaire
-\`!collection\` - Voir ta collection
-
-🎨 *IMAGES ANIME*
-\`!waifu\` - Image waifu aléatoire
-\`!husbando\` - Image husbando aléatoire
-\`!neko\` - Image chat anime
-\`!animegif\` - GIF anime aléatoire
-
-🌟 *PERSONNAGES SPÉCIAUX*
-\`!assets\` - Liste de tous les personnages disponibles
-\`!bleach\` - Images Bleach
-\`!naruto\` - Images Naruto
-\`!gojo\` - Images Gojo
-\`!deku\` - Images Deku
-\`!madara\` - Images Madara
-\`!sukuna\` - Images Sukuna
-\`!vegito\` - Images Vegito
-\`!miku\` - Images Miku HD
-\`!nino\` - Images NINO Nakano
-Et bien d'autres...
-
-🎪 *FUN*
-\`!blagueotaku\` - Blague otaku
-\`!roast @user\` - Faire un roast
-\`!chance\` - Voir ta chance du jour
-\`!ship @user1 @user2\` - Shipper deux personnes
-\`!sticker\` - Convertir une image en sticker WhatsApp
-
-📺 *ANIME & MANGA*
-\`!anime Naruto\` - Info sur un anime
-\`!manga OnePiece\` - Info sur un manga
-\`!personnage Gojo\` - Info sur un personnage
-
-🏆 *CLASSEMENTS*
-\`!topanime\` - Top 10 des animes
-\`!topmanga\` - Top 10 des mangas
-\`!classement level\` - Classement par niveau
-
-🎬 *ANIME & STREAMING*
-\`!anime [nom]\` - Infos anime sur AniList
-\`!voiranime [nom]\` - Rechercher sur VoirAnime (lien dans les DM)
-
-📌 *BOT*
-\`!ping\` - Latence du bot
-\`!info\` - Info du bot
-\`!regles\` - Règles du groupe
-\`!help [commande]\` - Aide sur une commande
-
-🔐 *COMMANDES ADMIN*
-\`!tournoisquiz\` - Lancer un tournoi de quiz automatique
-\`!promote @user\` - Promouvoir un utilisateur en admin
-\`!demote @user\` - Retirer le statut admin
-\`!kick @user\` - Expulser un utilisateur
-\`!mute @user\` - Rendre muet un utilisateur
-\`!unmute @user\` - Retirer le silence
-\`!warn @user\` - Avertir un utilisateur
-\`!lock\` - Verrouiller le groupe
-\`!unlock\` - Deverrouiller le groupe
-\`!clear\` - Nettoyer le chat
-\`!setxp @user [montant]\` - Définir l'XP d'un utilisateur
-\`!groupinfo\` - Info du groupe
-\`!admins\` - Liste des administrateurs
-
-*Utilise le préfixe !*
-Exemple: \`!profil\`
-
-💎 Gagne de l'XP en parlant dans le chat!
-🎯 Complète des quêtes et des missions!
-⚡ Affronte d'autres joueurs en duel!`;
-
-    const content = MessageFormatter.box('🎌 TETSUBOT - OTAKU RPG BOT 🎌', menu);
-    await sock.sendMessage(senderJid, { text: content });
+    await sock.sendMessage(senderJid, { text: menu });
   }
 };

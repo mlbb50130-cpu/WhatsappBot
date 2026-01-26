@@ -20,12 +20,14 @@ module.exports = {
     const latency = Date.now() - startTime;
     const status = latency < 100 ? '🟢' : latency < 500 ? '🟡' : '🔴';
 
-    const content = `${status} *LATENCE*: \`${latency}ms\`
-✅ *STATUS*: En ligne
-📦 *VERSION*: 1.0.0
-⏳ *UPTIME*: ${this.getUptime()}`;
+    const pingItems = [
+      { label: `${status} Latence`, value: `${latency}ms` },
+      { label: '✅ Status', value: 'En ligne' },
+      { label: '📦 Version', value: '1.0.0' },
+      { label: '⏳ Uptime', value: this.getUptime() }
+    ];
 
-    const text = MessageFormatter.box('🤖 BOT STATUS 🤖', content);
+    const text = MessageFormatter.elegantBox('🤖 BOT STATUS 🤖', pingItems);
 
     await sock.sendMessage(senderJid, {
       text
