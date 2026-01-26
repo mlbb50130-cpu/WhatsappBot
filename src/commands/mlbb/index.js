@@ -120,47 +120,130 @@ module.exports = {
       }
     }
 
-    // ==================== Menu d'aide par défaut ====================
-    const helpText = `
-╔════════════════════════════════════╗
-║     🎮 MOBILE LEGENDS BANG BANG 🎮  ║
-╚════════════════════════════════════╝
+    // ==================== Menu complet MLBB par défaut ====================
+    const menu = `
+╔═══════════════════════════════════════════════╗
+║          🎮 MENU COMPLET MLBB 🎮             ║
+╚═══════════════════════════════════════════════╝
 
-*📖 COMMANDES DISPONIBLES:*
+🎯 *CATÉGORIE: HÉROS & INFOS*
 
-┌─ PROFIL
-├ !mlbb set <rang> <rôle> - Enregistrer profil
-├ !mlbb me - Voir ton profil MLBB
-└ !mlbb reset - Supprimer profil
+1️⃣ *!hero <nom>*
+   Affiche les infos complètes d'un héros
+   Ex: !hero ling
+   📊 Stats, rôle, lane, compétences, counters
 
-┌─ HÉROS & GUIDES
-├ !hero <nom> - Infos détaillées héro
-├ !build <type> - Build recommandée
-├ !counter <héro> - Counters efficaces
-└ !combo <héro> - Combos de dégâts
+2️⃣ *!build <nom>*
+   Affiche les 3 builds optimisées pour un héros
+   Ex: !build brody
+   🛠️ Build damage, balanced, support
 
-┌─ META & STRATÉGIE
-├ !meta - Meta actuelle
-├ !lane <role> - Guide lane/position
-└ !tip - Conseil aléatoire
+3️⃣ *!counter <nom>*
+   Affiche qui countre ce héros et qui ce héros countre
+   Ex: !counter ling
+   ✅ Effectif contre / ⚠️ Faible contre
 
-┌─ ÉQUIPES
-├ !team create <nom> - Créer équipe
-├ !team join <nom> - Rejoindre équipe
-├ !team leave - Quitter équipe
-├ !team list - Lister équipes
-└ !team disband - Dissoudre équipe
+4️⃣ *!combo <nom>*
+   Affiche les combos optimaux du héros
+   Ex: !combo alice
+   ⚡ Séquence de compétences + dégâts
 
-*📊 RANGS DISPONIBLES:*
-${mlbbData.ranks.join(' → ')}
+5️⃣ *!meta*
+   État actuel du meta - Tier list S/A/B
+   🔴 S-tier (OP) / 🟡 A-tier / 🟢 B-tier
+   Patch actuel et notes
 
-*🎯 RÔLES:*
-${mlbbData.roles.join(' • ')}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-*🚀 ASTUCE:*
-Enregistre ton profil: !mlbb set <rang> <role>
-`;
+📍 *CATÉGORIE: GUIDES*
 
-    return sock.sendMessage(from, { text: helpText });
+6️⃣ *!lane <nom>*
+   Guide complet d'une lane (top, mid, bottom, jungle)
+   Ex: !lane jungle
+   📚 Description, rôles, héros populaires
+
+7️⃣ *!tip*
+   Conseil MLBB aléatoire
+   💡 Astuces stratégiques, positionnement, CS
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+👥 *CATÉGORIE: PROFIL & ÉQUIPES*
+
+8️⃣ *!mlbb set <rang> <role>*
+   Enregistre ton profil MLBB
+   Ex: !mlbb set legend jungler
+   🎮 Rank, role, héros favoris
+
+9️⃣ *!mlbb me*
+   Affiche ton profil MLBB
+   👤 Ton rang, rôle, statistiques
+
+🔟 *!team <nom>*
+   Créer ou voir une équipe
+   Ex: !team MonEquipe
+   👥 Gestion de membres, créateur
+
+1️⃣1️⃣ *!join <team>*
+   Rejoindre une équipe
+   Ex: !join MonEquipe
+
+1️⃣2️⃣ *!leave <team>*
+   Quitter une équipe
+   Ex: !leave MonEquipe
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚙️ *CATÉGORIE: ADMIN*
+
+1️⃣3️⃣ *!setmodule on mlbb*
+   Activer le module MLBB (Admin seulement)
+
+1️⃣4️⃣ *!setmodule off mlbb*
+   Désactiver le module MLBB (Admin seulement)
+
+1️⃣5️⃣ *!setmodule status*
+   Voir l'état de tous les modules
+
+1️⃣6️⃣ *!selectpack*
+   Changer de pack (Admin seulement)
+   📺 OTAKU / 🎮 GAMIN / 🌟 COMPLET
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📌 *HÉROS POPULAIRES:*
+ling, brody, alice, valir, natalia, hanabi,
+moskov, lolita, esmeralda, fanny, hayabusa,
+helcurt, alucard, roger, chou, silvanna, ...
+
+🎯 *LANES:*
+top, mid, bottom, jungle
+
+📊 *STATISTIQUES:*
+HP, ATK, DEF, ASP
+
+💡 *TIPS:*
+• Utilise !hero pour connaître les stats
+• Utilise !counter avant de jouer
+• Consulte !meta pour le patch actuel
+• Demande des combos avec !combo
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔗 *COMMANDES RAPIDES:*
+!mlbbmenu - Ce menu
+!hero <nom> - Info héros
+!build <nom> - Builds
+!counter <nom> - Counters
+!combo <nom> - Combos
+!meta - Tier list
+!lane <nom> - Guide lane
+!tip - Conseil aléatoire
+
+📱 *Besoin d'aide?*
+Tape la commande pour obtenir plus de détails!
+Ex: !hero pour voir les héros disponibles`;
+
+    return sock.sendMessage(from, { text: menu });
   }
 };

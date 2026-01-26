@@ -12,49 +12,18 @@ module.exports = {
 
   async execute(sock, message, args, user, isGroup, groupData) {
     const senderJid = message.key.remoteJid;
-
     const levelInfo = XPSystem.calculateLevelFromXp(user.xp);
     const rankInfo = XPSystem.getRank(levelInfo.level);
-    
-    const progressBar = MessageFormatter.progressBar(levelInfo.currentLevelXp, levelInfo.requiredXp, 15);
-    
-    const badges = user.badges.length > 0 
-      ? user.badges.map(b => `${b.emoji} ${b.name}`).join(', ')
-      : '❌ Aucun badge';
+    const winRate = user.stats.duels > 0 ? Math.round((user.stats.wins / user.stats.duels) * 100) : 0;
+    const badges = user.badges.length > 0 ? user.badges.map(b => `${b.emoji}`).join(' ') : '❌';
 
-    // Main profile info
-    const profileInfo = [
-      { label: '🧡 Nom', value: user.username },
-      { label: '⭐ Rang', value: `${rankInfo.emoji} ${user.rank}` },
-      { label: '🏷️ Titre', value: user.title || '❌ Aucun' },
-      { label: '🔥 XP', value: user.xp },
-      { label: '⬆️ Niveau', value: levelInfo.level }
-    ];
+    const profile = `🎭 *${user.username}*
+${rankInfo.emoji} ${user.rank} | Lvl ${user.level} | ${user.xp} XP
 
-    const statsInfo = [
-      { label: '💭 Messages', value: user.stats.messages },
-      { label: '🧠 Quiz', value: user.stats.quiz },
-      { label: '⚡ Duels', value: user.stats.duels },
-      { label: '🥇 Victoires', value: user.stats.wins },
-      { label: '❌ Défaites', value: user.stats.losses }
-    ];
+📊 Msg: ${user.stats.messages} | Quiz: ${user.stats.quiz} | Duels: ${user.stats.duels} | Win: ${winRate}%
+💎 Items: ${user.inventory.length}/50 | Badges: ${badges}`;
 
-    const inventoryInfo = [
-      { label: '💎 Objets', value: user.inventory.length },
-      { label: '✨ Emplacements', value: `${user.inventory.length}/50` }
-    ];
-
-    const createdDate = new Date(user.createdAt).toLocaleDateString('fr-FR');
-
-    const profile = `${MessageFormatter.elegantBox('🎭 TON PROFIL OTAKU 🎭', profileInfo)}
-${MessageFormatter.elegantSection('STATISTIQUES', statsInfo.map(s => `${s.label}: ${s.value}`))}
-*📈 PROGRESSION*
-${progressBar} ${levelInfo.currentLevelXp}/${levelInfo.requiredXp}
-${MessageFormatter.elegantSection('🌟 BADGES', [badges])}
-${MessageFormatter.elegantSection('💎 INVENTAIRE', inventoryInfo.map(i => `${i.label}: ${i.value}`))}
-📅 *COMPTE CRÉÉ*: \`${createdDate}\``;
-
-    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(profile));
+    await sock.sendMessage(senderJid, { text: profile });
   },
 
   getProgressBar(current, max, length = 15) {
