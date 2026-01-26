@@ -1,99 +1,68 @@
-// COMMANDE: !lane <role> - Guide par lane/position
-const mlbbData = require('../../data/mlbbDatabase');
-const CooldownManager = require('../../utils/cooldown');
-
-const cooldown = new CooldownManager(3000);
+// COMMANDE: !lane <lane> - Guide par lane/position
+const fs = require('fs');
+const path = require('path');
+const mlbb = JSON.parse(fs.readFileSync(path.join(__dirname, '../../data/mlbb.json'), 'utf8'));
 
 module.exports = {
   name: 'lane',
   aliases: ['position', 'role', 'guide'],
-  category: 'Gaming',
+  category: 'gaming',
   description: 'Guide complet pour chaque lane',
-  usage: '!lane <role>',
+  usage: '!lane <lane>',
+  groupOnly: true,
+  cooldown: 3,
   
   async execute(sock, message, args) {
     const from = message.key.remoteJid;
-    const isGroup = from.endsWith('@g.us');
-    const senderJid = message.key.participant || from;
-
-    if (!isGroup) {
-      return sock.sendMessage(from, {
-        text: '❌ Cette commande fonctionne uniquement en groupe!'
-      });
-    }
-
-    if (cooldown.isOnCooldown(senderJid)) {
-      return sock.sendMessage(from, {
-        text: `⏱️ Patiente ${cooldown.getTimeLeft(senderJid) / 1000}s`
-      });
-    }
 
     if (!args[0]) {
-      const laneNames = Object.keys(mlbbData.lanes).join(', ');
-      cooldown.setCooldown(senderJid);
+      const lanes = Object.keys(mlbb.lanes || {}).join(', ');
       return sock.sendMessage(from, {
-        text: `❌ Spécifie une lane!\n\n*Lanes disponibles:* ${laneNames}`
+        text: `❌ *Spécifie une lane!*\n\n*Lanes disponibles:* ${lanes || 'top, mid, bottom, jungle'}`
       });
     }
 
     const laneKey = args[0].toLowerCase();
-    const lane = mlbbData.lanes[laneKey];
+    const lane = mlbb.lanes?.[laneKey];
 
     if (!lane) {
-      cooldown.setCooldown(senderJid);
       return sock.sendMessage(from, {
-        text: `❌ Lane "${args[0]}" non trouvée!\n\nLanes: ${Object.keys(mlbbData.lanes).join(', ')}`
+        text: `❌ Lane "${args[0]}" non trouvée!`
       });
     }
 
+    const laneEmoji = {
+      'top': '⛰️',
+      'mid': '🏘️',
+      'bottom': '🌊',
+      'jungle': '🌳'
+    }[laneKey] || '📍';
+
     const laneInfo = `
-╔════════════════════════════════════╗
-║   🎮 GUIDE - ${lane.name.toUpperCase()} 🎮   ║
-╚════════════════════════════════════╝
+╔═══════════════════════════════════╗
+║     ${laneEmoji} GUIDE LANE: ${laneKey.toUpperCase()} ${laneEmoji}    ║
+╚═══════════════════════════════════╝
 
-*👥 RÔLE PRINCIPAL:*
-${lane.role}
+📝 *DESCRIPTION*
+${lane.description || 'Lane principale'}
 
-*🏆 CHAMPIONS RECOMMANDÉS:*
-${lane.champions.map((c, i) => `${i + 1}. ${c}`).join('\n')}
+👥 *RÔLES PRINCIPAUX*
+${lane.roles?.map((r, i) => `${i + 1}. ${r}`).join('\n') || 'Multi-role'}
 
-*🎯 OBJECTIFS PRINCIPAUX:*
-${lane.objectives.split(', ').map(obj => `├ ${obj}`).join('\n')}
+🎮 *HÉROS POPULAIRES*
+${lane.popular_heroes?.slice(0, 5).map((h, i) => `${i + 1}. ${h}`).join('\n') || 'Tous les héros'}
 
-*💡 CONSEILS STRATÉGIQUES:*
-${lane.tips.map(tip => `├ ${tip}`).join('\n')}
+💡 *STRATÉGIE*
+• Priorise la farm early game
+• Gère les ganks constants
+• Participe aux teamfights mid-late
+• Place bien ta warding
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎯 *COMMANDES UTILES:*
+!hero <nom> - Info héros
+!build <nom> - Builds adaptées
+!counter <nom> - Counters efficaces`;
 
-*📊 GUIDE AVANCÉ:*
-
-EARLY GAME (0-7 min):
-• Contrôle des minions/monstres
-• Negate l'ennemi sans prendre trop de dégâts
-• Gardez vision importante
-• Collabore avec l'équipe
-
-MID GAME (7-15 min):
-• Farm efficace en sécurité
-• Participe aux team fights critiques
-• Rotation intelligente
-• Objectif placement & warding
-
-LATE GAME (15+ min):
-• Positionnement crucial
-• Capitalise sur ton avantage
-• Protection des carries
-• Finition du match
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-*🔍 RESSOURCES:*
-!meta - Meta actuelle par lane
-!hero <nom> - Infos héros recommandés
-!build ${lane.name.toLowerCase()} - Build optimale
-`;
-
-    cooldown.setCooldown(senderJid);
     return sock.sendMessage(from, { text: laneInfo });
   }
 };

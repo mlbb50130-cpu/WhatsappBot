@@ -125,6 +125,7 @@ async function connectToWhatsApp() {
       try {
         const Group = require('./models/Group');
         const ModuleManager = require('./utils/ModuleManager');
+        const PackManager = require('./utils/PackManager');
         let group = await Group.findOne({ groupJid: update.id });
         
         // Si le groupe n'existe pas encore (nouveau groupe)
@@ -137,17 +138,24 @@ async function connectToWhatsApp() {
           });
           await group.save();
 
-          // Initialiser les modules du groupe
-          const groupModules = {};
-          Object.keys(ModuleManager.MODULES).forEach(key => {
-            groupModules[key] = ModuleManager.MODULES[key].enabled;
+          // Initialiser avec le pack par défaut (Otaku)
+          PackManager.applyPack('otaku', update.id);
+          
+          // Envoyer le message de sélection de pack
+          await sock.sendMessage(update.id, {
+            text: PackManager.getPackMessage()
           });
-          ModuleManager.setGroupModules(update.id, groupModules);
+
+          // Créer une clé de session pour tracker la sélection en cours
+          if (!global.packSelections) {
+            global.packSelections = {};
+          }
+          global.packSelections[update.id] = true;
           
           // Envoyer un message d'accueil
           await sock.sendMessage(update.id, {
             text: '👋 *Bienvenue!* 🎉\n\n' +
-                  'Je suis **TetsuBot** - Un bot RPG Otaku pour votre groupe!\n\n' +
+                  'Je suis **TetsuBot** - Un bot RPG pour votre groupe!\n\n' +
                   '📚 *DOCUMENTATION COMPLÈTE:*\n' +
                   'Tape `!documentation` pour lire la documentation détaillée\n' +
                   '(Accessible même sans activation!)\n\n' +

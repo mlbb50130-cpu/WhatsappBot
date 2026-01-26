@@ -1,8 +1,4 @@
 // COMMANDE: !tip - Conseils aléatoires MLBB
-const CooldownManager = require('../../utils/cooldown');
-
-const cooldown = new CooldownManager(3000);
-
 const tips = [
   {
     title: 'CS est King 👑',
@@ -38,101 +34,41 @@ const tips = [
   },
   {
     title: 'Early Aggression 🔥',
-    tip: 'Ganks et pressure early = contrôle du rythme. Pas late game passif!'
+    tip: 'Une bonne agression early peut bloquer la farm adverse et créer des avantages!'
   },
   {
-    title: 'Itemization 🛠️',
-    tip: 'Adapte ta build à la situation. Pas une build one-size-fits-all!'
-  },
-  {
-    title: 'Wave Management 🌊',
-    tip: 'Comprends quand slow-push, fast-push ou freeze. C\'est fondamental!'
-  },
-  {
-    title: 'Trading Windows 💥',
-    tip: 'Trade dégâts quand ennemi peut pas répondre = free dégâts garantis!'
-  },
-  {
-    title: 'Engage Decisively 🎯',
-    tip: 'Commit ou pas. Moitié-engagement = vous perdez les teamfights!'
-  },
-  {
-    title: 'Rotations Timing ⏰',
-    tip: 'Rotate quand tu as avantage ou que lane push. Pas de random roams!'
-  },
-  {
-    title: 'Objectives > Kills 🏆',
-    tip: 'Tower > Kill > CS. Focus l\'objectif principal, pas juste fraglist!'
-  },
-  {
-    title: 'Macro Priority 🎲',
-    tip: 'Pense à long-term setup. Chaque action affecte le map pendant 10 min!'
-  },
-  {
-    title: 'Self-Improvement 📈',
-    tip: 'Replay tes games, analyse tes erreurs. Répétition = compétence!'
-  },
-  {
-    title: 'Play Time 🕐',
-    tip: 'Prends des breaks entre matches. Fatigue = mauvaises decisions!'
-  },
-  {
-    title: 'Counter-Pick 🔄',
-    tip: 'Si possible, counter-pick. Sinon, joue ce que tu maîtrises!'
-  },
-  {
-    title: 'Mental Health 🧠',
-    tip: 'Ranked = stressant. Prends soin de ton mental. Jeu = divertissement!'
+    title: 'Itemization Smart 🛠️',
+    tip: 'Adapte tes items à la situation. Contre AP? Achète Magic Resist. C\'est pas rocket science!'
   }
 ];
 
 module.exports = {
   name: 'tip',
-  aliases: ['astuce', 'conseil', 'advice'],
-  category: 'Gaming',
+  aliases: ['tips', 'conseil', 'conseils'],
+  category: 'gaming',
   description: 'Conseil MLBB aléatoire',
   usage: '!tip',
-  
+  groupOnly: true,
+  cooldown: 3,
+
   async execute(sock, message, args) {
     const from = message.key.remoteJid;
-    const isGroup = from.endsWith('@g.us');
-    const senderJid = message.key.participant || from;
-
-    if (!isGroup) {
-      return sock.sendMessage(from, {
-        text: '❌ Cette commande fonctionne uniquement en groupe!'
-      });
-    }
-
-    if (cooldown.isOnCooldown(senderJid)) {
-      return sock.sendMessage(from, {
-        text: `⏱️ Patiente ${cooldown.getTimeLeft(senderJid) / 1000}s`
-      });
-    }
-
+    
     const randomTip = tips[Math.floor(Math.random() * tips.length)];
-
-    const tipText = `
-╔════════════════════════════════════╗
-║        💡 CONSEIL DU JOUR 💡        ║
-╚════════════════════════════════════╝
+    
+    const tipMessage = `
+╔═══════════════════════════════════╗
+║        💡 CONSEIL MLBB 💡         ║
+╚═══════════════════════════════════╝
 
 *${randomTip.title}*
 
 ${randomTip.tip}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-*🎯 MÀJ QUOTIDIENNE:*
-Relance !tip demain pour un nouveau conseil!
+🎯 Tape !tip pour un nouveau conseil`;
 
-*📚 RESSOURCES:*
-!mlbb - Guide complet
-!meta - Meta actuelle
-!lane <role> - Guides par lane
-`;
-
-    cooldown.setCooldown(senderJid);
-    return sock.sendMessage(from, { text: tipText });
+    return sock.sendMessage(from, { text: tipMessage });
   }
 };

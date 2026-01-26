@@ -161,6 +161,57 @@ async function handleMessage(sock, message, isGroup, groupData) {
       await user.save();
     }
 
+    // Gestion de la sélection de pack pour nouveaux groupes
+    if (isGroup && global.packSelections && global.packSelections[senderJid]) {
+      const PackManager = require('./utils/PackManager');
+      const choice = messageContent.trim().toLowerCase();
+      
+      if (!isNaN(choice) || PackManager.PACKS[choice]) {
+        let packId = null;
+
+        // Gestion par numéro (1, 2, 3, 4)
+        if (!isNaN(choice)) {
+          const num = parseInt(choice) - 1;
+          const packs = PackManager.getPacks();
+          if (num >= 0 && num < packs.length) {
+            packId = packs[num].id;
+          }
+        }
+        // Gestion par nom
+        else if (PackManager.PACKS[choice]) {
+          packId = choice;
+        }
+
+        if (packId) {
+          const pack = PackManager.applyPack(packId, senderJid);
+          if (pack) {
+            global.packSelections[senderJid] = false;
+
+            const packModules = Object.entries(pack.modules)
+              .filter(([_, enabled]) => enabled)
+              .map(([name, _]) => `• ${name}`)
+              .join('\n');
+
+            await sock.sendMessage(senderJid, {
+              text: `
+✅ *Pack sélectionné!*
+
+${pack.emoji} *${pack.name}*
+
+🔧 *Modules activés:*
+${packModules}
+
+💡 *Utilisez:*
+!setmodule on <module> - Activer un module
+!setmodule off <module> - Désactiver un module
+!setmodule status - Voir l'état actuel`
+            });
+            return;
+          }
+        }
+      }
+    }
+
     // Check if it's a command
     if (!messageContent.startsWith(config.PREFIX)) {
       return;

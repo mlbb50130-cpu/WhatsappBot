@@ -1,79 +1,46 @@
 // COMMANDE: !meta - Meta actuelle MLBB
-const mlbbData = require('../../data/mlbbDatabase');
-const CooldownManager = require('../../utils/cooldown');
-
-const cooldown = new CooldownManager(5000);
+const fs = require('fs');
+const path = require('path');
+const mlbb = JSON.parse(fs.readFileSync(path.join(__dirname, '../../data/mlbb.json'), 'utf8'));
 
 module.exports = {
   name: 'meta',
   aliases: ['metagame', 'tier', 'tierlist'],
-  category: 'Gaming',
+  category: 'gaming',
   description: 'Affiche la meta actuelle de MLBB',
   usage: '!meta',
+  groupOnly: true,
+  cooldown: 5,
   
   async execute(sock, message, args) {
     const from = message.key.remoteJid;
-    const isGroup = from.endsWith('@g.us');
-    const senderJid = message.key.participant || from;
-
-    if (!isGroup) {
-      return sock.sendMessage(from, {
-        text: '❌ Cette commande fonctionne uniquement en groupe!'
-      });
-    }
-
-    if (cooldown.isOnCooldown(senderJid)) {
-      return sock.sendMessage(from, {
-        text: `⏱️ Patiente ${cooldown.getTimeLeft(senderJid) / 1000}s`
-      });
-    }
-
-    const meta = mlbbData.meta;
+    const meta = mlbb.meta || {};
 
     const metaInfo = `
-╔════════════════════════════════════╗
-║        📊 META ACTUELLE MLBB 📊     ║
-╚════════════════════════════════════╝
+╔═══════════════════════════════════╗
+║     📊 META ACTUELLE MLBB 📊      ║
+╚═══════════════════════════════════╝
 
-*🏆 TIER LIST*
+*Patch:* ${meta.patch || 'Actuel'}
 
-*S TIER* (🔥 OVERPOWERED)
-${meta.tier.S.join(' • ')}
+🔴 *S TIER* (🔥 OVERPOWERED)
+${(meta.s_tier || []).map((h, i) => `${i + 1}. ${h}`).join('\n')}
 
-*A TIER* (⭐ TRÈS BON)
-${meta.tier.A.join(' • ')}
+🟡 *A TIER* (⭐ TRÈS BON)
+${(meta.a_tier || []).map((h, i) => `${i + 1}. ${h}`).join('\n')}
 
-*B TIER* (✅ BON)
-${meta.tier.B.join(' • ')}
+🟢 *B TIER* (✅ BON)
+${(meta.b_tier || []).map((h, i) => `${i + 1}. ${h}`).join('\n')}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-*🎯 TENDANCES PAR LANE*
+📝 *${meta.note || 'La meta change selon les patchs et équilibrages'}*
 
-*Gold Lane:* ${meta.trends['Gold Lane'].join(' • ')}
-*Mid Lane:* ${meta.trends['Mid Lane'].join(' • ')}
-*EXP Lane:* ${meta.trends['EXP Lane'].join(' • ')}
-*Roam:* ${meta.trends['Roam'].join(' • ')}
-*Carry:* ${meta.trends['Carry'].join(' • ')}
+💡 *COMMANDES UTILES:*
+!hero <nom> - Info complète
+!build <nom> - Builds recommandées
+!counter <nom> - Counters efficaces`;
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-📝 *NOTES IMPORTANTES:*
-${meta.notes}
-
-💡 *CONSEILS:*
-• La meta change avec les patches balance
-• Maîtrise des héros > suivre la meta
-• Counterpick intelligemment
-• Adapte ta composition selon le ban
-
-*🔍 POUR PLUS D'INFOS:*
-!hero <nom> - Infos complètes héros
-!counter <nom> - Counters efficaces
-!lane <role> - Guide par lane
-`;
-
-    cooldown.setCooldown(senderJid);
     return sock.sendMessage(from, { text: metaInfo });
   }
 };

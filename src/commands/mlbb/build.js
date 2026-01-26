@@ -1,61 +1,51 @@
-// COMMANDE: !build <type> - Builds recommandées
-const mlbbData = require('../../data/mlbbDatabase');
-const CooldownManager = require('../../utils/cooldown');
-
-const cooldown = new CooldownManager(3000);
+// COMMANDE: !build <héros> - Builds recommandées
+const fs = require('fs');
+const path = require('path');
+const mlbb = JSON.parse(fs.readFileSync(path.join(__dirname, '../../data/mlbb.json'), 'utf8'));
 
 module.exports = {
   name: 'build',
-  aliases: ['builds', 'items'],
-  category: 'Gaming',
-  description: 'Builds optimisées pour chaque type',
-  usage: '!build <type>',
+  aliases: ['builds', 'items', 'set'],
+  category: 'gaming',
+  description: 'Builds optimisées pour un héros',
+  usage: '!build <héros>',
   groupOnly: true,
   cooldown: 3,
   
-  async execute(sock, message, args, user, isGroup) {
+  async execute(sock, message, args) {
     const from = message.key.remoteJid;
-    const senderJid = message.key.participant || from;
 
     if (!args[0]) {
-      const buildTypes = Object.keys(mlbbData.builds).join(', ');
+      const heroes = Object.keys(mlbb.heroes).slice(0, 8).join(', ');
       return sock.sendMessage(from, {
-        text: `❌ Spécifie un type de build!\n\n*Types disponibles:*\n${buildTypes}`
+        text: `❌ *Spécifie un héros!*\n\n*Exemples:* ${heroes}...`
       });
     }
 
-    const buildKey = args.join('_').toLowerCase();
-    const build = mlbbData.builds[buildKey];
+    const heroName = args[0].toLowerCase();
+    const hero = mlbb.heroes[heroName];
 
-    if (!build) {
+    if (!hero || !hero.build) {
       return sock.sendMessage(from, {
-        text: `❌ Build "${args.join(' ')}" non trouvée!\n\nTypes: ${Object.keys(mlbbData.builds).join(', ')}`
+        text: `❌ Héros "${heroName}" ou builds non trouvés!`
       });
     }
 
     const buildInfo = `
-╔════════════════════════════════════╗
-║     🛠️ ${build.name.toUpperCase()} 🛠️      ║
-╚════════════════════════════════════╝
+╔═══════════════════════════════════╗
+║    🛠️ BUILDS ${hero.name.toUpperCase()} 🛠️     ║
+╚═══════════════════════════════════╝
 
-*📦 ITEMS (DANS L'ORDRE):*
-${build.items.map((item, i) => `${i + 1}. ${item}`).join('\n')}
+🔴 *BUILD DAMAGE* (Aggressif)
+${hero.build.damage.map((item, i) => `${i + 1}. ${item}`).join('\n')}
 
-✅ *AVANTAGES*
-${build.advantages.map(a => `├ ${a}`).join('\n')}
+🟡 *BUILD BALANCED* (Équilibré)
+${hero.build.balanced.map((item, i) => `${i + 1}. ${item}`).join('\n')}
 
-⚠️ *INCONVÉNIENTS*
-${build.disadvantages.map(d => `├ ${d}`).join('\n')}
+🟢 *BUILD SUPPORT* (Tanky)
+${(hero.build.support || hero.build.tank || hero.build.balanced).map((item, i) => `${i + 1}. ${item}`).join('\n')}
 
-💡 *CONSEIL DE BUILD*
-• Adapte selon l'ennemi et la composition
-• Les boots dépendent de la situation
-• La dernière item peut être flexible
-• Vise toujours l'efficacité en combat
-
-*🎯 BUILDS DISPONIBLES:*
-${Object.keys(mlbbData.builds).join(' • ')}
-`;
+💡 *Tips:* Adapte les builds selon ton équipe et les ennemis!`;
 
     return sock.sendMessage(from, { text: buildInfo });
   }

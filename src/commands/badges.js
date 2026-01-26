@@ -1,4 +1,4 @@
-const BadgeSystem = require('../../utils/badgeSystem');
+const BadgeSystem = require('../utils/badgeSystem');
 const MessageFormatter = require('../utils/messageFormatter');
 
 module.exports = {

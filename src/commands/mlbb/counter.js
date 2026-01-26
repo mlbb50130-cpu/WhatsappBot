@@ -1,74 +1,57 @@
-// COMMANDE: !counter <héro> - Counters efficaces
-const mlbbData = require('../../data/mlbbDatabase');
-const CooldownManager = require('../../utils/cooldown');
-
-const cooldown = new CooldownManager(3000);
+// COMMANDE: !counter <héros> - Counters efficaces
+const fs = require('fs');
+const path = require('path');
+const mlbb = JSON.parse(fs.readFileSync(path.join(__dirname, '../../data/mlbb.json'), 'utf8'));
 
 module.exports = {
   name: 'counter',
   aliases: ['counters', 'beat', 'antiheroe'],
-  category: 'Gaming',
+  category: 'gaming',
   description: 'Voir les counters d\'un héros',
   usage: '!counter <héros>',
+  groupOnly: true,
+  cooldown: 3,
   
   async execute(sock, message, args) {
     const from = message.key.remoteJid;
-    const isGroup = from.endsWith('@g.us');
-    const senderJid = message.key.participant || from;
-
-    if (!isGroup) {
-      return sock.sendMessage(from, {
-        text: '❌ Cette commande fonctionne uniquement en groupe!'
-      });
-    }
-
-    if (cooldown.isOnCooldown(senderJid)) {
-      return sock.sendMessage(from, {
-        text: `⏱️ Patiente ${cooldown.getTimeLeft(senderJid) / 1000}s`
-      });
-    }
 
     if (!args[0]) {
-      const heroNames = Object.keys(mlbbData.counters).join(', ');
-      cooldown.setCooldown(senderJid);
+      const heroes = Object.keys(mlbb.heroes).slice(0, 8).join(', ');
       return sock.sendMessage(from, {
-        text: `❌ Spécifie un héros!\n\nHéros avec counters: ${heroNames}`
+        text: `❌ *Spécifie un héros!*\n\n*Exemples:* ${heroes}...`
       });
     }
 
     const heroName = args[0].toLowerCase();
-    const heroCounters = mlbbData.counters[heroName];
+    const hero = mlbb.heroes[heroName];
 
-    if (!heroCounters) {
-      cooldown.setCooldown(senderJid);
+    if (!hero) {
       return sock.sendMessage(from, {
-        text: `❌ Pas de counters trouvés pour "${heroName}"\n\nHéros disponibles: ${Object.keys(mlbbData.counters).join(', ')}`
+        text: `❌ Héros "${heroName}" non trouvé!`
       });
     }
 
     const counterInfo = `
-╔════════════════════════════════════╗
-║     🛡️ COUNTERS DE ${heroCounters.hero.toUpperCase()} 🛡️    ║
-╚════════════════════════════════════╝
+╔═══════════════════════════════════╗
+║  🛡️ COUNTERS DE ${hero.name.toUpperCase()} 🛡️  ║
+╚═══════════════════════════════════╝
 
-*HÉROS EFFICACES CONTRE ${heroCounters.hero.toUpperCase()}*
+✅ *HÉROS QUI BEAT ${hero.name.toUpperCase()}*
+${hero.beaten_by.map((h, i) => `${i + 1}. ${h}`).join('\n')}
 
-${heroCounters.counters.map((counter, i) => 
-  `${i + 1}. *${counter.name}* 🔥\n   └─ ${counter.reason}`
-).join('\n\n')}
+⚠️ *QUI ${hero.name.toUpperCase()} COUNTRE*
+${hero.counters.map((h, i) => `${i + 1}. ${h}`).join('\n')}
 
-💡 *CONSEIL STRATÉGIQUE:*
-• Banne le héros problématique en sélection
+💡 *CONSEILS STRATÉGIQUES:*
+• Sélectionne un counter en champ fermé
 • Joue de manière défensive contre ses forces
-• Utilise les CC pour l'interrompre
-• Gère les teamfights intelligemment
+• Utilise les CC pour le contrôler
+• Manage les teamfights intelligemment
 
-🎯 *POUR PLUS D'INFOS:*
+🎯 *COMMANDES UTILES:*
 !hero ${heroName} - Détails complets
-!build ${mlbbData.heroes[heroName]?.specialty?.toLowerCase() || 'assassin_burst'} - Build appropriée
-`;
+!build ${heroName} - Builds optimisées`;
 
-    cooldown.setCooldown(senderJid);
     return sock.sendMessage(from, { text: counterInfo });
   }
 };
