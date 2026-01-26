@@ -78,26 +78,27 @@ module.exports = {
     const quizMessage = MessageFormatter.elegantBox('QUIZ OTAKU', questionItems);
     await sock.sendMessage(senderJid, { text: quizMessage });
 
-    // Store quiz session avec l'index réel
+    // Store quiz session par GROUPE (pas par utilisateur) pour que tous puissent répondre
     if (!global.quizSessions) global.quizSessions = new Map();
-    global.quizSessions.set(participantJid, {
+    global.quizSessions.set(senderJid, {
       quiz,
       quizIndex: actualIndex,
       timestamp: Date.now(),
-      answered: false,
-      userJid: participantJid
+      answered: new Map(), // Enregistrer qui a répondu avec {participantJid: {name, answer, isCorrect}}
+      launchedBy: participantJid,
+      launchedByName: user.username || 'Unknown'
     });
 
     // Auto-delete session after 30 seconds
     setTimeout(() => {
-      if (global.quizSessions.has(participantJid)) {
-        const session = global.quizSessions.get(participantJid);
-        if (!session.answered) {
+      if (global.quizSessions.has(senderJid)) {
+        const session = global.quizSessions.get(senderJid);
+        if (session.answered.size === 0) {
           sock.sendMessage(senderJid, {
-            text: MessageFormatter.warning(`Temps écoulé! La bonne réponse était: \`${String.fromCharCode(65 + session.quiz.correct)}\``)
+            text: MessageFormatter.warning(`Temps écoulé! La bonne réponse était: \`${String.fromCharCode(97 + session.quiz.correct)}\``)
           });
-          global.quizSessions.delete(participantJid);
         }
+        global.quizSessions.delete(senderJid);
       }
     }, 30000);
   }

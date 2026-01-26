@@ -177,11 +177,11 @@ async function handleMessage(sock, message, isGroup, groupData) {
     // 🎯 Traiter les réponses directes au quiz (a, b, c, d en minuscule)
     const directMessage = messageContent.trim().toLowerCase();
     if (['a', 'b', 'c', 'd'].includes(directMessage)) {
-      // Vérifier s'il y a une session de quiz active
+      // Vérifier s'il y a une session de quiz active dans le GROUPE
       if (!global.quizSessions) global.quizSessions = new Map();
-      const quizSession = global.quizSessions.get(participantJid);
+      const quizSession = global.quizSessions.get(senderJid);
       
-      if (quizSession && !quizSession.answered) {
+      if (quizSession && !quizSession.answered.has(participantJid)) {
         // Exécuter la commande reponse avec la réponse directe
         const reponseCommand = commands.get('reponse');
         if (reponseCommand) {

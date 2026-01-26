@@ -30,9 +30,9 @@ module.exports = {
       return;
     }
 
-    // Get quiz session
+    // Get quiz session (par GROUPE, pas par utilisateur)
     if (!global.quizSessions) global.quizSessions = new Map();
-    const session = global.quizSessions.get(participantJid);
+    const session = global.quizSessions.get(senderJid);
 
     if (!session) {
       await sock.sendMessage(senderJid, {
@@ -41,7 +41,8 @@ module.exports = {
       return;
     }
 
-    if (session.answered) {
+    // Vérifier si cet utilisateur a déjà répondu
+    if (session.answered.has(participantJid)) {
       await sock.sendMessage(senderJid, {
         text: MessageFormatter.warning('Vous avez déjà répondu à ce quiz.')
       });
@@ -53,12 +54,17 @@ module.exports = {
 
     if (answerIndex < 0 || answerIndex > 3) {
       await sock.sendMessage(senderJid, {
-        text: MessageFormatter.error('Réponse invalide. Utilisez A, B, C ou D.')
+        text: MessageFormatter.error('Réponse invalide. Utilisez a, b, c ou d.')
       });
       return;
     }
 
-    session.answered = true;
+    // Enregistrer la réponse de cet utilisateur
+    session.answered.set(participantJid, {
+      name: username,
+      answer: answer,
+      isCorrect: answerIndex === session.quiz.correct
+    });
 
     if (answerIndex === session.quiz.correct) {
       // Correct answer
@@ -85,7 +91,7 @@ module.exports = {
       await user.save();
 
       await sock.sendMessage(senderJid, {
-        text: MessageFormatter.success(`Tu as gagné +${session.quiz.reward} XP!\nBonne réponse: ${String.fromCharCode(97 + session.quiz.correct)}. ${session.quiz.options[session.quiz.correct]}`)
+        text: `✅ ${username} a répondu correctement!\nBonne réponse: ${String.fromCharCode(97 + session.quiz.correct)}. ${session.quiz.options[session.quiz.correct]}\n💰 +${session.quiz.reward} XP`
       });
     } else {
       // Wrong answer - ne pas ajouter à l'historique
@@ -93,11 +99,11 @@ module.exports = {
       await user.save();
       
       await sock.sendMessage(senderJid, {
-        text: MessageFormatter.error(`Ta réponse: ${answer.toLowerCase()}. ${session.quiz.options[answerIndex]}\nBonne réponse: ${String.fromCharCode(97 + session.quiz.correct)}. ${session.quiz.options[session.quiz.correct]}`)
+        text: `❌ ${username} a répondu: ${answer.toLowerCase()}. ${session.quiz.options[answerIndex]}\nBonne réponse: ${String.fromCharCode(97 + session.quiz.correct)}. ${session.quiz.options[session.quiz.correct]}`
       });
     }
 
-    global.quizSessions.delete(participantJid);
+    global.quizSessions.delete(senderJid);
   },
 
   async handleTournamentAnswer(sock, message, args, user, senderJid, participantJid, username) {
@@ -157,8 +163,12 @@ module.exports = {
     // Feedback immédiat
     if (isCorrect) {
       await sock.sendMessage(senderJid, {
-        text: `✅ ${username} a répondu correctement! (${answer})`
+        text: `✅ ${username} a répondu correctement! (${answer})\n⏱️ Question fermée!`
       });
+      
+      // 🔐 FERMER LA SESSION immédiatement après une bonne réponse
+      session.isActive = false;
+      
     } else {
       await sock.sendMessage(senderJid, {
         text: `❌ ${username} a répondu: ${answer} (incorrect)`
