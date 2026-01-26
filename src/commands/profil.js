@@ -24,35 +24,35 @@ module.exports = {
 
     // Main profile info
     const profileInfo = [
-      { label: '👤 Nom', value: user.username },
-      { label: '🎌 Rang', value: `${rankInfo.emoji} ${user.rank}` },
-      { label: '📍 Titre', value: user.title || '❌ Aucun' },
-      { label: '⭐ XP', value: user.xp },
-      { label: '📊 Niveau', value: levelInfo.level }
+      { label: '🧡 Nom', value: user.username },
+      { label: '⭐ Rang', value: `${rankInfo.emoji} ${user.rank}` },
+      { label: '🏷️ Titre', value: user.title || '❌ Aucun' },
+      { label: '🔥 XP', value: user.xp },
+      { label: '⬆️ Niveau', value: levelInfo.level }
     ];
 
     const statsInfo = [
-      { label: '💬 Messages', value: user.stats.messages },
-      { label: '🎯 Quiz', value: user.stats.quiz },
-      { label: '⚔️ Duels', value: user.stats.duels },
-      { label: '🏆 Victoires', value: user.stats.wins },
-      { label: '💔 Défaites', value: user.stats.losses }
+      { label: '💭 Messages', value: user.stats.messages },
+      { label: '🧠 Quiz', value: user.stats.quiz },
+      { label: '⚡ Duels', value: user.stats.duels },
+      { label: '🥇 Victoires', value: user.stats.wins },
+      { label: '❌ Défaites', value: user.stats.losses }
     ];
 
     const inventoryInfo = [
-      { label: '📦 Objets', value: user.inventory.length },
-      { label: '🎁 Emplacements', value: `${user.inventory.length}/50` }
+      { label: '💎 Objets', value: user.inventory.length },
+      { label: '✨ Emplacements', value: `${user.inventory.length}/50` }
     ];
 
     const createdDate = new Date(user.createdAt).toLocaleDateString('fr-FR');
 
-    const profile = `${MessageFormatter.elegantBox('👤 TON PROFIL OTAKU 👤', profileInfo)}
+    const profile = `${MessageFormatter.elegantBox('🎭 TON PROFIL OTAKU 🎭', profileInfo)}
 ${MessageFormatter.elegantSection('STATISTIQUES', statsInfo.map(s => `${s.label}: ${s.value}`))}
-*🎖️ PROGRESSION*
+*📈 PROGRESSION*
 ${progressBar} ${levelInfo.currentLevelXp}/${levelInfo.requiredXp}
-${MessageFormatter.elegantSection('BADGES', [badges])}
-${MessageFormatter.elegantSection('INVENTAIRE', inventoryInfo.map(i => `${i.label}: ${i.value}`))}
-📆 *COMPTE CRÉÉ*: \`${createdDate}\``;
+${MessageFormatter.elegantSection('🌟 BADGES', [badges])}
+${MessageFormatter.elegantSection('💎 INVENTAIRE', inventoryInfo.map(i => `${i.label}: ${i.value}`))}
+📅 *COMPTE CRÉÉ*: \`${createdDate}\``;
 
     await sock.sendMessage(senderJid, { text: profile });
   },
