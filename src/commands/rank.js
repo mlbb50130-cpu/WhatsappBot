@@ -1,10 +1,11 @@
 const MessageFormatter = require('../utils/messageFormatter');
+const RankSystem = require('../utils/rankSystem');
 
 module.exports = {
   name: 'rank',
-  description: 'Voir ton rang dans le classement',
+  description: 'Voir ton rang Otaku et ton classement',
   category: 'PROFIL',
-  usage: '!rank',
+  usage: '!rank [global|group]',
   adminOnly: false,
   groupOnly: false,
   cooldown: 5,
@@ -14,12 +15,55 @@ module.exports = {
 
     try {
       const User = require('../models/User');
-      
+      const option = args[0]?.toLowerCase() || 'info'; // Par défaut: infos personnelles
+
+      // Mode 1: Afficher les infos de rang Otaku de l'utilisateur
+      if (option === 'info' || (!option)) {
+        const rankInfo = RankSystem.getRankByLevel(user.level);
+        const nextRank = RankSystem.getNextRank(user);
+        const progress = RankSystem.getRankProgressPercentage(user);
+
+        let rankDetails = `
+╔════════════════════════════════════╗
+║      🎖️ INFORMATIONS RANG 🎖️       ║
+╚════════════════════════════════════╝
+
+${rankInfo.emoji} *${rankInfo.name}*
+${rankInfo.description}
+
+├─ 📊 Niveau: *${user.level}*
+├─ ⭐ Condition: ${rankInfo.condition}
+├─ 🎖️ Catégorie: Otaku${nextRank ? `
+├─ 📈 Prochain Rang: ${nextRank.emoji} *${nextRank.name}*
+├─ 📊 Progression: ${progress}% ${getProgressBar(progress)}
+├─ 🎯 Niveau requis: ${nextRank.minLevel}
+└─ 🔄 Levels restants: ${nextRank.minLevel - user.level}` : `
+└─ 🏆 Vous avez atteint le rang maximum!`}
+
+╔════════════════════════════════════╗
+║     🌟 Hiérarchie Otaku 🌟         ║
+╚════════════════════════════════════╝`;
+
+        // Ajouter tous les rangs disponibles
+        for (const [rankId, rank] of Object.entries(RankSystem.RANKS)) {
+          const achieved = user.level >= rank.minLevel;
+          const marker = achieved ? '✅' : '🔒';
+          rankDetails += `\n${marker} L${rank.minLevel}+ ${rank.emoji} *${rank.name}*`;
+        }
+
+        rankDetails += '\n═════════════════════════════════════';
+
+        const response = await MessageFormatter.createMessageWithImage(rankDetails);
+        await sock.sendMessage(senderJid, response);
+        return;
+      }
+
+      // Mode 2: Afficher le classement (global ou groupe)
       let allUsers;
       let userRank;
       let topLabel = 'TOP 10 GLOBAL';
 
-      if (isGroup && groupData) {
+      if ((option === 'group' || isGroup) && isGroup && groupData) {
         // Si en groupe, afficher seulement le top 10 du groupe
         const groupMembers = groupData.participants.map(p => p.id);
         allUsers = await User.find({ jid: { $in: groupMembers } })
@@ -69,3 +113,14 @@ module.exports = {
     }
   }
 };
+
+/**
+ * Créer une barre de progression visuelle
+ * @param {number} percentage - Pourcentage (0-100)
+ * @returns {string} Barre visuelle
+ */
+function getProgressBar(percentage) {
+  const filled = Math.round(percentage / 10);
+  const empty = 10 - filled;
+  return '[' + '█'.repeat(filled) + '░'.repeat(empty) + ']';
+}
