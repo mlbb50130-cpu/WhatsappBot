@@ -13,12 +13,12 @@ module.exports = {
   async execute(sock, message, args, user, isGroup, groupData) {
     const senderJid = message.key.remoteJid;
 
-    const message = MessageFormatter.elegantBox('⚠️ VOIRANIME ⚠️', [
+    const voiranimeMessage = MessageFormatter.elegantBox('⚠️ VOIRANIME ⚠️', [
       { label: '🔗 Lien', value: 'https://www.voiranime.com' },
       { label: '🔍 Chercher', value: '!anime <nom>' }
     ]);
     
-    await sock.sendMessage(senderJid, { text: message });
+    await sock.sendMessage(senderJid, { text: voiranimeMessage });
   }
 };
 

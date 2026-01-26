@@ -20,11 +20,11 @@ module.exports = {
     const progressBar = MessageFormatter.progressBar(levelInfo.currentLevelXp, levelInfo.requiredXp, 20);
 
     const levelItems = [
-      { label: '⬆️ Niveau', value: user.level },
+      { label: '⛅️ Niveau', value: user.level.toString() },
       { label: '⭐ Rang', value: `${rankInfo.emoji} ${rankInfo.rank}` },
-      { label: '🔥 Total XP', value: user.xp },
+      { label: '🔥 Total XP', value: user.xp.toString() },
       { label: '📈 Progression', value: `${levelInfo.currentLevelXp}/${levelInfo.requiredXp}` },
-      { label: '⏳ Manquant', value: levelInfo.requiredXp - levelInfo.currentLevelXp }
+      { label: '⏳ Manquant', value: (levelInfo.requiredXp - levelInfo.currentLevelXp).toString() }
     ];
 
     const ranksItems = [

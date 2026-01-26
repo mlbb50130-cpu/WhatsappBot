@@ -47,17 +47,8 @@ module.exports = {
     let assetList = assetCommands.map(cmd => `${cmd.emoji} ${cmd.name} - ${cmd.description}`);
     let adultList = adultCommands.map(cmd => `${cmd.emoji} ${cmd.name} - ${cmd.description}`);
 
-    const assetsMsg = `${MessageFormatter.elegantSection('🏛️ IMAGES CLASSIQUES', assetList)}\n\n${MessageFormatter.elegantSection('🔛 IMAGES ADUL
-    }
+    const assetsMsg = `${MessageFormatter.elegantSection('🏛️ IMAGES CLASSIQUES', assetList)}\n\n${MessageFormatter.elegantSection('🔞 IMAGES ADULTES', adultList)}`;
 
-    message_text += '\n*🔥 HENTAI (18+)*\n';
-    for (const cmd of adultCommands) {
-      message_text += `${cmd.emoji} ${cmd.name} - ${cmd.description}\n`;
-    }
-
-    message_text += '\n💡 Chaque image rapporte 2-5 XP (sauf hentai/hentaivd = 300 XP en groupe)!\n';
-    message_text += '⏱️ Cooldown: 3-5 secondes';
-
-    await sock.sendMessage(senderJid, { text: message_text });
+    await sock.sendMessage(senderJid, { text: assetsMsg });
   }
 };

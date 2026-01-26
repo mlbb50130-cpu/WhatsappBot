@@ -1,7 +1,5 @@
 const MessageFormatter = require('../utils/messageFormatter');
 
-const MessageFormatter = require('../utils/messageFormatter');
-
 module.exports = {
   name: 'activatebot',
   description: 'Activer le bot dans ce groupe (Owner seulement)',
@@ -59,9 +57,7 @@ module.exports = {
 
       const activateMsg = MessageFormatter.elegantBox('🤖 BOT ACTIVÉ 🤖', activateItems);
 
-      await sock.sendMessage(senderJid, {
-        text: '✅ *Bot activé avec succès!*\n\n🎉 Le bot a été activé dans ce groupe par le propriétaire.\n\n📋 Vous pouvez maintenant:\n• Gagner de l\'XP en utilisant les commandes\n• Accéder aux quêtes et défis\n• Participer aux duels\n• Consulter le classement\n• Et bien plus!\n\n🚀 Tapez `!menu` pour voir toutes les commandes disponibles.'
-      });
+      await sock.sendMessage(senderJid, { text: activateMsg });
 
       console.log(`[BOT ACTIVATED] Group: ${groupData?.subject || senderJid} by ${senderNumberOnly}`);
 

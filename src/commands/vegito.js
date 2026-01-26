@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const RandomUtils = require('../utils/random');
+const MessageFormatter = require('../utils/messageFormatter');
 const ImageRotationSystem = require('../utils/imageRotation');
 const Group = require('../models/Group');
 
