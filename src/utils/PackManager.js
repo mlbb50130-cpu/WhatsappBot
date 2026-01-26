@@ -11,7 +11,7 @@ const PACK_COMMANDS = {
     // Quêtes & RPG
     'quete', 'quotidien', 'hebdo', 'quetelundi',
     // Quiz & Jeux
-    'quiz', 'quizanime', 'pfc', 'roulette', 'reponse',
+    'quiz', 'quizanime', 'pfc', 'roulette', 'reponse', 'tournoisquiz', 'tournoi', 'tourquiz',
     // Loot & Inventaire
     'loot', 'inventaire', 'equip', 'equipement', 'collection',
     // Images Anime
