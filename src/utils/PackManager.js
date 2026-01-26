@@ -7,15 +7,16 @@ const PACK_COMMANDS = {
     'profil', 'level', 'xp', 'rank', 'stats', 'badges',
     'duel', 'powerlevel', 'chakra',
     'quete', 'quotidien', 'hebdo', 'quetelundi',
-    'quiz', 'quizanime', 'pfc', 'roulette',
+    'quiz', 'quizanime', 'pfc', 'roulette', 'reponse',
     'loot', 'inventaire', 'equip', 'equipement', 'collection',
     'waifu', 'husbando', 'neko', 'animegif', 'ship',
     'bleach', 'naruto', 'gojo', 'deku', 'madara', 'sukuna', 'vegito', 'miku', 'zerotwo',
+    'gokuui', 'jinwoo', 'livai', 'makima', 'mikunakano', 'rengokudemon', 'tengen', 'tsunade', 'yami', 'yoruichi',
     'blagueotaku', 'roast', 'chance', 'sticker',
     'anime', 'manga', 'mangadex', 'personnage', 'voiranime',
     'topanime', 'topmanga', 'classement',
-    'theme', 'activatebot', 'admins',
-    'ping', 'info', 'regles', 'help', 'documentation', 'menu'
+    'theme', 'activatebot', 'admins', 'deactivatebot', 'allowhentai',
+    'ping', 'info', 'regles', 'help', 'documentation', 'menu', 'whoami'
   ],
   gamin: [
     'mlbb', 'ml', 'legends', 'moba',
@@ -33,10 +34,11 @@ const PACK_COMMANDS = {
     'profil', 'level', 'xp', 'rank', 'stats', 'badges',
     'duel', 'powerlevel', 'chakra',
     'quete', 'quotidien', 'hebdo', 'quetelundi',
-    'quiz', 'quizanime', 'pfc', 'roulette',
+    'quiz', 'quizanime', 'pfc', 'roulette', 'reponse',
     'loot', 'inventaire', 'equip', 'equipement', 'collection',
     'waifu', 'husbando', 'neko', 'animegif', 'ship',
     'bleach', 'naruto', 'gojo', 'deku', 'madara', 'sukuna', 'vegito', 'miku', 'zerotwo',
+    'gokuui', 'jinwoo', 'livai', 'makima', 'mikunakano', 'rengokudemon', 'tengen', 'tsunade', 'yami', 'yoruichi',
     'blagueotaku', 'roast', 'chance', 'sticker',
     'anime', 'manga', 'mangadex', 'personnage', 'voiranime',
     'topanime', 'topmanga', 'classement',
@@ -47,8 +49,9 @@ const PACK_COMMANDS = {
     'mlbbmenu', 'mlbbhelp', 'mlbbcommandes', 'mlbboptions',
     'heroes', 'heroslist', 'listheroe', 'herolist', 'heros',
     'selectpack', 'setmodule',
-    'theme', 'activatebot', 'admins',
-    'ping', 'info', 'regles', 'help', 'documentation', 'menu'
+    'theme', 'activatebot', 'admins', 'deactivatebot', 'allowhentai',
+    'hentai', 'hentaivd', 'boahancook',
+    'ping', 'info', 'regles', 'help', 'documentation', 'menu', 'whoami', 'assets', 'nsfw', 'chakratest'
   ]
 };
 
