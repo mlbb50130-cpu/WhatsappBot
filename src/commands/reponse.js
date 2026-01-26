@@ -18,7 +18,7 @@ module.exports = {
 
     if (!args[0]) {
       await sock.sendMessage(senderJid, {
-        text: MessageFormatter.error('Utilisation: !reponse A (A, B, C ou D)')
+        text: MessageFormatter.error('Utilisation: !reponse a (a, b, c ou d)\nOu réponds directement avec: a, b, c, ou d')
       });
       return;
     }
@@ -85,7 +85,7 @@ module.exports = {
       await user.save();
 
       await sock.sendMessage(senderJid, {
-        text: MessageFormatter.success(`Tu as gagné +${session.quiz.reward} XP!\nBonne réponse: ${String.fromCharCode(65 + session.quiz.correct)}. ${session.quiz.options[session.quiz.correct]}`)
+        text: MessageFormatter.success(`Tu as gagné +${session.quiz.reward} XP!\nBonne réponse: ${String.fromCharCode(97 + session.quiz.correct)}. ${session.quiz.options[session.quiz.correct]}`)
       });
     } else {
       // Wrong answer - ne pas ajouter à l'historique
@@ -93,7 +93,7 @@ module.exports = {
       await user.save();
       
       await sock.sendMessage(senderJid, {
-        text: MessageFormatter.error(`Ta réponse: ${answer}. ${session.quiz.options[answerIndex]}\nBonne réponse: ${String.fromCharCode(65 + session.quiz.correct)}. ${session.quiz.options[session.quiz.correct]}`)
+        text: MessageFormatter.error(`Ta réponse: ${answer.toLowerCase()}. ${session.quiz.options[answerIndex]}\nBonne réponse: ${String.fromCharCode(97 + session.quiz.correct)}. ${session.quiz.options[session.quiz.correct]}`)
       });
     }
 

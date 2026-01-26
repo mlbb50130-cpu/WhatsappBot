@@ -174,6 +174,37 @@ async function handleMessage(sock, message, isGroup, groupData) {
       await user.save();
     }
 
+    // 🎯 Traiter les réponses directes au quiz (a, b, c, d en minuscule)
+    const directMessage = messageContent.trim().toLowerCase();
+    if (['a', 'b', 'c', 'd'].includes(directMessage)) {
+      // Vérifier s'il y a une session de quiz active
+      if (!global.quizSessions) global.quizSessions = new Map();
+      const quizSession = global.quizSessions.get(participantJid);
+      
+      if (quizSession && !quizSession.answered) {
+        // Exécuter la commande reponse avec la réponse directe
+        const reponseCommand = commands.get('reponse');
+        if (reponseCommand) {
+          const userLatest = await User.findOne({ jid: participantJid });
+          await reponseCommand.execute(sock, message, [directMessage.toUpperCase()], userLatest, isGroup, groupData);
+          return;
+        }
+      }
+      
+      // Vérifier si un tournoi est en cours
+      if (global.tournaments && global.tournaments.has(senderJid)) {
+        const tournament = global.tournaments.get(senderJid);
+        if (tournament.isActive) {
+          const reponseCommand = commands.get('reponse');
+          if (reponseCommand) {
+            const userLatest = await User.findOne({ jid: participantJid });
+            await reponseCommand.execute(sock, message, [directMessage.toUpperCase()], userLatest, isGroup, groupData);
+            return;
+          }
+        }
+      }
+    }
+
     // Gestion de la sélection de pack pour nouveaux groupes
     if (isGroup && global.packSelections && global.packSelections[senderJid]) {
       const PackManager = require('./utils/PackManager');
