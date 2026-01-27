@@ -208,7 +208,7 @@ ${content}`;
   }
 
   /**
-   * Get a random image from LAKERSWaifu theme folder
+   * Get a random image from LAKERSWaifu or NSFW theme folders
    * @returns {Buffer|null} Image buffer or null if no image found
    */
   static getRandomThemeImage() {
@@ -216,7 +216,16 @@ ${content}`;
     const path = require('path');
 
     try {
-      const themeDir = path.join(__dirname, '../asset/LAKERSWaifu');
+      // Choisir aléatoirement entre LAKERSWaifu et NSFW
+      const themes = ['LAKERSWaifu', 'NSFW'];
+      const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+      const themeDir = path.join(__dirname, '../asset', randomTheme);
+      
+      if (!fs.existsSync(themeDir)) {
+        console.warn(`Theme directory not found: ${themeDir}`);
+        return null;
+      }
+
       const images = fs.readdirSync(themeDir)
         .filter(file => /\.(jpg|jpeg|png|gif)$/i.test(file))
         .map(file => path.join(themeDir, file));
