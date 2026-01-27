@@ -120,6 +120,10 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: null
   },
+  lastDocumentationDM: {
+    type: Date,
+    default: null
+  },
   dailyQuests: {
     lastReset: { type: Date, default: Date.now },
     progress: {
