@@ -269,6 +269,15 @@ Cela activera les fonctions du bot dans ce groupe.
 
     // Check if it's a command
     if (!messageContent.startsWith(config.PREFIX)) {
+      // 🏆 Vérifier si on est en setup de tournoi (accepter les réponses directes sans prefix)
+      if (global.tournamentSetup && global.tournamentSetup.has(senderJid)) {
+        const tournoisquizCommand = commands.get('tournoisquiz');
+        if (tournoisquizCommand && tournoisquizCommand.handleTournamentSetup) {
+          const responseArgs = messageContent.trim().split(/\s+/);
+          const handled = await tournoisquizCommand.handleTournamentSetup(sock, message, responseArgs, senderJid, participantJid);
+          if (handled) return;
+        }
+      }
       return;
     }
 

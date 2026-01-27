@@ -66,12 +66,12 @@ module.exports = {
 ║  🏆 CONFIGURATION DU TOURNOI 🏆       ║
 ╚════════════════════════════════════════╝
 
-*Étape 1/3: Quel type de quiz?*
+*Étape 1/4: Quel type de quiz?*
 
-Répondez avec:
-• !tournoisquiz anime
-• !tournoisquiz manga
-• !tournoisquiz custom (ou un autre nom)
+Répondez simplement avec:
+• anime
+• manga
+• custom (ou un autre nom)
 
 ════════════════════════════════════════
 `;
@@ -114,13 +114,13 @@ Répondez avec:
 
 Combien de questions voulez-vous?
 
-Format: !tournoisquiz 7
+Répondez simplement avec un nombre:
 
-Options recommandées:
-• 5 questions - Court (2-3 min)
-• 7 questions - Standard (3-5 min)
-• 10 questions - Long (5-7 min)
-• 15 questions - Très long (7-10 min)
+Exemples:
+• 5 (Court - 2-3 min)
+• 7 (Standard - 3-5 min)
+• 10 (Long - 5-7 min)
+• 15 (Très long - 7-10 min)
 
 ════════════════════════════════════════
 `;
@@ -150,9 +150,16 @@ Options recommandées:
 
 Entrez les récompenses pour les 5 premières places.
 
-Format: !tournoisquiz 100 80 60 40 20
+Répondez simplement avec 5 nombres séparés par des espaces:
 
-Exemple:
+Exemple: 100 80 60 40 20
+
+Cela signifie:
+🥇 1ère place: 100 XP
+🥈 2ème place: 80 XP
+🥉 3ème place: 60 XP
+🎯 4ème place: 40 XP
+🎖️  5ème place: 20 XP
 • 1ère place: 100 XP
 • 2ème place: 80 XP
 • 3ème place: 60 XP
@@ -203,7 +210,7 @@ Exemple:
 🎯 4ème place: ${setup.rewards.fourth} XP
 🎖️  5ème place: ${setup.rewards.fifth} XP
 
-Confirmez: !tournoisquiz confirm
+Confirmez en répondant: confirm
 
 ════════════════════════════════════════
 `;
@@ -450,7 +457,7 @@ ${options}
     const medals = ['🥇', '🥈', '🥉'];
     const rewardsList = [tournament.rewards.first, tournament.rewards.second, tournament.rewards.third, tournament.rewards.fourth, tournament.rewards.fifth];
 
-    sortedParticipants.forEach((participant) => {
+    for (const participant of sortedParticipants) {
       const medal = medals[participant.rank - 1] || '🎯';
       const percentage = Math.round((participant.correct / participant.total) * 100);
       const reward = rewardsList[participant.rank - 1] || 0;
@@ -466,7 +473,7 @@ ${medal} #${participant.rank} - ${participant.name}
       if (reward > 0) {
         await this.awardXP(participant.jid, reward);
       }
-    });
+    };
 
     finalResults += `
 ════════════════════════════════════════
