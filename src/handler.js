@@ -342,7 +342,9 @@ Cela activera les fonctions du bot dans ce groupe.
     }
 
     // Check admin only commands
-    if (command.adminOnly && !config.ADMIN_JIDS.includes(participantJid)) {
+    const isBot = sock.user && participantJid === sock.user.id;
+    const isAdmin = config.ADMIN_JIDS.includes(participantJid);
+    if (command.adminOnly && !isBot && !isAdmin) {
       // Silently ignore non-admin attempts
       console.log(`[ADMIN CHECK] Non-admin ${participantJid} tried to use admin command: ${commandName}`);
       return;

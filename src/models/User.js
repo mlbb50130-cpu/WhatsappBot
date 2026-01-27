@@ -81,6 +81,15 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 100
   },
+  gold: {
+    type: Number,
+    default: 5000,
+    min: 0
+  },
+  lastGoldReset: {
+    type: Date,
+    default: Date.now
+  },
   quizHistory: {
     type: [Number],
     default: []

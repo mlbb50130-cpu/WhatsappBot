@@ -13,19 +13,40 @@ module.exports = {
   async execute(sock, message, args, user, isGroup, groupData) {
     const senderJid = message.key.remoteJid;
 
+    // Vérifier si 24h ont passé pour réinitialiser le gold
+    const now = Date.now();
+    const lastReset = user.lastGoldReset ? new Date(user.lastGoldReset).getTime() : 0;
+    const hoursPasssed = (now - lastReset) / (1000 * 60 * 60);
+    
+    if (hoursPasssed >= 24) {
+      user.gold = 5000;
+      user.lastGoldReset = new Date();
+    }
+
     const chance = RandomUtils.range(1, 6);
     const win = chance > 2; // 4/6 chance de gagner
 
-    const gold = 500;
+    const goldBet = 500;
+    
+    // Déduire le coût d'utilisation de la roulette
+    user.gold -= goldBet;
+    
+    // Ajouter XP seulement
+    if (win) {
+      user.xp += 100;
+    } else {
+      user.xp += 20;
+    }
+
     const rouletteItems = [
       { label: '🎲 Résultat', value: win ? '✅ SURVÉCU!' : '💥 TOUCHÉ!' },
-      { label: '💰 Or', value: win ? `+${gold} gold` : `-${gold} gold` },
-      { label: '⭐ XP', value: win ? '+100 XP' : '+20 XP' }
+      { label: '💰 Or', value: `-${goldBet} gold` },
+      { label: '⭐ XP', value: win ? '+100 XP' : '+20 XP' },
+      { label: '🪙 Solde', value: `${user.gold} gold` }
     ];
     
     const result = MessageFormatter.elegantBox('🎰 ROULETTE 🎰', rouletteItems);
 
-    user.xp += win ? 100 : 20;
     await user.save();
 
     await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(result));
