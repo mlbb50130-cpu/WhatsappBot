@@ -98,6 +98,10 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: null
   },
+  profilePicture: {
+    type: String,
+    default: null
+  },
   quizHistory: {
     type: [Number],
     default: []
@@ -109,6 +113,10 @@ const userSchema = new mongoose.Schema({
     feet: { itemId: String, name: String }
   },
   lastEquipmentXpTime: {
+    type: Date,
+    default: null
+  },
+  lastDailyBonus: {
     type: Date,
     default: null
   },
