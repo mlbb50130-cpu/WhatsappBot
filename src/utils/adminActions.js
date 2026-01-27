@@ -4,6 +4,7 @@
  */
 
 const config = require('../config');
+const { getGroupMetadataWithCache, invalidateGroupCache } = require('./metadataCache');
 
 class AdminActionsManager {
   /**
@@ -32,7 +33,12 @@ class AdminActionsManager {
    */
   static async isBotAdmin(sock, groupJid) {
     try {
-      const groupMetadata = await sock.groupMetadata(groupJid);
+      const groupMetadata = await getGroupMetadataWithCache(sock, groupJid);
+      if (!groupMetadata) {
+        console.error('Could not fetch group metadata');
+        return false;
+      }
+      
       const botJid = this.getBotJid(sock);
       
       if (!botJid) {
@@ -397,7 +403,14 @@ class AdminActionsManager {
    */
   static async getGroupInfo(sock, groupJid) {
     try {
-      const groupMetadata = await sock.groupMetadata(groupJid);
+      const groupMetadata = await getGroupMetadataWithCache(sock, groupJid);
+      if (!groupMetadata) {
+        return {
+          success: false,
+          error: 'Could not fetch group metadata',
+          code: 'METADATA_ERROR'
+        };
+      }
       
       return {
         success: true,
@@ -452,7 +465,14 @@ class AdminActionsManager {
    */
   static async isUserAdmin(sock, groupJid, userJid) {
     try {
-      const groupMetadata = await sock.groupMetadata(groupJid);
+      const groupMetadata = await getGroupMetadataWithCache(sock, groupJid);
+      if (!groupMetadata) {
+        return {
+          success: false,
+          error: 'Could not fetch group metadata'
+        };
+      }
+      
       const participant = groupMetadata.participants.find(p => p.id === userJid);
       
       return {
@@ -476,7 +496,15 @@ class AdminActionsManager {
    */
   static async getGroupAdmins(sock, groupJid) {
     try {
-      const groupMetadata = await sock.groupMetadata(groupJid);
+      const groupMetadata = await getGroupMetadataWithCache(sock, groupJid);
+      if (!groupMetadata) {
+        return {
+          success: false,
+          error: 'Could not fetch group metadata',
+          code: 'METADATA_ERROR'
+        };
+      }
+      
       const admins = groupMetadata.participants.filter(p => p.admin);
       
       return {

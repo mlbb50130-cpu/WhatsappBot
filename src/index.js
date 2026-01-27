@@ -6,6 +6,7 @@ const { connectDatabase } = require('./database');
 const { loadCommands, handleMessage } = require('./handler');
 const qrcode = require('qrcode-terminal');
 const fs = require('fs');
+const { getGroupMetadataWithCache, invalidateGroupCache } = require('./utils/metadataCache');
 
 let sock = null;
 let qrShown = false;
@@ -103,14 +104,10 @@ async function connectToWhatsApp() {
     const senderJid = message.key.remoteJid;
     const isGroup = senderJid.endsWith('@g.us');
 
-    // Get group data if in group
+    // Get group data if in group with cache and retry
     let groupData = null;
     if (isGroup) {
-      try {
-        groupData = await sock.groupMetadata(senderJid);
-      } catch (error) {
-        console.error('Error fetching group metadata:', error.message);
-      }
+      groupData = await getGroupMetadataWithCache(sock, senderJid);
     }
 
     // Handle message
@@ -190,11 +187,13 @@ async function connectToWhatsApp() {
       const action = update.action; // 'add' ou 'remove'
       const participants = update.participants;
       
-      // Récupérer les infos du groupe
+      // Récupérer les infos du groupe avec cache
       let groupName = groupJid;
       try {
-        const groupMetadata = await sock.groupMetadata(groupJid);
-        groupName = groupMetadata.subject;
+        const groupMetadata = await getGroupMetadataWithCache(sock, groupJid);
+        if (groupMetadata) {
+          groupName = groupMetadata.subject;
+        }
       } catch (e) {
         // Ignore if group metadata fails
       }
