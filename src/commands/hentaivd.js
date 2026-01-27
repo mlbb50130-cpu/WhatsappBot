@@ -29,40 +29,42 @@ module.exports = {
         }
       }
 
-      // Vérifier la limite quotidienne (2x par jour)
-      const now = new Date();
-      
-      // Initialiser si nécessaire
-      if (!user.hentaiUsageToday) {
-        user.hentaiUsageToday = {
-          lastReset: new Date(),
-          hentai: 0,
-          hentaivd: 0
-        };
-      }
-      
-      // Vérifier si 24h se sont écoulées
-      const lastReset = new Date(user.hentaiUsageToday.lastReset);
-      const hoursDiff = (now - lastReset) / (1000 * 60 * 60);
-      
-      if (hoursDiff >= 24) {
-        // Réinitialiser le compteur
-        user.hentaiUsageToday.hentai = 0;
-        user.hentaiUsageToday.hentaivd = 0;
-        user.hentaiUsageToday.lastReset = new Date();
-      }
-      
-      // Vérifier la limite
-      if (user.hentaiUsageToday.hentaivd >= 2) {
-        const nextDay = new Date(now);
-        nextDay.setDate(nextDay.getDate() + 1);
-        nextDay.setHours(0, 0, 0, 0);
-        const timeUntilReset = Math.ceil((nextDay - now) / (1000 * 60 * 60));
+      // Vérifier la limite quotidienne (2x par jour) - SEULEMENT EN GROUPE
+      if (isGroup) {
+        const now = new Date();
         
-        await sock.sendMessage(senderJid, {
-          text: `❌ Tu as utilisé !hentaivd 2 fois aujourd'hui!\n⏰ Reviens demain (dans ${timeUntilReset}h)`
-        });
-        return;
+        // Initialiser si nécessaire
+        if (!user.hentaiUsageToday) {
+          user.hentaiUsageToday = {
+            lastReset: new Date(),
+            hentai: 0,
+            hentaivd: 0
+          };
+        }
+        
+        // Vérifier si 24h se sont écoulées
+        const lastReset = new Date(user.hentaiUsageToday.lastReset);
+        const hoursDiff = (now - lastReset) / (1000 * 60 * 60);
+        
+        if (hoursDiff >= 24) {
+          // Réinitialiser le compteur
+          user.hentaiUsageToday.hentai = 0;
+          user.hentaiUsageToday.hentaivd = 0;
+          user.hentaiUsageToday.lastReset = new Date();
+        }
+        
+        // Vérifier la limite
+        if (user.hentaiUsageToday.hentaivd >= 2) {
+          const nextDay = new Date(now);
+          nextDay.setDate(nextDay.getDate() + 1);
+          nextDay.setHours(0, 0, 0, 0);
+          const timeUntilReset = Math.ceil((nextDay - now) / (1000 * 60 * 60));
+          
+          await sock.sendMessage(senderJid, {
+            text: `❌ Tu as utilisé !hentaivd 2 fois aujourd'hui!\n⏰ Reviens demain (dans ${timeUntilReset}h)`
+          });
+          return;
+        }
       }
 
       // Get all image/video files from HentaiVD folder

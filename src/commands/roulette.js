@@ -23,10 +23,18 @@ module.exports = {
       user.lastGoldReset = new Date();
     }
 
+    const goldBet = 500;
+    
+    // Vérifier si l'utilisateur a assez d'or
+    if (user.gold < goldBet) {
+      await sock.sendMessage(senderJid, {
+        text: `❌ Tu n'as pas assez d'or pour jouer!\n💰 Tu as: ${user.gold} gold | Coût: ${goldBet} gold\n⏰ Ton solde se réinitialisera dans ${Math.ceil(24 - (hoursPasssed))}h`
+      });
+      return;
+    }
+
     const chance = RandomUtils.range(1, 6);
     const win = chance > 2; // 4/6 chance de gagner
-
-    const goldBet = 500;
     
     // Déduire le coût d'utilisation de la roulette
     user.gold -= goldBet;

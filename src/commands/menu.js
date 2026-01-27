@@ -7,14 +7,15 @@ const OTAKU_CATEGORIES = {
   2: { name: 'DUELS & COMBATS', commands: ['!duel @user - Défier', '!powerlevel - Power level', '!chakra - Chakra'] },
   3: { name: 'QUÊTES & RPG', commands: ['!quete - Quêtes', '!quotidien - Quotidienne', '!hebdo - Hebdomadaire', '!quetelundi - Quête lundi'] },
   4: { name: 'QUIZ & JEUX', commands: ['!quiz - Quiz otaku', '!quizanime - Quiz anime', '!pfc - Pierre-Feuille-Ciseaux', '!roulette - Roulette russe'] },
-  5: { name: 'LOOT & INVENTAIRE', commands: ['!loot - Lancer un loot', '!inventaire - Inventaire', '!equip - Équiper', '!collection - Collection'] },
-  6: { name: 'IMAGES ANIME', commands: ['!waifu - Waifu', '!husbando - Husbando', '!neko - Chat anime', '!animegif - GIF anime'] },
-  7: { name: 'PERSONNAGES', commands: ['!bleach - Bleach', '!naruto - Naruto', '!gojo - Gojo', '!deku - Deku', '!madara - Madara', '!sukuna - Sukuna', '!vegito - Vegito', '!miku - Miku', '!zerotwo - Zero Two'] },
-  8: { name: 'FUN', commands: ['!blagueotaku - Blague', '!roast @user - Roast', '!chance - Chance', '!ship - Ship', '!sticker - Sticker'] },
-  9: { name: 'ANIME & MANGA', commands: ['!anime [nom] - Info anime', '!manga [nom] - Info manga', '!personnage [nom] - Info perso', '!voiranime - Voir anime'] },
-  10: { name: 'CLASSEMENTS', commands: ['!topanime - Top animes', '!topmanga - Top mangas', '!classement - Classement'] },
-  11: { name: 'ADMIN', commands: ['!theme [nom] - Changer theme', '!activatebot - Activer bot', '!admins - Admins group'] },
-  12: { name: 'BOT', commands: ['!ping - Latence', '!info - Info bot', '!regles - Règles', '!help [cmd] - Aide', '!documentation - Documentation'] }
+  5: { name: 'GOLD & ÉCONOMIE', commands: ['!work - Travailler 1h', '!daily - Bonus quotidien', '!gold - Solde gold'] },
+  6: { name: 'LOOT & INVENTAIRE', commands: ['!loot - Lancer un loot', '!inventaire - Inventaire', '!equip - Équiper', '!collection - Collection'] },
+  7: { name: 'IMAGES ANIME', commands: ['!waifu - Waifu', '!husbando - Husbando', '!neko - Chat anime', '!animegif - GIF anime'] },
+  8: { name: 'PERSONNAGES', commands: ['!bleach - Bleach', '!naruto - Naruto', '!gojo - Gojo', '!deku - Deku', '!madara - Madara', '!sukuna - Sukuna', '!vegito - Vegito', '!miku - Miku', '!zerotwo - Zero Two'] },
+  9: { name: 'FUN', commands: ['!blagueotaku - Blague', '!roast @user - Roast', '!chance - Chance', '!ship - Ship', '!sticker - Sticker'] },
+  10: { name: 'ANIME & MANGA', commands: ['!anime [nom] - Info anime', '!manga [nom] - Info manga', '!personnage [nom] - Info perso', '!voiranime - Voir anime'] },
+  11: { name: 'CLASSEMENTS', commands: ['!topanime - Top animes', '!topmanga - Top mangas', '!classement - Classement'] },
+  12: { name: 'ADMIN', commands: ['!theme [nom] - Changer theme', '!activatebot - Activer bot', '!admins - Admins group'] },
+  13: { name: 'BOT', commands: ['!ping - Latence', '!info - Info bot', '!regles - Règles', '!help [cmd] - Aide', '!documentation - Documentation'] }
 };
 
 // Menu pour le pack MLBB
@@ -67,7 +68,7 @@ module.exports = {
       const queteEnabled = groupModules.quete !== false;
       
       if (mlbbEnabled && !animeEnabled && !xpEnabled && !queteEnabled) {
-        activePack = 'gamin';
+        activePack = 'mlbb';
         activeCategories = MLBB_CATEGORIES;
       } else if (mlbbEnabled && animeEnabled && xpEnabled && queteEnabled) {
         activePack = 'complet';
@@ -85,7 +86,7 @@ module.exports = {
 
     // Sinon afficher le menu principal avec les catégories numérotées
     let mainMenu = `╔════════════════════════════════════╗
-║    𝔐𝔈𝔑𝔘 - 𝔓𝔞𝔠𝔨: ${𝔞𝔠𝔱𝔦𝔳𝔢𝔓𝔞𝔠𝔨.𝔱𝔬𝔘𝔭𝔭𝔢𝔯𝔆𝔞𝔰𝔢()}              ║
+║    MENU - Pack: ${activePack.toUpperCase()}              ║
 ╚════════════════════════════════════╝
 `;
 

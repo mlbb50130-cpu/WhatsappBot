@@ -1,9 +1,10 @@
 const XPSystem = require('../utils/xpSystem');
 const MessageFormatter = require('../utils/messageFormatter');
+const equipmentPassiveXP = require('../utils/equipmentPassiveXP');
 
 module.exports = {
   name: 'profil',
-  description: 'Voir ton profil otaku',
+  description: 'ℜ𝓸𝓲𝓻 𝓽𝓸𝓷 𝓹𝓻𝓸𝓯𝓲𝓵 𝓸𝓽𝓪𝓴𝓾',
   category: 'PROFIL',
   usage: '!profil',
   adminOnly: false,
@@ -45,14 +46,65 @@ module.exports = {
     ];
 
     const createdDate = new Date(user.createdAt).toLocaleDateString('fr-FR');
+    
+    // Passif XP des équipements
+    const equipmentXPDetails = equipmentPassiveXP.getEquipmentXPDetails(user.equipped);
+    let equipmentSection = '';
+    
+    if (equipmentXPDetails.totalXP > 0) {
+      const equipmentLines = equipmentXPDetails.items.map(item => {
+        const rarityEmojis = { common: '⚪', rare: '🔵', epic: '🟣', legendary: '🟡' };
+        return `${rarityEmojis[item.rarity]} ${item.name}: +${item.xpPerHour}/h`;
+      });
+      equipmentLines.push(`\n⚡ *Total: +${equipmentXPDetails.totalXP} XP/heure*`);
+      equipmentSection = `${MessageFormatter.elegantSection('📦 PASSIF XP', equipmentLines)}`;
+    }
 
-    const profile = `${MessageFormatter.elegantBox('𝔗𝔬𝔫 𝔭𝔯𝔬𝔣𝔦𝔩 𝔒𝔱𝔞𝔨𝔲', profileInfo)}
+    const profile = `${MessageFormatter.elegantBox('𝔗𝔬𝔫 𝔓𝔯𝔬𝔣𝔦𝔩', profileInfo)}
 ${MessageFormatter.elegantSection('STATISTIQUES', statsInfo.map(s => `${s.label}: ${s.value}`))}
 ${progressBar}
+${equipmentSection}
 ${MessageFormatter.elegantSection('BADGES', [badges])}
 ${MessageFormatter.elegantSection('INVENTAIRE', inventoryInfo.map(i => `${i.label}: ${i.value}`))}`;
 
-    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(profile));
+    // Envoyer le profil avec photo si disponible
+    if (user.profilePicture) {
+      try {
+        // Télécharger et envoyer avec la photo de profil
+        const https = require('https');
+        const http = require('http');
+        
+        const protocol = user.profilePicture.startsWith('https') ? https : http;
+        
+        await new Promise((resolve, reject) => {
+          protocol.get(user.profilePicture, (response) => {
+            let imageData = Buffer.alloc(0);
+            
+            response.on('data', (chunk) => {
+              imageData = Buffer.concat([imageData, chunk]);
+            });
+            
+            response.on('end', async () => {
+              try {
+                await sock.sendMessage(senderJid, {
+                  image: imageData,
+                  caption: profile
+                });
+                resolve();
+              } catch (err) {
+                reject(err);
+              }
+            });
+          }).on('error', reject);
+        });
+      } catch (error) {
+        // Si erreur, envoyer sans photo
+        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(profile));
+      }
+    } else {
+      // Pas de photo, envoyer sans
+      await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(profile));
+    }
   },
 
   getProgressBar(current, max, length = 15) {

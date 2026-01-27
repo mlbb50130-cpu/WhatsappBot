@@ -1,4 +1,5 @@
 const MessageFormatter = require('../utils/messageFormatter');
+const equipmentPassiveXP = require('../utils/equipmentPassiveXP');
 
 module.exports = {
   name: 'equip',
@@ -50,7 +51,8 @@ module.exports = {
       const previousItem = user.equipped[slot];
       user.equipped[slot] = {
         itemId: item.itemId,
-        name: item.name
+        name: item.name,
+        rarity: item.rarity
       };
 
       await user.save();
@@ -58,6 +60,17 @@ module.exports = {
       let message_text = `✅ *${item.name}* équipé au slot *${slot}*!`;
       if (previousItem && previousItem.name) {
         message_text += `\n\n⚠️ *${previousItem.name}* a été retiré.`;
+      }
+
+      // Afficher le passif XP mis à jour
+      const equipmentXPDetails = equipmentPassiveXP.getEquipmentXPDetails(user.equipped);
+      if (equipmentXPDetails.totalXP > 0) {
+        message_text += `\n\n📦 *Passif XP Équipement:*`;
+        equipmentXPDetails.items.forEach(eq => {
+          const rarityEmojis = { common: '⚪', rare: '🔵', epic: '🟣', legendary: '🟡' };
+          message_text += `\n  ${rarityEmojis[eq.rarity]} ${eq.name}: +${eq.xpPerHour}/h`;
+        });
+        message_text += `\n  ⚡ *Total: +${equipmentXPDetails.totalXP} XP/heure*`;
       }
 
       await sock.sendMessage(senderJid, { text: message_text });

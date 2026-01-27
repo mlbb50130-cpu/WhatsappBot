@@ -1,4 +1,5 @@
 const MessageFormatter = require('../utils/messageFormatter');
+const equipmentPassiveXP = require('../utils/equipmentPassiveXP');
 
 module.exports = {
   name: 'inventaire',
@@ -43,6 +44,19 @@ Tes items:`;
       }
       inventoryText += ` (${rarityText})`;
     });
+
+    inventoryText += `\n═════════════════════════════════════`;
+
+    // Ajouter le passif XP des équipements
+    const equipmentXPDetails = equipmentPassiveXP.getEquipmentXPDetails(user.equipped);
+    if (equipmentXPDetails.totalXP > 0) {
+      inventoryText += `\n\n📦 PASSIF XP:`;
+      equipmentXPDetails.items.forEach(item => {
+        const rarityEmojis = { common: '⚪', rare: '🔵', epic: '🟣', legendary: '🟡' };
+        inventoryText += `\n  ${rarityEmojis[item.rarity]} ${item.name}: +${item.xpPerHour}/h`;
+      });
+      inventoryText += `\n  ⚡ Total: +${equipmentXPDetails.totalXP} XP/h`;
+    }
 
     inventoryText += `\n═════════════════════════════════════`;
 

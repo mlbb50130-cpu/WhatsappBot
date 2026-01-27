@@ -63,7 +63,7 @@ module.exports = {
     // Demander le nom du quiz
     const setupMessage = `
 ╔════════════════════════════════════════╗
-║  🏆 𝔆𝔒𝔑𝔉𝔌𝔊𝔘𝔕𝔄𝔗𝔌𝔒𝔑 𝔇𝔘 𝔗𝔒𝔘𝔕𝔑𝔒𝔌 🏆       ║
+║  🏆 CONFIGURATION DU TOURNOI 🏆       ║
 ╚════════════════════════════════════════╝
 
 *Étape 1/4: Quel type de quiz?*
@@ -107,7 +107,7 @@ Répondez simplement avec:
 
       const questionsMessage = `
 ╔════════════════════════════════════════╗
-║  🏆 𝔆𝔒𝔑𝔉𝔌𝔊𝔘𝔕𝔄𝔗𝔌𝔒𝔑 𝔇𝔘 𝔗𝔒𝔘𝔕𝔑𝔒𝔌 🏆       ║
+║  🏆 CONFIGURATION DU TOURNOI 🏆       ║
 ╚════════════════════════════════════════╝
 
 *Étape 2/4: Nombre de questions*
@@ -143,7 +143,7 @@ Exemples:
 
       const rewardsMessage = `
 ╔════════════════════════════════════════╗
-║  🏆 𝔆𝔒𝔑𝔉𝔌𝔊𝔘𝔕𝔄𝔗𝔌𝔒𝔑 𝔇𝔘 𝔗𝔒𝔘𝔕𝔑𝔒𝔌 🏆       ║
+║  🏆 CONFIGURATION DU TOURNOI 🏆       ║
 ╚════════════════════════════════════════╝
 
 *Étape 3/4: Récompenses XP*
@@ -197,7 +197,7 @@ Cela signifie:
 
       const confirmMessage = `
 ╔════════════════════════════════════════╗
-║  🏆 𝔆𝔒𝔑𝔉𝔌𝔕𝔐𝔄𝔗𝔌𝔒𝔑 𝔇𝔘 𝔗𝔒𝔘𝔕𝔑𝔒𝔌 🏆        ║
+║  🏆 CONFIRMATION DU TOURNOI 🏆        ║
 ╚════════════════════════════════════════╝
 
 *Quiz:* ${setup.quizName}
@@ -221,7 +221,8 @@ Confirmez en répondant: confirm
 
     if (setup.step === 4 && args.length > 0 && args[0].toLowerCase() === 'confirm') {
       // Lancer le tournoi avec les paramètres configurés
-      const allQuizzes = this.getQuizzes();
+      const moduleRef = module.exports;
+      const allQuizzes = moduleRef.getQuizzes();
       const tournamentId = `${senderJid}_${Date.now()}`;
 
       const tournament = {
@@ -242,7 +243,7 @@ Confirmez en répondant: confirm
 
       const announcement = `
 ╔════════════════════════════════════════╗
-║  🏆 𝔗𝔒𝔘𝔕𝔑𝔒𝔦 𝔔𝔘𝔦𝔷 ${setup.quizName.toUpperCase()} 🏆  ║
+║  🏆 TOURNOI QUIZ ${setup.quizName.toUpperCase()} 🏆  ║
 ╚════════════════════════════════════════╝
 
 🎮 Le tournoi va commencer!
@@ -269,7 +270,8 @@ Confirmez en répondant: confirm
       await sock.sendMessage(senderJid, { text: announcement });
 
       setTimeout(() => {
-        this.startTournament(sock, senderJid, tournament, allQuizzes);
+        const moduleRef = module.exports;
+        moduleRef.startTournament(sock, senderJid, tournament, allQuizzes);
       }, 3000);
 
       return true;
@@ -287,14 +289,16 @@ Confirmez en répondant: confirm
 
   async startTournament(sock, senderJid, tournament, allQuizzes) {
     tournament.currentRound = 1;
-    await this.sendNextQuiz(sock, senderJid, tournament, allQuizzes);
+    const moduleRef = module.exports;
+    await moduleRef.sendNextQuiz(sock, senderJid, tournament, allQuizzes);
   },
 
   async sendNextQuiz(sock, senderJid, tournament, allQuizzes) {
     // Vérifier si le tournoi est toujours actif
     if (!tournament.isActive || tournament.currentRound > tournament.maxRounds) {
       if (tournament.isActive) {
-        await this.endTournament(sock, senderJid, tournament);
+        const moduleRef = module.exports;
+        await moduleRef.endTournament(sock, senderJid, tournament);
       }
       return;
     }
@@ -310,7 +314,8 @@ Confirmez en répondant: confirm
       await sock.sendMessage(senderJid, {
         text: '✅ Tous les quiz ont été répondus! Fin du tournoi.'
       });
-      await this.endTournament(sock, senderJid, tournament);
+      const moduleRef = module.exports;
+      await moduleRef.endTournament(sock, senderJid, tournament);
       return;
     }
 
@@ -328,7 +333,7 @@ Confirmez en répondant: confirm
 
     const questionText = `
 ╔════════════════════════════════════════╗
-║ 📝 𝔔𝔘𝔈𝔖𝔗𝔦𝔬𝔫 ${tournament.currentRound}/${tournament.maxRounds}         ║
+║ 📝 QUESTION ${tournament.currentRound}/${tournament.maxRounds}         ║
 ╚════════════════════════════════════════╝
 
 *QUESTION:*
@@ -389,14 +394,15 @@ ${options}
       }
 
       // Afficher les résultats de cette question
-      this.showRoundResults(sock, senderJid, questionSession, tournament);
+      const moduleRef = module.exports;
+      moduleRef.showRoundResults(sock, senderJid, questionSession, tournament);
 
       // Préparer la prochaine question
       tournament.currentRound += 1;
 
       // Attendre 5 secondes avant la prochaine question
       setTimeout(() => {
-        this.sendNextQuiz(sock, senderJid, tournament, allQuizzes);
+        moduleRef.sendNextQuiz(sock, senderJid, tournament, allQuizzes);
       }, 5000);
 
     }, 30000);
@@ -405,7 +411,7 @@ ${options}
   async showRoundResults(sock, senderJid, session, tournament) {
     let resultsText = `
 ╔════════════════════════════════════════╗
-║  ✅ 𝔕𝔖𝔰𝔠𝔮𝔞𝔦𝔯𝔰 𝔮𝔡𝔞𝔱𝔦𝔬𝔯 ${session.round}/${tournament.maxRounds}          ║
+║  ✅ RÉSULTATS QUESTION ${session.round}/${tournament.maxRounds}          ║
 ╚════════════════════════════════════════╝
 
 *Bonne réponse:* ${String.fromCharCode(65 + session.quiz.correct)}. ${session.quiz.options[session.quiz.correct]}
@@ -448,7 +454,7 @@ ${options}
 
     let finalResults = `
 ╔════════════════════════════════════════╗
-║  🏆 𝔕É𝔖𝔘𝔏𝔗𝔄𝔗𝔖 𝔉𝔌𝔑𝔄𝔘𝔛 𝔇𝔘 𝔗𝔒𝔘𝔕𝔑𝔒𝔌 🏆    ║
+║  🏆 RÉSULTATS FINAUX DU TOURNOI 🏆    ║
 ╚════════════════════════════════════════╝
 
 *CLASSEMENT:*
@@ -471,7 +477,8 @@ ${medal} #${participant.rank} - ${participant.name}
 
       // Ajouter les XP au gagnant
       if (reward > 0) {
-        await this.awardXP(participant.jid, reward);
+        const moduleRef = module.exports;
+        await moduleRef.awardXP(participant.jid, reward);
       }
     };
 
@@ -482,7 +489,7 @@ Durée du tournoi: ${Math.round((Date.now() - tournament.startTime) / 1000)}s
 Total de participants: ${sortedParticipants.length}
 
 ╔════════════════════════════════════════╗
-║  𝔐𝔢𝔯𝔠𝔦 𝔡'𝔞𝔳𝔬𝔦𝔯 𝔭𝔞𝔯𝔱𝔦𝔠𝔦𝔭é! 🎉          ║
+║  Merci d'avoir participé! 🎉          ║
 ╚════════════════════════════════════════╝
 `;
 

@@ -157,6 +157,16 @@ async function handleMessage(sock, message, isGroup, groupData) {
     if (user) {
       user.stats.messages++;
       
+      // Récupérer la photo de profil de l'utilisateur
+      try {
+        const profilePicture = await sock.profilePictureUrl(participantJid, 'image').catch(() => null);
+        if (profilePicture && profilePicture !== user.profilePicture) {
+          user.profilePicture = profilePicture;
+        }
+      } catch (error) {
+        // Silently ignore if picture can't be fetched
+      }
+      
       // Reset et update des quêtes journalières/hebdomadaires
       if (QuestSystem.needsDailyReset(user)) {
         QuestSystem.resetDailyQuests(user);
@@ -267,6 +277,17 @@ Cela activera les fonctions du bot dans ce groupe.
       }
     }
 
+    // 💬 Envoyer la documentation automatiquement en DM (tout message, commande ou non)
+    if (!isGroup) {
+      const docCommand = commands.get('documentation');
+      if (docCommand) {
+        const userLatest = await User.findOne({ jid: participantJid });
+        // Envoyer la doc et retourner (ne pas traiter les commandes en DM)
+        await docCommand.execute(sock, message, [], userLatest, isGroup, null);
+        return;
+      }
+    }
+
     // Check if it's a command
     if (!messageContent.startsWith(config.PREFIX)) {
       // 🏆 Vérifier si on est en setup de tournoi (accepter les réponses directes sans prefix)
@@ -368,51 +389,6 @@ Cela activera les fonctions du bot dans ce groupe.
       const remaining = CooldownManager.getRemainingTime(participantJid, commandName);
       await sock.sendMessage(senderJid, {
         text: `⏱️ Attendez ${remaining}s avant d'utiliser cette commande à nouveau.`
-      });
-      return;
-    }
-
-    // Check permissions
-    const canUse = PermissionManager.canUseCommand(
-      participantJid,
-      command,
-      isGroup,
-      senderJid,
-      participantJid,
-      groupData?.participants
-    );
-
-    if (!canUse) {
-      await sock.sendMessage(senderJid, {
-        text: '🚫 Vous n\'avez pas la permission d\'utiliser cette commande.'
-      });
-      return;
-    }
-
-    // Check admin only commands
-    const isBot = sock.user && participantJid === sock.user.id;
-    const isAdmin = config.ADMIN_JIDS.includes(participantJid);
-    if (command.adminOnly && !isBot && !isAdmin) {
-      // Silently ignore non-admin attempts
-      console.log(`[ADMIN CHECK] Non-admin ${participantJid} tried to use admin command: ${commandName}`);
-      return;
-    }
-
-    // Check pack access (only in groups)
-    if (isGroup && senderJid) {
-      const isAllowedInPack = PackManager.isCommandAllowedInPack(senderJid, commandName);
-      if (!isAllowedInPack) {
-        await sock.sendMessage(senderJid, {
-          text: PackManager.getUnauthorizedMessage(senderJid, commandName)
-        });
-        return;
-      }
-    }
-
-    // Check group only
-    if (command.groupOnly && !isGroup) {
-      await sock.sendMessage(senderJid, {
-        text: '🚫 Cette commande ne peut être utilisée que dans un groupe.'
       });
       return;
     }

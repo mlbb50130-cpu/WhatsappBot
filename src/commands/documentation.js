@@ -115,6 +115,27 @@ Tape \`!documentation 2\` pour voir la suite...
   ├─ Affecte les récompenses
   └─ Change chaque jour
 
+💰 *GOLD & TRAVAIL*
+
+**!work** - Travailler pour gagner du gold
+  ├─ Coût: Aucun
+  ├─ Récompense: 100-300 gold aléatoire
+  ├─ 8 métiers différents (Cultivateur, Marchand, Chasseur, Apothicaire, Mineur, Forgeron, Alchimiste, Escorte)
+  ├─ Cooldown: 1 heure
+  └─ Cumulable avec !daily
+
+**!daily** - Bonus quotidien de gold
+  ├─ Coût: Aucun
+  ├─ Récompense: 750-1000 gold une fois/24h
+  ├─ À cumuler avec !work (max ~8200 gold/24h)
+  ├─ Affiche temps avant prochain bonus
+  └─ Réinitialisable à heure fixe chaque jour
+
+**!gold** - Voir ton solde de gold
+  ├─ Gold actuel
+  ├─ Gold maximal (5000)
+  └─ Affiche dernier reset
+
 ════════════════════════════════════════════════════════════════
 
 Tape \`!documentation 3\` pour voir la suite...
@@ -327,17 +348,16 @@ Tape \`!documentation 5\` pour voir la suite...
   ├─ Dates d'obtention
   └─ Descriptions
 
-💰 *SYSTÈME DE GOLD*
+💰 *GESTION DE GOLD AVANCÉE*
 
-**!gold** - Voir ton solde de gold
-  ├─ Gold actuel / Gold maximal (5000)
-  ├─ Réinitialisation: Toutes les 24h
-  └─ Utilisé pour la roulette
+**Systèmes de Gain:**
+  ├─ !work: +100-300 gold (Cooldown: 1h, max ~7200/jour)
+  ├─ !daily: +750-1000 gold (1x/24h, max 1000/jour)
+  └─ Total possible: ~8200 gold/24h
 
-**!roulette** - Voir système de gold
-  ├─ Jeu de hasard avec or
-  ├─ Coût: 500 gold par utilisation
-  └─ Consultez !documentation 2
+**Systèmes de Dépense:**
+  ├─ !roulette: -500 gold par tentative
+  └─ Réinitialisation automatique à 5000/24h
 
 📊 *CLASSEMENTS & INFOS*
 

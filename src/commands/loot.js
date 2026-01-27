@@ -3,12 +3,12 @@ const MessageFormatter = require('../utils/messageFormatter');
 
 module.exports = {
   name: 'loot',
-  description: 'Ouvrir un loot aléatoire',
+  description: 'Ouvrir un loot aléatoire (réinitialisation: 10h)',
   category: 'LOOT',
   usage: '!loot',
   adminOnly: false,
   groupOnly: true,
-  cooldown: 3600, // 1 heure en secondes (cooldown property expects seconds)
+  cooldown: 36000, // 10h
 
   lootTable: [
     { name: 'Kunai Ninja', rarity: 'common', emoji: '🔪', weight: 40, xp: 10 },

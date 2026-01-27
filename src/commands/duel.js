@@ -59,14 +59,12 @@ module.exports = {
     // Check if chakra needs to be reset
     if (user.chakra === undefined || user.chakra === null) {
       user.chakra = maxChakra;
-      user.lastChakraReset = now;
+      if (!user.lastChakraReset) {
+        user.lastChakraReset = now;
+      }
       needsChakraReset = true;
       hoursDiff = 0;
-    } else if (!user.lastChakraReset) {
-      user.lastChakraReset = now;
-      needsChakraReset = true;
-      hoursDiff = 0;
-    } else {
+    } else if (user.lastChakraReset) {
       // Only reset if 24 hours have passed
       const lastReset = new Date(user.lastChakraReset);
       hoursDiff = (now - lastReset) / (1000 * 60 * 60);
@@ -92,11 +90,11 @@ module.exports = {
 
     // Duel costs 20 chakra
     const chakraCost = 20;
-    user.chakra -= chakraCost;
+    user.chakra = Math.max(0, user.chakra - chakraCost);
 
     // Create duel
-    const attackerPower = (user.powerLevel || 100) + user.level * 10 + RandomUtils.range(10, 50);
-    const defenderPower = (opponent.powerLevel || 100) + opponent.level * 10 + RandomUtils.range(10, 50);
+    const attackerPower = (user.powerLevel || 100) + user.level * 10 + 50;
+    const defenderPower = (opponent.powerLevel || 100) + opponent.level * 10 + 50;
 
     const winner = attackerPower > defenderPower ? 'attacker' : 'defender';
     const difference = Math.abs(attackerPower - defenderPower);
