@@ -306,6 +306,45 @@ Cela activera les fonctions du bot dans ce groupe.
       return;
     }
 
+    // 🚫 Check if user is spam banned
+    if (userLatest.spamBannedUntil && new Date() < new Date(userLatest.spamBannedUntil)) {
+      // Autoriser que le profil pendant le ban
+      if (commandName !== 'profil' && commandName !== 'profile') {
+        const remaining = Math.ceil((new Date(userLatest.spamBannedUntil) - new Date()) / 1000 / 60);
+        await sock.sendMessage(senderJid, {
+          text: `⛔ *SPAM DÉTECTÉ!*\n\nVous êtes banni pour ${remaining} minute(s).\n\nSeule la commande \`!profil\` est accessible.`
+        });
+        return;
+      }
+    } else if (userLatest.spamBannedUntil) {
+      // Débloquer l'utilisateur après le ban
+      userLatest.spamBannedUntil = null;
+      await userLatest.save();
+    }
+
+    // 🔍 Détection de spam (utilisation simultanée/rapide d'une même commande)
+    const now = Date.now();
+    const lastCmdTime = userLatest.lastCommandTime ? new Date(userLatest.lastCommandTime).getTime() : 0;
+    const timeSinceLastCmd = now - lastCmdTime;
+
+    if (timeSinceLastCmd < 500 && timeSinceLastCmd > 0) { // Moins de 500ms = spam
+      console.log(`[SPAM DETECTED] ${participantJid} attempted command spam`);
+      
+      // Appliquer le ban de 30 minutes
+      const banUntil = new Date(now + 30 * 60 * 1000); // 30 minutes
+      userLatest.spamBannedUntil = banUntil;
+      await userLatest.save();
+
+      await sock.sendMessage(senderJid, {
+        text: `⛔ *SPAM DÉTECTÉ!*\n\n🚷 Vous avez été banni pour 30 minutes en raison d'une utilisation rapide/simultanée de commande.\n\n📛 Seule la commande \`!profil\` est accessible pendant ce délai.\n\n💡 N'oubliez pas: les commandes ont un cooldown pour de bonnes raisons!`
+      });
+      return;
+    }
+
+    // Mettre à jour le timestamp de la dernière commande
+    userLatest.lastCommandTime = new Date();
+    await userLatest.save();
+
     // Vérifier si c'est une continuation du setup du tournoi
     if (commandName === 'tournoisquiz' && global.tournamentSetup && global.tournamentSetup.has(senderJid)) {
       const tournoisquizCommand = commands.get('tournoisquiz');

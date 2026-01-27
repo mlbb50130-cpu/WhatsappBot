@@ -90,6 +90,14 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  spamBannedUntil: {
+    type: Date,
+    default: null
+  },
+  lastCommandTime: {
+    type: Date,
+    default: null
+  },
   quizHistory: {
     type: [Number],
     default: []
