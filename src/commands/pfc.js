@@ -65,6 +65,6 @@ module.exports = {
 
     const text = MessageFormatter.elegantBox('🎮 PFC 🎮', pfcItems);
 
-    await sock.sendMessage(senderJid, { text });
+    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(text));
   }
 };

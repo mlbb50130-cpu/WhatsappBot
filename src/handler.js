@@ -169,6 +169,11 @@ async function handleMessage(sock, message, isGroup, groupData) {
       QuestSystem.updateDailyProgress(user, 'messages', 1);
       
       await user.save();
+
+      // 💰 Ajouter XP pour le message (en groupe seulement)
+      if (isGroup) {
+        await addXP(participantJid, config.XP_PER_MESSAGE);
+      }
     }
 
     // 🎯 Traiter les réponses directes au quiz (a, b, c, d en minuscule)
@@ -333,6 +338,13 @@ Cela activera les fonctions du bot dans ce groupe.
       await sock.sendMessage(senderJid, {
         text: '🚫 Vous n\'avez pas la permission d\'utiliser cette commande.'
       });
+      return;
+    }
+
+    // Check admin only commands
+    if (command.adminOnly && !config.ADMIN_JIDS.includes(participantJid)) {
+      // Silently ignore non-admin attempts
+      console.log(`[ADMIN CHECK] Non-admin ${participantJid} tried to use admin command: ${commandName}`);
       return;
     }
 

@@ -91,6 +91,10 @@ const userSchema = new mongoose.Schema({
     hands: { itemId: String, name: String },
     feet: { itemId: String, name: String }
   },
+  lastEquipmentXpTime: {
+    type: Date,
+    default: null
+  },
   dailyQuests: {
     lastReset: { type: Date, default: Date.now },
     progress: {

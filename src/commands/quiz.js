@@ -82,7 +82,7 @@ module.exports = {
     ];
 
     const quizMessage = MessageFormatter.elegantBox('QUIZ OTAKU', questionItems);
-    await sock.sendMessage(senderJid, { text: quizMessage });
+    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(quizMessage));
 
     // Store quiz session par GROUPE (pas par utilisateur) pour que tous puissent répondre
     if (!global.quizSessions) global.quizSessions = new Map();

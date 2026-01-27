@@ -1,4 +1,5 @@
 const MessageFormatter = require('../utils/messageFormatter');
+const EquipmentPassiveXP = require('../utils/equipmentPassiveXP');
 
 module.exports = {
   name: 'equipement',
@@ -40,7 +41,10 @@ module.exports = {
         return equipped.name;
       };
 
-      const equipmentMessage = `
+      // Calculer les XP passifs des équipements
+      const { items: equippedItems, totalXP } = EquipmentPassiveXP.getEquipmentXPDetails(user.equipped);
+
+      let equipmentMessage = `
 ╔════════════════════════════════════╗
 ║        ⚔️ TON ÉQUIPEMENT ⚔️        ║
 ╚════════════════════════════════════╝
@@ -51,6 +55,29 @@ ${slots.head} *Tête:* ${getEquipmentText('head')}
 ${slots.body} *Corps:* ${getEquipmentText('body')}
 ${slots.hands} *Mains:* ${getEquipmentText('hands')}
 ${slots.feet} *Pieds:* ${getEquipmentText('feet')}
+
+═════════════════════════════════════`;
+
+      // Ajouter les XP passifs si équipement
+      if (totalXP > 0) {
+        equipmentMessage += `
+
+📊 *XP PASSIFS PAR HEURE:*
+`;
+        equippedItems.forEach(item => {
+          const rarityEmojis = {
+            common: '⚪',
+            rare: '🔵',
+            epic: '🟣',
+            legendary: '🟡'
+          };
+          equipmentMessage += `${rarityEmojis[item.rarity]} ${item.name}: +${item.xpPerHour} XP/h\n`;
+        });
+        equipmentMessage += `
+🎁 *TOTAL: +${totalXP} XP/h*`;
+      }
+
+      equipmentMessage += `
 
 ═════════════════════════════════════
 

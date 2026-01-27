@@ -45,9 +45,8 @@ module.exports = {
 
         const synopsis = manga.synopsis ? manga.synopsis.substring(0, 150) + '...' : 'N/A';
 
-        const content = `${MessageFormatter.elegantBox('MANGA', mangaItems)}
-Synopsis: ${synopsis}`;
-        await sock.sendMessage(senderJid, { text: content });
+        const content = `${MessageFormatter.elegantBox('MANGA', mangaItems)}\nSynopsis: ${synopsis}`;
+        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(content));
 
       } catch (apiError) {
         console.error('Jikan API error:', apiError.message);

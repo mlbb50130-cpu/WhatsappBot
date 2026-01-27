@@ -274,6 +274,13 @@ async function main() {
   // Load commands
   loadCommands();
 
+  // Start equipment passive XP scheduler
+  const EquipmentPassiveXP = require('./utils/equipmentPassiveXP');
+  setInterval(() => {
+    EquipmentPassiveXP.applyPassiveEquipmentXP();
+  }, 3600000); // Toutes les heures (3600000ms)
+  console.log(`${config.COLORS.GREEN}📦 Equipment Passive XP Scheduler started (every 1 hour)${config.COLORS.RESET}`);
+
   // Connect to WhatsApp
   sock = await connectToWhatsApp();
 }

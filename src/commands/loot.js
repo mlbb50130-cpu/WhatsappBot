@@ -8,7 +8,7 @@ module.exports = {
   usage: '!loot',
   adminOnly: false,
   groupOnly: true,
-  cooldown: 36000,
+  cooldown: 3600, // 1 heure en secondes (cooldown property expects seconds)
 
   lootTable: [
     { name: 'Kunai Ninja', rarity: 'common', emoji: '🔪', weight: 40, xp: 10 },
@@ -58,6 +58,6 @@ module.exports = {
       { label: '📦 Inventaire', value: `${user.inventory.length}/50` }
     ]);
 
-    await sock.sendMessage(senderJid, { text: content });
+    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(content));
   }
 };

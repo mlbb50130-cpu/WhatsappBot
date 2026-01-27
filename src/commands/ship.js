@@ -47,6 +47,6 @@ module.exports = {
     ];
 
     const ship = MessageFormatter.elegantBox('SHIP', shipItems);
-    await sock.sendMessage(senderJid, { text: ship });
+    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(ship));
   }
 };

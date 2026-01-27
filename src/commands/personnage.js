@@ -41,7 +41,7 @@ module.exports = {
         ];
 
         const charMessage = MessageFormatter.elegantBox(`👤 ${character.name}`, charItems);
-        await sock.sendMessage(senderJid, { text: charMessage });
+        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(charMessage));
 
       } catch (apiError) {
         console.error('Jikan API error:', apiError.message);
