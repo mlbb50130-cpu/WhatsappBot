@@ -215,7 +215,7 @@ ADMIN_JIDS=120363xxxxxx@g.us,120363xxxxxx@g.us
 - **3 avertissements**: BAN automatique
 
 ### Anti-Spam
-- 🚫 Détecte l'utilisation rapide/simultanée de commandes (< 500ms)
+- 🚫 Détecte l'utilisation rapide/simultanée de commandes (< 1500ms)
 - 🔒 Ban automatique de 30 minutes
 - 🔓 Accès limité à `!profil` pendant le ban
 - ❌ Aucun gain XP pendant le ban

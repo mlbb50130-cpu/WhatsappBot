@@ -365,7 +365,7 @@ Cela activera les fonctions du bot dans ce groupe.
     const lastCmdTime = userLatest.lastCommandTime ? new Date(userLatest.lastCommandTime).getTime() : 0;
     const timeSinceLastCmd = now - lastCmdTime;
 
-    if (timeSinceLastCmd < 500 && timeSinceLastCmd > 0) { // Moins de 500ms = spam
+    if (timeSinceLastCmd < 1500 && timeSinceLastCmd > 0) { // Moins de 1500ms = spam
       console.log(`[SPAM DETECTED] ${participantJid} attempted command spam`);
       
       // Appliquer le ban de 30 minutes
