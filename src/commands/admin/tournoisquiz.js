@@ -464,7 +464,7 @@ ${medal} #${participant.rank} - ${participant.name}
 
       // Ajouter les XP au gagnant
       if (reward > 0) {
-        this.awardXP(participant.jid, reward);
+        await this.awardXP(participant.jid, reward);
       }
     });
 
@@ -492,13 +492,41 @@ Total de participants: ${sortedParticipants.length}
     }
   },
 
-  awardXP(userJid, xpAmount) {
+  async awardXP(userJid, xpAmount) {
     try {
       const User = require('../../models/User');
-      // Obtenir ou créer l'utilisateur
-      const user = User.getOrCreate(userJid);
-      user.xp = (user.xp || 0) + xpAmount;
-      User.save(user);
+      // Obtenir l'utilisateur depuis la base de données
+      let user = await User.findOne({ jid: userJid });
+      
+      if (!user) {
+        // Si l'utilisateur n'existe pas, le créer
+        user = new User({
+          jid: userJid,
+          username: 'Tournament Winner',
+          xp: xpAmount,
+          level: 1
+        });
+      } else {
+        // Ajouter les XP
+        user.xp = (user.xp || 0) + xpAmount;
+        
+        // Recalculer le niveau
+        const XPSystem = require('../../utils/xpSystem');
+        const levelInfo = XPSystem.calculateLevelFromXp(user.xp);
+        const oldLevel = user.level;
+        user.level = levelInfo.level;
+        
+        // Mettre à jour le rang si nécessaire
+        if (user.level > oldLevel) {
+          const rankInfo = XPSystem.getRank(user.level);
+          user.rank = rankInfo.rank;
+          
+          const newMaxChakra = 100 + (user.level - 1) * 10;
+          user.maxChakra = newMaxChakra;
+        }
+      }
+      
+      await user.save();
     } catch (error) {
       console.error(`Error awarding XP to ${userJid}:`, error);
     }
