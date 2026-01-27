@@ -103,9 +103,12 @@ Tape \`!documentation 2\` pour voir la suite...
   └─ Cooldown: 5 secondes
 
 **!roulette** - Roulette russe (jeu de hasard)
-  ├─ Risque élevé, récompense importante
-  ├─ Peut augmenter/diminuer XP
-  └─ À utiliser avec prudence
+  ├─ Coût: 500 gold par utilisation
+  ├─ Ressource: Gold quotidien (reset 24h à 5000)
+  ├─ Victoire: +100 XP (pas de gold)
+  ├─ Défaite: +20 XP (perte du gold)
+  ├─ Affiche solde gold actuel
+  └─ Cooldown: 10 secondes
 
 **!chance** - Test ta chance du jour
   ├─ Score de 1 à 100
@@ -125,7 +128,7 @@ Tape \`!documentation 3\` pour voir la suite...
 📚 *QUIZ & CONNAISSANCE*
 
 **!quiz** - Quiz otaku aléatoire
-  ├─ Type: Questions sur animes/mangas
+  ├─ Type: Questions sur animes/mangas (99+ questions)
   ├─ Récompense correcte: +15 XP
   ├─ Récompense fausse: +3 XP
   ├─ Compte pour les quêtes
@@ -135,6 +138,17 @@ Tape \`!documentation 3\` pour voir la suite...
   ├─ Questions avancées sur animes
   ├─ Niveau de difficulté: Moyen-Difficile
   └─ Récompense: +20 XP si correct
+
+**!tournoisquiz** - Créer un tournoi interactif
+  ├─ Configuration 4 étapes:
+  │   ├─ Étape 1: Choisir le thème (anime, manga, custom)
+  │   ├─ Étape 2: Nombre de questions (1-50)
+  │   ├─ Étape 3: Récompenses XP pour top 5
+  │   └─ Étape 4: Confirmation de lancement
+  ├─ Pendant le tournoi: Seule !reponse autorisée
+  ├─ Classement final et XP distribuée
+  ├─ Admin uniquement
+  └─ Timeout: 5 minutes
 
 **!reponse <réponse>** - Répondre à une question
   ├─ Format: !reponse a / !reponse b / etc
@@ -297,11 +311,11 @@ Tape \`!documentation 5\` pour voir la suite...
   └─ Date d'acquisition
 
 **!equipement** - Voir équipement équipé
-  ├─ Tête
-  ├─ Corps
-  ├─ Mains
-  ├─ Pieds
-  └─ Stats bonifiées
+  ├─ Tête, Corps, Mains, Pieds
+  ├─ Rareté de chaque item (⚪🔵🟣🟡)
+  ├─ XP/h passif par équipement
+  ├─ Total XP/h passif gagnés
+  └─ ⚪ Commun +10 | 🔵 Rare +25 | 🟣 Epic +50 | 🟡 Légendaire +80
 
 **!equip <item>** - Équiper un item
   ├─ Utilisation: !equip nom_item
@@ -312,6 +326,18 @@ Tape \`!documentation 5\` pour voir la suite...
   ├─ Achievements débloqués
   ├─ Dates d'obtention
   └─ Descriptions
+
+💰 *SYSTÈME DE GOLD*
+
+**!gold** - Voir ton solde de gold
+  ├─ Gold actuel / Gold maximal (5000)
+  ├─ Réinitialisation: Toutes les 24h
+  └─ Utilisé pour la roulette
+
+**!roulette** - Voir système de gold
+  ├─ Jeu de hasard avec or
+  ├─ Coût: 500 gold par utilisation
+  └─ Consultez !documentation 2
 
 📊 *CLASSEMENTS & INFOS*
 
@@ -369,12 +395,31 @@ Tape \`!documentation 5\` pour voir la suite...
 
 *RÉSUMÉ DES SYSTÈMES:*
 
-💎 XP & Niveau: Gagnez XP par messages, quiz, duels
+💎 XP & Niveau: Gagnez XP par messages, quiz, duels, équipements
 🎖️ Chakra: Resource 24h, utilisé pour les duels
 ⚔️ Duels: Combats PvP avec récompenses
 📜 Quêtes: Objectives quotidiennes & hebdomadaires
 🎁 Loots: Trésor aléatoire avec cooldown 1h
 📸 Assets: 22 catégories d'images anime
+🎰 Roulette: Jeu avec gold quotidien (500 gold/utilisation)
+💰 Gold: Monnaie spéciale réinitialisée 24h (5000 max)
+⚙️ Équipement: Gain XP passif +10 à +80 XP/h selon rareté
+🏆 Tournoi: Compétition quiz interactive 4 étapes
+🛡️ Anti-Spam: Ban 30 min pour usage rapide (< 500ms)
+
+════════════════════════════════════════════════════════════════
+
+*IMPORTANT - SÉCURITÉ:*
+
+⚠️ ANTI-SPAM: Utilisation rapide/simultanée = BAN 30 MIN
+  ├─ Détection automatique < 500ms entre commandes
+  ├─ Accès limité à !profil pendant le ban
+  ├─ Aucun XP gagnés pendant le ban
+  └─ Déblocage automatique après 30 min
+
+⚠️ COOLDOWN: 6 secondes minimum entre commandes
+  ├─ Chaque commande peut avoir son propre cooldown
+  └─ Respectez les limites!
 
 ════════════════════════════════════════════════════════════════
 
