@@ -13,8 +13,14 @@ module.exports = {
     const senderJid = message.key.remoteJid;
 
     try {
+      // Initialiser equipped s'il n'existe pas
       if (!user.equipped) {
-        user.equipped = { head: null, body: null, hands: null, feet: null };
+        user.equipped = { 
+          head: { itemId: null, name: null },
+          body: { itemId: null, name: null },
+          hands: { itemId: null, name: null },
+          feet: { itemId: null, name: null }
+        };
         await user.save();
       }
 
@@ -25,6 +31,15 @@ module.exports = {
         feet: '👞'
       };
 
+      // Afficher les équipements
+      const getEquipmentText = (slot) => {
+        const equipped = user.equipped[slot];
+        if (!equipped || !equipped.name) {
+          return `❌ Vide`;
+        }
+        return equipped.name;
+      };
+
       const equipmentMessage = `
 ╔════════════════════════════════════╗
 ║        ⚔️ TON ÉQUIPEMENT ⚔️        ║
@@ -32,10 +47,10 @@ module.exports = {
 
 👤 *${user.username || 'Joueur'}*
 
-${slots.head} *Tête:* ${user.equipped.head?.name || '❌ Vide'}
-${slots.body} *Corps:* ${user.equipped.body?.name || '❌ Vide'}
-${slots.hands} *Mains:* ${user.equipped.hands?.name || '❌ Vide'}
-${slots.feet} *Pieds:* ${user.equipped.feet?.name || '❌ Vide'}
+${slots.head} *Tête:* ${getEquipmentText('head')}
+${slots.body} *Corps:* ${getEquipmentText('body')}
+${slots.hands} *Mains:* ${getEquipmentText('hands')}
+${slots.feet} *Pieds:* ${getEquipmentText('feet')}
 
 ═════════════════════════════════════
 
