@@ -292,7 +292,7 @@ Cela activera les fonctions du bot dans ce groupe.
           userLatest.lastDocumentationDM = now;
           await userLatest.save();
         }
-        return;
+        // NE PAS retourner - laisser les commandes en DM fonctionner
       }
     }
 
