@@ -30,7 +30,7 @@ module.exports = {
       { label: '⚠️ Avertissements', value: `${user.warnings}/3` }
     ];
 
-    const stats = MessageFormatter.elegantBox('STATISTIQUES', statsItems);
+    const stats = MessageFormatter.elegantBox('𝔖𝔱𝔞𝔦𝔰𝔣𝔦𝔴𝔲𝔞𝔰', statsItems);
     await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(stats));
   }
 };

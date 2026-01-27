@@ -77,7 +77,7 @@ module.exports = {
 
         const statsText = `
 ╔════════════════════════════════════╗
-║        🎮 TON PROFIL MLBB 🎮        ║
+║        🎮 𝔗𝔒𝔑 𝔓𝔕𝔒𝔉𝔌𝔏 𝔐𝔏𝔅𝔅 🎮        ║
 ╚════════════════════════════════════╝
 
 👤 *Joueur:* ${profile.username}

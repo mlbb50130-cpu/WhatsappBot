@@ -45,7 +45,7 @@ module.exports = {
 
         const synopsis = manga.synopsis ? manga.synopsis.substring(0, 150) + '...' : 'N/A';
 
-        const content = `${MessageFormatter.elegantBox('MANGA', mangaItems)}\nSynopsis: ${synopsis}`;
+        const content = `${MessageFormatter.elegantBox('𝔐𝔄𝔑𝔊𝔄', mangaItems)}\nSynopsis: ${synopsis}`;
         await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(content));
 
       } catch (apiError) {

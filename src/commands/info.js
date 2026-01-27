@@ -20,7 +20,7 @@ module.exports = {
       { label: 'Database', value: 'MongoDB' }
     ];
 
-    const info = `${MessageFormatter.elegantBox('INFO TETSUBOT', infoItems)}`;
+    const info = `${MessageFormatter.elegantBox('𝔌𝔑𝔉𝔒 𝔗𝔈𝔗𝔖𝔘𝔅𝔒𝔗', infoItems)}`;
 
     await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(info));
   }

@@ -32,7 +32,7 @@ module.exports = {
         { label: '⭐ XP Total', value: user.xp || 0 }
       ];
 
-      const xpMessage = `${MessageFormatter.elegantBox('XP ACTUEL', xpItems)}
+      const xpMessage = `${MessageFormatter.elegantBox('𝔛𝔓 𝔄𝔆𝔗𝔘𝔈𝔏', xpItems)}
 ${progressBar}`;
 
       await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(xpMessage));

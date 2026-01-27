@@ -33,7 +33,7 @@ module.exports = {
       { label: '⭐ Récompense', value: '+5 XP' }
     ];
 
-    const text = MessageFormatter.elegantBox('😂 BLAGUE OTAKU 😂', jokeitems);
+    const text = MessageFormatter.elegantBox('😂 𝔅𝔏𝔄𝔊𝔘𝔈 𝔒𝔗𝔄𝔎𝔘 😂', jokeitems);
 
     user.xp += 5;
     await user.save();

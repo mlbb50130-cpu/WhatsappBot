@@ -44,7 +44,7 @@ module.exports = {
       '🎁 Loots +10 XP'
     ];
 
-    const level = `${MessageFormatter.elegantBox('NIVEAU', levelItems)}
+    const level = `${MessageFormatter.elegantBox('𝔑𝔌𝔙𝔈𝔄𝔘', levelItems)}
 ${progressBar}
 ${MessageFormatter.elegantSection('RANGS', ranksItems)}`;
 

@@ -46,7 +46,7 @@ module.exports = {
 
     const createdDate = new Date(user.createdAt).toLocaleDateString('fr-FR');
 
-    const profile = `${MessageFormatter.elegantBox('TON PROFIL OTAKU', profileInfo)}
+    const profile = `${MessageFormatter.elegantBox('𝔗𝔬𝔫 𝔭𝔯𝔬𝔣𝔦𝔩 𝔒𝔱𝔞𝔨𝔲', profileInfo)}
 ${MessageFormatter.elegantSection('STATISTIQUES', statsInfo.map(s => `${s.label}: ${s.value}`))}
 ${progressBar}
 ${MessageFormatter.elegantSection('BADGES', [badges])}

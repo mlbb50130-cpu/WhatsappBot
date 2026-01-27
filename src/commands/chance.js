@@ -52,7 +52,7 @@ module.exports = {
         { label: '💡 Conseil', value: advice }
       ];
 
-      const chanceMessage = `${bar}\n${MessageFormatter.elegantBox('🍀 CHANCE DU JOUR 🍀', chanceItems)}`;
+      const chanceMessage = `${bar}\n${MessageFormatter.elegantBox('🍀 𝔆𝔋𝔄𝔑𝔆𝔈 𝔇𝔘 𝔍𝔒𝔘𝔕 🍀', chanceItems)}`;
 
       await sock.sendMessage(senderJid, { text: chanceMessage });
     } catch (error) {

@@ -43,7 +43,7 @@ module.exports = {
 
         const synopsis = anime.synopsis ? anime.synopsis.substring(0, 150) + '...' : 'N/A';
 
-        const content = `${MessageFormatter.elegantBox('ANIME', animeItems)}
+        const content = `${MessageFormatter.elegantBox('𝔄𝔑𝔌𝔐𝔈', animeItems)}
 Synopsis: ${synopsis}`;
         await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(content));
 

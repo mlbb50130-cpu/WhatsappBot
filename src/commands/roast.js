@@ -45,7 +45,7 @@ module.exports = {
       { label: 'Message', value: roast }
     ];
 
-    const text = MessageFormatter.elegantBox('ROAST', roastItems);
+    const text = MessageFormatter.elegantBox('𝔕𝔒𝔄𝔖𝔗', roastItems);
     await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(text));
   }
 };

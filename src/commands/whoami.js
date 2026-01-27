@@ -19,7 +19,7 @@ module.exports = {
         { label: 'JID', value: participantJid }
       ];
 
-      const whoamiMessage = MessageFormatter.elegantBox('JID', whoamiItems);
+      const whoamiMessage = MessageFormatter.elegantBox('𝔍𝔌𝔇', whoamiItems);
       await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(whoamiMessage));
     } catch (error) {
       console.error('Error in whoami command:', error.message);

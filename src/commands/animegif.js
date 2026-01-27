@@ -43,8 +43,8 @@ module.exports = {
       if (gifUrl) {
         try {
           const captionMsg = isGroup 
-            ? MessageFormatter.elegantBox('🎬 GIF ANIME 🎬', [{ label: '✨ Récompense', value: '+5 XP' }])
-            : MessageFormatter.elegantBox('🎬 GIF ANIME 🎬', [{ label: '🎬 Type', value: 'GIF aléatoire' }]);
+            ? MessageFormatter.elegantBox('🎬 𝔊𝔌𝔉 𝔄𝔑𝔌𝔐𝔈 🎬', [{ label: '✨ Récompense', value: '+5 XP' }])
+            : MessageFormatter.elegantBox('🎬 𝔊𝔌𝔉 𝔄𝔑𝔌𝔐𝔈 🎬', [{ label: '🎬 Type', value: 'GIF aléatoire' }]);
           await sock.sendMessage(senderJid, {
             image: { url: gifUrl },
             caption: captionMsg
@@ -55,7 +55,7 @@ module.exports = {
           });
         }
       } else {
-        const fallback = MessageFormatter.elegantBox('🎬 GIF ANIME 🎬', [{ label: '⚠️ Statut', value: 'GIF non disponible' }]);
+        const fallback = MessageFormatter.elegantBox('🎬 𝔊𝔌𝔉 𝔄𝔑𝔌𝔐𝔈 🎬', [{ label: '⚠️ Statut', value: 'GIF non disponible' }]);
         await sock.sendMessage(senderJid, { text: fallback });
       }
 

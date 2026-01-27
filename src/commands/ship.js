@@ -46,7 +46,7 @@ module.exports = {
       { label: 'Verdict', value: response }
     ];
 
-    const ship = MessageFormatter.elegantBox('SHIP', shipItems);
+    const ship = MessageFormatter.elegantBox('𝔖𝔋𝔌𝔓', shipItems);
     await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(ship));
   }
 };

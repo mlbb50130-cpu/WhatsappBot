@@ -69,8 +69,8 @@ module.exports = {
       }
 
       const captionMsg = isGroup
-        ? MessageFormatter.elegantBox('⚔️ BLEACH ⚔️', [{ label: '✨ Récompense', value: '+2 XP' }])
-        : MessageFormatter.elegantBox('⚔️ BLEACH ⚔️', [{ label: '📺 Série', value: 'Bleach' }]);
+        ? MessageFormatter.elegantBox('⚔️ 𝔅𝔏𝔈𝔄𝔆𝔋 ⚔️', [{ label: '✨ Récompense', value: '+2 XP' }])
+        : MessageFormatter.elegantBox('⚔️ 𝔅𝔏𝔈𝔄𝔆𝔋 ⚔️', [{ label: '📺 Série', value: 'Bleach' }]);
       await sock.sendMessage(senderJid, {
         image: imageBuffer,
         caption: captionMsg

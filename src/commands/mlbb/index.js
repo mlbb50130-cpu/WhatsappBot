@@ -79,7 +79,7 @@ module.exports = {
 
         const statsText = `
 ╔════════════════════════════════════╗
-║        🎮 TON PROFIL MLBB 🎮        ║
+║        🎮 𝔗𝔒𝔑 𝔓𝔕𝔒𝔉𝔌𝔏 𝔐𝔏𝔅𝔅 🎮        ║
 ╚════════════════════════════════════╝
 
 👤 *Joueur:* ${profile.username}
@@ -123,7 +123,7 @@ module.exports = {
     // ==================== Menu complet MLBB par défaut ====================
     const menu = `
 ╔═══════════════════════════════════════════════╗
-║          🎮 MENU COMPLET MLBB 🎮             ║
+║          🎮 𝔐𝔈𝔑𝔘 𝔆𝔒𝔐𝔓𝔏𝔈𝔗 𝔐𝔏𝔅𝔅 🎮             ║
 ╚═══════════════════════════════════════════════╝
 
 🎯 *CATÉGORIE: HÉROS & INFOS*

@@ -45,7 +45,7 @@ module.exports = {
       { label: '🪙 Solde', value: `${user.gold} gold` }
     ];
     
-    const result = MessageFormatter.elegantBox('🎰 ROULETTE 🎰', rouletteItems);
+    const result = MessageFormatter.elegantBox('🎰 𝔕𝔒𝔘𝔏𝔈𝔗𝔗𝔈 🎰', rouletteItems);
 
     await user.save();
 

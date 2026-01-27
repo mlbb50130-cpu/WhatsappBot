@@ -143,13 +143,13 @@ module.exports = {
       `⚔️ DUEL ⚔️`,
       ``,
       `👥 COMBATTANTS:`,
-      `${MessageFormatter.elegantBox('🔴 ATTAQUANT', [
+      `${MessageFormatter.elegantBox('🔴 𝔄𝔗𝔗𝔄𝔔𝔘𝔄𝔑𝔗', [
         { label: '👤 Nom', value: user.username },
         { label: '🎖️ Niveau', value: user.level.toString() },
         { label: '⚡ Puissance', value: attackerPower.toString() }
       ])}`,
       ``,
-      `${MessageFormatter.elegantBox('🔵 DÉFENSEUR', [
+      `${MessageFormatter.elegantBox('🔵 𝔇É𝔉𝔈𝔑𝔖𝔈𝔘𝔕', [
         { label: '👤 Nom', value: opponent.username },
         { label: '🎖️ Niveau', value: opponent.level.toString() },
         { label: '⚡ Puissance', value: defenderPower.toString() }

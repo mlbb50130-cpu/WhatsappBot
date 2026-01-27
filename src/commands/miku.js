@@ -66,7 +66,7 @@ module.exports = {
 
       await sock.sendMessage(senderJid, {
         image: imageBuffer,
-        caption: isGroup ? MessageFormatter.elegantBox('💗 MIKU 💗', [{ label: '✨ Récompense', value: '+2 XP' }]) : MessageFormatter.elegantBox('💗 MIKU 💗', [{ label: '📺 Type', value: 'Personnage' }])
+        caption: isGroup ? MessageFormatter.elegantBox('💗 𝔐𝔌𝔎𝔘 💗', [{ label: '✨ Récompense', value: '+2 XP' }]) : MessageFormatter.elegantBox('💗 𝔐𝔌𝔎𝔘 💗', [{ label: '📺 Type', value: 'Personnage' }])
       });
     } catch (error) {
       console.error('Error in miku command:', error.message);

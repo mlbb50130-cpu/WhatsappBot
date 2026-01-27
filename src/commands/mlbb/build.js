@@ -34,7 +34,7 @@ module.exports = {
 
     const buildInfo = `
 ╔═══════════════════════════════════╗
-║    🛠️ BUILDS ${hero.name.toUpperCase()} 🛠️     ║
+║    🛠️ 𝔅𝔘𝔌𝔏𝔇𝔖 ${𝔥𝔢𝔯𝔬.𝔫𝔞𝔪𝔢.𝔱𝔬𝔘𝔭𝔭𝔢𝔯𝔆𝔞𝔰𝔢()} 🛠️     ║
 ╚═══════════════════════════════════╝
 
 🔴 *BUILD DAMAGE* (Aggressif)

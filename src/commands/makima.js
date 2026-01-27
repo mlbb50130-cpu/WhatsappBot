@@ -70,7 +70,7 @@ module.exports = {
 
       await sock.sendMessage(senderJid, {
         image: imageBuffer,
-        caption: isGroup ? MessageFormatter.elegantBox('🔴 MAKIMA 🔴', [{ label: '✨ Récompense', value: '+2 XP' }]) : MessageFormatter.elegantBox('🔴 MAKIMA 🔴', [{ label: '📺 Type', value: 'Personnage' }])
+        caption: isGroup ? MessageFormatter.elegantBox('🔴 𝔐𝔄𝔎𝔌𝔐𝔄 🔴', [{ label: '✨ Récompense', value: '+2 XP' }]) : MessageFormatter.elegantBox('🔴 𝔐𝔄𝔎𝔌𝔐𝔄 🔴', [{ label: '📺 Type', value: 'Personnage' }])
       });
     } catch (error) {
       console.error('Error in makima command:', error.message);

@@ -70,7 +70,7 @@ module.exports = {
 
       await sock.sendMessage(senderJid, {
         image: imageBuffer,
-        caption: isGroup ? MessageFormatter.elegantBox('🌙 JINWOO 🌙', [{ label: '✨ Récompense', value: '+2 XP' }]) : MessageFormatter.elegantBox('🌙 JINWOO 🌙', [{ label: '📺 Type', value: 'Personnage' }])
+        caption: isGroup ? MessageFormatter.elegantBox('🌙 𝔍𝔌𝔑𝔚𝔒𝔒 🌙', [{ label: '✨ Récompense', value: '+2 XP' }]) : MessageFormatter.elegantBox('🌙 𝔍𝔌𝔑𝔚𝔒𝔒 🌙', [{ label: '📺 Type', value: 'Personnage' }])
       });
     } catch (error) {
       console.error('Error in jinwoo command:', error.message);

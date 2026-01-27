@@ -69,8 +69,8 @@ module.exports = {
 
       // Send image with caption
       const caption = isGroup 
-        ? MessageFormatter.elegantBox('🔵 VEGITO 🔵', [{ label: '✨ Récompense', value: '+15 XP' }])
-        : MessageFormatter.elegantBox('🔵 VEGITO 🔵', [{ label: '📺 Type', value: 'Personnage' }]);
+        ? MessageFormatter.elegantBox('🔵 𝔙𝔈𝔊𝔌𝔗𝔒 🔵', [{ label: '✨ Récompense', value: '+15 XP' }])
+        : MessageFormatter.elegantBox('🔵 𝔙𝔈𝔊𝔌𝔗𝔒 🔵', [{ label: '📺 Type', value: 'Personnage' }]);
 
       await sock.sendMessage(senderJid, {
         image: imageBuffer,

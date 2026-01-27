@@ -70,7 +70,7 @@ module.exports = {
 
       await sock.sendMessage(senderJid, {
         image: imageBuffer,
-        caption: isGroup ? MessageFormatter.elegantBox('🐍 BOA HANCOCK 🐍', [{ label: '✨ Récompense', value: '+2 XP' }]) : MessageFormatter.elegantBox('🐍 BOA HANCOCK 🐍', [{ label: '📺 Type', value: 'Personnage' }])
+        caption: isGroup ? MessageFormatter.elegantBox('🐍 𝔅𝔒𝔄 𝔋𝔄𝔑𝔆𝔒𝔆𝔎 🐍', [{ label: '✨ Récompense', value: '+2 XP' }]) : MessageFormatter.elegantBox('🐍 𝔅𝔒𝔄 𝔋𝔄𝔑𝔆𝔒𝔆𝔎 🐍', [{ label: '📺 Type', value: 'Personnage' }])
       });
     } catch (error) {
       console.error('Error in boahancook command:', error.message);

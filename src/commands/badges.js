@@ -21,7 +21,7 @@ module.exports = {
       const { earned, locked } = BadgeSystem.getBadgeStatus(user);
 
       let badgeMessage = `╔════════════════════════════════════╗
-║           BADGES                  ║
+║           𝔅𝔄𝔇𝔊𝔈𝔖                  ║
 ╚════════════════════════════════════╝
 👤 ${user.username || 'Joueur'}
 🏆 Obtenus: ${earned.length}/23

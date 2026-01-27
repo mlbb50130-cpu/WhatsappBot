@@ -30,7 +30,7 @@ module.exports = {
 
       let infoText = `
 ╔═══════════════════════════════════╗
-║    📊 INFORMATIONS DU GROUPE      ║
+║    📊 𝔌𝔑𝔉𝔒𝔕𝔐𝔄𝔗𝔌𝔒𝔑𝔖 𝔇𝔘 𝔊𝔕𝔒𝔘𝔓𝔈      ║
 ╚═══════════════════════════════════╝
 
 👥 Nom: ${data.subject}

@@ -24,7 +24,7 @@ module.exports = {
         const progress = RankSystem.getRankProgressPercentage(user);
 
         let rankDetails = `╔════════════════════════════════════╗
-║        RANG OTAKU                 ║
+║        𝔕𝔄𝔑𝔊 𝔒𝔗𝔄𝔎𝔘                 ║
 ╚════════════════════════════════════╝
 ${rankInfo.emoji} ${rankInfo.name}
 ${rankInfo.description}
@@ -37,7 +37,7 @@ ${rankInfo.description}
 └─ Restants: ${nextRank.minLevel - user.level}` : `
 └─ Rang maximum!`}
 ╔════════════════════════════════════╗
-║      HIÉRARCHIE OTAKU              ║
+║      𝔋𝔌É𝔕𝔄𝔕𝔆𝔋𝔌𝔈 𝔒𝔗𝔄𝔎𝔘              ║
 ╚════════════════════════════════════╝`;
 
         for (const [rankId, rank] of Object.entries(RankSystem.RANKS)) {
@@ -75,7 +75,7 @@ ${rankInfo.description}
       }
 
       let rankMessage = `╔════════════════════════════════════╗
-║           CLASSEMENT               ║
+║           𝔆𝔏𝔄𝔖𝔖𝔈𝔐𝔈𝔑𝔗               ║
 ╚════════════════════════════════════╝
 👤 ${user.username || 'Joueur'}
 🥇 Rang: ${userRank}/${allUsers.length}

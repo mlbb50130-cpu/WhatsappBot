@@ -63,7 +63,7 @@ module.exports = {
       { label: '⭐ Récompense', value: `+${reward} XP` }
     ];
 
-    const text = MessageFormatter.elegantBox('🎮 PFC 🎮', pfcItems);
+    const text = MessageFormatter.elegantBox('🎮 𝔓𝔉𝔆 🎮', pfcItems);
 
     await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(text));
   }

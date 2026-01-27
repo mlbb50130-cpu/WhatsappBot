@@ -30,7 +30,7 @@ module.exports = {
 
       let questMessage = `
 ╔════════════════════════════════════════╗
-║       📋 TA PROGRESSION 📋            ║
+║       📋 𝔗𝔄 𝔓𝔕𝔒𝔊𝔕𝔈𝔖𝔖𝔌𝔒𝔑 📋            ║
 ╚════════════════════════════════════════╝
 
 ⏰ *QUÊTES QUOTIDIENNES* ⏰

@@ -55,7 +55,7 @@ module.exports = {
         { label: '👤 Activé par', value: senderNumberOnly }
       ];
 
-      const activateMsg = MessageFormatter.elegantBox('🤖 BOT ACTIVÉ 🤖', activateItems);
+      const activateMsg = MessageFormatter.elegantBox('🤖 𝔅𝔒𝔗 𝔄𝔆𝔗𝔌𝔙É 🤖', activateItems);
 
       await sock.sendMessage(senderJid, { text: activateMsg });
 

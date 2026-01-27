@@ -34,7 +34,7 @@ module.exports = {
 
     const helpText = `
 ╔════════════════════════════════════╗
-║     🎮 MOBILE LEGENDS BANG BANG 🎮  ║
+║     🎮 𝔐𝔒𝔅𝔌𝔏𝔈 𝔏𝔈𝔊𝔈𝔑𝔇𝔖 𝔅𝔄𝔑𝔊 𝔅𝔄𝔑𝔊 🎮  ║
 ╚════════════════════════════════════╝
 
 *📖 COMMANDES DISPONIBLES:*

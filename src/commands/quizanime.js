@@ -157,7 +157,7 @@ module.exports = {
 
       const randomQuiz = quizzes[Math.floor(Math.random() * quizzes.length)];
 
-      let quizMessage = MessageFormatter.elegantBox('📝 QUIZ ANIME 📝', [
+      let quizMessage = MessageFormatter.elegantBox('📝 𝔔𝔘𝔌𝔝 𝔄𝔑𝔌𝔐𝔈 📝', [
         { label: '❓ Question', value: randomQuiz.question },
         { label: '🎯 Options', value: randomQuiz.options.map((opt, i) => `${String.fromCharCode(65 + i)}. ${opt}`).join('\n') }
       ]);

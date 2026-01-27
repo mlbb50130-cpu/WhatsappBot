@@ -43,8 +43,8 @@ module.exports = {
 
       const xpMessage = isGroup ? ' (+15 XP)' : '';
       const caption = isGroup
-        ? MessageFormatter.elegantBox('🎯 NINO NAKANO 🎯', [{ label: '✨ Récompense', value: '+15 XP' }])
-        : MessageFormatter.elegantBox('🎯 NINO NAKANO 🎯', [{ label: '📺 Type', value: 'Personnage' }]);
+        ? MessageFormatter.elegantBox('🎯 𝔑𝔌𝔑𝔒 𝔑𝔄𝔎𝔄𝔑𝔒 🎯', [{ label: '✨ Récompense', value: '+15 XP' }])
+        : MessageFormatter.elegantBox('🎯 𝔑𝔌𝔑𝔒 𝔑𝔄𝔎𝔄𝔑𝔒 🎯', [{ label: '📺 Type', value: 'Personnage' }]);
       
       await sock.sendMessage(senderJid, {
         image: fs.readFileSync(imagePath),

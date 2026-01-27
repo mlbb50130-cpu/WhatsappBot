@@ -51,7 +51,7 @@ module.exports = {
       legendary: '🟡'
     };
 
-    const content = MessageFormatter.elegantBox('🎁 LOOT OBTENU 🎁', [
+    const content = MessageFormatter.elegantBox('🎁 𝔏𝔒𝔒𝔗 𝔒𝔅𝔗𝔈𝔑𝔘 🎁', [
       { label: `${loot.emoji} Objet`, value: loot.name },
       { label: `${rarityEmojis[loot.rarity]} Rareté`, value: loot.rarity.toUpperCase() },
       { label: '✨ XP Gagné', value: `+${loot.xp}` },

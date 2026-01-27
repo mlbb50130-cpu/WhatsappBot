@@ -43,7 +43,7 @@ module.exports = {
       // Si aucune image n'a pu être trouvée
       if (!imageUrl) {
         const waifuItems = [{ label: '⚠️ Status', value: 'APIs indisponibles' }];
-        const text = `${MessageFormatter.elegantBox('🥰 WAIFU 🥰', waifuItems)}
+        const text = `${MessageFormatter.elegantBox('🥰 𝔚𝔄𝔌𝔉𝔘 🥰', waifuItems)}
 ➕ 5 XP`;
         await sock.sendMessage(senderJid, { text });
         if (isGroup) user.xp += 5;

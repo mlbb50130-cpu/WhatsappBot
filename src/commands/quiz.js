@@ -54,7 +54,7 @@ module.exports = {
         { label: '👑 Titre', value: 'Maître du Quiz Otaku' },
         { label: '🔄 Action', value: 'Historique réinitialisé' }
       ];
-      const congratsMsg = MessageFormatter.elegantBox('🎉 FÉLICITATIONS! 🎉', congratsItems);
+      const congratsMsg = MessageFormatter.elegantBox('🎉 𝔉É𝔏𝔌𝔆𝔌𝔗𝔄𝔗𝔌𝔒𝔑𝔖! 🎉', congratsItems);
       await sock.sendMessage(senderJid, { text: congratsMsg });
       // Réinitialiser SEULEMENT après avoir affiché le message
       user.quizHistory = [];
@@ -81,7 +81,7 @@ module.exports = {
       { label: 'Récompense', value: `+${quiz.reward} XP` }
     ];
 
-    const quizMessage = MessageFormatter.elegantBox('QUIZ OTAKU', questionItems);
+    const quizMessage = MessageFormatter.elegantBox('𝔔𝔘𝔌𝔝 𝔒𝔗𝔄𝔎𝔘', questionItems);
     await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(quizMessage));
 
     // Store quiz session par GROUPE (pas par utilisateur) pour que tous puissent répondre

@@ -22,7 +22,7 @@ module.exports = {
       { label: 'Uptime', value: this.getUptime() }
     ];
 
-    const text = MessageFormatter.elegantBox('BOT STATUS', pingItems);
+    const text = MessageFormatter.elegantBox('𝔅𝔒𝔗 𝔖𝔗𝔄𝔗𝔘𝔖', pingItems);
     await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(text));
   },
 

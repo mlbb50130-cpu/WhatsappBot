@@ -18,7 +18,7 @@ module.exports = {
 
     const metaInfo = `
 ╔═══════════════════════════════════╗
-║     📊 META ACTUELLE MLBB 📊      ║
+║     📊 𝔐𝔈𝔗𝔄 𝔄𝔆𝔗𝔘𝔈𝔏𝔏𝔈 𝔐𝔏𝔅𝔅 📊      ║
 ╚═══════════════════════════════════╝
 
 *Patch:* ${meta.patch || 'Actuel'}
