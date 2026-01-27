@@ -49,7 +49,7 @@ Tes items:`;
 
     // Ajouter le passif XP des équipements
     const equipmentXPDetails = equipmentPassiveXP.getEquipmentXPDetails(user.equipped);
-    if (equipmentXPDetails.totalXP > 0) {
+    if (equipmentXPDetails && equipmentXPDetails.totalXP > 0) {
       inventoryText += `\n\n📦 PASSIF XP:`;
       equipmentXPDetails.items.forEach(item => {
         const rarityEmojis = { common: '⚪', rare: '🔵', epic: '🟣', legendary: '🟡' };

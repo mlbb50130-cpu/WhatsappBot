@@ -51,13 +51,13 @@ module.exports = {
     const equipmentXPDetails = equipmentPassiveXP.getEquipmentXPDetails(user.equipped);
     let equipmentSection = '';
     
-    if (equipmentXPDetails.totalXP > 0) {
+    if (equipmentXPDetails && equipmentXPDetails.totalXP > 0) {
       const equipmentLines = equipmentXPDetails.items.map(item => {
         const rarityEmojis = { common: '⚪', rare: '🔵', epic: '🟣', legendary: '🟡' };
         return `${rarityEmojis[item.rarity]} ${item.name}: +${item.xpPerHour}/h`;
       });
-      equipmentLines.push(`\n⚡ *Total: +${equipmentXPDetails.totalXP} XP/heure*`);
-      equipmentSection = `${MessageFormatter.elegantSection('📦 PASSIF XP', equipmentLines)}`;
+      equipmentLines.push(`⚡ Total: +${equipmentXPDetails.totalXP} XP/heure`);
+      equipmentSection = `\n${MessageFormatter.elegantSection('📦 PASSIF XP', equipmentLines)}`;
     }
 
     const profile = `${MessageFormatter.elegantBox('𝔗𝔬𝔫 𝔓𝔯𝔬𝔣𝔦𝔩', profileInfo)}
