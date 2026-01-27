@@ -6,14 +6,18 @@ Un bot WhatsApp complet et modulaire avec système RPG otaku, niveaux, quêtes, 
 
 - **🎖️ Système de niveaux** - Gagnez XP automatiquement par messages
 - **⚔️ Duels PvP** - Affrontez d'autres joueurs
-- **📚 Quiz Otaku** - Questions sur anime/manga
+- **📚 Quiz Otaku** - Questions sur anime/manga (99+ questions)
 - **🎁 Système de Loot** - Ouvrez des coffres aléatoires
 - **🎨 Images Anime** - Waifu, Husbando, GIF anime
 - **🎯 Quêtes** - Missions quotidiennes et hebdomadaires
 - **🔐 Modération** - Avertissements, bans, kicks
-- **⚙️ Admin** - Contrôle total du bot
-- **📊 Inventaire** - Collectionnez des objets
+- **⚙️ Admin** - Contrôle total du bot (restreint aux admins)
+- **📊 Inventaire** - Collectionnez des objets avec rareté
 - **🏆 Classements** - Compétition globale
+- **🎰 Roulette** - Jeu de hasard avec système de gold quotidien
+- **⚙️ Équipement** - Gain XP passif toutes les heures selon rareté
+- **🛡️ Anti-Spam** - Protection contre l'utilisation rapide de commandes
+- **🎪 Mini-jeux** - Ship, Chance, Pierre-Feuille-Ciseaux
 
 ## 🛠️ Stack Technique
 
@@ -111,6 +115,18 @@ ADMIN_JIDS=120363xxxxxx@g.us,120363xxxxxx@g.us
 !roast @user   - Faire un roast
 !ship @u1 @u2 - Shipper deux personnes
 !pfc           - Pierre-Feuille-Ciseaux
+!roulette      - Roulette russe (500 gold, +100 XP si survécu)
+```
+
+### 🛡️ Équipement & Gold
+```
+!equipement    - Voir tes équipements et XP passif/h
+!gold          - Voir ton solde de gold
+```
+
+### 🏆 Tournoi
+```
+!tournoisquiz  - Lancer un tournoi quiz interactif (admin)
 ```
 
 ### 🛡️ Admin (ADMIN SEULEMENT)
@@ -178,21 +194,43 @@ ADMIN_JIDS=120363xxxxxx@g.us,120363xxxxxx@g.us
 - 🎯 Quiz: +25 XP
 - ⚔️ Duel gagné: +30 XP
 - 🎁 Loot: +10-100 XP (selon rareté)
+- 🎰 Roulette: +100 XP (victoire) / +20 XP (défaite)
+- ⚙️ Équipement: +10-80 XP/h passif (selon rareté)
 
-## 🛡️ Modération
+### Système de Gold
+- 💰 Gold initial: 5000 gold par utilisateur
+- 🎰 Roulette: -500 gold par utilisation
+- 🔄 Réinitialisation: Toutes les 24h à 5000 gold
+
+### Système d'Équipement Passif
+- ⚪ Common: +10 XP/h
+- 🔵 Rare: +25 XP/h
+- 🟣 Epic: +50 XP/h
+- 🟡 Legendary: +80 XP/h
+
+## 🛡️ Modération & Sécurité
 
 ### Système d'Avertissements
 - **1-2 avertissements**: Avertissement enregistré
 - **3 avertissements**: BAN automatique
 
-### Commandes Admin
+### Anti-Spam
+- 🚫 Détecte l'utilisation rapide/simultanée de commandes (< 500ms)
+- 🔒 Ban automatique de 30 minutes
+- 🔓 Accès limité à `!profil` pendant le ban
+- ❌ Aucun gain XP pendant le ban
+
+### Commandes Admin (Restreintes)
 ```
 !kick @user              - Expulser du groupe
 !warn @user raison       - Avertir (3 = ban)
 !setxp @user 500         - Modifier XP
-!antilink on/off         - Anti-lien
-!antispam on/off         - Anti-spam
+!tournoisquiz            - Créer tournoi interactif
 ```
+
+### Cooldown
+- **Par défaut**: 6 secondes entre chaque commande
+- **Personnalisé**: Chaque commande peut avoir son cooldown
 
 ## 🔌 API Externes
 
@@ -286,6 +324,11 @@ docker run -d -p 27017:27017 mongo
   warnings: Number,      // Avertissements
   isBanned: Boolean,     // Banni?
   isMuted: Boolean,      // Mute?
+  gold: Number,          // Solde de gold (défaut 5000)
+  spamBannedUntil: Date, // Ban anti-spam jusqu'à date
+  lastCommandTime: Date, // Timestamp dernière commande
+  equipped: Object,      // Équipement actuels
+  lastGoldReset: Date,   // Date dernier reset de gold
   createdAt: Date        // Date création
 }
 ```
@@ -299,7 +342,28 @@ Les contributions sont bienvenues! N'hésite pas à:
 4. Push (`git push origin feature/AmazingFeature`)
 5. Ouvre une Pull Request
 
-## 📄 Licence
+## � Changements Récents (v1.1.0)
+
+### ✨ Nouvelles Fonctionnalités
+- **🎰 Système de Roulette** - Jeu avec gold quotidien
+- **⚙️ Équipement Passif XP** - Gain XP automatique toutes les heures
+- **🛡️ Anti-Spam Avancé** - Détection et ban des utilisations rapides
+- **🎪 Tournoi Interactif** - Configuration 4 étapes pour quiz personnalisés
+- **🪙 Système de Gold** - Monnaie avec réinitialisation quotidienne
+
+### 🔧 Améliorations
+- Cooldown augmenté de 3s à 6s (par défaut)
+- Restriction des commandes admin au bot lui-même
+- Messages avec images formatées visuellement
+- XP gagnés par messages en groupe
+
+### 🐛 Corrections
+- XP rewards tournoi (async/await)
+- Cooldown de loot corrigé
+- Gestion des valeurs null en équipement
+- Messages XP en groupe
+
+## �📄 Licence
 
 MIT License - vois [LICENSE](LICENSE) pour plus de détails
 

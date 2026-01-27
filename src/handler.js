@@ -409,7 +409,7 @@ Cela activera les fonctions du bot dans ce groupe.
     }
 
     // Set cooldown
-    CooldownManager.set(participantJid, commandName, command.cooldown * 1000 || 3000);
+    CooldownManager.set(participantJid, commandName, command.cooldown * 1000 || 6000);
 
     // Execute command
     await command.execute(sock, message, args, userLatest, isGroup, groupData);

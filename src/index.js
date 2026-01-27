@@ -202,15 +202,7 @@ async function connectToWhatsApp() {
       if (action === 'add') {
         // Nouveau membre
         for (const participant of participants) {
-          // Gérer si participant est un string ou un objet
-          const participantId = typeof participant === 'string' ? participant : participant.id || participant;
-          
-          if (!participantId || typeof participantId !== 'string') {
-            console.warn('[PARTICIPANTS UPDATE] Invalid participant format:', participant);
-            continue;
-          }
-
-          const userName = participantId.split('@')[0];
+          const userName = participant.split('@')[0];
           
           await sock.sendMessage(groupJid, {
             text: `
@@ -239,21 +231,13 @@ Envoie \`!documentation\` pour voir toutes mes commandes
 Tape \`!help\` pour avoir les commandes disponibles
 
 Amusez-vous bien! 🎊`,
-            mentions: [participantId]
+            mentions: [participant]
           });
         }
       } else if (action === 'remove') {
         // Membre qui part
         for (const participant of participants) {
-          // Gérer si participant est un string ou un objet
-          const participantId = typeof participant === 'string' ? participant : participant.id || participant;
-          
-          if (!participantId || typeof participantId !== 'string') {
-            console.warn('[PARTICIPANTS UPDATE] Invalid participant format:', participant);
-            continue;
-          }
-
-          const userName = participantId.split('@')[0];
+          const userName = participant.split('@')[0];
           
           await sock.sendMessage(groupJid, {
             text: `

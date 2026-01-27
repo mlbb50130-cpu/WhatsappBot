@@ -450,7 +450,7 @@ ${options}
     const medals = ['🥇', '🥈', '🥉'];
     const rewardsList = [tournament.rewards.first, tournament.rewards.second, tournament.rewards.third, tournament.rewards.fourth, tournament.rewards.fifth];
 
-    for (const participant of sortedParticipants) {
+    sortedParticipants.forEach((participant) => {
       const medal = medals[participant.rank - 1] || '🎯';
       const percentage = Math.round((participant.correct / participant.total) * 100);
       const reward = rewardsList[participant.rank - 1] || 0;
@@ -466,7 +466,7 @@ ${medal} #${participant.rank} - ${participant.name}
       if (reward > 0) {
         await this.awardXP(participant.jid, reward);
       }
-    }
+    });
 
     finalResults += `
 ════════════════════════════════════════
