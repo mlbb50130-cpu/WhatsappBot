@@ -31,7 +31,7 @@ module.exports = {
   // 🎮 Game Features
   XP_PER_MESSAGE: parseInt(process.env.XP_PER_MESSAGE) || 5,
   XP_COOLDOWN: parseInt(process.env.XP_COOLDOWN) || 5000,
-  COMMAND_COOLDOWN: 6000,
+  COMMAND_COOLDOWN: 1000,
   
   // 📊 Levels & Ranks
   RANKS: {
