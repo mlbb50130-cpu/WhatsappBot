@@ -277,13 +277,13 @@ Cela activera les fonctions du bot dans ce groupe.
       }
     }
 
-    // 💬 Envoyer la documentation automatiquement en DM (tout message, commande ou non)
+    // 💬 Envoyer la documentation (PAGE 1 SEULEMENT) automatiquement en DM (tout message, commande ou non)
     if (!isGroup) {
       const docCommand = commands.get('documentation');
       if (docCommand) {
         const userLatest = await User.findOne({ jid: participantJid });
-        // Envoyer la doc et retourner (ne pas traiter les commandes en DM)
-        await docCommand.execute(sock, message, [], userLatest, isGroup, null);
+        // Envoyer SEULEMENT la page 1 de la doc en DM (args = ['1'] ou [])
+        await docCommand.execute(sock, message, ['1'], userLatest, isGroup, null);
         return;
       }
     }
