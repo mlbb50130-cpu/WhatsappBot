@@ -216,16 +216,24 @@ ${content}`;
     const path = require('path');
 
     try {
-      const resolvedTheme = (themeName && themeName !== 'default')
+      const requestedTheme = (themeName && themeName !== 'default')
         ? themeName
         : (this._theme && this._theme !== 'default')
           ? this._theme
           : 'LAKERSWaifu';
 
-      let themeDir = path.join(__dirname, '../asset', resolvedTheme);
-      if (!fs.existsSync(themeDir)) {
-        themeDir = path.join(__dirname, '../asset', 'LAKERSWaifu');
-      }
+      const assetDir = path.join(__dirname, '../asset');
+      const folders = fs.readdirSync(assetDir).filter(f => {
+        try {
+          return fs.statSync(path.join(assetDir, f)).isDirectory();
+        } catch {
+          return false;
+        }
+      });
+
+      const match = folders.find(f => f.toLowerCase() === requestedTheme.toLowerCase());
+      const resolvedFolder = match || 'LAKERSWaifu';
+      const themeDir = path.join(assetDir, resolvedFolder);
       
       if (!fs.existsSync(themeDir)) {
         console.warn(`Theme directory not found: ${themeDir}`);
