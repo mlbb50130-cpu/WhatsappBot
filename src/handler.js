@@ -10,6 +10,7 @@ const BadgeSystem = require('./utils/badgeSystem');
 const RankSystem = require('./utils/rankSystem');
 const PackManager = require('./utils/PackManager');
 const MessageFormatter = require('./utils/messageFormatter');
+const Group = require('./models/Group');
 
 const commands = new Map();
 
@@ -132,21 +133,33 @@ async function addXP(jid, amount = config.XP_PER_MESSAGE) {
 
 // Main message handler
 async function handleMessage(sock, message, isGroup, groupData) {
-  MessageFormatter.setTheme(groupData?.theme);
   try {
-    // Extract message content (Baileys 7.0 compatible)
-    let messageContent = '';
-    if (message.message?.conversation) {
-      messageContent = message.message.conversation;
-    } else if (message.message?.extendedTextMessage?.text) {
-      messageContent = message.message.extendedTextMessage.text;
-    } else {
+    const extractText = (msg) => {
+      if (!msg) return '';
+      if (msg.ephemeralMessage?.message) return extractText(msg.ephemeralMessage.message);
+      if (msg.viewOnceMessage?.message) return extractText(msg.viewOnceMessage.message);
+      if (msg.viewOnceMessageV2?.message) return extractText(msg.viewOnceMessageV2.message);
+      if (msg.conversation) return msg.conversation;
+      if (msg.extendedTextMessage?.text) return msg.extendedTextMessage.text;
+      if (msg.imageMessage?.caption) return msg.imageMessage.caption;
+      if (msg.videoMessage?.caption) return msg.videoMessage.caption;
+      return '';
+    };
+
+    const messageContent = extractText(message.message);
+    if (!messageContent) {
       return; // Ignore if no text message
     }
 
     const senderJid = message.key.remoteJid;
     const participantJid = message.key.participant || senderJid;
     const username = message.pushName || 'Anonymous';
+
+    let groupDoc = null;
+    if (isGroup) {
+      groupDoc = await Group.findOne({ groupJid: senderJid }).catch(() => null);
+    }
+    MessageFormatter.setTheme(groupDoc?.theme);
 
     console.log(`[HANDLER] Message: "${messageContent}"`);
     console.log(`[HANDLER] From: ${participantJid}`);
@@ -366,7 +379,7 @@ Cela activera les fonctions du bot dans ce groupe.
     const now = Date.now();
     const lastCmdTime = userLatest.lastCommandTime ? new Date(userLatest.lastCommandTime).getTime() : 0;
     const timeSinceLastCmd = now - lastCmdTime;
-    const antiSpamEnabled = groupData?.features?.antiSpam ?? true;
+    const antiSpamEnabled = groupDoc?.features?.antiSpam ?? true;
     const spamThresholdMs = 1000; // Plus rapide
 
     if (antiSpamEnabled && timeSinceLastCmd < spamThresholdMs && timeSinceLastCmd > 0) {
