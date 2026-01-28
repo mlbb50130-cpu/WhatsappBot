@@ -1,4 +1,4 @@
-const ModuleManager = require('../utils/ModuleManager');
+const Group = require('../models/Group');
 const MessageFormatter = require('../utils/messageFormatter');
 
 module.exports = {
@@ -35,17 +35,11 @@ module.exports = {
       }
 
       const isAllowed = action === 'on';
-      const modules = ModuleManager.loadModules();
-      
-      if (!modules[jid]) {
-        modules[jid] = {};
-        Object.keys(ModuleManager.MODULES).forEach(key => {
-          modules[jid][key] = ModuleManager.MODULES[key].enabled;
-        });
-      }
-
-      modules[jid]['nsfw'] = isAllowed;
-      ModuleManager.saveModules(modules);
+      await Group.findOneAndUpdate(
+        { groupJid: jid },
+        { $set: { 'permissions.allowHentai': isAllowed } },
+        { upsert: true }
+      );
 
       const message_text = isAllowed 
         ? `✅ Les commandes !hentai et !hentaivd sont maintenant **autorisées** dans ce groupe!`

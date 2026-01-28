@@ -186,6 +186,10 @@ async function connectToWhatsApp() {
       const groupJid = update.id;
       const action = update.action; // 'add' ou 'remove'
       const participants = update.participants;
+      const Group = require('./models/Group');
+      const groupDoc = await Group.findOne({ groupJid }).catch(() => null);
+      const autoWelcome = groupDoc?.features?.autoWelcome ?? true;
+      const autoGoodbye = groupDoc?.features?.autoGoodbye ?? true;
       
       // Récupérer les infos du groupe avec cache
       let groupName = groupJid;
@@ -198,18 +202,18 @@ async function connectToWhatsApp() {
         // Ignore if group metadata fails
       }
       
-      if (action === 'add') {
+      if (action === 'add' && autoWelcome) {
         // Nouveau membre
         for (const participant of participants) {
           const userName = participant.split('@')[0];
-          
-          await sock.sendMessage(groupJid, {
-            text: `
+          const userTag = `@${userName.replace(/[^0-9]/g, '')}`;
+          const customWelcome = groupDoc?.messages?.welcome;
+          const defaultWelcome = `
 ╔════════════════════════════════════════╗
 ║   👋 BIENVENUE DANS LE GROUPE! 🎉      ║
 ╚════════════════════════════════════════╝
 
-Bienvenue @${userName.replace(/[^0-9]/g, '')} dans *${groupName}*! 🌟
+Bienvenue ${userTag} dans *${groupName}*! 🌟
 
 Je suis **TetsuBot** - Un bot RPG interactif pour WhatsApp!
 
@@ -229,24 +233,37 @@ Envoie \`!documentation\` pour voir toutes mes commandes
 💡 *BESOIN D'AIDE?*
 Tape \`!help\` pour avoir les commandes disponibles
 
-Amusez-vous bien! 🎊`,
+Amusez-vous bien! 🎊`;
+          const welcomeText = (customWelcome || defaultWelcome)
+            .replace(/\{user\}/g, userTag)
+            .replace(/\{group\}/g, groupName);
+          
+          await sock.sendMessage(groupJid, {
+            text: welcomeText,
             mentions: [participant]
           });
         }
-      } else if (action === 'remove') {
+      } else if (action === 'remove' && autoGoodbye) {
         // Membre qui part
         for (const participant of participants) {
           const userName = participant.split('@')[0];
-          
-          await sock.sendMessage(groupJid, {
-            text: `
+          const userTag = `@${userName.replace(/[^0-9]/g, '')}`;
+          const customGoodbye = groupDoc?.messages?.goodbye;
+          const defaultGoodbye = `
 ╔════════════════════════════════════════╗
 ║    👋 UN MEMBRE NOUS QUITTE 😢        ║
 ╚════════════════════════════════════════╝
 
-@${userName.replace(/[^0-9]/g, '')} a quitté le groupe *${groupName}*
+${userTag} a quitté le groupe *${groupName}*
 
-Merci d'avoir participé! À bientôt! 🤗`
+Merci d'avoir participé! À bientôt! 🤗`;
+          const goodbyeText = (customGoodbye || defaultGoodbye)
+            .replace(/\{user\}/g, userTag)
+            .replace(/\{group\}/g, groupName);
+          
+          await sock.sendMessage(groupJid, {
+            text: goodbyeText,
+            mentions: [participant]
           });
         }
       }

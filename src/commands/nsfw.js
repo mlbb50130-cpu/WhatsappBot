@@ -19,6 +19,16 @@ module.exports = {
     const assetPath = path.join(__dirname, '../asset/NSFW');
 
     try {
+      if (isGroup) {
+        const groupDoc = await Group.findOne({ groupJid: senderJid }).catch(() => null);
+        if (groupDoc?.permissions?.allowHentai === false) {
+          await sock.sendMessage(senderJid, {
+            text: '❌ Les commandes NSFW ne sont pas autorisées dans ce groupe!\n\n💬 Demande à un admin d\'utiliser: !allowhentai on'
+          });
+          return;
+        }
+      }
+
       if (!fs.existsSync(assetPath)) {
         await sock.sendMessage(senderJid, { text: '❌ Aucune photo trouvée!' });
         return;

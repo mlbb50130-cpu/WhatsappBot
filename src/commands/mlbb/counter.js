@@ -33,7 +33,7 @@ module.exports = {
 
     const counterInfo = `
 ╔═══════════════════════════════════╗
-║  🛡️ 𝔆𝔒𝔘𝔑𝔗𝔈𝔕𝔖 𝔇𝔈 ${𝔥𝔢𝔯𝔬.𝔫𝔞𝔪𝔢.𝔱𝔬𝔘𝔭𝔭𝔢𝔯𝔆𝔞𝔰𝔢()} 🛡️  ║
+║  🛡️ 𝔆𝔒𝔘𝔑𝔗𝔈𝔕𝔖 𝔇𝔈 ${hero.name.toUpperCase()} 🛡️  ║
 ╚═══════════════════════════════════╝
 
 ✅ *HÉROS QUI BEAT ${hero.name.toUpperCase()}*

@@ -211,15 +211,21 @@ ${content}`;
    * Get a random image from LAKERSWaifu or NSFW theme folders
    * @returns {Buffer|null} Image buffer or null if no image found
    */
-  static getRandomThemeImage() {
+  static getRandomThemeImage(themeName = null) {
     const fs = require('fs');
     const path = require('path');
 
     try {
-      // Choisir aléatoirement entre LAKERSWaifu et NSFW
-      const themes = ['LAKERSWaifu', 'NSFW'];
-      const randomTheme = themes[Math.floor(Math.random() * themes.length)];
-      const themeDir = path.join(__dirname, '../asset', randomTheme);
+      const resolvedTheme = (themeName && themeName !== 'default')
+        ? themeName
+        : (this._theme && this._theme !== 'default')
+          ? this._theme
+          : 'LAKERSWaifu';
+
+      let themeDir = path.join(__dirname, '../asset', resolvedTheme);
+      if (!fs.existsSync(themeDir)) {
+        themeDir = path.join(__dirname, '../asset', 'LAKERSWaifu');
+      }
       
       if (!fs.existsSync(themeDir)) {
         console.warn(`Theme directory not found: ${themeDir}`);
@@ -259,6 +265,16 @@ ${content}`;
       };
     }
   }
+
+  /**
+   * Set current theme for image selection
+   * @param {string} themeName
+   */
+  static setTheme(themeName) {
+    this._theme = themeName || 'default';
+  }
 }
+
+MessageFormatter._theme = 'default';
 
 module.exports = MessageFormatter;

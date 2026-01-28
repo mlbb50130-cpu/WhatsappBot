@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const ImageRotationSystem = require('../utils/imageRotation');
-const ModuleManager = require('../utils/ModuleManager');
+const Group = require('../models/Group');
 
 const MessageFormatter = require('../utils/messageFormatter');
 
@@ -20,8 +20,8 @@ module.exports = {
     try {
       // Check if hentai is allowed in this group
       if (isGroup) {
-        const groupModules = ModuleManager.getGroupModules(senderJid);
-        if (groupModules['nsfw'] === false) {
+        const groupDoc = await Group.findOne({ groupJid: senderJid }).catch(() => null);
+        if (groupDoc?.permissions?.allowHentai === false) {
           await sock.sendMessage(senderJid, {
             text: '❌ Les commandes hentai ne sont pas autorisées dans ce groupe!\n\n💬 Demande à un admin d\'utiliser: !allowhentai on'
           });

@@ -12,6 +12,8 @@ const PACK_COMMANDS = {
     'quete', 'quotidien', 'hebdo', 'quetelundi',
     // Quiz & Jeux
     'quiz', 'quizanime', 'pfc', 'roulette', 'reponse', 'tournoisquiz', 'tournoi', 'tourquiz',
+    // Gold & Économie
+    'work', 'daily', 'gold',
     // Loot & Inventaire
     'loot', 'inventaire', 'equip', 'equipement', 'collection',
     // Images Anime
@@ -26,12 +28,19 @@ const PACK_COMMANDS = {
     'anime', 'manga', 'mangadex', 'personnage', 'voiranime',
     // Classements
     'topanime', 'topmanga', 'classement',
-    // Admin & Système (OTAKU SEULEMENT - pas MLBB assets)
-    'theme', 'activatebot', 'admins', 'deactivatebot', 'allowhentai', 'authhentai', 'hentaiallow', 'everyone', 'all', 'tous', 'setxp', 'fixerxp',
+    // Admin & Modération (OTAKU)
+    'theme', 'activatebot', 'admins', 'deactivatebot',
+    'selectpack', 'setmodule', 'pack', 'packselect', 'choosepack',
+    'warn', 'avertir', 'kick', 'expulser', 'lock', 'verrouiller', 'unlock', 'deverrouiller',
+    'mute', 'silence', 'desimulet', 'unmute', 'promote', 'promouvoir', 'demote', 'retrograder',
+    'clear', 'nettoyer', 'groupinfo', 'groupeinfo', 'infogroupes', 'everyone', 'all', 'tous',
+    'setxp', 'fixerxp',
+    // NSFW & permissions
+    'allowhentai', 'authhentai', 'hentaiallow',
     // NSFW
     'hentai', 'hentaivd', 'boahancook', 'nsfw',
     // Bot
-    'ping', 'info', 'regles', 'help', 'documentation', 'menu', 'whoami', 'assets'
+    'ping', 'info', 'regles', 'help', 'documentation', 'menu', 'whoami', 'assets', 'chakratest'
   ],
   gamin: [
     // Profil MLBB
@@ -67,6 +76,8 @@ const PACK_COMMANDS = {
     'quete', 'quotidien', 'hebdo', 'quetelundi',
     // Quiz & Jeux (OTAKU)
     'quiz', 'quizanime', 'pfc', 'roulette', 'reponse',
+    // Gold & Économie (OTAKU)
+    'work', 'daily', 'gold',
     // Loot & Inventaire (OTAKU)
     'loot', 'inventaire', 'equip', 'equipement', 'collection',
     // Images Anime (OTAKU)
