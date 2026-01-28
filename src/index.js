@@ -187,7 +187,14 @@ async function connectToWhatsApp() {
       const action = update.action; // 'add' ou 'remove'
       const participants = update.participants;
       const Group = require('./models/Group');
-      const groupDoc = await Group.findOne({ groupJid }).catch(() => null);
+      let groupDoc = await Group.findOne({ groupJid }).catch(() => null);
+      if (!groupDoc) {
+        groupDoc = new Group({
+          groupJid,
+          groupName
+        });
+        await groupDoc.save();
+      }
       const autoWelcome = groupDoc?.features?.autoWelcome ?? true;
       const autoGoodbye = groupDoc?.features?.autoGoodbye ?? true;
       
