@@ -206,7 +206,6 @@ class PermissionManagerV2 {
       reason: reason || 'N/A'
     };
 
-    console.log(`${require('../config').COLORS.CYAN}📋 [ADMIN LOG] ${JSON.stringify(logEntry)}${require('../config').COLORS.RESET}`);
 
     // Vous pouvez aussi sauvegarder dans MongoDB si nécessaire
   }

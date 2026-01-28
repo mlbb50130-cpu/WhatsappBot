@@ -16,13 +16,11 @@ module.exports = {
     const senderNumber = message.key.participant || message.key.remoteJid;
     const senderNumberOnly = senderNumber.split('@')[0];
 
-    console.log(`[ACTIVATEBOT] Tentative: ${senderNumberOnly}, BotOwners: ${BotOwners}, Match: ${BotOwners.includes(senderNumberOnly)}`);
 
     if (!BotOwners.includes(senderNumberOnly)) {
       await sock.sendMessage(senderJid, {
         text: '🚫 *Accès refusé!*\n\n⛔ Seul le propriétaire du bot (@74690085318855) peut activer le bot dans les groupes.\n\nVous ne pouvez pas utiliser cette commande.'
       });
-      console.log(`[ACTIVATION DENIED] ${senderNumberOnly} tried to activate bot in ${senderJid}`);
       return;
     }
 
@@ -59,7 +57,6 @@ module.exports = {
 
       await sock.sendMessage(senderJid, { text: activateMsg });
 
-      console.log(`[BOT ACTIVATED] Group: ${groupData?.subject || senderJid} by ${senderNumberOnly}`);
 
     } catch (error) {
       console.error('Error activating bot:', error.message);

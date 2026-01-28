@@ -5,7 +5,6 @@ let isConnected = false;
 
 async function connectDatabase() {
   if (isConnected) {
-    console.log('✅ Database already connected');
     return;
   }
 
@@ -13,7 +12,6 @@ async function connectDatabase() {
     await mongoose.connect(config.MONGODB_URI);
 
     isConnected = true;
-    console.log(`${config.COLORS.GREEN}✅ MongoDB Connected${config.COLORS.RESET}`);
 
     // Load models
     require('./models/User');
@@ -32,7 +30,6 @@ async function disconnectDatabase() {
   try {
     await mongoose.disconnect();
     isConnected = false;
-    console.log(`${config.COLORS.GREEN}✅ MongoDB Disconnected${config.COLORS.RESET}`);
   } catch (error) {
     console.error(`${config.COLORS.RED}❌ Disconnect Error: ${error.message}${config.COLORS.RESET}`);
   }

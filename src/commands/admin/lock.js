@@ -35,7 +35,6 @@ module.exports = {
           text: `${result.message}\n\n🔐 Les paramètres du groupe sont protégés!\n👮 Modérateur: ${message.pushName || 'Admin'}`
         });
 
-        console.log(`${require('../../config').COLORS.CYAN}🔐 ${senderJid} locked${require('../../config').COLORS.RESET}`);
       } else {
         await sock.sendMessage(senderJid, {
           text: `❌ Erreur lors du verrouillage:\n${result.error}`

@@ -61,7 +61,6 @@ module.exports = {
         mentions: mentions
       });
 
-      console.log(`[ADMIN] Everyone tag utilisé par ${participantJid} dans ${senderJid}`);
 
     } catch (error) {
       console.error('Error in everyone command:', error.message);

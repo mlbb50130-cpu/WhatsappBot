@@ -45,7 +45,6 @@ module.exports = {
           }
           imageTracker = group;
         } catch (error) {
-          console.log('Note: Using user-level image tracking for this command');
           imageTracker = user;
         }
       }

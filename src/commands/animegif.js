@@ -23,10 +23,8 @@ module.exports = {
         });
         if (response.data?.data?.image_url) {
           gifUrl = response.data.data.image_url;
-          console.log('[GIF] GIF loaded:', gifUrl);
         }
       } catch (error1) {
-        console.log('[GIF] GIF API failed, trying fallback');
         try {
           // Alternative GIF source
           const response = await axios.get('https://tenor.googleapis.com/v2/random?q=anime&key=AAAAABI8LbkAAAAA', {
@@ -36,7 +34,6 @@ module.exports = {
             gifUrl = response.data.results[0].media_formats.gif.url;
           }
         } catch (error2) {
-          console.log('[GIF] All APIs failed');
         }
       }
 

@@ -35,7 +35,6 @@ module.exports = {
           text: `${result.message}\n\n👤 Seuls les admins peuvent écrire\n👮 Modérateur: ${message.pushName || 'Admin'}`
         });
 
-        console.log(`${require('../../config').COLORS.CYAN}🔇 ${senderJid} muted${require('../../config').COLORS.RESET}`);
       } else {
         await sock.sendMessage(senderJid, {
           text: `❌ Erreur lors du silence:\n${result.error}`

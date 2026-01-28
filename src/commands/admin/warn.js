@@ -84,7 +84,6 @@ module.exports = {
           text: `⛔ **UTILISATEUR BANNI**\n\n👤 ${userToWarn}\n📝 Raison: ${reason}\n🚫 Avertissements: ${warnedUser.warnings}/3\n\n👮 Modérateur: ${message.pushName || 'Admin'}`
         });
 
-        console.log(`${require('../../config').COLORS.RED}⛔ ${userToWarn} banned from ${senderJid}${require('../../config').COLORS.RESET}`);
       } else {
         await warnedUser.save();
 
@@ -95,7 +94,6 @@ module.exports = {
           text: `⚠️ **AVERTISSEMENT ENREGISTRÉ**\n\n👤 ${userToWarn}\n📝 Raison: ${reason}\n📊 Avertissements: ${warnedUser.warnings}/3\n⏰ Avertissements restants avant ban: ${remainingWarnings}\n\n👮 Modérateur: ${message.pushName || 'Admin'}`
         });
 
-        console.log(`${require('../../config').COLORS.YELLOW}⚠️ Warning ${warnedUser.warnings}/3 for ${userToWarn} in ${senderJid}${require('../../config').COLORS.RESET}`);
       }
     } catch (error) {
       console.error('Error warning user:', error.message);

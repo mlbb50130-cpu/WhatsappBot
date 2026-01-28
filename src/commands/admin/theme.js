@@ -91,7 +91,6 @@ module.exports = {
         { upsert: true }
       );
 
-      console.log(`🎨 Theme "${themeName}" appliqué au groupe ${senderJid}`);
 
     } catch (error) {
       console.error('Error in theme command:', error.message);

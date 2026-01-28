@@ -47,7 +47,6 @@ function createWebServer(port = 3000) {
 
     // Démarrer le serveur
     app.listen(port, () => {
-        console.log(`🌐 Serveur web lancé sur http://localhost:${port}`);
     });
 
     return app;

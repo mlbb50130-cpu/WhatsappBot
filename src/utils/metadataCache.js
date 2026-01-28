@@ -13,14 +13,12 @@ async function getGroupMetadataWithCache(sock, groupJid) {
   // Vérifier le cache
   const cached = cache.get(groupJid);
   if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-    console.log(`📦 [CACHE] Métadonnées du groupe ${groupJid} (fraîches)`);
     return cached.data;
   }
 
   // Retry avec délai exponentiel
   for (let attempt = 0; attempt <= RETRY_DELAYS.length; attempt++) {
     try {
-      console.log(`🔄 Fetching metadata for ${groupJid} (attempt ${attempt + 1})`);
       const metadata = await sock.groupMetadata(groupJid);
       
       // Mettre en cache
@@ -29,7 +27,6 @@ async function getGroupMetadataWithCache(sock, groupJid) {
         timestamp: Date.now()
       });
       
-      console.log(`✅ Métadonnées récupérées et mises en cache pour ${groupJid}`);
       return metadata;
     } catch (error) {
       if (attempt < RETRY_DELAYS.length) {
@@ -41,7 +38,6 @@ async function getGroupMetadataWithCache(sock, groupJid) {
         
         // En cas d'erreur, retourner les données en cache même expirées si disponibles
         if (cached) {
-          console.log(`📦 Utilisation des métadonnées en cache (expirées) comme fallback`);
           return cached.data;
         }
         
@@ -56,7 +52,6 @@ async function getGroupMetadataWithCache(sock, groupJid) {
  */
 function invalidateGroupCache(groupJid) {
   cache.delete(groupJid);
-  console.log(`🗑️  Cache invalidé pour ${groupJid}`);
 }
 
 /**
@@ -74,7 +69,6 @@ function cleanupExpiredCache() {
   }
   
   if (count > 0) {
-    console.log(`🧹 ${count} entrées expirées supprimées du cache`);
   }
 }
 

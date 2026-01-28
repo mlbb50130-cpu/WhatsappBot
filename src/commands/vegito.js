@@ -47,7 +47,6 @@ module.exports = {
           }
           imageTracker = group;
         } catch (error) {
-          console.log('Note: Using user-level image tracking for this command');
           imageTracker = user;
         }
       } else {
@@ -64,7 +63,6 @@ module.exports = {
       try {
         await imageTracker.save();
       } catch (saveError) {
-        console.log('Note: Could not save image tracking for this context');
       }
 
       // Send image with caption

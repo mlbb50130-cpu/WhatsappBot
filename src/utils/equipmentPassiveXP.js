@@ -47,7 +47,6 @@ async function applyPassiveEquipmentXP() {
     });
 
     if (users.length === 0) {
-      console.log('📦 Aucun utilisateur avec équipements pour les XP passifs');
       return;
     }
 
@@ -77,7 +76,6 @@ async function applyPassiveEquipmentXP() {
       }
     }
 
-    console.log(`📦 XP passifs appliqués à ${updatedCount} utilisateurs`);
   } catch (error) {
     console.error('Erreur appliquant XP passifs des équipements:', error.message);
   }

@@ -63,7 +63,6 @@ module.exports = {
         });
 
         // Log to console
-        console.log(`${require('../../config').COLORS.RED}🚪 ${targetUsername} kicked from ${senderJid}${require('../../config').COLORS.RESET}`);
       } else {
         await sock.sendMessage(senderJid, {
           text: `❌ Erreur lors de l'expulsion:\n${result.error}`

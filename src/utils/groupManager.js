@@ -27,7 +27,6 @@ class GroupManager {
           }
         });
         await group.save();
-        console.log(`✅ Groupe créé: ${groupName}`);
       }
 
       return group;

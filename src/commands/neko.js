@@ -24,10 +24,8 @@ module.exports = {
         });
         if (response.data?.results?.[0]?.url) {
           imageUrl = response.data.results[0].url;
-          console.log('[NEKO] Image loaded from Nekos.best:', imageUrl);
         }
       } catch (apiError) {
-        console.log('[NEKO] Nekos.best API failed:', apiError.message);
       }
 
       const caption = isGroup ? MessageFormatter.elegantBox('🐱 𝔑𝔈𝔎𝔒 🐱', [{ label: '✨ Récompense', value: '+5 XP' }]) : MessageFormatter.elegantBox('🐱 𝔑𝔈𝔎𝔒 🐱', [{ label: '🐾 Type', value: 'Neko mignon' }]);
@@ -39,7 +37,6 @@ module.exports = {
             caption: caption
           });
         } catch (sendError) {
-          console.log('[NEKO] Failed to send image, using fallback');
           await sock.sendMessage(senderJid, {
             text: caption
           });

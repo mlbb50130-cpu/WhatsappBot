@@ -71,7 +71,6 @@ module.exports = {
           text: `✅ **RÉTROGRADATION EFFECTUÉE**\n\n👤 ${userToDemote}\n😔 N'est plus administrateur!\n\n👮 Rétrogradé par: ${message.pushName || 'Admin'}`
         });
 
-        console.log(`${require('../../config').COLORS.YELLOW}⬇️ ${userToDemote} demoted from admin in ${senderJid}${require('../../config').COLORS.RESET}`);
       } else {
         await sock.sendMessage(senderJid, {
           text: `❌ Erreur lors de la rétrogradation:\n${result.error}`

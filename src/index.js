@@ -23,7 +23,6 @@ async function connectToWhatsApp() {
 
   // Récupérer la dernière version de Baileys
   const { version, isLatest } = await fetchLatestBaileysVersion();
-  console.log(`[BAILEYS] Using version: ${version.join('.')}, isLatest: ${isLatest}`);
 
   sock = makeWASocket({
     version,
@@ -45,30 +44,15 @@ async function connectToWhatsApp() {
     // Display QR Code when generated
     if (qr) {
       qrShown = true;
-      console.log('\n╔════════════════════════════════════════╗');
-      console.log('║  📱 SCAN THIS QR WITH WHATSAPP       ║');
-      console.log('╚════════════════════════════════════════╝\n');
-      
       try {
         qrcode.generate(qr, { small: true });
       } catch (err) {
         console.log(qr);
       }
-      
-      console.log('\n✅ Steps:');
-      console.log('1. Open WhatsApp');
-      console.log('2. Menu > Linked Devices > New Device');
-      console.log('3. Scan QR code above');
-      console.log('4. Wait for connection\n');
     }
 
     // Connection states
-    if (connection === 'connecting') {
-      console.log('⏳ Connecting to WhatsApp...');
-    }
-
     if (connection === 'open') {
-      console.log('\n✅ BOT CONNECTED!\n');
       qrShown = false;
     }
 
@@ -77,11 +61,8 @@ async function connectToWhatsApp() {
       const shouldReconnect = (lastDisconnect?.error)?.output?.statusCode !== 401;
       
       if (shouldReconnect) {
-        console.log('⚠️  Disconnected. Reconnecting in 10 seconds...');
         await new Promise(resolve => setTimeout(resolve, 10000));
         return connectToWhatsApp();
-      } else {
-        console.log('❌ Logout. Delete tetsubot_session folder and restart.');
       }
     }
   });
@@ -99,7 +80,6 @@ async function connectToWhatsApp() {
       messageContent = message.message.extendedTextMessage.text;
     }
 
-    console.log(`[MESSAGE] Received: ${messageContent}`);
 
     const senderJid = message.key.remoteJid;
     const isGroup = senderJid.endsWith('@g.us');
@@ -117,7 +97,6 @@ async function connectToWhatsApp() {
   // Handle group updates
   sock.ev.on('groups.upsert', async (updates) => {
     for (const update of updates) {
-      console.log(`${config.COLORS.CYAN}📢 Group update: ${update.subject}${config.COLORS.RESET}`);
       
       try {
         const Group = require('./models/Group');
@@ -170,7 +149,6 @@ async function connectToWhatsApp() {
             mentions: ['22954959093@s.whatsapp.net']
           });
           
-          console.log(`[NEW GROUP] ${update.subject} - Waiting for activation`);
         }
       } catch (error) {
         console.error('[GROUP UPDATE ERROR]', error.message);
@@ -180,7 +158,6 @@ async function connectToWhatsApp() {
 
   // Handle participant updates (nouveau membre / membre qui part)
   sock.ev.on('group-participants.update', async (update) => {
-    console.log(`${config.COLORS.CYAN}👥 Group participants update in ${update.id}${config.COLORS.RESET}`);
     
     try {
       const groupJid = update.id;
@@ -289,8 +266,6 @@ Merci d'avoir participé! À bientôt! 🤗`;
 }
 
 async function main() {
-  console.log(`${config.COLORS.BLUE}🤖 TetsuBot - Otaku RPG WhatsApp Bot${config.COLORS.RESET}`);
-  console.log(`${config.COLORS.BLUE}═══════════════════════════════════${config.COLORS.RESET}\n`);
 
   // Connect to database
   await connectDatabase();
@@ -303,7 +278,6 @@ async function main() {
   setInterval(() => {
     EquipmentPassiveXP.applyPassiveEquipmentXP();
   }, 3600000); // Toutes les heures (3600000ms)
-  console.log(`${config.COLORS.GREEN}📦 Equipment Passive XP Scheduler started (every 1 hour)${config.COLORS.RESET}`);
 
   // Connect to WhatsApp
   sock = await connectToWhatsApp();
@@ -311,7 +285,6 @@ async function main() {
 
 // Handle graceful shutdown
 process.on('SIGINT', async () => {
-  console.log(`\n${config.COLORS.YELLOW}⏸️  Shutting down...${config.COLORS.RESET}`);
   if (sock) {
     await sock.end();
   }

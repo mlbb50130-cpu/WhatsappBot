@@ -85,7 +85,6 @@ class CacheManager {
       this.timestamps.delete(key);
     });
 
-    console.log(`[Cache] Cleaned up ${keysToDelete.length} expired entries`);
   }
 
   /**

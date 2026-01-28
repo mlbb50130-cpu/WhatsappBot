@@ -27,7 +27,11 @@ class ErrorHandler {
       logMessage += `\n${error.stack || error}`;
     }
 
-    console.log(`${prefix} ${logMessage}`);
+    if (level === 'error') {
+      console.error(`${prefix} ${logMessage}`);
+    } else if (level === 'warn') {
+      console.warn(`${prefix} ${logMessage}`);
+    }
     this.writeToFile(logMessage);
   }
 
@@ -110,7 +114,6 @@ class ErrorHandler {
         
         if (stats.mtime.getTime() < cutoff) {
           fs.unlinkSync(filePath);
-          console.log(`[Logger] Deleted old log: ${file}`);
         }
       });
     } catch (err) {

@@ -35,7 +35,6 @@ module.exports = {
           text: `${result.message}\n\n👥 Tous les membres peuvent écrire!\n👮 Modérateur: ${message.pushName || 'Admin'}`
         });
 
-        console.log(`${require('../../config').COLORS.CYAN}🔊 ${senderJid} unmuted${require('../../config').COLORS.RESET}`);
       } else {
         await sock.sendMessage(senderJid, {
           text: `❌ Erreur lors de la réactivation:\n${result.error}`

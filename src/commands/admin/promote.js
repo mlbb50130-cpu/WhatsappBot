@@ -64,7 +64,6 @@ module.exports = {
           text: `✅ **PROMOTION EFFECTUÉE**\n\n👤 ${userToPromote}\n👑 Est maintenant administrateur!\n\n👮 Promu par: ${message.pushName || 'Admin'}`
         });
 
-        console.log(`${require('../../config').COLORS.GREEN}✨ ${userToPromote} promoted to admin in ${senderJid}${require('../../config').COLORS.RESET}`);
       } else {
         await sock.sendMessage(senderJid, {
           text: `❌ Erreur lors de la promotion:\n${result.error}`

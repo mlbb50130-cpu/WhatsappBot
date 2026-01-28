@@ -25,7 +25,6 @@ module.exports = {
         }
       } catch (err) {
         error = err.message;
-        console.log('[WAIFU] Nekos.best failed, trying fallback...');
       }
 
       // Fallback vers une autre API
@@ -36,7 +35,6 @@ module.exports = {
             imageUrl = response.data.images[0].url;
           }
         } catch (err) {
-          console.log('[WAIFU] Fallback failed:', err.message);
         }
       }
 
