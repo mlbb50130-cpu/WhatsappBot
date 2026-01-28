@@ -17,6 +17,8 @@ module.exports = {
     try {
       let mediaMessage = null;
       let mediaType = null;
+      const mode = (args?.[0] || '').toLowerCase();
+      const useCrop = mode === 'crop' || mode === 'c';
 
       // Cas 1: Image en réponse
       if (message.message?.extendedTextMessage?.contextInfo?.quotedMessage) {
@@ -46,7 +48,7 @@ module.exports = {
       }
       else {
         return sock.sendMessage(senderJid, {
-          text: '❌ Usage: Réponds à une image/vidéo avec `!sticker`'
+          text: '❌ Usage: Réponds à une image avec `!sticker` (ou `!sticker crop`)'
         }, { quoted: message });
       }
 
@@ -78,10 +80,10 @@ module.exports = {
       try {
         processedBuffer = await sharp(imageBuffer)
           .resize(512, 512, {
-            fit: 'contain',
+            fit: useCrop ? 'cover' : 'contain',
             background: { r: 255, g: 255, b: 255, alpha: 0 }
           })
-          .webp({ quality: 50 })
+          .webp({ quality: 70 })
           .toBuffer();
       } catch (resizeErr) {
         console.error('[STICKER] Erreur redimensionnement:', resizeErr.message);
@@ -96,8 +98,8 @@ module.exports = {
         const sticker = new Sticker(processedBuffer, {
           pack: 'TetsuBot',
           author: 'Bot',
-          type: 'full',
-          quality: 50,
+          type: useCrop ? 'crop' : 'full',
+          quality: 70,
           background: 'transparent'
         });
         stickerBuffer = await sticker.toBuffer();
