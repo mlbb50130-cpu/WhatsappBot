@@ -1,5 +1,6 @@
 const RandomUtils = require('../utils/random');
 const MessageFormatter = require('../utils/messageFormatter');
+const QuestSystem = require('../utils/questSystem');
 
 module.exports = {
   name: 'loot',
@@ -42,6 +43,13 @@ module.exports = {
 
     // Add XP
     user.xp += loot.xp;
+
+    // Weekly quest progress (loots)
+    if (QuestSystem.needsWeeklyReset(user)) {
+      QuestSystem.resetWeeklyQuests(user);
+    }
+    QuestSystem.updateWeeklyProgress(user, 'loots', 1);
+
     await user.save();
 
     const rarityEmojis = {

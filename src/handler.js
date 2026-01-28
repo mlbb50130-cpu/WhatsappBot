@@ -100,6 +100,12 @@ async function addXP(jid, amount = config.XP_PER_MESSAGE) {
       
       // Vérifier et mettre à jour le rang automatiquement avec RankSystem
       const rankUpdate = RankSystem.checkAndUpdateRank(user);
+
+      // Weekly quest progress (level)
+      if (QuestSystem.needsWeeklyReset(user)) {
+        QuestSystem.resetWeeklyQuests(user);
+      }
+      QuestSystem.updateWeeklyProgress(user, 'level', levelInfo.level);
       
       await user.save();
       
