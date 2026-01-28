@@ -6,16 +6,17 @@ const OTAKU_CATEGORIES = {
   1: { name: 'PROFIL & LEVEL', commands: ['!profil - Voir ton profil', '!level - Voir ton niveau', '!xp - Voir ton XP', '!rank - Voir ton rang', '!stats - Voir tes stats', '!badges - Voir tes badges'] },
   2: { name: 'QUÊTES & RPG', commands: ['!quete - Quêtes', '!quotidien - Quotidienne', '!hebdo - Hebdomadaire', '!quetelundi - Quête lundi'] },
   3: { name: 'DUELS & COMBATS', commands: ['!duel @user - Défier', '!powerlevel - Power level', '!chakra - Chakra'] },
-  4: { name: 'QUIZ & JEUX', commands: ['!quiz - Quiz otaku', '!quizanime - Quiz anime', '!pfc - Pierre-Feuille-Ciseaux', '!roulette - Roulette russe'] },
+  4: { name: 'QUIZ & JEUX', commands: ['!quiz - Quiz otaku', '!quizanime - Quiz anime', '!reponse [A-D] - Répondre', '!tournoisquiz - Tournoi (admin)', '!pfc - Pierre-Feuille-Ciseaux', '!roulette - Roulette russe'] },
   5: { name: 'GOLD & ÉCONOMIE', commands: ['!work - Travailler 1h', '!daily - Bonus quotidien', '!gold - Solde gold'] },
-  6: { name: 'LOOT & INVENTAIRE', commands: ['!loot - Lancer un loot', '!inventaire - Inventaire', '!equip - Équiper', '!collection - Collection'] },
+  6: { name: 'LOOT & INVENTAIRE', commands: ['!loot - Lancer un loot', '!inventaire - Inventaire', '!equip - Équiper', '!equipement - Équipement', '!collection - Collection'] },
   7: { name: 'ANIME & MANGA', commands: ['!anime [nom] - Info anime', '!manga [nom] - Info manga', '!personnage [nom] - Info perso', '!voiranime - Voir anime'] },
   8: { name: 'IMAGES ANIME', commands: ['!waifu - Waifu', '!husbando - Husbando', '!neko - Chat anime', '!animegif - GIF anime'] },
-  9: { name: 'PERSONNAGES', commands: ['!bleach - Bleach', '!naruto - Naruto', '!gojo - Gojo', '!deku - Deku', '!madara - Madara', '!sukuna - Sukuna', '!vegito - Vegito', '!miku - Miku', '!zerotwo - Zero Two'] },
-  10: { name: 'FUN', commands: ['!blagueotaku - Blague', '!roast @user - Roast', '!chance - Chance', '!ship - Ship', '!sticker - Sticker'] },
-  11: { name: 'CLASSEMENTS', commands: ['!topanime - Top animes', '!topmanga - Top mangas', '!classement - Classement'] },
-  12: { name: 'ADMIN', commands: ['!theme [nom] - Changer theme', '!activatebot - Activer bot', '!admins - Admins group'] },
-  13: { name: 'BOT', commands: ['!menu - Menu', '!ping - Latence', '!info - Info bot', '!regles - Règles', '!whoami - Identité', '!help [cmd] - Aide', '!documentation - Documentation'] }
+  9: { name: 'PERSONNAGES', commands: ['!bleach - Bleach', '!naruto - Naruto', '!gojo - Gojo', '!deku - Deku', '!madara - Madara', '!sukuna - Sukuna', '!vegito - Vegito', '!miku - Miku', '!zerotwo - Zero Two', '!gokuui - Goku UI', '!jinwoo - Jinwoo', '!livai - Livai', '!makima - Makima', '!mikunakano - Miku Nakano', '!rengokudemon - Rengoku Demon', '!tengen - Tengen', '!tsunade - Tsunade', '!yami - Yami', '!yoruichi - Yoruichi', '!nino - Nino'] },
+  10: { name: 'FUN', commands: ['!blagueotaku - Blague', '!roast @user - Roast', '!chance - Chance', '!ship - Ship', '!sticker - Sticker', '!viewonce - Vue unique (vidéo)'] },
+  11: { name: 'CLASSEMENTS', commands: ['!classement - Classement', '!topanime - Top animes', '!topmanga - Top mangas'] },
+  12: { name: 'ADMIN', commands: ['!theme [nom] - Changer theme', '!activatebot - Activer bot', '!deactivatebot - Désactiver bot', '!admins - Admins group', '!selectpack - Choisir pack', '!setmodule - Modules', '!allowhentai on/off - NSFW', '!warn @user - Avertir', '!kick @user - Expulser', '!lock - Verrouiller', '!unlock - Déverrouiller', '!mute - Muet', '!unmute - Unmute', '!promote @user - Promote', '!demote @user - Demote', '!clear - Nettoyer', '!groupinfo - Info groupe', '!setxp - Fixer XP'] },
+  13: { name: 'NSFW', commands: ['!hentai - Hentai', '!hentaivd - Hentai vidéo', '!nsfw - NSFW', '!boahancook - Boa Hancock'] },
+  14: { name: 'BOT', commands: ['!menu - Menu', '!ping - Latence', '!info - Info bot', '!regles - Règles', '!whoami - Identité', '!help [cmd] - Aide', '!documentation - Documentation', '!assets - Assets', '!chakratest - Debug chakra'] }
 };
 
 // Menu pour le pack MLBB
@@ -32,17 +33,18 @@ const COMPLET_CATEGORIES = {
   1: { name: 'PROFIL & LEVEL', commands: ['!profil - Voir ton profil', '!level - Voir ton niveau', '!xp - Voir ton XP', '!rank - Voir ton rang', '!stats - Voir tes stats', '!badges - Voir tes badges'] },
   2: { name: 'QUÊTES & RPG', commands: ['!quete - Quêtes', '!quotidien - Quotidienne', '!hebdo - Hebdomadaire', '!quetelundi - Quête lundi'] },
   3: { name: 'DUELS & COMBATS', commands: ['!duel @user - Défier', '!powerlevel - Power level', '!chakra - Chakra'] },
-  4: { name: 'QUIZ & JEUX', commands: ['!quiz - Quiz otaku', '!quizanime - Quiz anime', '!pfc - Pierre-Feuille-Ciseaux', '!roulette - Roulette russe'] },
+  4: { name: 'QUIZ & JEUX', commands: ['!quiz - Quiz otaku', '!quizanime - Quiz anime', '!reponse [A-D] - Répondre', '!tournoisquiz - Tournoi (admin)', '!pfc - Pierre-Feuille-Ciseaux', '!roulette - Roulette russe'] },
   5: { name: 'GOLD & ÉCONOMIE', commands: ['!work - Travailler 1h', '!daily - Bonus quotidien', '!gold - Solde gold'] },
-  6: { name: 'LOOT & INVENTAIRE', commands: ['!loot - Lancer un loot', '!inventaire - Inventaire', '!equip - Équiper', '!collection - Collection'] },
+  6: { name: 'LOOT & INVENTAIRE', commands: ['!loot - Lancer un loot', '!inventaire - Inventaire', '!equip - Équiper', '!equipement - Équipement', '!collection - Collection'] },
   7: { name: 'ANIME & MANGA', commands: ['!anime [nom] - Info anime', '!manga [nom] - Info manga', '!personnage [nom] - Info perso', '!voiranime - Voir anime'] },
   8: { name: 'IMAGES ANIME', commands: ['!waifu - Waifu', '!husbando - Husbando', '!neko - Chat anime', '!animegif - GIF anime'] },
-  9: { name: 'PERSONNAGES', commands: ['!bleach - Bleach', '!naruto - Naruto', '!gojo - Gojo', '!deku - Deku', '!madara - Madara', '!sukuna - Sukuna', '!vegito - Vegito', '!miku - Miku', '!zerotwo - Zero Two'] },
-  10: { name: 'FUN', commands: ['!blagueotaku - Blague', '!roast @user - Roast', '!chance - Chance', '!ship - Ship', '!sticker - Sticker'] },
-  11: { name: 'MLBB', commands: ['!mlbb - Menu MLBB', '!hero <nom> - Infos héros', '!build <nom> - Builds', '!counter <nom> - Counters', '!combo <nom> - Combos', '!meta - Tier list', '!lane <role> - Guide lane', '!team <nom> - Équipe'] },
-  12: { name: 'CLASSEMENTS', commands: ['!topanime - Top animes', '!topmanga - Top mangas', '!classement - Classement'] },
-  13: { name: 'ADMIN', commands: ['!theme [nom] - Changer theme', '!selectpack - Changer pack', '!setmodule - Modules', '!activatebot - Activer bot', '!admins - Admins'] },
-  14: { name: 'BOT', commands: ['!menu - Menu', '!ping - Latence', '!info - Info bot', '!regles - Règles', '!whoami - Identité', '!help [cmd] - Aide', '!documentation - Documentation'] }
+  9: { name: 'PERSONNAGES', commands: ['!bleach - Bleach', '!naruto - Naruto', '!gojo - Gojo', '!deku - Deku', '!madara - Madara', '!sukuna - Sukuna', '!vegito - Vegito', '!miku - Miku', '!zerotwo - Zero Two', '!gokuui - Goku UI', '!jinwoo - Jinwoo', '!livai - Livai', '!makima - Makima', '!mikunakano - Miku Nakano', '!rengokudemon - Rengoku Demon', '!tengen - Tengen', '!tsunade - Tsunade', '!yami - Yami', '!yoruichi - Yoruichi', '!nino - Nino'] },
+  10: { name: 'FUN', commands: ['!blagueotaku - Blague', '!roast @user - Roast', '!chance - Chance', '!ship - Ship', '!sticker - Sticker', '!viewonce - Vue unique (vidéo)'] },
+  11: { name: 'MLBB', commands: ['!mlbb - Menu MLBB', '!hero <nom> - Infos héros', '!heroes - Liste héros', '!build <nom> - Builds', '!counter <nom> - Counters', '!combo <nom> - Combos', '!meta - Tier list', '!lane <role> - Guide lane', '!tip - Conseil', '!team <nom> - Équipe', '!join <team> - Rejoindre', '!leave <team> - Quitter'] },
+  12: { name: 'CLASSEMENTS', commands: ['!classement - Classement', '!topanime - Top animes', '!topmanga - Top mangas'] },
+  13: { name: 'ADMIN', commands: ['!theme [nom] - Changer theme', '!selectpack - Changer pack', '!setmodule - Modules', '!activatebot - Activer bot', '!deactivatebot - Désactiver bot', '!admins - Admins', '!allowhentai on/off - NSFW', '!warn @user - Avertir', '!kick @user - Expulser', '!lock - Verrouiller', '!unlock - Déverrouiller', '!mute - Muet', '!unmute - Unmute', '!promote @user - Promote', '!demote @user - Demote', '!clear - Nettoyer', '!groupinfo - Info groupe', '!setxp - Fixer XP'] },
+  14: { name: 'NSFW', commands: ['!hentai - Hentai', '!hentaivd - Hentai vidéo', '!nsfw - NSFW', '!boahancook - Boa Hancock'] },
+  15: { name: 'BOT', commands: ['!menu - Menu', '!ping - Latence', '!info - Info bot', '!regles - Règles', '!whoami - Identité', '!help [cmd] - Aide', '!documentation - Documentation', '!assets - Assets', '!chakratest - Debug chakra'] }
 };
 
 const CATEGORIES = OTAKU_CATEGORIES; // Par défaut

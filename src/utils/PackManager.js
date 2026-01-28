@@ -23,7 +23,7 @@ const PACK_COMMANDS = {
     'gokuui', 'jinwoo', 'livai', 'makima', 'mikunakano', 'rengokudemon', 'tengen', 'tsunade', 'yami', 'yoruichi',
     'nino',
     // Fun
-    'blagueotaku', 'roast', 'chance', 'sticker', 's', 'stick',
+    'blagueotaku', 'roast', 'chance', 'sticker', 's', 'stick', 'viewonce', 'vo', 'vonce',
     // Anime & Manga
     'anime', 'manga', 'mangadex', 'personnage', 'voiranime',
     // Classements
@@ -87,7 +87,7 @@ const PACK_COMMANDS = {
     'gokuui', 'jinwoo', 'livai', 'makima', 'mikunakano', 'rengokudemon', 'tengen', 'tsunade', 'yami', 'yoruichi',
     'nino',
     // Fun (OTAKU)
-    'blagueotaku', 'roast', 'chance', 'sticker', 's', 'stick',
+    'blagueotaku', 'roast', 'chance', 'sticker', 's', 'stick', 'viewonce', 'vo', 'vonce',
     // Anime & Manga (OTAKU)
     'anime', 'manga', 'mangadex', 'personnage', 'voiranime',
     // Classements (OTAKU)
