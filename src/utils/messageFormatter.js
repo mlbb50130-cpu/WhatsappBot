@@ -4,6 +4,21 @@
  */
 
 class MessageFormatter {
+  static normalizeTitle(text = '') {
+    const map = {
+      '𝔄': 'A', '𝔅': 'B', '𝔆': 'C', '𝔇': 'D', '𝔈': 'E', '𝔉': 'F', '𝔊': 'G',
+      '𝔋': 'H', '𝔌': 'I', '𝔍': 'J', '𝔎': 'K', '𝔏': 'L', '𝔐': 'M', '𝔑': 'N',
+      '𝔒': 'O', '𝔓': 'P', '𝔔': 'Q', '𝔕': 'R', '𝔖': 'S', '𝔗': 'T', '𝔘': 'U',
+      '𝔙': 'V', '𝔚': 'W', '𝔛': 'X', '𝔜': 'Y', '𝔝': 'Z',
+      '𝔞': 'a', '𝔟': 'b', '𝔠': 'c', '𝔡': 'd', '𝔢': 'e', '𝔣': 'f', '𝔤': 'g',
+      '𝔥': 'h', '𝔦': 'i', '𝔧': 'j', '𝔨': 'k', '𝔩': 'l', '𝔪': 'm', '𝔫': 'n',
+      '𝔬': 'o', '𝔭': 'p', '𝔮': 'q', '𝔯': 'r', '𝔰': 's', '𝔱': 't', '𝔲': 'u',
+      '𝔳': 'v', '𝔴': 'w', '𝔵': 'x', '𝔶': 'y', '𝔷': 'z',
+      'ℭ': 'C', 'ℌ': 'H', 'ℑ': 'I', 'ℜ': 'R', 'ℨ': 'Z'
+    };
+
+    return String(text).replace(/[𝔄𝔅𝔆𝔇𝔈𝔉𝔊𝔋𝔌𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔𝔕𝔖𝔗𝔘𝔙𝔚𝔛𝔜𝔝𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰𝔱𝔲𝔳𝔴𝔵𝔶𝔷ℭℌℑℜℨ]/g, (ch) => map[ch] || ch);
+  }
   /**
    * Create a styled message box
    * @param {string} title - Title of the box
@@ -12,8 +27,9 @@ class MessageFormatter {
    * @returns {string} Formatted message
    */
   static box(title, content, emoji = '📝') {
+    const safeTitle = this.normalizeTitle(title);
     return `╔════════════════════════════════════════╗
-║ ${emoji} ${title.padEnd(35)} ║
+║ ${emoji} ${safeTitle.padEnd(35)} ║
 ╚════════════════════════════════════════╝
 
 ${content}`;
@@ -43,8 +59,9 @@ ${content}`;
    * @returns {string} Simple box
    */
   static simpleBox(title, content) {
+    const safeTitle = this.normalizeTitle(title);
     const maxLength = 40;
-    const paddedTitle = title.padEnd(maxLength - 2).substring(0, maxLength - 2);
+    const paddedTitle = safeTitle.padEnd(maxLength - 2).substring(0, maxLength - 2);
     return `╔${'═'.repeat(maxLength)}╗
 ║ ${paddedTitle} ║
 ╚${'═'.repeat(maxLength)}╝
@@ -180,14 +197,15 @@ ${content}`;
    * @returns {string} Formatted elegant box
    */
   static elegantBox(title, items = []) {
+    const safeTitle = this.normalizeTitle(title);
     const lines = items.map((item, index) => {
       return `├ ☆ ${item.label.padEnd(12)}: ${item.value}`;
     });
     
     const content = lines.join('\n');
-    const borderLength = Math.max(title.length + 6, 30);
+    const borderLength = Math.max(safeTitle.length + 6, 30);
     
-    return `╭${'─'.repeat(borderLength)}╮\n├ ☆ ${title}\n${content}\n╰${'─'.repeat(borderLength)}╯`;
+    return `╭${'─'.repeat(borderLength)}╮\n├ ☆ ${safeTitle}\n${content}\n╰${'─'.repeat(borderLength)}╯`;
   }
 
   /**
@@ -197,14 +215,15 @@ ${content}`;
    * @returns {string} Formatted elegant section
    */
   static elegantSection(title, items = []) {
+    const safeTitle = this.normalizeTitle(title);
     const lines = items.map((item, index) => {
       return `├ ☆ ${item}`;
     });
     
     const content = lines.join('\n');
-    const borderLength = Math.max(title.length + 6, 30);
+    const borderLength = Math.max(safeTitle.length + 6, 30);
     
-    return `╭───⟪ ${title} ⟫───╮\n${content}\n╰${'─'.repeat(borderLength)}╯`;
+    return `╭───⟪ ${safeTitle} ⟫───╮\n${content}\n╰${'─'.repeat(borderLength)}╯`;
   }
 
   /**

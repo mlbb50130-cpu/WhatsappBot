@@ -32,7 +32,7 @@ function loadCommands() {
           const command = require(filePath);
           if (command.name) {
             commands.set(command.name.toLowerCase(), command);
-            console.log(`${config.COLORS.CYAN}📄 Command loaded: ${command.name}${config.COLORS.RESET}`);
+            // Command loaded
           }
         } catch (error) {
           console.error(`${config.COLORS.RED}❌ Error loading command ${file}: ${error.message}${config.COLORS.RESET}`);
@@ -42,7 +42,7 @@ function loadCommands() {
   };
   
   loadDir(commandsPath);
-  console.log(`${config.COLORS.GREEN}✅ ${commands.size} commands loaded${config.COLORS.RESET}`);
+  // Commands loaded
 }
 
 // Get or create user
@@ -167,11 +167,7 @@ async function handleMessage(sock, message, isGroup, groupData) {
     }
     MessageFormatter.setTheme(groupDoc?.theme);
 
-    console.log(`[HANDLER] Message: "${messageContent}"`);
-    console.log(`[HANDLER] From: ${participantJid}`);
-    console.log(`[HANDLER] Group/Chat JID: ${senderJid}`);
-    console.log(`[HANDLER] Is Group: ${isGroup}`);
-    console.log(`---`);
+
 
     // TOUJOURS enregistrer les messages (même les non-commandes)
     const user = await getOrCreateUser(participantJid, username);
@@ -389,7 +385,7 @@ Cela activera les fonctions du bot dans ce groupe.
     const spamThresholdMs = 1000; // Plus rapide
 
     if (antiSpamEnabled && timeSinceLastCmd < spamThresholdMs && timeSinceLastCmd > 0) {
-      console.log(`[SPAM DETECTED] ${participantJid} attempted command spam`);
+
       
       // Appliquer le ban de 30 minutes
       const banUntil = new Date(now + 30 * 60 * 1000); // 30 minutes
@@ -429,6 +425,7 @@ Cela activera les fonctions du bot dans ce groupe.
 
     const xpBefore = userLatest.xp || 0;
 
+    console.log(`[CMD] ${participantJid} -> ${config.PREFIX}${commandName} ${args.join(' ')}`.trim());
     // Execute command
     await command.execute(sock, message, args, userLatest, isGroup, groupData);
 

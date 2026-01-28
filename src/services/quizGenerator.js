@@ -25,7 +25,8 @@ async function generateAnimeQuizQuestions(count = 5, topic = 'anime et manga (di
   }
 
   const prompt = `Génère ${count} questions de quiz difficiles sur ${topic}.\n` +
-    `Chaque question doit avoir 4 options. Retourne uniquement un JSON array d'objets: ` +
+    `Chaque question doit avoir 4 options. Retourne UNIQUEMENT un JSON array valide ` +
+    `d'objets avec des guillemets doubles: ` +
     `[{"question":"...","options":["A","B","C","D"],"correct":0-3,"reward":20-30}].`;
 
   const response = await axios.post(
@@ -38,7 +39,8 @@ async function generateAnimeQuizQuestions(count = 5, topic = 'anime et manga (di
         }
       ],
       generationConfig: {
-        temperature: 0.7
+        temperature: 0.7,
+        response_mime_type: 'application/json'
       }
     },
     {

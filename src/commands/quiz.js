@@ -111,14 +111,19 @@ module.exports = {
       options += `  ${String.fromCharCode(65 + index)}. ${option}\n`;
     });
 
+    const timeLimitMs = generatedQuiz ? 60000 : 30000;
+    const timeLabel = generatedQuiz ? '60s' : '30s';
+
     const questionItems = [
+      ...(generatedQuiz ? [{ label: 'Source', value: 'AI Quiz' }] : []),
       { label: 'Question', value: quiz.question },
       { label: 'Options', value: options.trim() },
-      { label: 'Temps', value: '30s' },
+      { label: 'Temps', value: timeLabel },
       { label: 'Récompense', value: `+${quiz.reward} XP` }
     ];
 
-    const quizMessage = MessageFormatter.elegantBox('𝔔𝔘𝔌𝔝 𝔒𝔗𝔄𝔎𝔘', questionItems);
+    const quizTitle = generatedQuiz ? '𝔔𝔘𝔌𝔝 𝔒𝔗𝔄𝔎𝔘 - AI' : '𝔔𝔘𝔌𝔝 𝔒𝔗𝔄𝔎𝔘';
+    const quizMessage = MessageFormatter.elegantBox(quizTitle, questionItems);
     await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(quizMessage));
 
     user.quizUsageToday.count += 1;
@@ -146,6 +151,6 @@ module.exports = {
         }
         global.quizSessions.delete(senderJid);
       }
-    }, 30000);
+    }, timeLimitMs);
   }
 };

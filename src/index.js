@@ -187,6 +187,7 @@ async function connectToWhatsApp() {
       const action = update.action; // 'add' ou 'remove'
       const participants = update.participants;
       const Group = require('./models/Group');
+      let groupName = update.subject || groupJid;
       let groupDoc = await Group.findOne({ groupJid }).catch(() => null);
       if (!groupDoc) {
         groupDoc = new Group({
@@ -199,7 +200,7 @@ async function connectToWhatsApp() {
       const autoGoodbye = groupDoc?.features?.autoGoodbye ?? true;
       
       // Récupérer les infos du groupe avec cache
-      let groupName = groupJid;
+      groupName = groupJid;
       try {
         const groupMetadata = await getGroupMetadataWithCache(sock, groupJid);
         if (groupMetadata) {
