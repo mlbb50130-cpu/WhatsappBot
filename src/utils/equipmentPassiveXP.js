@@ -12,7 +12,7 @@ const RARITY_XP_RATES = {
  * @param {Object} equipped - Objets équipés (head, body, hands, feet)
  * @returns {number} Total XP par heure
  */
-function calculateEquipmentXP(equipped) {
+function calculateEquipmentXP(equipped, inventory = []) {
   if (!equipped) return 0;
 
   let totalXP = 0;
@@ -20,8 +20,13 @@ function calculateEquipmentXP(equipped) {
 
   slots.forEach(slot => {
     const item = equipped[slot];
-    if (item && item.name && item.rarity) {
-      const xpPerHour = RARITY_XP_RATES[item.rarity] || 0;
+    if (item && item.name) {
+      let rarity = item.rarity;
+      if (!rarity && Array.isArray(inventory)) {
+        const invItem = inventory.find(i => i.itemId === item.itemId || i.name === item.name);
+        rarity = invItem?.rarity;
+      }
+      const xpPerHour = RARITY_XP_RATES[rarity] || 0;
       totalXP += xpPerHour;
     }
   });
@@ -59,7 +64,7 @@ async function applyPassiveEquipmentXP() {
         }
 
         // Calculer les XP à ajouter
-        const equipmentXP = calculateEquipmentXP(user.equipped);
+        const equipmentXP = calculateEquipmentXP(user.equipped, user.inventory);
 
         if (equipmentXP > 0) {
           user.xp += equipmentXP;
@@ -81,7 +86,7 @@ async function applyPassiveEquipmentXP() {
 /**
  * Obtient le détail des XP gagnés par les équipements
  */
-function getEquipmentXPDetails(equipped) {
+function getEquipmentXPDetails(equipped, inventory = []) {
   if (!equipped) return { items: [], totalXP: 0 };
 
   const items = [];
@@ -90,12 +95,17 @@ function getEquipmentXPDetails(equipped) {
 
   slots.forEach(slot => {
     const item = equipped[slot];
-    if (item && item.name && item.rarity) {
-      const xpPerHour = RARITY_XP_RATES[item.rarity] || 0;
+    if (item && item.name) {
+      let rarity = item.rarity;
+      if (!rarity && Array.isArray(inventory)) {
+        const invItem = inventory.find(i => i.itemId === item.itemId || i.name === item.name);
+        rarity = invItem?.rarity;
+      }
+      const xpPerHour = RARITY_XP_RATES[rarity] || 0;
       items.push({
         slot,
         name: item.name,
-        rarity: item.rarity,
+        rarity,
         xpPerHour
       });
       totalXP += xpPerHour;

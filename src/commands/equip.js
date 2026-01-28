@@ -63,7 +63,7 @@ module.exports = {
       }
 
       // Afficher le passif XP mis à jour
-      const equipmentXPDetails = equipmentPassiveXP.getEquipmentXPDetails(user.equipped);
+      const equipmentXPDetails = equipmentPassiveXP.getEquipmentXPDetails(user.equipped, user.inventory);
       if (equipmentXPDetails && equipmentXPDetails.totalXP > 0) {
         message_text += `\n\n📦 *Passif XP Équipement:*`;
         equipmentXPDetails.items.forEach(eq => {

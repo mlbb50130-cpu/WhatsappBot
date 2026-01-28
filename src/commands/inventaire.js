@@ -48,7 +48,7 @@ Tes items:`;
     inventoryText += `\n═════════════════════════════════════`;
 
     // Ajouter le passif XP des équipements
-    const equipmentXPDetails = equipmentPassiveXP.getEquipmentXPDetails(user.equipped);
+    const equipmentXPDetails = equipmentPassiveXP.getEquipmentXPDetails(user.equipped, user.inventory);
     if (equipmentXPDetails && equipmentXPDetails.totalXP > 0) {
       inventoryText += `\n\n📦 PASSIF XP:`;
       equipmentXPDetails.items.forEach(item => {

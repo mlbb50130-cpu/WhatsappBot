@@ -48,7 +48,7 @@ module.exports = {
     const createdDate = new Date(user.createdAt).toLocaleDateString('fr-FR');
     
     // Passif XP des équipements
-    const equipmentXPDetails = equipmentPassiveXP.getEquipmentXPDetails(user.equipped);
+    const equipmentXPDetails = equipmentPassiveXP.getEquipmentXPDetails(user.equipped, user.inventory);
     let equipmentSection = '';
     
     if (equipmentXPDetails && equipmentXPDetails.totalXP > 0) {
