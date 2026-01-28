@@ -84,13 +84,15 @@ module.exports = {
       
       // Enregistrer ce quiz comme répondu (historique utilisateur)
       if (!user.quizHistory) user.quizHistory = [];
-      if (!user.quizHistory.includes(session.quizIndex)) {
-        user.quizHistory.push(session.quizIndex);
+      if (Number.isInteger(session.quizIndex) && session.quizIndex >= 0) {
+        if (!user.quizHistory.includes(session.quizIndex)) {
+          user.quizHistory.push(session.quizIndex);
+        }
+        
+        // 🌍 ENREGISTRER GLOBALEMENT pour qu'il ne revienne jamais
+        if (!global.answeredQuizzes) global.answeredQuizzes = new Set();
+        global.answeredQuizzes.add(session.quizIndex);
       }
-      
-      // 🌍 ENREGISTRER GLOBALEMENT pour qu'il ne revienne jamais
-      if (!global.answeredQuizzes) global.answeredQuizzes = new Set();
-      global.answeredQuizzes.add(session.quizIndex);
       
       await user.save();
 

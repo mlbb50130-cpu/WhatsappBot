@@ -2,12 +2,13 @@ const RandomUtils = require('../utils/random');
 const MessageFormatter = require('../utils/messageFormatter');
 const fs = require('fs');
 const path = require('path');
+const { generateAnimeQuizQuestions } = require('../services/quizGenerator');
 
 module.exports = {
   name: 'quiz',
   description: 'Lancer un quiz otaku',
   category: 'QUIZ',
-  usage: '!quiz',
+  usage: '!quiz [sujet]',
   adminOnly: false,
   groupOnly: true,
   cooldown: 10,
@@ -28,9 +29,41 @@ module.exports = {
     const senderJid = message.key.remoteJid;
     const participantJid = message.key.participant || senderJid;
 
-    // Charger tous les quizzes
+    if (global.quizSessions && global.quizSessions.has(senderJid)) {
+      return;
+    }
+
+    const today = new Date();
+    if (!user.quizUsageToday) {
+      user.quizUsageToday = { lastReset: today, count: 0 };
+    }
+
+    const lastReset = new Date(user.quizUsageToday.lastReset || 0);
+    const isSameDay = lastReset.toDateString() === today.toDateString();
+    if (!isSameDay) {
+      user.quizUsageToday.lastReset = today;
+      user.quizUsageToday.count = 0;
+    }
+
+    if (user.quizUsageToday.count >= 10) {
+      await sock.sendMessage(senderJid, { text: MessageFormatter.warning('Limite atteinte: 10 quiz par jour.') });
+      return;
+    }
+
+    let generatedQuiz = null;
+    const topic = args.join(' ').trim() || 'anime et manga (difficile)';
+    try {
+      const questions = await generateAnimeQuizQuestions(1, topic);
+      if (questions.length) {
+        generatedQuiz = questions[0];
+      }
+    } catch (error) {
+      console.error('Error generating quiz:', error);
+    }
+
+    // Charger tous les quizzes (fallback si IA indisponible)
     const allQuizzes = this.getQuizzes();
-    if (allQuizzes.length === 0) {
+    if (!generatedQuiz && allQuizzes.length === 0) {
       await sock.sendMessage(senderJid, { text: MessageFormatter.error('Aucun quiz disponible.') });
       return;
     }
@@ -43,7 +76,7 @@ module.exports = {
 
     // Trouver un quiz qui n'a pas été répondu (exclure aussi les quiz répondus globalement)
     let quiz = null;
-    let availableQuizzes = allQuizzes.filter((_, index) => 
+    let availableQuizzes = allQuizzes.filter((_, index) =>
       !user.quizHistory.includes(index) && !global.answeredQuizzes.has(index)
     );
     
@@ -62,12 +95,16 @@ module.exports = {
       availableQuizzes = allQuizzes;
     }
 
-    // Choisir un quiz aléatoire parmi les disponibles
-    const randomIndex = Math.floor(Math.random() * availableQuizzes.length);
-    quiz = availableQuizzes[randomIndex];
-    
-    // Trouver l'index réel du quiz dans le tableau complet
-    const actualIndex = allQuizzes.findIndex(q => q.question === quiz.question);
+    // Choisir un quiz généré (si dispo), sinon un quiz aléatoire
+    if (generatedQuiz) {
+      quiz = generatedQuiz;
+    } else {
+      const randomIndex = Math.floor(Math.random() * availableQuizzes.length);
+      quiz = availableQuizzes[randomIndex];
+    }
+
+    // Trouver l'index réel du quiz dans le tableau complet (si quiz local)
+    const actualIndex = generatedQuiz ? -1 : allQuizzes.findIndex(q => q.question === quiz.question);
     
     let options = '';
     quiz.options.forEach((option, index) => {
@@ -83,6 +120,9 @@ module.exports = {
 
     const quizMessage = MessageFormatter.elegantBox('𝔔𝔘𝔌𝔝 𝔒𝔗𝔄𝔎𝔘', questionItems);
     await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(quizMessage));
+
+    user.quizUsageToday.count += 1;
+    await user.save();
 
     // Store quiz session par GROUPE (pas par utilisateur) pour que tous puissent répondre
     if (!global.quizSessions) global.quizSessions = new Map();
