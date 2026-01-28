@@ -1,7 +1,6 @@
 const sharp = require('sharp');
 const { Sticker } = require('wa-sticker-formatter');
-const axios = require('axios');
-const crypto = require('crypto');
+const { downloadContentFromMessage } = require('@whiskeysockets/baileys');
 const MessageFormatter = require('../utils/messageFormatter');
 
 module.exports = {
@@ -17,6 +16,7 @@ module.exports = {
     
     try {
       let mediaMessage = null;
+      let mediaType = null;
 
       // Cas 1: Image en réponse
       if (message.message?.extendedTextMessage?.contextInfo?.quotedMessage) {
@@ -24,8 +24,10 @@ module.exports = {
         
         if (quotedMsg.imageMessage) {
           mediaMessage = quotedMsg.imageMessage;
+          mediaType = 'image';
         } else if (quotedMsg.videoMessage) {
           mediaMessage = quotedMsg.videoMessage;
+          mediaType = 'video';
         } else {
           return sock.sendMessage(senderJid, {
             text: '❌ Veuillez répondre à une image ou une vidéo valide'
@@ -35,10 +37,12 @@ module.exports = {
       // Cas 2: Image directement attachée
       else if (message.message?.imageMessage) {
         mediaMessage = message.message.imageMessage;
+        mediaType = 'image';
       }
       // Cas 3: Vidéo directement attachée
       else if (message.message?.videoMessage) {
         mediaMessage = message.message.videoMessage;
+        mediaType = 'video';
       }
       else {
         return sock.sendMessage(senderJid, {
@@ -46,10 +50,16 @@ module.exports = {
         }, { quoted: message });
       }
 
-      // Télécharger via l'URL du média
+      if (mediaType !== 'image') {
+        return sock.sendMessage(senderJid, {
+          text: '❌ La conversion en sticker fonctionne uniquement avec les images pour le moment.'
+        }, { quoted: message });
+      }
+
+      // Télécharger le média via Baileys
       let imageBuffer = null;
       try {
-        imageBuffer = await downloadAndDecryptMedia(mediaMessage);
+        imageBuffer = await downloadMediaBuffer(mediaMessage, mediaType);
       } catch (downloadErr) {
         console.error('[STICKER] Erreur téléchargement:', downloadErr.message);
         return sock.sendMessage(senderJid, {
@@ -133,76 +143,26 @@ module.exports = {
 };
 
 /**
- * Télécharge et déchiffre une image WhatsApp
- * @param {*} mediaMessage - Message média avec URL et mediaKey
- * @returns {Promise<Buffer>} Buffer de l'image déchiffrée
+ * Télécharge un média WhatsApp avec Baileys
+ * @param {*} mediaMessage - Message média Baileys
+ * @param {string} mediaType - Type de média (image, video, etc)
+ * @returns {Promise<Buffer>} Buffer du média
  */
-async function downloadAndDecryptMedia(mediaMessage) {
+async function downloadMediaBuffer(mediaMessage, mediaType) {
   try {
-    const mediaUrl = mediaMessage?.url;
-    const mediaKey = mediaMessage?.mediaKey;
+    const stream = await downloadContentFromMessage(mediaMessage, mediaType);
+    let buffer = Buffer.from([]);
 
-    if (!mediaUrl) {
-      throw new Error('URL du média non trouvée');
+    for await (const chunk of stream) {
+      buffer = Buffer.concat([buffer, chunk]);
     }
 
-    // Télécharger le fichier chiffré
-    const response = await axios.get(mediaUrl, {
-      responseType: 'arraybuffer',
-      timeout: 30000,
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-        'Accept': '*/*'
-      }
-    });
-
-    let buffer = Buffer.from(response.data);
-
-    // Si mediaKey existe, déchiffrer le buffer
-    if (mediaKey) {
-      try {
-        buffer = decryptMedia(buffer, mediaKey, mediaMessage.type || 'image');
-      } catch (decryptErr) {
-        console.warn('[STICKER] Déchiffrement échoué, utilisant le buffer brut:', decryptErr.message);
-        // Continuer avec le buffer brut si déchiffrement échoue
-      }
-    }
-
-    // Valider que c'est une image
-    if (buffer.length < 100) {
-      throw new Error('Fichier trop petit pour être une image valide');
+    if (!buffer || buffer.length === 0) {
+      throw new Error('Fichier téléchargé vide');
     }
 
     return buffer;
   } catch (error) {
     throw new Error(`Téléchargement échoué: ${error.message}`);
-  }
-}
-
-/**
- * Déchiffre un média WhatsApp en utilisant le mediaKey
- * @param {Buffer} buffer - Buffer chiffré
- * @param {Buffer} mediaKey - Clé de déchiffrement
- * @param {string} mediaType - Type de média (image, video, etc)
- * @returns {Buffer} Buffer déchiffré
- */
-function decryptMedia(buffer, mediaKey, mediaType = 'image') {
-  try {
-    // Créer une clé HMAC à partir de mediaKey
-    const iV = mediaKey.slice(0, 12);
-    const cipherKey = mediaKey.slice(16, 32);
-
-    // Extraire le MAC (derniers 10 bytes)
-    const encData = buffer.slice(0, -10);
-    const mac = buffer.slice(-10);
-
-    // Déchiffrer avec AES-256-CBC
-    const decipher = crypto.createDecipheriv('aes-256-cbc', cipherKey, iV);
-    let decrypted = decipher.update(encData);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
-
-    return decrypted;
-  } catch (error) {
-    throw new Error(`Déchiffrement échoué: ${error.message}`);
   }
 }
