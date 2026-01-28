@@ -90,7 +90,7 @@ module.exports = {
         }, { quoted: message });
       }
 
-      // Créer le sticker avec wa-sticker-formatter
+      // Créer le sticker avec wa-sticker-formatter (fallback vers WEBP direct)
       let stickerBuffer = null;
       try {
         const sticker = new Sticker(processedBuffer, {
@@ -102,10 +102,8 @@ module.exports = {
         });
         stickerBuffer = await sticker.toBuffer();
       } catch (stickerErr) {
-        console.error('[STICKER] Erreur création sticker:', stickerErr.message);
-        return sock.sendMessage(senderJid, {
-          text: '❌ Erreur lors de la création du sticker. Réessaie.'
-        }, { quoted: message });
+        console.warn('[STICKER] Sticker formatter KO, envoi WEBP direct:', stickerErr.message);
+        stickerBuffer = processedBuffer;
       }
 
       // Vérifier la taille du sticker
