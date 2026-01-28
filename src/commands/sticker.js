@@ -98,7 +98,7 @@ module.exports = {
           author: 'Bot',
           type: 'full',
           quality: 50,
-          background: true
+          background: 'transparent'
         });
         stickerBuffer = await sticker.toBuffer();
       } catch (stickerErr) {
