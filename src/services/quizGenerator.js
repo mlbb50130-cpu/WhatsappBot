@@ -1,7 +1,7 @@
 const axios = require('axios');
 
-const DEFAULT_MODEL = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
+const DEFAULT_MODEL = process.env.GEMINI_MODEL || 'gemini-1.5-flash-002';
+const GEMINI_API_BASE = 'https://generativelanguage.googleapis.com';
 
 function sanitizeQuestions(items) {
   if (!Array.isArray(items)) return [];
@@ -29,27 +29,42 @@ async function generateAnimeQuizQuestions(count = 5, topic = 'anime et manga (di
     `d'objets avec des guillemets doubles: ` +
     `[{"question":"...","options":["A","B","C","D"],"correct":0-3,"reward":20-30}].`;
 
-  const response = await axios.post(
-    `${GEMINI_API_URL}/${DEFAULT_MODEL}:generateContent?key=${apiKey}`,
-    {
-      contents: [
-        {
-          role: 'user',
-          parts: [{ text: `Tu es un générateur de quiz anime/manga. Réponds en JSON strict.\n${prompt}` }]
-        }
-      ],
-      generationConfig: {
-        temperature: 0.7,
-        response_mime_type: 'application/json'
+  const payload = {
+    contents: [
+      {
+        role: 'user',
+        parts: [{ text: `Tu es un générateur de quiz anime/manga. Réponds en JSON strict.\n${prompt}` }]
       }
-    },
-    {
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      timeout: 30000
+    ],
+    generationConfig: {
+      temperature: 0.7,
+      response_mime_type: 'application/json'
     }
-  );
+  };
+
+  const requestConfig = {
+    headers: { 'Content-Type': 'application/json' },
+    timeout: 30000
+  };
+
+  let response;
+  try {
+    response = await axios.post(
+      `${GEMINI_API_BASE}/v1beta/models/${DEFAULT_MODEL}:generateContent?key=${apiKey}`,
+      payload,
+      requestConfig
+    );
+  } catch (error) {
+    if (error?.response?.status === 404) {
+      response = await axios.post(
+        `${GEMINI_API_BASE}/v1/models/${DEFAULT_MODEL}:generateContent?key=${apiKey}`,
+        payload,
+        requestConfig
+      );
+    } else {
+      throw error;
+    }
+  }
 
   const text = response.data?.candidates?.[0]?.content?.parts?.[0]?.text || '[]';
   let parsed = [];
