@@ -107,10 +107,10 @@ const userSchema = new mongoose.Schema({
     default: []
   },
   equipped: {
-    head: { itemId: String, name: String },
-    body: { itemId: String, name: String },
-    hands: { itemId: String, name: String },
-    feet: { itemId: String, name: String }
+    head: { itemId: String, name: String, rarity: String },
+    body: { itemId: String, name: String, rarity: String },
+    hands: { itemId: String, name: String, rarity: String },
+    feet: { itemId: String, name: String, rarity: String }
   },
   lastEquipmentXpTime: {
     type: Date,

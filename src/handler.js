@@ -9,6 +9,7 @@ const QuestSystem = require('./utils/questSystem');
 const BadgeSystem = require('./utils/badgeSystem');
 const RankSystem = require('./utils/rankSystem');
 const PackManager = require('./utils/PackManager');
+const MessageFormatter = require('./utils/messageFormatter');
 
 const commands = new Map();
 
@@ -131,6 +132,7 @@ async function addXP(jid, amount = config.XP_PER_MESSAGE) {
 
 // Main message handler
 async function handleMessage(sock, message, isGroup, groupData) {
+  MessageFormatter.setTheme(groupData?.theme);
   try {
     // Extract message content (Baileys 7.0 compatible)
     let messageContent = '';
@@ -364,8 +366,10 @@ Cela activera les fonctions du bot dans ce groupe.
     const now = Date.now();
     const lastCmdTime = userLatest.lastCommandTime ? new Date(userLatest.lastCommandTime).getTime() : 0;
     const timeSinceLastCmd = now - lastCmdTime;
+    const antiSpamEnabled = groupData?.features?.antiSpam ?? true;
+    const spamThresholdMs = 1000; // Plus rapide
 
-    if (timeSinceLastCmd < 1500 && timeSinceLastCmd > 0) { // Moins de 1500ms = spam
+    if (antiSpamEnabled && timeSinceLastCmd < spamThresholdMs && timeSinceLastCmd > 0) {
       console.log(`[SPAM DETECTED] ${participantJid} attempted command spam`);
       
       // Appliquer le ban de 30 minutes

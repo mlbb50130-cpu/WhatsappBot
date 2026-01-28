@@ -58,6 +58,8 @@ module.exports = {
       });
       equipmentLines.push(`⚡ Total: +${equipmentXPDetails.totalXP} XP/heure`);
       equipmentSection = `\n${MessageFormatter.elegantSection('📦 PASSIF XP', equipmentLines)}`;
+    } else {
+      equipmentSection = `\n${MessageFormatter.elegantSection('📦 PASSIF XP', ['Aucun équipement actif'])}`;
     }
 
     const profile = `${MessageFormatter.elegantBox('𝔗𝔬𝔫 𝔓𝔯𝔬𝔣𝔦𝔩', profileInfo)}

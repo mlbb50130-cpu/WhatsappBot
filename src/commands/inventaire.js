@@ -56,6 +56,8 @@ Tes items:`;
         inventoryText += `\n  ${rarityEmojis[item.rarity]} ${item.name}: +${item.xpPerHour}/h`;
       });
       inventoryText += `\n  ⚡ Total: +${equipmentXPDetails.totalXP} XP/h`;
+    } else {
+      inventoryText += `\n\n📦 PASSIF XP:\n  Aucun équipement actif`;
     }
 
     inventoryText += `\n═════════════════════════════════════`;
