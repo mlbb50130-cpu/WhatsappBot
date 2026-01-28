@@ -29,9 +29,10 @@ module.exports = {
   },
 
   // 🎮 Game Features
-  XP_PER_MESSAGE: parseInt(process.env.XP_PER_MESSAGE) || 5,
+  XP_PER_MESSAGE: parseInt(process.env.XP_PER_MESSAGE) || 20,
   XP_COOLDOWN: parseInt(process.env.XP_COOLDOWN) || 5000,
   COMMAND_COOLDOWN: 1000,
+  XP_COMMAND_BONUS: parseInt(process.env.XP_COMMAND_BONUS) || 100,
   
   // 📊 Levels & Ranks
   RANKS: {

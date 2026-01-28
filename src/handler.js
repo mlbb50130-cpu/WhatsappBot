@@ -427,8 +427,22 @@ Cela activera les fonctions du bot dans ce groupe.
     // Set cooldown
     CooldownManager.set(participantJid, commandName, command.cooldown * 1000 || 1000);
 
+    const xpBefore = userLatest.xp || 0;
+
     // Execute command
     await command.execute(sock, message, args, userLatest, isGroup, groupData);
+
+    // Apply command XP bonus for RPG packs when XP was gained
+    if (isGroup && config.XP_COMMAND_BONUS > 0) {
+      const activePack = PackManager.getActivePack(senderJid);
+      if (activePack === 'otaku' || activePack === 'complet') {
+        const userAfter = await User.findOne({ jid: participantJid });
+        if (userAfter && (userAfter.xp || 0) > xpBefore) {
+          userAfter.xp += config.XP_COMMAND_BONUS;
+          await userAfter.save();
+        }
+      }
+    }
 
   } catch (error) {
     console.error(`${config.COLORS.RED}❌ Handler Error: ${error.message}${config.COLORS.RESET}`);
