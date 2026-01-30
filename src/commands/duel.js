@@ -94,18 +94,18 @@ module.exports = {
       return;
     }
     // Résumé des duels
-    let result = `⚔️ DUELS (${duelDone}) ⚔️\n\n`;
-    result += `👤 ${user.username} VS 👤 ${opponent.username}\n`;
-    result += `Chakra utilisé: ${totalChakraUsed}\nChakra restant: ${user.chakra}\n\n`;
+    let duelSummary = `⚔️ DUELS (${duelDone}) ⚔️\n\n`;
+    duelSummary += `👤 ${user.username} VS 👤 ${opponent.username}\n`;
+    duelSummary += `Chakra utilisé: ${totalChakraUsed}\nChakra restant: ${user.chakra}\n\n`;
     duelResults.forEach((r, idx) => {
-      result += `#${idx+1} `;
+      duelSummary += `#${idx+1} `;
       if (r.winner === 'attacker') {
-        result += `🏆 ${user.username} gagne (+30 XP) [${r.attackerPower} vs ${r.defenderPower}]\n`;
+        duelSummary += `🏆 ${user.username} gagne (+30 XP) [${r.attackerPower} vs ${r.defenderPower}]\n`;
       } else {
-        result += `💔 ${opponent.username} gagne (+30 XP) [${r.attackerPower} vs ${r.defenderPower}]\n`;
+        duelSummary += `💔 ${opponent.username} gagne (+30 XP) [${r.attackerPower} vs ${r.defenderPower}]\n`;
       }
     });
-    await sock.sendMessage(senderJid, { text: result });
+    await sock.sendMessage(senderJid, { text: duelSummary });
     return;
 
     // Reset chakra if 24h passed

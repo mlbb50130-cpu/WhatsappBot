@@ -131,8 +131,8 @@ module.exports = {
     // Store quiz session par GROUPE (pas par utilisateur) pour que tous puissent répondre
     if (!global.quizSessions) global.quizSessions = new Map();
     // Charger tous les quizzes locaux
-    const allQuizzes = this.getQuizzes();
-    if (allQuizzes.length === 0) {
+    const allQuizzes2 = this.getQuizzes();
+    if (allQuizzes2.length === 0) {
       await sock.sendMessage(senderJid, { text: MessageFormatter.error('Aucun quiz disponible.') });
       return;
     }
@@ -144,40 +144,40 @@ module.exports = {
     if (!user.quizHistory) user.quizHistory = [];
 
     // Trouver un quiz qui n'a pas été répondu (exclure aussi les quiz répondus globalement)
-    let quiz = null;
-    let availableQuizzes = allQuizzes.filter((_, index) =>
+    let quiz2 = null;
+    let availableQuizzes2 = allQuizzes2.filter((_, index) =>
       !user.quizHistory.includes(index) && !global.answeredQuizzes.has(index)
     );
 
     // Si TOUS les quizzes ont été répondus, afficher un message
-    if (availableQuizzes.length === 0) {
+    if (availableQuizzes2.length === 0) {
       const congratsItems = [
-        { label: '🎉 Statut', value: `TOUS les ${allQuizzes.length} quizzes répondus!` },
+        { label: '🎉 Statut', value: `TOUS les ${allQuizzes2.length} quizzes répondus!` },
         { label: '👑 Titre', value: 'Maître du Quiz Otaku' },
         { label: '🔄 Action', value: 'Historique réinitialisé' }
       ];
-      const congratsMsg = MessageFormatter.elegantBox('🎉 𝑉𝐼𝒞𝒯𝒪𝑅𝐼𝐸! 🎉', congratsItems);
+      const congratsMsg = MessageFormatter.elegantBox('🎉 𝑉𝐼𝐶𝒯𝒪𝑅𝐼𝐸! 🎉', congratsItems);
       await sock.sendMessage(senderJid, { text: congratsMsg });
       // Réinitialiser SEULEMENT après avoir affiché le message
       user.quizHistory = [];
       global.answeredQuizzes.clear();
-      availableQuizzes = allQuizzes;
+      availableQuizzes2 = allQuizzes2;
     }
 
     // Choisir un quiz aléatoire
-    const randomIndex = Math.floor(Math.random() * availableQuizzes.length);
-    quiz = availableQuizzes[randomIndex];
+    const randomIndex2 = Math.floor(Math.random() * availableQuizzes2.length);
+    quiz2 = availableQuizzes2[randomIndex2];
 
     // Trouver l'index réel du quiz dans le tableau complet
-    const actualIndex = allQuizzes.findIndex(q => q.question === quiz.question);
+    const actualIndex2 = allQuizzes2.findIndex(q => q.question === quiz2.question);
 
-    let options = '';
-    quiz.options.forEach((option, index) => {
-      options += `  ${String.fromCharCode(65 + index)}. ${option}\n`;
+    let options2 = '';
+    quiz2.options.forEach((option, index) => {
+      options2 += `  ${String.fromCharCode(65 + index)}. ${option}\n`;
     });
 
-    const timeLimitMs = 30000;
-    const timeLabel = '30s';
+    const timeLimitMs2 = 30000;
+    const timeLabel2 = '30s';
 
     const questionItems = [
       { label: 'Question', value: quiz.question },
