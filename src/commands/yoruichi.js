@@ -15,6 +15,21 @@ module.exports = {
 
   async execute(sock, message, args, user, isGroup, groupData) {
     const senderJid = message.key.remoteJid;
+
+    // Check daily limit for assets (10 images = XP limit)
+    const today = new Date();
+    if (!user.assetUsageToday) {
+      user.assetUsageToday = { lastReset: today, count: 0 };
+    }
+
+    const lastReset = new Date(user.assetUsageToday.lastReset || 0);
+    const isSameDay = lastReset.toDateString() === today.toDateString();
+    if (!isSameDay) {
+      user.assetUsageToday.lastReset = today;
+      user.assetUsageToday.count = 0;
+    }
+
+    const allowXp = user.assetUsageToday.count < 10;
     const assetPath = path.join(__dirname, '../asset/Yoruichi');
 
     try {
@@ -45,14 +60,17 @@ module.exports = {
       }
 
       // Add XP only if in group
-      if (isGroup) {
+      if (isGroup && allowXp) {
         user.xp += 15;
-        await user.save();
       }
+
+      // Increment usage counter
+      user.assetUsageToday.count += 1;
+      await user.save();
 
       await sock.sendMessage(senderJid, {
         image: imageBuffer,
-        caption: isGroup ? MessageFormatter.elegantBox('💜 𝔜𝔒𝔕𝔘𝔌𝔆𝔋𝔌 💜', [{ label: '✨ Récompense', value: '+15 XP' }]) : MessageFormatter.elegantBox('💜 𝔜𝔒𝔕𝔘𝔌𝔆𝔋𝔌 💜', [{ label: '📺 Type', value: 'Personnage' }])
+        caption: isGroup ? MessageFormatter.elegantBox('💜 𝔜𝔬𝔞𝔠𝔦𝔧𝔦 💜', [{ label: '✨ Récompense', value: allowXp ? '+15 XP' : '🚫 Limite atteinte (10/jour)' }]) : MessageFormatter.elegantBox('💜 𝔜𝔞𝔰𝔞𝔰𝔠𝔞𝔞 💜', [{ label: '📺 Type', value: 'Personnage' }])
       });
     } catch (error) {
       console.error('Error in yoruichi command:', error.message);

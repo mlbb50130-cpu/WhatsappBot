@@ -17,6 +17,21 @@ module.exports = {
   async execute(sock, message, args, user, isGroup, groupData) {
     const senderJid = message.key.remoteJid;
 
+    // Check daily limit for assets (10 images = XP limit)
+    const today = new Date();
+    if (!user.assetUsageToday) {
+      user.assetUsageToday = { lastReset: today, count: 0 };
+    }
+
+    const lastReset = new Date(user.assetUsageToday.lastReset || 0);
+    const isSameDay = lastReset.toDateString() === today.toDateString();
+    if (!isSameDay) {
+      user.assetUsageToday.lastReset = today;
+      user.assetUsageToday.count = 0;
+    }
+
+    const allowXp = user.assetUsageToday.count < 10;
+
     try {
       // Get all image files from Madara folder
       const assetPath = path.join(__dirname, '../asset/Madara');
@@ -57,19 +72,22 @@ module.exports = {
 
       // Send image with caption
       const caption = isGroup 
-        ? MessageFormatter.elegantBox('🌑 𝔐𝔄𝔇𝔄𝔕𝔄 🌑', [{ label: '✨ Récompense', value: '+15 XP' }])
-        : MessageFormatter.elegantBox('🌑 𝔐𝔄𝔇𝔄𝔕𝔄 🌑', [{ label: '📺 Type', value: 'Personnage' }]);
+        ? MessageFormatter.elegantBox('🌑 𝔐𝔄𝔇𝔄𝔯𝔞 🌑', [{ label: '✨ Récompense', value: allowXp ? '+50 XP' : '🚫 Limite atteinte (10/jour)' }])
+        : MessageFormatter.elegantBox('🌑 𝔐𝔄𝔇𝔄𝔞𝔯𝔞 🌑', [{ label: '📺 Type', value: 'Personnage' }]);
 
       await sock.sendMessage(senderJid, {
         image: imageBuffer,
         caption: caption
       });
 
-      // Add XP only if in group
-      if (isGroup) {
-        user.xp += 15;
-        await user.save();
+      // Add XP only if in group AND within daily limit
+      if (isGroup && allowXp) {
+        user.xp += 50;
       }
+
+      // Increment usage counter
+      user.assetUsageToday.count += 1;
+      await user.save();
 
     } catch (error) {
       console.error('[MADARA ERROR]', error);

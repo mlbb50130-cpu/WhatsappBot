@@ -15,6 +15,21 @@ module.exports = {
 
   async execute(sock, message, args, user, isGroup, groupData) {
     const senderJid = message.key.remoteJid;
+
+    // Check daily limit for assets (10 images = XP limit)
+    const today = new Date();
+    if (!user.assetUsageToday) {
+      user.assetUsageToday = { lastReset: today, count: 0 };
+    }
+
+    const lastReset = new Date(user.assetUsageToday.lastReset || 0);
+    const isSameDay = lastReset.toDateString() === today.toDateString();
+    if (!isSameDay) {
+      user.assetUsageToday.lastReset = today;
+      user.assetUsageToday.count = 0;
+    }
+
+    const allowXp = user.assetUsageToday.count < 10;
     const assetPath = path.join(__dirname, '../asset/Bleach');
 
     try {
@@ -62,18 +77,21 @@ module.exports = {
         return;
       }
 
-      if (isGroup) {
-        user.xp += 2;
-        await user.save();
-      }
-
       const captionMsg = isGroup
-        ? MessageFormatter.elegantBox('⚔️ 𝔅𝔏𝔈𝔄𝔆𝔋 ⚔️', [{ label: '✨ Récompense', value: '+2 XP' }])
-        : MessageFormatter.elegantBox('⚔️ 𝔅𝔏𝔈𝔄𝔆𝔋 ⚔️', [{ label: '📺 Série', value: 'Bleach' }]);
+        ? MessageFormatter.elegantBox('⚔️ 𝔅𝔏𝔈𝔄𝔠𝔥 ⚔️', [{ label: '✨ Récompense', value: allowXp ? '+2 XP' : '🚫 Limite atteinte (10/jour)' }])
+        : MessageFormatter.elegantBox('⚔️ 𝔅𝔏𝔈𝔄𝔠𝔥 ⚔️', [{ label: '📺 Série', value: 'Bleach' }]);
       await sock.sendMessage(senderJid, {
         image: imageBuffer,
         caption: captionMsg
       });
+
+      if (isGroup && allowXp) {
+        user.xp += 2;
+      }
+
+      // Increment usage counter
+      user.assetUsageToday.count += 1;
+      await user.save();
     } catch (error) {
       console.error('Error in bleach command:', error.message);
       await sock.sendMessage(senderJid, { text: MessageFormatter.error('Erreur!') });

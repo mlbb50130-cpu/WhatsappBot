@@ -13,6 +13,21 @@ module.exports = {
   async execute(sock, message, args, user, isGroup, groupData) {
     const senderJid = message.key.remoteJid;
 
+    // Check daily limit for assets (10 images = XP limit)
+    const today = new Date();
+    if (!user.assetUsageToday) {
+      user.assetUsageToday = { lastReset: today, count: 0 };
+    }
+
+    const lastReset = new Date(user.assetUsageToday.lastReset || 0);
+    const isSameDay = lastReset.toDateString() === today.toDateString();
+    if (!isSameDay) {
+      user.assetUsageToday.lastReset = today;
+      user.assetUsageToday.count = 0;
+    }
+
+    const allowXp = user.assetUsageToday.count < 10;
+
     try {
       let gifUrl = null;
 
@@ -40,7 +55,7 @@ module.exports = {
       if (gifUrl) {
         try {
           const captionMsg = isGroup 
-            ? MessageFormatter.elegantBox('🎬 𝔊𝔌𝔉 𝔄𝔑𝔌𝔐𝔈 🎬', [{ label: '✨ Récompense', value: '+5 XP' }])
+            ? MessageFormatter.elegantBox('🎬 𝔊𝔌𝔉 𝔄𝔑𝔌𝔐𝔈 🎬', [{ label: '✨ Récompense', value: allowXp ? '+5 XP' : '🚫 Limite atteinte (10/jour)' }])
             : MessageFormatter.elegantBox('🎬 𝔊𝔌𝔉 𝔄𝔑𝔌𝔐𝔈 🎬', [{ label: '🎬 Type', value: 'GIF aléatoire' }]);
           await sock.sendMessage(senderJid, {
             image: { url: gifUrl },
@@ -56,7 +71,9 @@ module.exports = {
         await sock.sendMessage(senderJid, { text: fallback });
       }
 
-      if (isGroup) if (isGroup) user.xp += 5; // Seulement en groupe // Seulement en groupe
+      if (isGroup && allowXp) if (isGroup && allowXp) user.xp += 5; // Seulement en groupe // Seulement en groupe
+      // Increment usage counter
+      user.assetUsageToday.count += 1;
       await user.save();
 
     } catch (error) {

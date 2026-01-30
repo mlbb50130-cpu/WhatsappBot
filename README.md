@@ -5,8 +5,8 @@ Un bot WhatsApp complet et modulaire avec système RPG otaku, niveaux, quêtes, 
 ## 🎯 Caractéristiques
 
 - **🎖️ Système de niveaux** - Gagnez XP automatiquement par messages
-- **⚔️ Duels PvP** - Affrontez d'autres joueurs
-- **📚 Quiz Otaku** - Questions sur anime/manga (99+ questions)
+- **⚔️ Duels PvP** - Affrontez d'autres joueurs (duels simples ou multiples!)
+- **📚 Quiz Otaku** - Questions sur anime/manga (200+ questions solides!)
 - **🎁 Système de Loot** - Ouvrez des coffres aléatoires
 - **🎨 Images Anime** - Waifu, Husbando, GIF anime
 - **🎯 Quêtes** - Missions quotidiennes et hebdomadaires
@@ -86,9 +86,10 @@ ADMIN_JIDS=120363xxxxxx@g.us,120363xxxxxx@g.us
 
 ### ⚔️ Duels & Combats
 ```
-!duel @user    - Défier un utilisateur
-!powerlevel    - Voir ton power level
-!chakra        - Voir ton chakra
+!duel @user           - Défier un utilisateur (1 duel)
+!duel @user 5         - Défier 5 duels d'affilée (max 10)
+!powerlevel           - Voir ton power level
+!chakra               - Voir ton chakra
 ```
 
 ### 📚 Quiz
@@ -191,8 +192,8 @@ ADMIN_JIDS=120363xxxxxx@g.us,120363xxxxxx@g.us
 
 ### Gain d'XP
 - 💬 Message: +5 XP (cooldown 5s)
-- 🎯 Quiz: +25 XP
-- ⚔️ Duel gagné: +30 XP
+- 🎯 Quiz: +15-30 XP (selon difficulté)
+- ⚔️ Duel gagné: +30 XP (par duel)
 - 🎁 Loot: +10-100 XP (selon rareté)
 - 🎰 Roulette: +100 XP (victoire) / +20 XP (défaite)
 - ⚙️ Équipement: +10-80 XP/h passif (selon rareté)
@@ -342,26 +343,18 @@ Les contributions sont bienvenues! N'hésite pas à:
 4. Push (`git push origin feature/AmazingFeature`)
 5. Ouvre une Pull Request
 
-## � Changements Récents (v1.1.0)
+## 🐛 Changements Récents (v1.2.0)
 
 ### ✨ Nouvelles Fonctionnalités
-- **🎰 Système de Roulette** - Jeu avec gold quotidien
-- **⚙️ Équipement Passif XP** - Gain XP automatique toutes les heures
-- **🛡️ Anti-Spam Avancé** - Détection et ban des utilisations rapides
-- **🎪 Tournoi Interactif** - Configuration 4 étapes pour quiz personnalisés
-- **🪙 Système de Gold** - Monnaie avec réinitialisation quotidienne
+- **🎯 200+ Quiz Anime** - Naruto, One Piece, Bleach, My Hero, Jujutsu Kaisen, Demon Slayer, Black Clover, Attack on Titan, Death Note, Code Geass, Steins;Gate et plus!
+- **⚔️ Duels Multiples** - Défiez un adversaire 2-10 fois d'affilée avec résumé final
+- **📊 Quiz Amélioré** - Format JSON propre, questions variées, récompenses adaptées (15-30 XP)
 
 ### 🔧 Améliorations
-- Cooldown augmenté de 3s à 6s (par défaut)
-- Restriction des commandes admin au bot lui-même
-- Messages avec images formatées visuellement
-- XP gagnés par messages en groupe
-
-### 🐛 Corrections
-- XP rewards tournoi (async/await)
-- Cooldown de loot corrigé
-- Gestion des valeurs null en équipement
-- Messages XP en groupe
+- Commande duel: Syntaxe `!duel @user [nombre]` (max 10 duels)
+- Duels multiples: Résumé avec statistiques complètes
+- Quiz nettoyé: Code dupliqué supprimé, performance optimisée
+- Quiz système: 200 questions couvrant 15+ anime/manga séries
 
 ## �📄 Licence
 

@@ -181,6 +181,10 @@ const userSchema = new mongoose.Schema({
     lastReset: { type: Date, default: Date.now },
     count: { type: Number, default: 0 }
   },
+  assetUsageToday: {
+    lastReset: { type: Date, default: Date.now },
+    count: { type: Number, default: 0 }
+  },
   createdAt: {
     type: Date,
     default: Date.now

@@ -13,6 +13,21 @@ module.exports = {
   async execute(sock, message, args, user, isGroup, groupData) {
     const senderJid = message.key.remoteJid;
 
+    // Check daily limit for assets (10 images = XP limit)
+    const today = new Date();
+    if (!user.assetUsageToday) {
+      user.assetUsageToday = { lastReset: today, count: 0 };
+    }
+
+    const lastReset = new Date(user.assetUsageToday.lastReset || 0);
+    const isSameDay = lastReset.toDateString() === today.toDateString();
+    if (!isSameDay) {
+      user.assetUsageToday.lastReset = today;
+      user.assetUsageToday.count = 0;
+    }
+
+    const allowXp = user.assetUsageToday.count < 10;
+
     try {
       let imageUrl = null;
 
@@ -28,7 +43,7 @@ module.exports = {
       } catch (apiError) {
       }
 
-      const caption = isGroup ? MessageFormatter.elegantBox('🐱 𝔑𝔈𝔎𝔒 🐱', [{ label: '✨ Récompense', value: '+5 XP' }]) : MessageFormatter.elegantBox('🐱 𝔑𝔈𝔎𝔒 🐱', [{ label: '🐾 Type', value: 'Neko mignon' }]);
+      const caption = isGroup ? MessageFormatter.elegantBox('🐱 𝔑𝔈𝔎𝔒 🐱', [{ label: '✨ Récompense', value: allowXp ? '+5 XP' : '🚫 Limite atteinte (10/jour)' }]) : MessageFormatter.elegantBox('🐱 𝔊𝔈𝔎𝔦 🐱', [{ label: '🐾 Type', value: 'Neko mignon' }]);
       
       if (imageUrl) {
         try {
@@ -47,7 +62,9 @@ module.exports = {
         });
       }
 
-      if (isGroup) if (isGroup) user.xp += 5; // Seulement en groupe // Seulement en groupe
+      if (isGroup && allowXp) user.xp += 5; // Seulement en groupe
+      // Increment usage counter
+      user.assetUsageToday.count += 1;
       await user.save();
 
     } catch (error) {

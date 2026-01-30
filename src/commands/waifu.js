@@ -13,6 +13,21 @@ module.exports = {
   async execute(sock, message, args, user, isGroup, groupData) {
     const senderJid = message.key.remoteJid;
 
+    // Check daily limit for assets (10 images = XP limit)
+    const today = new Date();
+    if (!user.assetUsageToday) {
+      user.assetUsageToday = { lastReset: today, count: 0 };
+    }
+
+    const lastReset = new Date(user.assetUsageToday.lastReset || 0);
+    const isSameDay = lastReset.toDateString() === today.toDateString();
+    if (!isSameDay) {
+      user.assetUsageToday.lastReset = today;
+      user.assetUsageToday.count = 0;
+    }
+
+    const allowXp = user.assetUsageToday.count < 10;
+
     try {
       let imageUrl = null;
       let error = null;
@@ -41,10 +56,12 @@ module.exports = {
       // Si aucune image n'a pu être trouvée
       if (!imageUrl) {
         const waifuItems = [{ label: '⚠️ Status', value: 'APIs indisponibles' }];
-        const text = `${MessageFormatter.elegantBox('🥰 𝔚𝔄𝔌𝔉𝔘 🥰', waifuItems)}
-➕ 5 XP`;
+        const text = `${MessageFormatter.elegantBox('🥰 𝔠𝔞𝔦𝔞𝔣𝔞𝔠𝔠𝔩 🥰', waifuItems)}
+➕ ${allowXp ? '5 XP' : '🚫 Limite atteinte (10/jour)'}`;
         await sock.sendMessage(senderJid, { text });
-        if (isGroup) user.xp += 5;
+        if (isGroup && allowXp) user.xp += 5;
+        // Increment usage counter
+        user.assetUsageToday.count += 1;
         await user.save();
         return;
       }
@@ -55,9 +72,7 @@ module.exports = {
           responseType: 'arraybuffer',
           timeout: 10000
         });
-        const imageBuffer = Buffer.from(imageResponse.data, 'binary');
-
-        const caption = isGroup ? '🥰 *Une belle waifu!*\n\n➕ 5 XP ✨' : '🥰 *Une belle waifu!*';
+        const imageBuffer = Buffer.from(imageResponse.data, 'b' + (allowXp ? '5 XP ✨' : '🚫 Limite atteinte (10/jour)') : '🥰 *Une belle waifu!*';
 
         await sock.sendMessage(senderJid, {
           image: imageBuffer,
@@ -66,9 +81,13 @@ module.exports = {
       } catch (downloadErr) {
         console.error('[WAIFU] Error downloading image:', downloadErr.message);
         await sock.sendMessage(senderJid, {
-          text: '🥰 Une belle waifu pour toi!\n\n➕ 5 XP'
+          text: '🥰 Une belle waifu pour toi!\n\n➕ ' + (allowXp ? '5 XP' : '🚫 Limite atteinte (10/jour)')
         });
       }
+
+      if (isGroup && allowXp) user.xp += 5;
+      // Increment usage counter
+      user.assetUsageToday.count += 1
 
       user.xp += 5;
       await user.save();
