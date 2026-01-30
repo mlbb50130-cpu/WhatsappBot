@@ -49,20 +49,9 @@ module.exports = {
       return;
     }
 
-    let generatedQuiz = null;
-    const topic = args.join(' ').trim() || 'anime et manga (difficile)';
-    try {
-      const questions = await generateAnimeQuizQuestions(1, topic);
-      if (questions.length) {
-        generatedQuiz = questions[0];
-      }
-    } catch (error) {
-      console.error('Error generating quiz:', error);
-    }
-
     // Charger tous les quizzes (fallback si IA indisponible)
     const allQuizzes = this.getQuizzes();
-    if (!generatedQuiz && allQuizzes.length === 0) {
+    if (allQuizzes.length === 0) {
       await sock.sendMessage(senderJid, { text: MessageFormatter.error('Aucun quiz disponible.') });
       return;
     }
@@ -73,8 +62,7 @@ module.exports = {
     // Charger l'historique des quizzes répondus (utilisateur)
     if (!user.quizHistory) user.quizHistory = [];
 
-    // Trouver un quiz qui n'a pas été répondu (exclure aussi les quiz répondus globalement)
-    let quiz = null;
+    // Trouver un quiz qui n'a pas été répondu
     let availableQuizzes = allQuizzes.filter((_, index) =>
       !user.quizHistory.includes(index) && !global.answeredQuizzes.has(index)
     );
@@ -86,7 +74,7 @@ module.exports = {
         { label: '👑 Titre', value: 'Maître du Quiz Otaku' },
         { label: '🔄 Action', value: 'Historique réinitialisé' }
       ];
-      const congratsMsg = MessageFormatter.elegantBox('🎉 𝔉É𝔏𝔌𝔆𝔌𝔗𝔄𝔗𝔌𝔒𝔑𝔖! 🎉', congratsItems);
+      const congratsMsg = MessageFormatter.elegantBox('🎉 FÉLICITATIONS! 🎉', congratsItems);
       await sock.sendMessage(senderJid, { text: congratsMsg });
       // Réinitialiser SEULEMENT après avoir affiché le message
       user.quizHistory = [];
@@ -94,90 +82,20 @@ module.exports = {
       availableQuizzes = allQuizzes;
     }
 
-    // Choisir un quiz généré (si dispo), sinon un quiz aléatoire
-    if (generatedQuiz) {
-      quiz = generatedQuiz;
-    } else {
-      const randomIndex = Math.floor(Math.random() * availableQuizzes.length);
-      quiz = availableQuizzes[randomIndex];
-    }
+    // Choisir un quiz aléatoire
+    const randomIndex = Math.floor(Math.random() * availableQuizzes.length);
+    const quiz = availableQuizzes[randomIndex];
 
-    // Trouver l'index réel du quiz dans le tableau complet (si quiz local)
-    const actualIndex = generatedQuiz ? -1 : allQuizzes.findIndex(q => q.question === quiz.question);
+    // Trouver l'index réel du quiz dans le tableau complet
+    const actualIndex = allQuizzes.findIndex(q => q.question === quiz.question);
     
     let options = '';
     quiz.options.forEach((option, index) => {
       options += `  ${String.fromCharCode(65 + index)}. ${option}\n`;
     });
 
-    const timeLimitMs = generatedQuiz ? 60000 : 30000;
-    const timeLabel = generatedQuiz ? '60s' : '30s';
-
-    const questionItems = [
-      ...(generatedQuiz ? [{ label: 'Source', value: 'AI Quiz' }] : []),
-      { label: 'Question', value: quiz.question },
-      { label: 'Options', value: options.trim() },
-      { label: 'Temps', value: timeLabel },
-      { label: 'Récompense', value: `+${quiz.reward} XP` }
-    ];
-
-    const quizTitle = generatedQuiz ? '𝔔𝔘𝔌𝔝 𝔒𝔗𝔄𝔎𝔘 - AI' : '𝔔𝔘𝔌𝔝 𝔒𝔗𝔄𝔎𝔘';
-    const quizMessage = MessageFormatter.elegantBox(quizTitle, questionItems);
-    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(quizMessage));
-
-    user.quizUsageToday.count += 1;
-    await user.save();
-
-    // Store quiz session par GROUPE (pas par utilisateur) pour que tous puissent répondre
-    if (!global.quizSessions) global.quizSessions = new Map();
-    // Charger tous les quizzes locaux
-    const allQuizzes2 = this.getQuizzes();
-    if (allQuizzes2.length === 0) {
-      await sock.sendMessage(senderJid, { text: MessageFormatter.error('Aucun quiz disponible.') });
-      return;
-    }
-
-    // Initialiser la liste globale des quiz répondus (jamais répétés)
-    if (!global.answeredQuizzes) global.answeredQuizzes = new Set();
-
-    // Charger l'historique des quizzes répondus (utilisateur)
-    if (!user.quizHistory) user.quizHistory = [];
-
-    // Trouver un quiz qui n'a pas été répondu (exclure aussi les quiz répondus globalement)
-    let quiz2 = null;
-    let availableQuizzes2 = allQuizzes2.filter((_, index) =>
-      !user.quizHistory.includes(index) && !global.answeredQuizzes.has(index)
-    );
-
-    // Si TOUS les quizzes ont été répondus, afficher un message
-    if (availableQuizzes2.length === 0) {
-      const congratsItems = [
-        { label: '🎉 Statut', value: `TOUS les ${allQuizzes2.length} quizzes répondus!` },
-        { label: '👑 Titre', value: 'Maître du Quiz Otaku' },
-        { label: '🔄 Action', value: 'Historique réinitialisé' }
-      ];
-      const congratsMsg = MessageFormatter.elegantBox('🎉 𝑉𝐼𝐶𝒯𝒪𝑅𝐼𝐸! 🎉', congratsItems);
-      await sock.sendMessage(senderJid, { text: congratsMsg });
-      // Réinitialiser SEULEMENT après avoir affiché le message
-      user.quizHistory = [];
-      global.answeredQuizzes.clear();
-      availableQuizzes2 = allQuizzes2;
-    }
-
-    // Choisir un quiz aléatoire
-    const randomIndex2 = Math.floor(Math.random() * availableQuizzes2.length);
-    quiz2 = availableQuizzes2[randomIndex2];
-
-    // Trouver l'index réel du quiz dans le tableau complet
-    const actualIndex2 = allQuizzes2.findIndex(q => q.question === quiz2.question);
-
-    let options2 = '';
-    quiz2.options.forEach((option, index) => {
-      options2 += `  ${String.fromCharCode(65 + index)}. ${option}\n`;
-    });
-
-    const timeLimitMs2 = 30000;
-    const timeLabel2 = '30s';
+    const timeLimitMs = 30000;
+    const timeLabel = '30s';
 
     const questionItems = [
       { label: 'Question', value: quiz.question },
@@ -186,7 +104,7 @@ module.exports = {
       { label: 'Récompense', value: `+${quiz.reward} XP` }
     ];
 
-    const quizTitle = '𝑄𝒰𝐼𝒵 𝒪𝒯𝒜𝒦𝒰';
+    const quizTitle = '𝔔𝔘𝔌𝔝 𝔒𝔗𝔄𝔎𝔘';
     const quizMessage = MessageFormatter.elegantBox(quizTitle, questionItems);
     await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(quizMessage));
 
@@ -212,3 +130,9 @@ module.exports = {
           sock.sendMessage(senderJid, {
             text: MessageFormatter.warning(`Temps écoulé! La bonne réponse était: \`${String.fromCharCode(97 + session.quiz.correct)}\``)
           });
+        }
+        global.quizSessions.delete(senderJid);
+      }
+    }, timeLimitMs);
+  }
+};
