@@ -167,7 +167,7 @@ Tape \`!documentation 3\` pour voir la suite...
   ├─ Répondre avec: !reponse A / !reponse B / !reponse C / !reponse D
   └─ Pas de limite de quiz par jour!
 
-**!quest** - Voir les quêtes actives
+**!quete** - Voir les quêtes actives
   ├─ Types de quêtes: Win duel, Quiz correct, Récolter gold
   ├─ Format: Objectif / Récompense / Progression
   ├─ Récompense complète: ~200 XP + 200 gold
@@ -175,50 +175,57 @@ Tape \`!documentation 3\` pour voir la suite...
   ├─ Limite: 5 quêtes actives max
   └─ Motivation quotidienne
 
-**!validate** - Valider une quête (après accomplissement)
+**!valider** - Valider une quête (après accomplissement)
   ├─ Coût: Aucun
   ├─ Attente requise: Au moins 5 secondes entre quête et validation
   ├─ Récupère automatique les récompenses
   ├─ Confirme avec emoji ✅
   └─ À faire manuellement après accomplissement
 
-**!newquest** - Générer une nouvelle quête (max 5)
+**!nouvellequete** - Générer une nouvelle quête (max 5)
   ├─ Coût: Aucun
   ├─ Quête remplacée: La prochaine échouée
   ├─ Format: Identique aux quêtes générées
   ├─ Renouvellement: 24h après création
   └─ Utile si quête trop difficile
 
-**!mysterybox** - Coffre mystérieux aléatoire
-  ├─ Coût: 50 gold par ouverture
-  ├─ Contenu: XP (5-30), Gold (10-100), Chakra, Badass, Buff
+**!loot** - Coffre mystérieux aléatoire
+  ├─ Coût: Aucun (réinitialisation: 10h)
+  ├─ Contenu: Items, XP, Gold, Chakra
   ├─ Rareté: Affichée avec couleur (Commun-Rare-Épique-Légendaire)
-  ├─ Cooldown: 10 secondes
+  ├─ Cooldown: 10 heures
   └─ Gamble content avec bonus possible
 
 🎊 *RÉCOMPENSES & ÉVÉNEMENTS*
 
-**!dailyreward** - Récompense quotidienne spéciale
-  ├─ Différente de !daily
-  ├─ Bonus: 150-300 XP aléatoire
-  ├─ Réinitialisation: Tous les jours
-  ├─ Streak: Bonus accru si connecté tous les jours
-  └─ Alternative aux quêtes
+**!quotidien** - Récompense quotidienne spéciale
+  ├─ Bonus: 50 XP bonus (quotidien)
+  ├─ Alternative: !hebdo pour 200 XP hebdomadaire
+  ├─ Réinitialisation: Chaque 24h
+  ├─ Cooldown: 86400 secondes (1 jour)
+  └─ À réclamer une fois par jour
 
-**!badge** - Voir tes badges/accomplissements
+**!badges** - Voir tes badges/accomplissements
   ├─ 15+ badges disponibles
   ├─ Déverrouillés par: Quêtes, Événements, Milestones
   ├─ Affichage: Liste avec descriptions
   ├─ Contribution: Ajoute prestige au profil
   └─ Collectathon motivant
 
-**!special** - Commandes spéciales aléatoires
+**!surprise** - Commandes spéciales aléatoires
   ├─ Peut être: Event, Item, Mystery
   ├─ Récompense variable
   ├─ Rare à déclencher
   └─ Surprise d'événement!
 
-**!birthday** - Fêter l'anniversaire d'un joueur
+**!surprise** - Obtenir une surprise aléatoire
+  ├─ Récompense: XP, Gold ou Chakra aléatoire
+  ├─ Rareté: 10% chance de super surprise
+  ├─ Montants: 15-500 selon la rareté
+  ├─ Cooldown: 2 minutes
+  └─ Engagement ludique!
+
+**!anniversaire** - Fêter l'anniversaire d'un joueur
   ├─ Utilisateur: Celui mentionné en @user
   ├─ Récompense: +50 XP + "Joyeux anniversaire 🎂"
   ├─ Emoji: 🎂🎉🎈
@@ -236,8 +243,8 @@ Tape \`!documentation 4\` pour voir la suite...
 
 📸 *COMMANDES ASSET (IMAGES)*
 
-Les commandes asset envoient des images aléatoires et donnent +15 XP
-⚠️ UNIQUEMENT en groupe - PAS DE XP en DM
+Les commandes asset envoient des images aléatoires et donnent +50 XP
+⚠️ UNIQUEMENT en groupe - PAS DE XP en DM (max 10 images/jour avec XP)
 
 **Anime/Personnages:**
   ├─ !naruto - Naruto Uzumaki 🧡
