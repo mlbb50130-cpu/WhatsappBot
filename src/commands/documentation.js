@@ -72,13 +72,21 @@ Tape \`!documentation 2\` pour voir la suite...
 
 ⚔️ *SYSTÈME DE COMBAT & DUELS*
 
-**!duel @user** - Défier un utilisateur en duel
+**!duel @user** - Défier un utilisateur en duel (1 duel)
   ├─ Coût: 20 chakra
   ├─ Récompense gagnant: +30 XP
   ├─ Récompense perdant: +10 XP
   ├─ Bonus duel win: +5 puissance
   ├─ Calcul: powerlevel + random(10-50)
   └─ Les duels comptent pour les quêtes
+
+**!duel @user 5** - Duels multiples (2-10 duels max)
+  ├─ Syntaxe: !duel @user [nombre]
+  ├─ Coût total: 20 chakra × nombre de duels
+  ├─ Résumé final avec statistiques complètes
+  ├─ Victoires/Défaites totales
+  ├─ XP gagnés au total
+  └─ Différence de puissance accumulée
 
 **!chakra** - Voir ton chakra (ressource de mana)
   ├─ Chakra actuel / maxChakra
@@ -146,74 +154,75 @@ Tape \`!documentation 3\` pour voir la suite...
 ║         📚 DOCUMENTATION COMPLÈTE DU BOT - PAGE 3/5 📚         ║
 ╚════════════════════════════════════════════════════════════════╝
 
-📚 *QUIZ & CONNAISSANCE*
+� *QUIZ & QUÊTES*
 
-**!quiz** - Quiz otaku aléatoire
-  ├─ Type: Questions sur animes/mangas (99+ questions)
-  ├─ Récompense correcte: +15 XP
+**!quiz** - Quiz otaku aléatoire (200+ questions!)
+  ├─ Type: Questions sur animes/mangas
+  ├─ Couverture: Naruto, One Piece, Bleach, MHA, JJK, Demon Slayer, Attack on Titan, Black Clover, Death Note, Code Geass, Steins;Gate, Sailor Moon & PLUS!
+  ├─ Récompense correcte: +15-30 XP (selon difficulté)
   ├─ Récompense fausse: +3 XP
+  ├─ Format: 4 réponses possibles (A, B, C, D)
   ├─ Compte pour les quêtes
-  └─ Répondre avec: !reponse <réponse>
+  ├─ Cooldown: 30 secondes (anti-spam)
+  ├─ Répondre avec: !reponse A / !reponse B / !reponse C / !reponse D
+  └─ Pas de limite de quiz par jour!
 
-**!quizanime** - Quiz spécialisé animes
-  ├─ Questions avancées sur animes
-  ├─ Niveau de difficulté: Moyen-Difficile
-  └─ Récompense: +20 XP si correct
+**!quest** - Voir les quêtes actives
+  ├─ Types de quêtes: Win duel, Quiz correct, Récolter gold
+  ├─ Format: Objectif / Récompense / Progression
+  ├─ Récompense complète: ~200 XP + 200 gold
+  ├─ À renouveler après 24h
+  ├─ Limite: 5 quêtes actives max
+  └─ Motivation quotidienne
 
-**!tournoisquiz** - Créer un tournoi interactif
-  ├─ Configuration 4 étapes:
-  │   ├─ Étape 1: Choisir le thème (anime, manga, custom)
-  │   ├─ Étape 2: Nombre de questions (1-50)
-  │   ├─ Étape 3: Récompenses XP pour top 5
-  │   └─ Étape 4: Confirmation de lancement
-  ├─ Pendant le tournoi: Seule !reponse autorisée
-  ├─ Classement final et XP distribuée
-  ├─ Admin uniquement
-  └─ Timeout: 5 minutes
+**!validate** - Valider une quête (après accomplissement)
+  ├─ Coût: Aucun
+  ├─ Attente requise: Au moins 5 secondes entre quête et validation
+  ├─ Récupère automatique les récompenses
+  ├─ Confirme avec emoji ✅
+  └─ À faire manuellement après accomplissement
 
-**!reponse <réponse>** - Répondre à une question
-  ├─ Format: !reponse a / !reponse b / etc
-  ├─ Validation automatique
-  └─ Feedback immédiat
+**!newquest** - Générer une nouvelle quête (max 5)
+  ├─ Coût: Aucun
+  ├─ Quête remplacée: La prochaine échouée
+  ├─ Format: Identique aux quêtes générées
+  ├─ Renouvellement: 24h après création
+  └─ Utile si quête trop difficile
 
-**!blagueotaku** - Blague otaku aléatoire
-  ├─ Humour relatif à l'anime
-  ├─ Gratuit, pas de XP
-  └─ Juste pour rire!
+**!mysterybox** - Coffre mystérieux aléatoire
+  ├─ Coût: 50 gold par ouverture
+  ├─ Contenu: XP (5-30), Gold (10-100), Chakra, Badass, Buff
+  ├─ Rareté: Affichée avec couleur (Commun-Rare-Épique-Légendaire)
+  ├─ Cooldown: 10 secondes
+  └─ Gamble content avec bonus possible
 
-🎁 *QUÊTES & RÉCOMPENSES*
+🎊 *RÉCOMPENSES & ÉVÉNEMENTS*
 
-**!quete** - Voir tes quêtes actuelles
-  ├─ Quêtes du jour
-  ├─ Quêtes hebdomadaires
-  ├─ Progression complète
-  └─ Objectifs restants
+**!dailyreward** - Récompense quotidienne spéciale
+  ├─ Différente de !daily
+  ├─ Bonus: 150-300 XP aléatoire
+  ├─ Réinitialisation: Tous les jours
+  ├─ Streak: Bonus accru si connecté tous les jours
+  └─ Alternative aux quêtes
 
-**!quetejour** - Quêtes du jour uniquement
-  ├─ Objectif 1: 50 messages
-  ├─ Objectif 2: 3 duels gagnés
-  ├─ Objectif 3: 5 quiz réussis
-  ├─ Réinitialisation: Chaque 24h
-  └─ Bonus complétion: +100 XP
+**!badge** - Voir tes badges/accomplissements
+  ├─ 15+ badges disponibles
+  ├─ Déverrouillés par: Quêtes, Événements, Milestones
+  ├─ Affichage: Liste avec descriptions
+  ├─ Contribution: Ajoute prestige au profil
+  └─ Collectathon motivant
 
-**!hebdo** - Quêtes hebdomadaires
-  ├─ Objectif 1: 10 loots ouverts
-  ├─ Objectif 2: Atteindre niveau 10
-  ├─ Réinitialisation: Chaque lundi
-  └─ Bonus complétion: +250 XP
+**!special** - Commandes spéciales aléatoires
+  ├─ Peut être: Event, Item, Mystery
+  ├─ Récompense variable
+  ├─ Rare à déclencher
+  └─ Surprise d'événement!
 
-**!queteprogress** - Progression détaillée
-  ├─ Messages: X/50 pour quête jour
-  ├─ Duels: X/3 gagnés
-  ├─ Quiz: X/5 corrects
-  ├─ Loots: X/10 ouverts
-  └─ Barre visuelle de progression
-
-**!loot** - Ouvrir un loot aléatoire
-  ├─ Types: Objet, XP, Chakra
-  ├─ Rareté: Commun → Légendaire
-  ├─ Cooldown: 1 heure
-  └─ Compte pour les quêtes
+**!birthday** - Fêter l'anniversaire d'un joueur
+  ├─ Utilisateur: Celui mentionné en @user
+  ├─ Récompense: +50 XP + "Joyeux anniversaire 🎂"
+  ├─ Emoji: 🎂🎉🎈
+  └─ Engagement communautaire
 
 ════════════════════════════════════════════════════════════════
 
