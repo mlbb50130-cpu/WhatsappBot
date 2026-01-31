@@ -22,7 +22,7 @@ module.exports = {
     { name: 'Anneau du Pouvoir', rarity: 'legendary', emoji: '💍', weight: 5, xp: 80 }
   ],
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     // Weighted random selection
@@ -66,6 +66,10 @@ module.exports = {
       { label: '📦 Inventaire', value: `${user.inventory.length}/50` }
     ]);
 
-    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(content));
+    if (reply) {
+        await reply(MessageFormatter.createMessageWithImage(content));
+      } else {
+        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(content));
+      }
   }
 };

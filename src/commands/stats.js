@@ -9,7 +9,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 3,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     const winRate = user.stats.duels > 0 
@@ -31,6 +31,10 @@ module.exports = {
     ];
 
     const stats = MessageFormatter.elegantBox('𝔖𝔱𝔞𝔦𝔰𝔣𝔦𝔴𝔲𝔞𝔰', statsItems);
-    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(stats));
+    if (reply) {
+        await reply(MessageFormatter.createMessageWithImage(stats));
+      } else {
+        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(stats));
+      }
   }
 };

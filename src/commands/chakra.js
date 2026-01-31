@@ -9,7 +9,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 3,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     try {
@@ -86,10 +86,18 @@ ${chakraPercent === 100 ? '⚡ Chakra au maximum!' : chakraPercent >= 75 ? '💪
 ═════════════════════════════════════`;
 
       // Only send message (no duplicate save)
-      await sock.sendMessage(senderJid, { text: chakraMessage });
+      if (reply) {
+        await reply({ text: chakraMessage });
+      } else {
+        await sock.sendMessage(senderJid, { text: chakraMessage });
+      }
     } catch (error) {
       console.error('Error in chakra command:', error.message);
-      await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      if (reply) {
+        await reply({ text: '❌ Erreur!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      }
     }
   },
 

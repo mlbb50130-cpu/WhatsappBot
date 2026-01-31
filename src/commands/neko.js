@@ -10,7 +10,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 5,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     // Check daily limit for assets (10 images = XP limit)
@@ -52,14 +52,18 @@ module.exports = {
             caption: caption
           });
         } catch (sendError) {
-          await sock.sendMessage(senderJid, {
-            text: caption
-          });
+          if (reply) {
+        await reply({ text: caption });
+      } else {
+        await sock.sendMessage(senderJid, { text: caption });
+      }
         }
       } else {
-        await sock.sendMessage(senderJid, {
-          text: caption
-        });
+        if (reply) {
+        await reply({ text: caption });
+      } else {
+        await sock.sendMessage(senderJid, { text: caption });
+      }
       }
 
       if (isGroup && allowXp) user.xp += 5; // Seulement en groupe
@@ -69,7 +73,11 @@ module.exports = {
 
     } catch (error) {
       console.error('Error in neko command:', error.message);
-      await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      if (reply) {
+        await reply({ text: '❌ Erreur!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      }
     }
   }
 };

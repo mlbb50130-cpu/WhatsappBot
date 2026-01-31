@@ -11,7 +11,7 @@ module.exports = {
   description: 'Convertir une image en sticker WhatsApp (WEBP 512x512)',
   usage: '!sticker [en réponse à une image]',
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
     
     try {

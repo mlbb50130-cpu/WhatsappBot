@@ -11,14 +11,17 @@ module.exports = {
   groupOnly: true,
   cooldown: 5,
 
-  async execute(sock, message, args) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const from = message.key.remoteJid;
     const sender = message.key.participant || from;
 
     if (!args[0]) {
-      return sock.sendMessage(from, {
-        text: PackManager.getPackMessage()
-      });
+      const text = PackManager.getPackMessage();
+      if (reply) {
+        return await reply({ text });
+      } else {
+        return sock.sendMessage(from, { text });
+      }
     }
 
     const choice = args[0].toLowerCase();
@@ -38,18 +41,24 @@ module.exports = {
     }
 
     if (!packId) {
-      return sock.sendMessage(from, {
-        text: `❌ Pack "${choice}" non trouvé!\n\n${PackManager.getPackMessage()}`
-      });
+      const text = `❌ Pack "${choice}" non trouvé!\n\n${PackManager.getPackMessage()}`;
+      if (reply) {
+        return await reply({ text });
+      } else {
+        return sock.sendMessage(from, { text });
+      }
     }
 
     // Appliquer le pack
     const pack = PackManager.applyPack(packId, from);
 
     if (!pack) {
-      return sock.sendMessage(from, {
-        text: `❌ Erreur lors de l'application du pack.`
-      });
+      const text = `❌ Erreur lors de l'application du pack.`;
+      if (reply) {
+        return await reply({ text });
+      } else {
+        return sock.sendMessage(from, { text });
+      }
     }
 
     // Marquer que la sélection est faite
@@ -62,8 +71,7 @@ module.exports = {
       .map(([name, _]) => `• ${name}`)
       .join('\n');
 
-    return sock.sendMessage(from, {
-      text: `
+    const text = `
 ✅ *Pack sélectionné!*
 
 ${pack.emoji} *${pack.name}*
@@ -74,7 +82,12 @@ ${packModules}
 💡 *Utilisez:*
 !setmodule on <module> - Activer un module
 !setmodule off <module> - Désactiver un module
-!setmodule status - Voir l'état actuel`
-    });
+!setmodule status - Voir l'état actuel`;
+
+    if (reply) {
+      return await reply({ text });
+    } else {
+      return sock.sendMessage(from, { text });
+    }
   }
 };

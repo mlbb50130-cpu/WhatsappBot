@@ -11,7 +11,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 3,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     try {
@@ -56,10 +56,18 @@ module.exports = {
 💡 Récompense totale: +${totalReward} XP
 ⏰ Reset tous les lundi (heure serveur)`;
 
-      await sock.sendMessage(senderJid, { text: questMessage });
+      if (reply) {
+        await reply({ text: questMessage });
+      } else {
+        await sock.sendMessage(senderJid, { text: questMessage });
+      }
     } catch (error) {
       console.error('Error in quetelundi command:', error.message);
-      await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      if (reply) {
+        await reply({ text: '❌ Erreur!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      }
     }
   }
 };

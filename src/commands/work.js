@@ -21,7 +21,7 @@ module.exports = {
     { name: 'Escorte VIP', goldMin: 190, goldMax: 290, emoji: '🎩' }
   ],
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     // Select random job
@@ -39,6 +39,10 @@ module.exports = {
       { label: '⏰ Prochain Work', value: 'dans 1h' }
     ]);
 
-    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(content));
+    if (reply) {
+        await reply(MessageFormatter.createMessageWithImage(content));
+      } else {
+        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(content));
+      }
   }
 };

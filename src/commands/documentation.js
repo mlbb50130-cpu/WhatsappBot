@@ -9,7 +9,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 5,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     try {
@@ -465,10 +465,18 @@ Besoin d'aide? Tape \`!help <commande>\` pour plus d'infos!
         responseText = '❌ Page non trouvée. Tape `!documentation 1` pour commencer.';
       }
 
-      await sock.sendMessage(senderJid, { text: responseText });
+      if (reply) {
+        await reply({ text: responseText });
+      } else {
+        await sock.sendMessage(senderJid, { text: responseText });
+      }
     } catch (error) {
       console.error('Error in documentation command:', error.message);
-      await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      if (reply) {
+        await reply({ text: '❌ Erreur!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      }
     }
   }
 };

@@ -17,15 +17,17 @@ module.exports = {
     draw: 10
   },
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     const userChoice = args[0]?.toLowerCase();
 
     if (!userChoice || !this.choices.includes(userChoice)) {
-      await sock.sendMessage(senderJid, {
-        text: MessageFormatter.error('Utilisation: \`!pfc pierre\` / \`!pfc feuille\` / \`!pfc ciseaux\`')
-      });
+      if (reply) {
+        await reply({ text: MessageFormatter.error('Utilisation: \`!pfc pierre\` / \`!pfc feuille\` / \`!pfc ciseaux\`') });
+      } else {
+        await sock.sendMessage(senderJid, { text: MessageFormatter.error('Utilisation: \`!pfc pierre\` / \`!pfc feuille\` / \`!pfc ciseaux\`') });
+      }
       return;
     }
 
@@ -65,6 +67,10 @@ module.exports = {
 
     const text = MessageFormatter.elegantBox('🎮 𝔓𝔉𝔆 🎮', pfcItems);
 
-    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(text));
+    if (reply) {
+        await reply(MessageFormatter.createMessageWithImage(text));
+      } else {
+        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(text));
+      }
   }
 };

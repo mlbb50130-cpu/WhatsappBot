@@ -14,7 +14,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 3,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
     const assetPath = path.join(__dirname, '../asset/NSFW');
 
@@ -22,22 +22,32 @@ module.exports = {
       if (isGroup) {
         const groupDoc = await Group.findOne({ groupJid: senderJid }).catch(() => null);
         if (groupDoc?.permissions?.allowHentai === false) {
-          await sock.sendMessage(senderJid, {
-            text: '❌ Les commandes NSFW ne sont pas autorisées dans ce groupe!\n\n💬 Demande à un admin d\'utiliser: !allowhentai on'
-          });
+          if (reply) {
+        await reply({ text: '❌ Les commandes NSFW ne sont pas autorisées dans ce groupe!\n\n💬 Demande à un admin d\'utiliser: !allowhentai on' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Les commandes NSFW ne sont pas autorisées dans ce groupe!\n\n💬 Demande à un admin d\'utiliser: !allowhentai on' });
+      }
           return;
         }
       }
 
       if (!fs.existsSync(assetPath)) {
+        if (reply) {
+        await reply({ text: '❌ Aucune photo trouvée!' });
+      } else {
         await sock.sendMessage(senderJid, { text: '❌ Aucune photo trouvée!' });
+      }
         return;
       }
 
       const files = fs.readdirSync(assetPath).filter(f => /\.(jpg|jpeg|png|gif|webp)$/i.test(f));
       
       if (files.length === 0) {
+        if (reply) {
+        await reply({ text: '❌ Aucune photo trouvée!' });
+      } else {
         await sock.sendMessage(senderJid, { text: '❌ Aucune photo trouvée!' });
+      }
         return;
       }
 
@@ -69,7 +79,11 @@ module.exports = {
       const imageBuffer = fs.readFileSync(imagePath);
 
       if (!imageBuffer) {
+        if (reply) {
+        await reply({ text: '❌ Erreur lors du chargement!' });
+      } else {
         await sock.sendMessage(senderJid, { text: '❌ Erreur lors du chargement!' });
+      }
         return;
       }
 
@@ -84,7 +98,11 @@ module.exports = {
       });
     } catch (error) {
       console.error('Error in nsfw command:', error.message);
-      await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      if (reply) {
+        await reply({ text: '❌ Erreur!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      }
     }
   }
 };

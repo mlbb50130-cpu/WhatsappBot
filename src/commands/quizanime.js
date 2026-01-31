@@ -9,7 +9,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 10,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
     const participantJid = message.key.participant || senderJid;
 
@@ -177,10 +177,18 @@ module.exports = {
         timestamp: Date.now()
       });
 
-      await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(quiz));
+      if (reply) {
+        await reply(MessageFormatter.createMessageWithImage(quiz));
+      } else {
+        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(quiz));
+      }
     } catch (error) {
       console.error('Error in quizanime command:', error.message);
-      await sock.sendMessage(senderJid, { text: MessageFormatter.error('Erreur!') });
+      if (reply) {
+        await reply({ text: MessageFormatter.error('Erreur!') });
+      } else {
+        await sock.sendMessage(senderJid, { text: MessageFormatter.error('Erreur!') });
+      }
     }
   }
 };

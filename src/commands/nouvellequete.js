@@ -10,7 +10,7 @@ module.exports = {
   groupOnly: true,
   cooldown: 300, // 5 minutes cooldown
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     try {
@@ -34,9 +34,11 @@ module.exports = {
 
       // Limite: max 5 nouvelles quêtes par jour
       if (user.newQuestCount.count >= 5) {
-        await sock.sendMessage(senderJid, {
-          text: MessageFormatter.warning('❌ Limite atteinte: 5 nouvelles quêtes par jour (max).')
-        });
+        if (reply) {
+        await reply({ text: MessageFormatter.warning('❌ Limite atteinte: 5 nouvelles quêtes par jour (max).') });
+      } else {
+        await sock.sendMessage(senderJid, { text: MessageFormatter.warning('❌ Limite atteinte: 5 nouvelles quêtes par jour (max).') });
+      }
         return;
       }
 
@@ -72,11 +74,19 @@ Nouvelles quêtes utilisées aujourd'hui: ${user.newQuestCount.count}/5
 Tape \`!quete\` pour voir toutes tes quêtes!
 `;
 
-      await sock.sendMessage(senderJid, { text: questMsg });
+      if (reply) {
+        await reply({ text: questMsg });
+      } else {
+        await sock.sendMessage(senderJid, { text: questMsg });
+      }
 
     } catch (error) {
       console.error('Error in nouvellequete command:', error.message);
-      await sock.sendMessage(senderJid, { text: '❌ Erreur lors de la génération!' });
+      if (reply) {
+        await reply({ text: '❌ Erreur lors de la génération!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur lors de la génération!' });
+      }
     }
   },
 

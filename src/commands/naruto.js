@@ -14,7 +14,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 5,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     // Check daily limit for assets (10 images = XP limit)
@@ -31,15 +31,19 @@ module.exports = {
     }
 
     const allowXp = user.assetUsageToday.count < 10;
-    const assetPath = path.join(__dirname, '../asset/Naruto');
+    
+    try {
+      const assetPath = path.join(__dirname, '../asset/Naruto');
       const files = fs.readdirSync(assetPath).filter(file => 
         /\.(jpg|jpeg|png|gif)$/i.test(file)
       );
 
       if (files.length === 0) {
-        await sock.sendMessage(senderJid, {
-          text: MessageFormatter.error('Aucune image disponible pour Naruto.')
-        });
+        if (reply) {
+          await reply({ text: MessageFormatter.error('Aucune image disponible pour Naruto.') });
+        } else {
+          await sock.sendMessage(senderJid, { text: MessageFormatter.error('Aucune image disponible pour Naruto.') });
+        }
         return;
       }
 
@@ -75,12 +79,19 @@ module.exports = {
       // Send image with caption
       const caption = isGroup 
         ? MessageFormatter.elegantBox('🗡️ 𝔑𝔄𝔕𝔘𝔗𝔒 🗡️', [{ label: '✨ Récompense', value: allowXp ? '+50 XP' : '🚫 Limite atteinte (10/jour)' }])
-        : MessageFormatter.elegantBox('🗡️ 𝔑𝔄𝔕𝔘𝔗𝔒 🗡️', [{ label: '📺 Type', value: 'Personnage' }]);
+        : MessageFormatter.elegantBox('🗡️ 𝔑𝔄�𝔘𝔗𝔒 🗡️', [{ label: '📺 Type', value: 'Personnage' }]);
 
-      await sock.sendMessage(senderJid, {
-        image: imageBuffer,
-        caption: caption
-      });
+      if (reply) {
+        await reply({
+          image: imageBuffer,
+          caption: caption
+        });
+      } else {
+        await sock.sendMessage(senderJid, {
+          image: imageBuffer,
+          caption: caption
+        });
+      }
 
       // Add XP only if in group AND within daily limit
       if (isGroup && allowXp) {
@@ -93,9 +104,11 @@ module.exports = {
 
     } catch (error) {
       console.error(`[NARUTO] Error: ${error.message}`);
-      await sock.sendMessage(senderJid, {
-        text: MessageFormatter.error('Erreur lors du chargement de l\'image.')
-      });
+      if (reply) {
+        await reply({ text: MessageFormatter.error('Erreur lors du chargement de l\'image.') });
+      } else {
+        await sock.sendMessage(senderJid, { text: MessageFormatter.error('Erreur lors du chargement de l\'image.') });
+      }
     }
   }
 };

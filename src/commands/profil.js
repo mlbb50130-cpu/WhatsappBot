@@ -11,7 +11,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 5,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     const levelInfo = XPSystem.calculateLevelFromXp(user.xp);
@@ -101,11 +101,19 @@ ${MessageFormatter.elegantSection('INVENTAIRE', inventoryInfo.map(i => `${i.labe
         });
       } catch (error) {
         // Si erreur, envoyer sans photo
+        if (reply) {
+        await reply(MessageFormatter.createMessageWithImage(profile));
+      } else {
         await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(profile));
+      }
       }
     } else {
       // Pas de photo, envoyer sans
-      await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(profile));
+      if (reply) {
+        await reply(MessageFormatter.createMessageWithImage(profile));
+      } else {
+        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(profile));
+      }
     }
   },
 

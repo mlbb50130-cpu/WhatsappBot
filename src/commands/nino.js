@@ -13,7 +13,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 3,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     // Check daily limit for assets (10 images = XP limit)
@@ -35,9 +35,11 @@ module.exports = {
       const assetPath = path.join(__dirname, '../asset/NINO Nakano');
       
       if (!fs.existsSync(assetPath)) {
-        await sock.sendMessage(senderJid, {
-          text: '❌ Dossier NINO non trouvé!'
-        });
+        if (reply) {
+        await reply({ text: '❌ Dossier NINO non trouvé!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Dossier NINO non trouvé!' });
+      }
         return;
       }
 
@@ -46,9 +48,11 @@ module.exports = {
       );
 
       if (files.length === 0) {
-        await sock.sendMessage(senderJid, {
-          text: '❌ Aucune image trouvée dans le dossier NINO!'
-        });
+        if (reply) {
+        await reply({ text: '❌ Aucune image trouvée dans le dossier NINO!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Aucune image trouvée dans le dossier NINO!' });
+      }
         return;
       }
 
@@ -84,9 +88,11 @@ module.exports = {
 
     } catch (error) {
       console.error('Error in nino command:', error.message);
-      await sock.sendMessage(senderJid, {
-        text: '❌ Erreur lors du chargement de l\'image!'
-      });
+      if (reply) {
+        await reply({ text: '❌ Erreur lors du chargement de l\'image!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur lors du chargement de l\'image!' });
+      }
     }
   }
 };

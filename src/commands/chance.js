@@ -10,7 +10,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 10,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     try {
@@ -54,10 +54,18 @@ module.exports = {
 
       const chanceMessage = `${bar}\n${MessageFormatter.elegantBox('🍀 𝔆𝔋𝔄𝔑𝔆𝔈 𝔇𝔘 𝔍𝔒𝔘𝔕 🍀', chanceItems)}`;
 
-      await sock.sendMessage(senderJid, { text: chanceMessage });
+      if (reply) {
+        await reply({ text: chanceMessage });
+      } else {
+        await sock.sendMessage(senderJid, { text: chanceMessage });
+      }
     } catch (error) {
       console.error('Error in chance command:', error.message);
-      await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      if (reply) {
+        await reply({ text: '❌ Erreur!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      }
     }
   }
 };

@@ -22,7 +22,7 @@ module.exports = {
     { emoji: '👑', name: 'Couronne d\'or', reward: 500, type: 'gold' }
   ],
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     try {
@@ -67,11 +67,19 @@ ${surprise.emoji} ${surprise.emoji} ${surprise.emoji}
 ${isSuperSurprise ? 'WOW! Tu as trouvé une SUPER SURPRISE! 🤑' : 'Quelle chance! 🍀'}
 `;
 
-      await sock.sendMessage(senderJid, { text: surpriseMsg });
+      if (reply) {
+        await reply({ text: surpriseMsg });
+      } else {
+        await sock.sendMessage(senderJid, { text: surpriseMsg });
+      }
 
     } catch (error) {
       console.error('Error in surprise command:', error.message);
-      await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      if (reply) {
+        await reply({ text: '❌ Erreur!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      }
     }
   }
 };

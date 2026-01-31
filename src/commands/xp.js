@@ -10,12 +10,16 @@ module.exports = {
   groupOnly: false,
   cooldown: 3,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     try {
       if (!user) {
+        if (reply) {
+        await reply({ text: MessageFormatter.error('Utilisateur introuvable!') });
+      } else {
         await sock.sendMessage(senderJid, { text: MessageFormatter.error('Utilisateur introuvable!') });
+      }
         return;
       }
 
@@ -35,11 +39,19 @@ module.exports = {
       const xpMessage = `${MessageFormatter.elegantBox('𝔛𝔓 𝔄𝔆𝔗𝔘𝔈𝔏', xpItems)}
 ${progressBar}`;
 
-      await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(xpMessage));
+      if (reply) {
+        await reply(MessageFormatter.createMessageWithImage(xpMessage));
+      } else {
+        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(xpMessage));
+      }
     } catch (error) {
       console.error('Error in xp command:', error.message);
       console.error('User object:', user);
-      await sock.sendMessage(senderJid, { text: '❌ Erreur lors de la récupération de ton XP!' });
+      if (reply) {
+        await reply({ text: '❌ Erreur lors de la récupération de ton XP!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur lors de la récupération de ton XP!' });
+      }
     }
   }
 };

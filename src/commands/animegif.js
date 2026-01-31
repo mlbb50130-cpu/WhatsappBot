@@ -10,7 +10,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 5,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     // Check daily limit for assets (10 images = XP limit)
@@ -62,13 +62,19 @@ module.exports = {
             caption: captionMsg
           });
         } catch (sendError) {
-          await sock.sendMessage(senderJid, {
-            text: caption
-          });
+          if (reply) {
+        await reply({ text: caption });
+      } else {
+        await sock.sendMessage(senderJid, { text: caption });
+      }
         }
       } else {
         const fallback = MessageFormatter.elegantBox('🎬 𝔊𝔌𝔉 𝔄𝔑𝔌𝔐𝔈 🎬', [{ label: '⚠️ Statut', value: 'GIF non disponible' }]);
+        if (reply) {
+        await reply({ text: fallback });
+      } else {
         await sock.sendMessage(senderJid, { text: fallback });
+      }
       }
 
       if (isGroup && allowXp) if (isGroup && allowXp) user.xp += 5; // Seulement en groupe // Seulement en groupe
@@ -78,7 +84,11 @@ module.exports = {
 
     } catch (error) {
       console.error('Error in animegif command:', error.message);
-      await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      if (reply) {
+        await reply({ text: '❌ Erreur!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      }
     }
   }
 };

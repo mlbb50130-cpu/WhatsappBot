@@ -9,7 +9,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 3,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
     const handler = require('../handler');
 
@@ -28,7 +28,11 @@ module.exports = {
       const help = `${MessageFormatter.elegantSection('POPULAIRES', populars)}
 Tape: !help [commande]`;
 
-      await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(help));
+      if (reply) {
+        await reply(MessageFormatter.createMessageWithImage(help));
+      } else {
+        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(help));
+      }
       return;
     }
 
@@ -50,6 +54,10 @@ Utilisation: ${command.usage}
 Catégorie: ${command.category}
 ═════════════════════════════════════`;
 
-    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(helpText));
+    if (reply) {
+        await reply(MessageFormatter.createMessageWithImage(helpText));
+      } else {
+        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(helpText));
+      }
   }
 };

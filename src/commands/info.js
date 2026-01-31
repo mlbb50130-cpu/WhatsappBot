@@ -9,7 +9,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 5,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     const infoItems = [
@@ -22,6 +22,10 @@ module.exports = {
 
     const info = `${MessageFormatter.elegantBox('𝔌𝔑𝔉𝔒 𝔗𝔈𝔗𝔖𝔘𝔅𝔒𝔗', infoItems)}`;
 
-    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(info));
+    if (reply) {
+        await reply(MessageFormatter.createMessageWithImage(info));
+      } else {
+        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(info));
+      }
   }
 };

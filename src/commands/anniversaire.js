@@ -3,22 +3,24 @@ const User = require('../models/User');
 
 module.exports = {
   name: 'anniversaire',
-  description: 'Souhaiter bon anniversaire à un joueur',
+  description: 'Souhaiter bon anniversaire à un joueur (admin only)',
   category: 'SOCIAL',
   usage: '!anniversaire @user',
-  adminOnly: false,
+  adminOnly: true,
   groupOnly: true,
   cooldown: 30,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     try {
       // Vérifier si un utilisateur est mentionné
       if (!message.message.extendedTextMessage || !message.message.extendedTextMessage.contextInfo || !message.message.extendedTextMessage.contextInfo.mentionedJid) {
-        await sock.sendMessage(senderJid, {
-          text: MessageFormatter.error('Usage: !anniversaire @user\nMentionne le joueur dont tu célèbres l\'anniversaire!')
-        });
+        if (reply) {
+          await reply({ text: MessageFormatter.error('Usage: !anniversaire @user\nMentionne le joueur dont tu célèbres l\'anniversaire!') });
+        } else {
+          await sock.sendMessage(senderJid, { text: MessageFormatter.error('Usage: !anniversaire @user\nMentionne le joueur dont tu célèbres l\'anniversaire!') });
+        }
         return;
       }
 
@@ -26,9 +28,11 @@ module.exports = {
       const targetUser = await User.findOne({ jid: mentionedJid });
 
       if (!targetUser) {
-        await sock.sendMessage(senderJid, {
-          text: MessageFormatter.error('Utilisateur non trouvé!')
-        });
+        if (reply) {
+          await reply({ text: MessageFormatter.error('Utilisateur non trouvé!') });
+        } else {
+          await sock.sendMessage(senderJid, { text: MessageFormatter.error('Utilisateur non trouvé!') });
+        }
         return;
       }
 
@@ -52,13 +56,19 @@ Joyeux anniversaire @${targetUser.username}! 🥳
 Que cette année soit remplie d'aventures! ✨
 `;
 
-      await sock.sendMessage(senderJid, {
-        text: birthdayMsg
-      });
+      if (reply) {
+        await reply({ text: birthdayMsg });
+      } else {
+        await sock.sendMessage(senderJid, { text: birthdayMsg });
+      }
 
     } catch (error) {
       console.error('Error in anniversaire command:', error.message);
-      await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      if (reply) {
+        await reply({ text: '❌ Erreur!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      }
     }
   }
 };

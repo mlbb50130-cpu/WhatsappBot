@@ -10,13 +10,15 @@ module.exports = {
   groupOnly: true,
   cooldown: 3,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     if (user.inventory.length === 0) {
-      await sock.sendMessage(senderJid, {
-        text: '❌ Inventaire vide. Utilise !loot'
-      });
+      if (reply) {
+        await reply({ text: '❌ Inventaire vide. Utilise !loot' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Inventaire vide. Utilise !loot' });
+      }
       return;
     }
 
@@ -62,6 +64,10 @@ Tes items:`;
 
     inventoryText += `\n═════════════════════════════════════`;
 
-    await sock.sendMessage(senderJid, { text: inventoryText });
+    if (reply) {
+        await reply({ text: inventoryText });
+      } else {
+        await sock.sendMessage(senderJid, { text: inventoryText });
+      }
   }
 };

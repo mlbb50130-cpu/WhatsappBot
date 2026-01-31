@@ -10,15 +10,17 @@ module.exports = {
   groupOnly: true,
   cooldown: 5,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     const mentions = message.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
     
     if (mentions.length < 2) {
-      await sock.sendMessage(senderJid, {
-        text: MessageFormatter.error('Utilisation: \`!ship @user1 @user2\`')
-      });
+      if (reply) {
+        await reply({ text: MessageFormatter.error('Utilisation: \`!ship @user1 @user2\`') });
+      } else {
+        await sock.sendMessage(senderJid, { text: MessageFormatter.error('Utilisation: \`!ship @user1 @user2\`') });
+      }
       return;
     }
 
@@ -47,6 +49,10 @@ module.exports = {
     ];
 
     const ship = MessageFormatter.elegantBox('𝔖𝔋𝔌𝔓', shipItems);
-    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(ship));
+    if (reply) {
+        await reply(MessageFormatter.createMessageWithImage(ship));
+      } else {
+        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(ship));
+      }
   }
 };

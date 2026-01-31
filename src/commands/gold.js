@@ -9,12 +9,16 @@ module.exports = {
   groupOnly: false,
   cooldown: 3,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     try {
       if (!user) {
+        if (reply) {
+        await reply({ text: MessageFormatter.error('Utilisateur introuvable!') });
+      } else {
         await sock.sendMessage(senderJid, { text: MessageFormatter.error('Utilisateur introuvable!') });
+      }
         return;
       }
 
@@ -36,10 +40,18 @@ module.exports = {
       ];
 
       const content = MessageFormatter.elegantBox('GOLD', goldItems);
-      await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(content));
+      if (reply) {
+        await reply(MessageFormatter.createMessageWithImage(content));
+      } else {
+        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(content));
+      }
     } catch (error) {
       console.error('Error in gold command:', error.message);
-      await sock.sendMessage(senderJid, { text: '❌ Erreur lors de la récupération du gold!' });
+      if (reply) {
+        await reply({ text: '❌ Erreur lors de la récupération du gold!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur lors de la récupération du gold!' });
+      }
     }
   }
 };

@@ -10,12 +10,16 @@ module.exports = {
   groupOnly: false,
   cooldown: 5,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     try {
       if (!args || args.length === 0) {
+        if (reply) {
+        await reply({ text: '❌ Utilise: !personnage [nom]' });
+      } else {
         await sock.sendMessage(senderJid, { text: '❌ Utilise: !personnage [nom]' });
+      }
         return;
       }
 
@@ -27,7 +31,11 @@ module.exports = {
         });
 
         if (!response.data?.data || response.data.data.length === 0) {
-          await sock.sendMessage(senderJid, { text: '❌ Personnage non trouvé!' });
+          if (reply) {
+        await reply({ text: '❌ Personnage non trouvé!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Personnage non trouvé!' });
+      }
           return;
         }
 
@@ -41,11 +49,19 @@ module.exports = {
         ];
 
         const charMessage = MessageFormatter.elegantBox(`👤 ${character.name}`, charItems);
+        if (reply) {
+        await reply(MessageFormatter.createMessageWithImage(charMessage));
+      } else {
         await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(charMessage));
+      }
 
       } catch (apiError) {
         console.error('Jikan API error:', apiError.message);
+        if (reply) {
+        await reply({ text: '❌ Erreur lors de la récupération des données!' });
+      } else {
         await sock.sendMessage(senderJid, { text: '❌ Erreur lors de la récupération des données!' });
+      }
         return;
       }
     } catch (error) {

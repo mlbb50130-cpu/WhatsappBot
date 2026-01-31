@@ -24,7 +24,7 @@ module.exports = {
     }
   },
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
     const participantJid = message.key.participant || senderJid;
 
@@ -45,14 +45,22 @@ module.exports = {
     }
 
     if (user.quizUsageToday.count >= 10) {
-      await sock.sendMessage(senderJid, { text: MessageFormatter.warning('Limite atteinte: 10 quiz par jour.') });
+      if (reply) {
+        await reply({ text: MessageFormatter.warning('Limite atteinte: 10 quiz par jour.') });
+      } else {
+        await sock.sendMessage(senderJid, { text: MessageFormatter.warning('Limite atteinte: 10 quiz par jour.') });
+      }
       return;
     }
 
     // Charger tous les quizzes (fallback si IA indisponible)
     const allQuizzes = this.getQuizzes();
     if (allQuizzes.length === 0) {
-      await sock.sendMessage(senderJid, { text: MessageFormatter.error('Aucun quiz disponible.') });
+      if (reply) {
+        await reply({ text: MessageFormatter.error('Aucun quiz disponible.') });
+      } else {
+        await sock.sendMessage(senderJid, { text: MessageFormatter.error('Aucun quiz disponible.') });
+      }
       return;
     }
 
@@ -75,7 +83,11 @@ module.exports = {
         { label: '🔄 Action', value: 'Historique réinitialisé' }
       ];
       const congratsMsg = MessageFormatter.elegantBox('🎉 FÉLICITATIONS! 🎉', congratsItems);
-      await sock.sendMessage(senderJid, { text: congratsMsg });
+      if (reply) {
+        await reply({ text: congratsMsg });
+      } else {
+        await sock.sendMessage(senderJid, { text: congratsMsg });
+      }
       // Réinitialiser SEULEMENT après avoir affiché le message
       user.quizHistory = [];
       global.answeredQuizzes.clear();
@@ -106,7 +118,11 @@ module.exports = {
 
     const quizTitle = '𝔔𝔘𝔌𝔝 𝔒𝔗𝔄𝔎𝔘';
     const quizMessage = MessageFormatter.elegantBox(quizTitle, questionItems);
-    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(quizMessage));
+    if (reply) {
+        await reply(MessageFormatter.createMessageWithImage(quizMessage));
+      } else {
+        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(quizMessage));
+      }
 
     user.quizUsageToday.count += 1;
     await user.save();

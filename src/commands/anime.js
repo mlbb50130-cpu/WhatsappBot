@@ -10,12 +10,16 @@ module.exports = {
   groupOnly: false,
   cooldown: 5,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     try {
       if (!args || args.length === 0) {
+        if (reply) {
+        await reply({ text: MessageFormatter.error('Utilise: !anime [nom]') });
+      } else {
         await sock.sendMessage(senderJid, { text: MessageFormatter.error('Utilise: !anime [nom]') });
+      }
         return;
       }
 
@@ -27,7 +31,11 @@ module.exports = {
         });
 
         if (!response.data?.data || response.data.data.length === 0) {
-          await sock.sendMessage(senderJid, { text: MessageFormatter.error('Anime non trouvé!') });
+          if (reply) {
+        await reply({ text: MessageFormatter.error('Anime non trouvé!') });
+      } else {
+        await sock.sendMessage(senderJid, { text: MessageFormatter.error('Anime non trouvé!') });
+      }
           return;
         }
 
@@ -45,11 +53,19 @@ module.exports = {
 
         const content = `${MessageFormatter.elegantBox('𝔄𝔑𝔌𝔐𝔈', animeItems)}
 Synopsis: ${synopsis}`;
+        if (reply) {
+        await reply(MessageFormatter.createMessageWithImage(content));
+      } else {
         await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(content));
+      }
 
       } catch (apiError) {
         console.error('Jikan API error:', apiError.message);
+        if (reply) {
+        await reply({ text: '❌ Erreur API!' });
+      } else {
         await sock.sendMessage(senderJid, { text: '❌ Erreur API!' });
+      }
         return;
       }
     } catch (error) {

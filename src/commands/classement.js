@@ -11,7 +11,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 5,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
     const type = args[0]?.toLowerCase() || 'level';
 
@@ -39,9 +39,11 @@ module.exports = {
           title = '📚 TOP 10 QUIZ';
           break;
         default:
-          await sock.sendMessage(senderJid, {
-            text: '❌ Type invalide. Options: \`level\`, \`xp\`, \`wins\`, \`quiz\`'
-          });
+          if (reply) {
+        await reply({ text: '❌ Type invalide. Options: \`level\`, \`xp\`, \`wins\`, \`quiz\`' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Type invalide. Options: \`level\`, \`xp\`, \`wins\`, \`quiz\`' });
+      }
           return;
       }
 
@@ -79,12 +81,18 @@ module.exports = {
 
       leaderboard += '════════════════════════════════════════';
 
-      await sock.sendMessage(senderJid, { text: leaderboard });
+      if (reply) {
+        await reply({ text: leaderboard });
+      } else {
+        await sock.sendMessage(senderJid, { text: leaderboard });
+      }
     } catch (error) {
       console.error('Error fetching leaderboard:', error.message);
-      await sock.sendMessage(senderJid, {
-        text: '❌ Erreur lors de la récupération du classement.'
-      });
+      if (reply) {
+        await reply({ text: '❌ Erreur lors de la récupération du classement.' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur lors de la récupération du classement.' });
+      }
     }
   }
 };

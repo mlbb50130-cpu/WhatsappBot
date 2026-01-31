@@ -58,7 +58,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 5,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
     const categoryNum = args[0] ? parseInt(args[0]) : null;
 
@@ -88,7 +88,11 @@ module.exports = {
     if (categoryNum && activeCategories[categoryNum]) {
       const category = activeCategories[categoryNum];
       const menu = MessageFormatter.elegantSection(category.name, category.commands);
-      await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(menu));
+      if (reply) {
+        await reply(MessageFormatter.createMessageWithImage(menu));
+      } else {
+        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(menu));
+      }
       return;
     }
 
@@ -109,6 +113,10 @@ module.exports = {
 
     mainMenu += '═════════════════════════════════════';
 
-    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(mainMenu));
+    if (reply) {
+        await reply(MessageFormatter.createMessageWithImage(mainMenu));
+      } else {
+        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(mainMenu));
+      }
   }
 };

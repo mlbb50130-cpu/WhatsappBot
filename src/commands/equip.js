@@ -10,14 +10,16 @@ module.exports = {
   groupOnly: false,
   cooldown: 2,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     try {
       if (args.length < 2) {
-        await sock.sendMessage(senderJid, {
-          text: '❌ Utilisation: `!equip <id> <slot>`\n\n*Slots disponibles:*\n• head (tête)\n• body (corps)\n• hands (mains)\n• feet (pieds)\n\nExemple: `!equip 3 head`'
-        });
+        if (reply) {
+        await reply({ text: '❌ Utilisation: `!equip <id> <slot>`\n\n*Slots disponibles:*\n• head (tête)\n• body (corps)\n• hands (mains)\n• feet (pieds)\n\nExemple: `!equip 3 head`' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Utilisation: `!equip <id> <slot>`\n\n*Slots disponibles:*\n• head (tête)\n• body (corps)\n• hands (mains)\n• feet (pieds)\n\nExemple: `!equip 3 head`' });
+      }
         return;
       }
 
@@ -73,10 +75,18 @@ module.exports = {
         message_text += `\n  ⚡ *Total: +${equipmentXPDetails.totalXP} XP/heure*`;
       }
 
-      await sock.sendMessage(senderJid, { text: message_text });
+      if (reply) {
+        await reply({ text: message_text });
+      } else {
+        await sock.sendMessage(senderJid, { text: message_text });
+      }
     } catch (error) {
       console.error('Error in equip command:', error.message);
-      await sock.sendMessage(senderJid, { text: '❌ Erreur lors de l\'équipement!' });
+      if (reply) {
+        await reply({ text: '❌ Erreur lors de l\'équipement!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur lors de l\'équipement!' });
+      }
     }
   }
 };

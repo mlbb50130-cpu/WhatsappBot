@@ -9,7 +9,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 0,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     try {
@@ -42,7 +42,11 @@ module.exports = {
 └─ Différence (ms): ${now.getTime() - lastReset.getTime()}
 `;
 
-      await sock.sendMessage(senderJid, { text: debugInfo });
+      if (reply) {
+        await reply({ text: debugInfo });
+      } else {
+        await sock.sendMessage(senderJid, { text: debugInfo });
+      }
     } catch (error) {
       console.error('Error in chakratest:', error.message);
       await sock.sendMessage(senderJid, { text: `❌ Erreur: ${error.message}` });

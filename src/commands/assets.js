@@ -9,7 +9,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 3,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     const assetCommands = [
@@ -49,6 +49,10 @@ module.exports = {
 
     const assetsMsg = `${MessageFormatter.elegantSection('🏛️ IMAGES CLASSIQUES', assetList)}\n\n${MessageFormatter.elegantSection('🔞 IMAGES ADULTES', adultList)}`;
 
-    await sock.sendMessage(senderJid, { text: assetsMsg });
+    if (reply) {
+        await reply({ text: assetsMsg });
+      } else {
+        await sock.sendMessage(senderJid, { text: assetsMsg });
+      }
   }
 };

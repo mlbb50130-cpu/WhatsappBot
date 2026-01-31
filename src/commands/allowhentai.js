@@ -11,7 +11,7 @@ module.exports = {
   groupOnly: true,
   cooldown: 5,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const jid = message.key.remoteJid;
 
     try {
@@ -19,19 +19,25 @@ module.exports = {
       // Donc on peut procéder directement
 
       if (!args.length) {
-        return sock.sendMessage(jid, {
-          text: '📝 **Usage:** !allowhentai on/off\n\n' +
+        const text = '📝 **Usage:** !allowhentai on/off\n\n' +
                 '!allowhentai on → Autoriser hentai/hentaivd\n' +
-                '!allowhentai off → Interdire hentai/hentaivd'
-        });
+                '!allowhentai off → Interdire hentai/hentaivd';
+        if (reply) {
+          return await reply({ text });
+        } else {
+          return sock.sendMessage(jid, { text });
+        }
       }
 
       const action = args[0].toLowerCase();
 
       if (action !== 'on' && action !== 'off') {
-        return sock.sendMessage(jid, {
-          text: '❌ Argument invalide! Utilise: !allowhentai on/off'
-        });
+        const text = '❌ Argument invalide! Utilise: !allowhentai on/off';
+        if (reply) {
+          return await reply({ text });
+        } else {
+          return sock.sendMessage(jid, { text });
+        }
       }
 
       const isAllowed = action === 'on';
@@ -45,11 +51,20 @@ module.exports = {
         ? `✅ Les commandes !hentai et !hentaivd sont maintenant **autorisées** dans ce groupe!`
         : `❌ Les commandes !hentai et !hentaivd sont maintenant **interdites** dans ce groupe!`;
 
-      return sock.sendMessage(jid, { text: message_text });
+      if (reply) {
+        return await reply({ text: message_text });
+      } else {
+        return sock.sendMessage(jid, { text: message_text });
+      }
 
     } catch (error) {
       console.error(`[ALLOWHENTAI] Error: ${error.message}`);
-      await sock.sendMessage(jid, { text: '❌ Erreur lors de la mise à jour des paramètres.' });
+      const text = '❌ Erreur lors de la mise à jour des paramètres.';
+      if (reply) {
+        await reply({ text });
+      } else {
+        await sock.sendMessage(jid, { text });
+      }
     }
   }
 };

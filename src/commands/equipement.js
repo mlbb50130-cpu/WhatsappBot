@@ -10,7 +10,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 2,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     try {
@@ -89,10 +89,18 @@ ${slots.feet} *Pieds:* ${getEquipmentText('feet')}
 Utilise \`!inventaire\` pour voir tes items!
 ═════════════════════════════════════`;
 
-      await sock.sendMessage(senderJid, { text: equipmentMessage });
+      if (reply) {
+        await reply({ text: equipmentMessage });
+      } else {
+        await sock.sendMessage(senderJid, { text: equipmentMessage });
+      }
     } catch (error) {
       console.error('Error in equipement command:', error.message);
-      await sock.sendMessage(senderJid, { text: '❌ Erreur lors de la récupération de l\'équipement!' });
+      if (reply) {
+        await reply({ text: '❌ Erreur lors de la récupération de l\'équipement!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur lors de la récupération de l\'équipement!' });
+      }
     }
   }
 };

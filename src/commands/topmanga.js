@@ -10,7 +10,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 10,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     try {
@@ -20,7 +20,11 @@ module.exports = {
         });
 
         if (!response.data?.data || response.data.data.length === 0) {
-          await sock.sendMessage(senderJid, { text: MessageFormatter.error('Impossible de récupérer le top!') });
+          if (reply) {
+        await reply({ text: MessageFormatter.error('Impossible de récupérer le top!') });
+      } else {
+        await sock.sendMessage(senderJid, { text: MessageFormatter.error('Impossible de récupérer le top!') });
+      }
           return;
         }
 
@@ -32,11 +36,19 @@ module.exports = {
 
         const fullMessage = `${MessageFormatter.elegantSection('🏆 TOP 10 MANGAS 🏆', topList)}
 💡 Utilise \`!manga [nom]\` pour plus d'infos!`;
+        if (reply) {
+        await reply({ text: fullMessage });
+      } else {
         await sock.sendMessage(senderJid, { text: fullMessage });
+      }
 
       } catch (apiError) {
         console.error('Jikan API error:', apiError.message);
+        if (reply) {
+        await reply({ text: MessageFormatter.error('Erreur lors de la récupération!') });
+      } else {
         await sock.sendMessage(senderJid, { text: MessageFormatter.error('Erreur lors de la récupération!') });
+      }
         return;
       }
     } catch (error) {

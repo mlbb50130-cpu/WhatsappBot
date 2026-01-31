@@ -10,6 +10,7 @@ const BadgeSystem = require('./utils/badgeSystem');
 const RankSystem = require('./utils/rankSystem');
 const PackManager = require('./utils/PackManager');
 const MessageFormatter = require('./utils/messageFormatter');
+const ReactionSystem = require('./utils/reactionSystem');
 const Group = require('./models/Group');
 
 const commands = new Map();
@@ -352,6 +353,18 @@ Cela activera les fonctions du bot dans ce groupe.
       }
     }
 
+    // 🤖 Vérifier si le bot est désactivé dans ce groupe
+    if (isGroup && groupDoc && !groupDoc.isActive) {
+      // Autoriser seulement les commandes d'activation/gestion du bot
+      const allowedWhenInactive = ['activatebot', 'help', 'profil', 'profile'];
+      if (!allowedWhenInactive.includes(commandName)) {
+        await sock.sendMessage(senderJid, {
+          text: '🚫 **Le bot est désactivé dans ce groupe.**\n\nSeul un administrateur peut réactiver le bot avec: `!activatebot`'
+        });
+        return;
+      }
+    }
+
     // User already retrieved and message count updated above
     const userLatest = await User.findOne({ jid: participantJid });
     if (!userLatest) {
@@ -426,8 +439,47 @@ Cela activera les fonctions du bot dans ce groupe.
     const xpBefore = userLatest.xp || 0;
 
     console.log(`[CMD] ${participantJid} -> ${config.PREFIX}${commandName} ${args.join(' ')}`.trim());
-    // Execute command
-    await command.execute(sock, message, args, userLatest, isGroup, groupData);
+    
+    // 🔐 Check admin permission
+    if (command.adminOnly) {
+      // Get group participants if in group
+      let participants = [];
+      if (isGroup) {
+        try {
+          const groupMetadata = await sock.groupMetadata(senderJid);
+          participants = groupMetadata.participants || [];
+        } catch (error) {
+          console.error('Error fetching group metadata:', error.message);
+        }
+      }
+      
+      const hasPermission = PermissionManager.canUseCommand(
+        participantJid,
+        command,
+        isGroup,
+        senderJid,
+        participantJid,
+        participants
+      );
+      
+      if (!hasPermission) {
+        await sock.sendMessage(senderJid, {
+          text: '🔐 *Erreur:* Cette commande est réservée aux administrateurs du groupe!'
+        });
+        return;
+      }
+    }
+    
+    // Create and attach reply function
+    const reply = MessageFormatter.createReplyFunction(sock, message);
+    message.reply = reply; // Attach to message
+    sock.reply = reply; // Attach to sock for convenience
+    
+    // Execute command with reply function
+    await command.execute(sock, message, args, userLatest, isGroup, groupData, reply);
+
+    // Add automatic reaction to user's command message
+    await ReactionSystem.addReaction(sock, message, commandName);
 
     // Apply command XP bonus for RPG packs when XP was gained
     if (isGroup && config.XP_COMMAND_BONUS > 0) {

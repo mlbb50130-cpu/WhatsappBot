@@ -10,7 +10,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 5,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     // Check daily limit for assets (10 images = XP limit)
@@ -72,31 +72,40 @@ module.exports = {
           responseType: 'arraybuffer',
           timeout: 10000
         });
-        const imageBuffer = Buffer.from(imageResponse.data, 'b' + (allowXp ? '5 XP ✨' : '🚫 Limite atteinte (10/jour)') : '🥰 *Une belle waifu!*';
+        const imageBuffer = Buffer.from(imageResponse.data, 'binary');
+        const caption = `🥰 Une belle waifu pour toi!\n\n➕ ` + (allowXp ? '5 XP' : '🚫 Limite atteinte (10/jour)');
 
-        await sock.sendMessage(senderJid, {
-          image: imageBuffer,
-          caption: caption
-        });
+        if (reply) {
+          await reply({
+            image: imageBuffer,
+            caption: caption
+          });
+        } else {
+          await sock.sendMessage(senderJid, {
+            image: imageBuffer,
+            caption: caption
+          });
+        }
+
+        if (isGroup && allowXp) user.xp += 5;
+        user.assetUsageToday.count += 1;
+        await user.save();
       } catch (downloadErr) {
         console.error('[WAIFU] Error downloading image:', downloadErr.message);
-        await sock.sendMessage(senderJid, {
-          text: '🥰 Une belle waifu pour toi!\n\n➕ ' + (allowXp ? '5 XP' : '🚫 Limite atteinte (10/jour)')
-        });
+        if (reply) {
+          await reply({ text: '🥰 Une belle waifu pour toi!\n\n➕ ' + (allowXp ? '5 XP' : '🚫 Limite atteinte (10/jour)') });
+        } else {
+          await sock.sendMessage(senderJid, { text: '🥰 Une belle waifu pour toi!\n\n➕ ' + (allowXp ? '5 XP' : '🚫 Limite atteinte (10/jour)') });
+        }
       }
-
-      if (isGroup && allowXp) user.xp += 5;
-      // Increment usage counter
-      user.assetUsageToday.count += 1
-
-      user.xp += 5;
-      await user.save();
 
     } catch (error) {
       console.error('Error fetching waifu:', error.message);
-      await sock.sendMessage(senderJid, {
-        text: MessageFormatter.error('Erreur lors de la récupération!')
-      });
+      if (reply) {
+        await reply({ text: MessageFormatter.error('Erreur lors de la récupération!') });
+      } else {
+        await sock.sendMessage(senderJid, { text: MessageFormatter.error('Erreur lors de la récupération!') });
+      }
     }
   }
 };

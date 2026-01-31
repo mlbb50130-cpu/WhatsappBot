@@ -9,7 +9,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 2,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
     const participantJid = message.key.participant || senderJid;
 
@@ -20,10 +20,18 @@ module.exports = {
       ];
 
       const whoamiMessage = MessageFormatter.elegantBox('𝔍𝔌𝔇', whoamiItems);
-      await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(whoamiMessage));
+      if (reply) {
+        await reply(MessageFormatter.createMessageWithImage(whoamiMessage));
+      } else {
+        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(whoamiMessage));
+      }
     } catch (error) {
       console.error('Error in whoami command:', error.message);
-      await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      if (reply) {
+        await reply({ text: '❌ Erreur!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      }
     }
   }
 };

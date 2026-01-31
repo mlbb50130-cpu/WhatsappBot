@@ -9,7 +9,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 3,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     try {
@@ -43,10 +43,18 @@ ${totalPower > 5000 ? '🌟 Puissance incroyable!' : totalPower > 2000 ? '💪 T
 
 ═════════════════════════════════════`;
 
-      await sock.sendMessage(senderJid, { text: powerMessage });
+      if (reply) {
+        await reply({ text: powerMessage });
+      } else {
+        await sock.sendMessage(senderJid, { text: powerMessage });
+      }
     } catch (error) {
       console.error('Error in powerlevel command:', error.message);
-      await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      if (reply) {
+        await reply({ text: '❌ Erreur!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      }
     }
   }
 };

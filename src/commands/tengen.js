@@ -13,7 +13,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 3,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     // Check daily limit for assets (10 images = XP limit)
@@ -34,14 +34,22 @@ module.exports = {
 
     try {
       if (!fs.existsSync(assetPath)) {
+        if (reply) {
+        await reply({ text: '❌ Aucune photo trouvée!' });
+      } else {
         await sock.sendMessage(senderJid, { text: '❌ Aucune photo trouvée!' });
+      }
         return;
       }
 
       const files = fs.readdirSync(assetPath).filter(f => /\.(jpg|jpeg|png|gif|webp)$/i.test(f));
       
       if (files.length === 0) {
+        if (reply) {
+        await reply({ text: '❌ Aucune photo trouvée!' });
+      } else {
         await sock.sendMessage(senderJid, { text: '❌ Aucune photo trouvée!' });
+      }
         return;
       }
 
@@ -73,7 +81,11 @@ module.exports = {
       const imageBuffer = fs.readFileSync(imagePath);
 
       if (!imageBuffer) {
+        if (reply) {
+        await reply({ text: '❌ Erreur lors du chargement!' });
+      } else {
         await sock.sendMessage(senderJid, { text: '❌ Erreur lors du chargement!' });
+      }
         return;
       }
 
@@ -91,7 +103,11 @@ module.exports = {
       await user.save();
     } catch (error) {
       console.error('Error in tengen command:', error.message);
-      await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      if (reply) {
+        await reply({ text: '❌ Erreur!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      }
     }
   }
 };

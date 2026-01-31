@@ -11,7 +11,7 @@ module.exports = {
   groupOnly: true,
   cooldown: 15,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
     const participantJid = message.key.participant || senderJid;
 
@@ -19,18 +19,22 @@ module.exports = {
     const mentions = message.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
     
     if (mentions.length === 0) {
-      await sock.sendMessage(senderJid, {
-        text: '❌ Utilisation: \`!duel @user [nombre]\`\nMentionne le joueur que tu veux affronter!\n\n💡 Exemple: !duel @user 5'
-      });
+      if (reply) {
+        await reply({ text: '❌ Utilisation: \`!duel @user [nombre]\`\nMentionne le joueur que tu veux affronter!\n\n💡 Exemple: !duel @user 5' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Utilisation: \`!duel @user [nombre]\`\nMentionne le joueur que tu veux affronter!\n\n💡 Exemple: !duel @user 5' });
+      }
       return;
     }
 
     const opponentJid = mentions[0];
 
     if (opponentJid === participantJid) {
-      await sock.sendMessage(senderJid, {
-        text: '❌ Tu ne peux pas te battre contre toi-même!'
-      });
+      if (reply) {
+        await reply({ text: '❌ Tu ne peux pas te battre contre toi-même!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Tu ne peux pas te battre contre toi-même!' });
+      }
       return;
     }
 
@@ -48,9 +52,11 @@ module.exports = {
     const opponent = await User.findOne({ jid: opponentJid });
 
     if (!opponent) {
-      await sock.sendMessage(senderJid, {
-        text: '❌ Cet utilisateur n\'existe pas dans la base de données.'
-      });
+      if (reply) {
+        await reply({ text: '❌ Cet utilisateur n\'existe pas dans la base de données.' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Cet utilisateur n\'existe pas dans la base de données.' });
+      }
       return;
     }
 
@@ -203,6 +209,10 @@ module.exports = {
       ])}`
     ].join('\n');
 
-    await sock.sendMessage(senderJid, { text: result });
+    if (reply) {
+        await reply({ text: result });
+      } else {
+        await sock.sendMessage(senderJid, { text: result });
+      }
   }
 };

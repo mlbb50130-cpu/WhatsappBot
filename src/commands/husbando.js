@@ -12,7 +12,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 5,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     // Check daily limit for assets (10 images = XP limit)
@@ -38,9 +38,11 @@ module.exports = {
       );
 
       if (files.length === 0) {
-        await sock.sendMessage(senderJid, {
-          text: '❌ Aucune image disponible pour le moment'
-        });
+        if (reply) {
+        await reply({ text: '❌ Aucune image disponible pour le moment' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Aucune image disponible pour le moment' });
+      }
         return;
       }
 
@@ -51,9 +53,11 @@ module.exports = {
       const imageBuffer = fs.readFileSync(imagePath);
 
       if (!imageBuffer) {
-        await sock.sendMessage(senderJid, {
-          text: '❌ Erreur lors du chargement de l\'image'
-        });
+        if (reply) {
+        await reply({ text: '❌ Erreur lors du chargement de l\'image' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur lors du chargement de l\'image' });
+      }
         return;
       }
 
@@ -72,9 +76,11 @@ module.exports = {
 
     } catch (error) {
       console.error('Error fetching husbando:', error.message);
-      await sock.sendMessage(senderJid, {
-        text: '❌ Erreur lors de la récupération de l\'image. Réessaie!'
-      });
+      if (reply) {
+        await reply({ text: '❌ Erreur lors de la récupération de l\'image. Réessaie!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur lors de la récupération de l\'image. Réessaie!' });
+      }
     }
   }
 };

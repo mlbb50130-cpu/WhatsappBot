@@ -9,7 +9,7 @@ module.exports = {
   groupOnly: true,
   cooldown: 86400, // 24 heures
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     try {
@@ -17,9 +17,11 @@ module.exports = {
       const lastDaily = user.lastDailyQuest ? new Date(user.lastDailyQuest).toDateString() : null;
 
       if (lastDaily === today) {
-        await sock.sendMessage(senderJid, {
-          text: '❌ Tu as déjà complété ta mission quotidienne!\n⏳ Reviens demain pour une autre!'
-        });
+        if (reply) {
+        await reply({ text: '❌ Tu as déjà complété ta mission quotidienne!\n⏳ Reviens demain pour une autre!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Tu as déjà complété ta mission quotidienne!\n⏳ Reviens demain pour une autre!' });
+      }
         return;
       }
 
@@ -43,10 +45,18 @@ module.exports = {
 
 ═════════════════════════════════════`;
 
-      await sock.sendMessage(senderJid, { text: dailyMessage });
+      if (reply) {
+        await reply({ text: dailyMessage });
+      } else {
+        await sock.sendMessage(senderJid, { text: dailyMessage });
+      }
     } catch (error) {
       console.error('Error in quotidien command:', error.message);
-      await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      if (reply) {
+        await reply({ text: '❌ Erreur!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      }
     }
   }
 };

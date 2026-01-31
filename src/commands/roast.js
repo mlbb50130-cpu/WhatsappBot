@@ -26,7 +26,7 @@ module.exports = {
     'T\'es plus faible qu\'un Hyuga sans Byakugan'
   ],
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     // Parse mention
@@ -46,6 +46,10 @@ module.exports = {
     ];
 
     const text = MessageFormatter.elegantBox('𝔕𝔒𝔄𝔖𝔗', roastItems);
-    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(text));
+    if (reply) {
+        await reply(MessageFormatter.createMessageWithImage(text));
+      } else {
+        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(text));
+      }
   }
 };

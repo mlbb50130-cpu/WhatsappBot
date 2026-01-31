@@ -10,7 +10,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 3,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     const levelInfo = XPSystem.calculateLevelFromXp(user.xp);
@@ -48,7 +48,11 @@ module.exports = {
 ${progressBar}
 ${MessageFormatter.elegantSection('RANGS', ranksItems)}`;
 
-    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(level));
+    if (reply) {
+        await reply(MessageFormatter.createMessageWithImage(level));
+      } else {
+        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(level));
+      }
   },
 
   getProgressBar(current, max, length = 20) {

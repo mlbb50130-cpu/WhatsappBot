@@ -9,7 +9,7 @@ module.exports = {
   groupOnly: true,
   cooldown: 5,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     try {
@@ -52,10 +52,18 @@ module.exports = {
 ═════════════════════════════════════
 👑 Amusez-vous et respectez les règles!`;
 
-      await sock.sendMessage(senderJid, { text: rules });
+      if (reply) {
+        await reply({ text: rules });
+      } else {
+        await sock.sendMessage(senderJid, { text: rules });
+      }
     } catch (error) {
       console.error('Error in regles command:', error.message);
-      await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      if (reply) {
+        await reply({ text: '❌ Erreur!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      }
     }
   }
 };

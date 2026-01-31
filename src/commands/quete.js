@@ -11,7 +11,7 @@ module.exports = {
   groupOnly: true,
   cooldown: 3,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     try {
@@ -42,7 +42,11 @@ ${this.formatQuestList(weeklyQuests, user.weeklyQuests)}
 ═════════════════════════════════════════
 💡 Complète les quêtes pour gagner des récompenses!`;
 
-      await sock.sendMessage(senderJid, { text: questMessage });
+      if (reply) {
+        await reply({ text: questMessage });
+      } else {
+        await sock.sendMessage(senderJid, { text: questMessage });
+      }
       
       // Save user if any resets were done
       if (QuestSystem.needsDailyReset(user) || QuestSystem.needsWeeklyReset(user)) {
@@ -50,7 +54,11 @@ ${this.formatQuestList(weeklyQuests, user.weeklyQuests)}
       }
     } catch (error) {
       console.error('Error in quete command:', error.message);
-      await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      if (reply) {
+        await reply({ text: '❌ Erreur!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      }
     }
   },
 

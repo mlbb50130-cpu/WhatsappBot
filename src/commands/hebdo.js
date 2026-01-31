@@ -9,7 +9,7 @@ module.exports = {
   groupOnly: true,
   cooldown: 604800, // 7 jours
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     try {
@@ -18,9 +18,11 @@ module.exports = {
       const lastWeekly = user.lastWeeklyQuest ? new Date(user.lastWeeklyQuest) : null;
 
       if (lastWeekly && lastWeekly >= weekStart) {
-        await sock.sendMessage(senderJid, {
-          text: '❌ Tu as déjà complété ta mission hebdomadaire!\n⏳ Reviens la semaine prochaine!'
-        });
+        if (reply) {
+        await reply({ text: '❌ Tu as déjà complété ta mission hebdomadaire!\n⏳ Reviens la semaine prochaine!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Tu as déjà complété ta mission hebdomadaire!\n⏳ Reviens la semaine prochaine!' });
+      }
         return;
       }
 
@@ -44,10 +46,18 @@ module.exports = {
 
 ═════════════════════════════════════`;
 
-      await sock.sendMessage(senderJid, { text: weeklyMessage });
+      if (reply) {
+        await reply({ text: weeklyMessage });
+      } else {
+        await sock.sendMessage(senderJid, { text: weeklyMessage });
+      }
     } catch (error) {
       console.error('Error in hebdo command:', error.message);
-      await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      if (reply) {
+        await reply({ text: '❌ Erreur!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      }
     }
   }
 };

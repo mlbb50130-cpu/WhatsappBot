@@ -1,4 +1,5 @@
 const MessageFormatter = require('../utils/messageFormatter');
+const config = require('../config');
 
 module.exports = {
   name: 'activatebot',
@@ -8,19 +9,19 @@ module.exports = {
   groupOnly: true,
   cooldown: 0,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
-    const BotOwners = ['74690085318855', '22954959093']; // Les deux numéros autorisés
     
-    // Vérifier si c'est le bot owner
-    const senderNumber = message.key.participant || message.key.remoteJid;
-    const senderNumberOnly = senderNumber.split('@')[0];
+    // Vérifier si c'est le propriétaire du bot
+    const senderNumber = (message.key.participant || message.key.remoteJid).split('@')[0];
+    const isBotOwner = config.ADMIN_JIDS && config.ADMIN_JIDS.includes(senderNumber);
 
-
-    if (!BotOwners.includes(senderNumberOnly)) {
-      await sock.sendMessage(senderJid, {
-        text: '🚫 *Accès refusé!*\n\n⛔ Seul le propriétaire du bot (@74690085318855) peut activer le bot dans les groupes.\n\nVous ne pouvez pas utiliser cette commande.'
-      });
+    if (!isBotOwner) {
+      if (reply) {
+        await reply({ text: '🚫 *Accès refusé!*\n\n⛔ Seul le propriétaire du bot peut activer le bot dans les groupes.\n\nVous n\'avez pas les permissions nécessaires.' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '🚫 *Accès refusé!*\n\n⛔ Seul le propriétaire du bot peut activer le bot dans les groupes.\n\nVous n\'avez pas les permissions nécessaires.' });
+      }
       return;
     }
 
@@ -35,13 +36,13 @@ module.exports = {
           groupJid: senderJid,
           groupName: groupData?.subject || 'Groupe',
           isActive: true,
-          activatedBy: senderNumberOnly,
+          activatedBy: senderNumber,
           activatedAt: new Date()
         });
       } else {
         // Activer le groupe existant
         group.isActive = true;
-        group.activatedBy = senderNumberOnly;
+        group.activatedBy = senderNumber;
         group.activatedAt = new Date();
       }
 
@@ -50,19 +51,25 @@ module.exports = {
       const activateItems = [
         { label: '🎆 Groupe', value: groupData?.subject || senderJid },
         { label: '✅ Statut', value: 'Bot activé' },
-        { label: '👤 Activé par', value: senderNumberOnly }
+        { label: '👤 Activé par', value: senderNumber }
       ];
 
-      const activateMsg = MessageFormatter.elegantBox('🤖 𝔅𝔒𝔗 𝔄𝔆𝔗𝔌𝔙É 🤖', activateItems);
+      const activateMsg = MessageFormatter.elegantBox('🤖 𝔅𝔒𝔗 𝔄𝔠𝔱𝔦𝔳é 🤖', activateItems);
 
-      await sock.sendMessage(senderJid, { text: activateMsg });
+      if (reply) {
+        await reply({ text: activateMsg });
+      } else {
+        await sock.sendMessage(senderJid, { text: activateMsg });
+      }
 
 
     } catch (error) {
       console.error('Error activating bot:', error.message);
-      await sock.sendMessage(senderJid, {
-        text: '❌ Erreur lors de l\'activation du bot!'
-      });
+      if (reply) {
+        await reply({ text: '❌ Erreur lors de l\'activation du bot!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur lors de l\'activation du bot!' });
+      }
     }
   }
 };

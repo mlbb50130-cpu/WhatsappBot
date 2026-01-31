@@ -10,7 +10,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 5,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     try {
@@ -92,13 +92,20 @@ ${topLabel}`;
 
       rankMessage += `\n═════════════════════════════════════`;
 
-      await sock.sendMessage(senderJid, { 
-        text: rankMessage,
-        mentions: mentions
-      });
+      if (reply) {
+        await reply({ text: rankMessage,
+        mentions: mentions });
+      } else {
+        await sock.sendMessage(senderJid, { text: rankMessage,
+        mentions: mentions });
+      }
     } catch (error) {
       console.error('Error in rank command:', error.message);
-      await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      if (reply) {
+        await reply({ text: '❌ Erreur!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      }
     }
   }
 };

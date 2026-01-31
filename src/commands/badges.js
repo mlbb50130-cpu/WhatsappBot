@@ -10,7 +10,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 3,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     try {
@@ -44,10 +44,18 @@ module.exports = {
 
       badgeMessage += `\n═════════════════════════════════════`;
 
-      await sock.sendMessage(senderJid, { text: badgeMessage });
+      if (reply) {
+        await reply({ text: badgeMessage });
+      } else {
+        await sock.sendMessage(senderJid, { text: badgeMessage });
+      }
     } catch (error) {
       console.error('Error in badges command:', error.message);
-      await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      if (reply) {
+        await reply({ text: '❌ Erreur!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
+      }
     }
   }
 };

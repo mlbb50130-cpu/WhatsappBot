@@ -10,7 +10,7 @@ module.exports = {
   groupOnly: true,
   cooldown: 10,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     // Vérifier si 24h ont passé pour réinitialiser le gold
@@ -57,6 +57,10 @@ module.exports = {
 
     await user.save();
 
-    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(result));
+    if (reply) {
+        await reply(MessageFormatter.createMessageWithImage(result));
+      } else {
+        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(result));
+      }
   }
 };

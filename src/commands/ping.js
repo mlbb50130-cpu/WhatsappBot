@@ -9,7 +9,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 1,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
     const startTime = Date.now();
 
@@ -23,7 +23,11 @@ module.exports = {
     ];
 
     const text = MessageFormatter.elegantBox('𝔅𝔒𝔗 𝔖𝔗𝔄𝔗𝔘𝔖', pingItems);
-    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(text));
+    if (reply) {
+        await reply(MessageFormatter.createMessageWithImage(text));
+      } else {
+        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(text));
+      }
   },
 
   getUptime() {

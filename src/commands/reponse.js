@@ -11,15 +11,17 @@ module.exports = {
   groupOnly: true,
   cooldown: 1,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
     const participantJid = message.key.participant || senderJid;
     const username = message.pushName || user.username || 'Unknown';
 
     if (!args[0]) {
-      await sock.sendMessage(senderJid, {
-        text: MessageFormatter.error('Utilisation: !reponse a (a, b, c ou d)\nOu réponds directement avec: a, b, c, ou d')
-      });
+      if (reply) {
+        await reply({ text: MessageFormatter.error('Utilisation: !reponse a (a, b, c ou d)\nOu réponds directement avec: a, b, c, ou d') });
+      } else {
+        await sock.sendMessage(senderJid, { text: MessageFormatter.error('Utilisation: !reponse a (a, b, c ou d)\nOu réponds directement avec: a, b, c, ou d') });
+      }
       return;
     }
 
@@ -35,17 +37,21 @@ module.exports = {
     const session = global.quizSessions.get(senderJid);
 
     if (!session) {
-      await sock.sendMessage(senderJid, {
-        text: MessageFormatter.error('Aucun quiz en cours. Utilise !quiz pour commencer!')
-      });
+      if (reply) {
+        await reply({ text: MessageFormatter.error('Aucun quiz en cours. Utilise !quiz pour commencer!') });
+      } else {
+        await sock.sendMessage(senderJid, { text: MessageFormatter.error('Aucun quiz en cours. Utilise !quiz pour commencer!') });
+      }
       return;
     }
 
     // Vérifier si cet utilisateur a déjà répondu
     if (session.answered.has(participantJid)) {
-      await sock.sendMessage(senderJid, {
-        text: MessageFormatter.warning('Vous avez déjà répondu à ce quiz.')
-      });
+      if (reply) {
+        await reply({ text: MessageFormatter.warning('Vous avez déjà répondu à ce quiz.') });
+      } else {
+        await sock.sendMessage(senderJid, { text: MessageFormatter.warning('Vous avez déjà répondu à ce quiz.') });
+      }
       return;
     }
 
@@ -53,9 +59,11 @@ module.exports = {
     const answerIndex = answer.charCodeAt(0) - 65; // Convert A to 0, B to 1, etc
 
     if (answerIndex < 0 || answerIndex > 3) {
-      await sock.sendMessage(senderJid, {
-        text: MessageFormatter.error('Réponse invalide. Utilisez a, b, c ou d.')
-      });
+      if (reply) {
+        await reply({ text: MessageFormatter.error('Réponse invalide. Utilisez a, b, c ou d.') });
+      } else {
+        await sock.sendMessage(senderJid, { text: MessageFormatter.error('Réponse invalide. Utilisez a, b, c ou d.') });
+      }
       return;
     }
 
@@ -116,16 +124,20 @@ module.exports = {
     const tournament = global.tournaments.get(senderJid);
     
     if (!tournament || !tournament.isActive) {
-      await sock.sendMessage(senderJid, {
-        text: MessageFormatter.error('Aucun tournoi en cours.')
-      });
+      if (reply) {
+        await reply({ text: MessageFormatter.error('Aucun tournoi en cours.') });
+      } else {
+        await sock.sendMessage(senderJid, { text: MessageFormatter.error('Aucun tournoi en cours.') });
+      }
       return;
     }
 
     if (!global.tournamentSessions) {
-      await sock.sendMessage(senderJid, {
-        text: MessageFormatter.error('Erreur du système: sessions manquantes.')
-      });
+      if (reply) {
+        await reply({ text: MessageFormatter.error('Erreur du système: sessions manquantes.') });
+      } else {
+        await sock.sendMessage(senderJid, { text: MessageFormatter.error('Erreur du système: sessions manquantes.') });
+      }
       return;
     }
 
@@ -133,17 +145,21 @@ module.exports = {
     const session = global.tournamentSessions.get(sessionKey);
 
     if (!session || !session.isActive) {
-      await sock.sendMessage(senderJid, {
-        text: MessageFormatter.warning('Question fermée. Attendez la prochaine question.')
-      });
+      if (reply) {
+        await reply({ text: MessageFormatter.warning('Question fermée. Attendez la prochaine question.') });
+      } else {
+        await sock.sendMessage(senderJid, { text: MessageFormatter.warning('Question fermée. Attendez la prochaine question.') });
+      }
       return;
     }
 
     // Vérifier si l'utilisateur a déjà répondu
     if (session.answerers.has(participantJid)) {
-      await sock.sendMessage(senderJid, {
-        text: MessageFormatter.warning('Vous avez déjà répondu à cette question.')
-      });
+      if (reply) {
+        await reply({ text: MessageFormatter.warning('Vous avez déjà répondu à cette question.') });
+      } else {
+        await sock.sendMessage(senderJid, { text: MessageFormatter.warning('Vous avez déjà répondu à cette question.') });
+      }
       return;
     }
 
@@ -151,9 +167,11 @@ module.exports = {
     const answerIndex = answer.charCodeAt(0) - 65;
 
     if (answerIndex < 0 || answerIndex > 3) {
-      await sock.sendMessage(senderJid, {
-        text: MessageFormatter.error('Réponse invalide. Utilisez A, B, C ou D.')
-      });
+      if (reply) {
+        await reply({ text: MessageFormatter.error('Réponse invalide. Utilisez A, B, C ou D.') });
+      } else {
+        await sock.sendMessage(senderJid, { text: MessageFormatter.error('Réponse invalide. Utilisez A, B, C ou D.') });
+      }
       return;
     }
 

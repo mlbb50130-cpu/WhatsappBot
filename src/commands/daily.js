@@ -8,7 +8,7 @@ module.exports = {
   adminOnly: false,
   groupOnly: true,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
     const now = new Date();
 
@@ -25,7 +25,11 @@ module.exports = {
           { label: '👛 Gold Total', value: `${user.gold}` }
         ]);
 
+        if (reply) {
+        await reply(MessageFormatter.createMessageWithImage(content));
+      } else {
         await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(content));
+      }
         return;
       }
     }
@@ -43,6 +47,10 @@ module.exports = {
       { label: '💡 Conseil', value: 'Combinez avec !work (1h)' }
     ]);
 
-    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(content));
+    if (reply) {
+        await reply(MessageFormatter.createMessageWithImage(content));
+      } else {
+        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(content));
+      }
   }
 };

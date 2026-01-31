@@ -1,9 +1,59 @@
 /**
- * 📝 Message Formatter Utility
+ * 📝 Advanced Message Formatter Utility
  * Centralizes all message formatting for consistent styling across commands
  */
 
 class MessageFormatter {
+  // Color codes and styles
+  static STYLES = {
+    BOLD: '*',
+    ITALIC: '_',
+    MONO: '`',
+    STRIKETHROUGH: '~',
+  };
+
+  static EMOJIS = {
+    SUCCESS: '✅',
+    ERROR: '❌',
+    WARNING: '⚠️',
+    INFO: 'ℹ️',
+    STAR: '⭐',
+    FIRE: '🔥',
+    CROWN: '👑',
+    DIAMOND: '💎',
+    GIFT: '🎁',
+    ARROW: '➜',
+    CHECK: '✓',
+    CROSS: '✗',
+  };
+
+  // Unicode fancy characters
+  static FANCY_CHARS = {
+    H_THICK: '═',
+    H_THIN: '─',
+    V_THICK: '║',
+    V_THIN: '│',
+    TL_THICK: '╔',
+    TR_THICK: '╗',
+    BL_THICK: '╚',
+    BR_THICK: '╝',
+    TL_THIN: '┌',
+    TR_THIN: '┐',
+    BL_THIN: '└',
+    BR_THIN: '┘',
+    T_JUNCTION: '╦',
+    B_JUNCTION: '╩',
+    L_JUNCTION: '╠',
+    R_JUNCTION: '╣',
+    CROSS: '╬',
+    BULLET: '▸',
+    FILLED: '█',
+    EMPTY: '░',
+  };
+
+  /**
+   * Normalize fancy Unicode text
+   */
   static normalizeTitle(text = '') {
     const map = {
       '𝔄': 'A', '𝔅': 'B', '𝔆': 'C', '𝔇': 'D', '𝔈': 'E', '𝔉': 'F', '𝔊': 'G',
@@ -16,57 +66,42 @@ class MessageFormatter {
       '𝔳': 'v', '𝔴': 'w', '𝔵': 'x', '𝔶': 'y', '𝔷': 'z',
       'ℭ': 'C', 'ℌ': 'H', 'ℑ': 'I', 'ℜ': 'R', 'ℨ': 'Z'
     };
-
     return String(text).replace(/[𝔄𝔅𝔆𝔇𝔈𝔉𝔊𝔋𝔌𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔𝔕𝔖𝔗𝔘𝔙𝔚𝔛𝔜𝔝𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰𝔱𝔲𝔳𝔴𝔵𝔶𝔷ℭℌℑℜℨ]/g, (ch) => map[ch] || ch);
   }
   /**
-   * Create a styled message box
-   * @param {string} title - Title of the box
-   * @param {string} content - Main content
-   * @param {string} emoji - Optional emoji for title
-   * @returns {string} Formatted message
+   * Create a fancy box with thick borders
+   * @param {string} title - Title text
+   * @param {Array<{label: string, value: string}>} items - Content items
+   * @param {number} width - Box width (default: 50)
+   * @returns {string} Formatted box
    */
-  static box(title, content, emoji = '📝') {
-    const safeTitle = this.normalizeTitle(title);
-    return `╔════════════════════════════════════════╗
-║ ${emoji} ${safeTitle.padEnd(35)} ║
-╚════════════════════════════════════════╝
+  static createBox(title = '', items = [], width = 50) {
+    const C = this.FANCY_CHARS;
+    const top = `${C.TL_THICK}${C.H_THICK.repeat(width - 2)}${C.TR_THICK}`;
+    const bottom = `${C.BL_THICK}${C.H_THICK.repeat(width - 2)}${C.BR_THICK}`;
 
-${content}`;
-  }
+    let content = top + '\n';
 
-  /**
-   * Create an info section with lines
-   * @param {string} title - Section title
-   * @param {Array<{label: string, value: string}>} items - Items to display
-   * @param {string} emoji - Optional emoji
-   * @returns {string} Formatted section
-   */
-  static section(title, items, emoji = '📌') {
-    let content = `\n*${emoji} ${title}*\n`;
-    items.forEach((item, index) => {
-      const isLast = index === items.length - 1;
-      const prefix = isLast ? '└─' : '├─';
-      content += `  ${prefix} ${item.label}: ${item.value}\n`;
-    });
+    if (title) {
+      const titleStr = ` ${this.normalizeTitle(title)} `;
+      const padding = Math.max(0, width - titleStr.length - 2);
+      const leftPad = Math.floor(padding / 2);
+      const rightPad = padding - leftPad;
+      content += `${C.V_THICK}${' '.repeat(leftPad)}${titleStr}${' '.repeat(rightPad)}${C.V_THICK}\n`;
+      content += `${C.L_JUNCTION}${C.H_THICK.repeat(width - 2)}${C.R_JUNCTION}\n`;
+    }
+
+    if (items.length > 0) {
+      items.forEach((item, index) => {
+        const isLast = index === items.length - 1;
+        const line = `${C.BULLET} ${item.label}: ${item.value}`;
+        const padding = Math.max(0, width - line.length - 2);
+        content += `${C.V_THICK}${line}${' '.repeat(padding)}${C.V_THICK}\n`;
+      });
+    }
+
+    content += bottom;
     return content;
-  }
-
-  /**
-   * Create a simple titled box
-   * @param {string} title - Title with emoji
-   * @param {string} content - Content
-   * @returns {string} Simple box
-   */
-  static simpleBox(title, content) {
-    const safeTitle = this.normalizeTitle(title);
-    const maxLength = 40;
-    const paddedTitle = safeTitle.padEnd(maxLength - 2).substring(0, maxLength - 2);
-    return `╔${'═'.repeat(maxLength)}╗
-║ ${paddedTitle} ║
-╚${'═'.repeat(maxLength)}╝
-
-${content}`;
   }
 
   /**
@@ -134,6 +169,89 @@ ${content}`;
   }
 
   /**
+   * Create a status message
+   * @param {boolean} success - Success status
+   * @param {string} message - Message content
+   * @returns {string} Status message
+   */
+  static status(success, message) {
+    const emoji = success ? this.EMOJIS.SUCCESS : this.EMOJIS.ERROR;
+    const status = success ? '*✅ SUCCÈS*' : '*❌ ERREUR*';
+    return `${emoji} ${status}\n${message}`;
+  }
+
+  /**
+   * Create a formatted list
+   * @param {Array<string>} items - List items
+   * @param {string} type - 'bullet' (default), 'number', or 'arrow'
+   * @returns {string} Formatted list
+   */
+  static list(items = [], type = 'bullet') {
+    const bullets = {
+      'bullet': '▸',
+      'number': (i) => `${i + 1}.`,
+      'arrow': '➜',
+      'star': '⭐',
+      'check': '✓'
+    };
+
+    const bullet = bullets[type] || bullets.bullet;
+    return items.map((item, i) => {
+      const prefix = typeof bullet === 'function' ? bullet(i) : bullet;
+      return `${prefix} ${item}`;
+    }).join('\n');
+  }
+
+  /**
+   * Create a title with decorations
+   * @param {string} text - Title text
+   * @param {string} style - 'thick', 'thin', 'star', 'equal'
+   * @returns {string} Decorated title
+   */
+  static title(text, style = 'thick') {
+    const styles = {
+      'thick': { top: '═', bottom: '═', char: '═' },
+      'thin': { top: '─', bottom: '─', char: '─' },
+      'star': { top: '★', bottom: '★', char: '★' },
+      'equal': { top: '=', bottom: '=', char: '=' }
+    };
+
+    const s = styles[style] || styles.thick;
+    const line = s.char.repeat(Math.max(text.length + 4, 30));
+    return `${line}\n  ${text}\n${line}`;
+  }
+
+  /**
+   * Create an ASCII table
+   * @param {Array<string>} headers - Column headers
+   * @param {Array<Array<string>>} rows - Table rows
+   * @returns {string} Formatted table
+   */
+  static table(headers, rows) {
+    if (!headers || headers.length === 0) return '';
+
+    // Calculate column widths
+    const widths = headers.map((h, i) => {
+      let maxWidth = h.length;
+      rows.forEach(row => {
+        if (row[i]) maxWidth = Math.max(maxWidth, String(row[i]).length);
+      });
+      return maxWidth + 2;
+    });
+
+    // Build header
+    const headerRow = headers.map((h, i) => h.padEnd(widths[i])).join('│');
+    const separator = widths.map(w => '─'.repeat(w)).join('┼');
+
+    // Build rows
+    const dataRows = rows.map(row => {
+      return row.map((cell, i) => String(cell || '').padEnd(widths[i])).join('│');
+    });
+
+    return `┌${separator.replace(/┼/g, '┬')}┐\n│${headerRow}│\n├${separator}┤\n${dataRows.map(r => `│${r}│`).join('\n')}\n└${separator.replace(/┼/g, '┴')}┘`;
+  }
+
+  /**
    * Create a list item
    * @param {string} icon - Icon/emoji
    * @param {string} label - Label text
@@ -191,21 +309,26 @@ ${content}`;
   }
 
   /**
-   * Create an elegant styled box with star bullets
+   * Create elegant box (modern style)
    * @param {string} title - Title with emoji
-   * @param {Array<{label: string, value: string}>} items - Items to display
-   * @returns {string} Formatted elegant box
+   * @param {Array<{label: string, value: string}>} items - Items array
+   * @returns {string} Elegant formatted box
    */
-  static elegantBox(title, items = []) {
+  static elegantBox(title = '', items = []) {
     const safeTitle = this.normalizeTitle(title);
-    const lines = items.map((item, index) => {
-      return `├ ☆ ${item.label.padEnd(12)}: ${item.value}`;
-    });
-    
-    const content = lines.join('\n');
-    const borderLength = Math.max(safeTitle.length + 6, 30);
-    
-    return `╭${'─'.repeat(borderLength)}╮\n├ ☆ ${safeTitle}\n${content}\n╰${'─'.repeat(borderLength)}╯`;
+    let content = `╭─ ${safeTitle} ─╮\n`;
+
+    if (items.length > 0) {
+      items.forEach((item, index) => {
+        const isLast = index === items.length - 1;
+        const line = `├ ${item.label}: ${item.value}`;
+        content += line + '\n';
+      });
+      content = content.slice(0, -1) + '\n';
+    }
+
+    content += `╰${'─'.repeat(Math.max(safeTitle.length + 5, 20))}╯`;
+    return content;
   }
 
   /**
@@ -299,6 +422,51 @@ ${content}`;
    */
   static setTheme(themeName) {
     this._theme = themeName || 'default';
+  }
+
+  /**
+   * Create a reply function that automatically quotes messages
+   * @param {object} sock - Socket connection
+   * @param {object} message - Original message to reply to
+   * @returns {function} Reply function
+   */
+  static createReplyFunction(sock, message) {
+    const jid = message.key.remoteJid;
+    const messageKey = message.key;
+    
+    return async (content, options = {}) => {
+      try {
+        if (typeof content === 'string') {
+          // Pour du texte simple, ajouter quoted dans les options
+          return await sock.sendMessage(jid, { 
+            text: content,
+            ...options
+          }, { 
+            quoted: message,
+            ...options
+          });
+        } else if (typeof content === 'object') {
+          // Pour du contenu complexe (image, etc)
+          return await sock.sendMessage(jid, content, { 
+            quoted: message,
+            ...options
+          });
+        }
+      } catch (error) {
+        console.error('[REPLY] Error sending reply:', error.message);
+        // Fallback: send without reply if error
+        try {
+          if (typeof content === 'string') {
+            return await sock.sendMessage(jid, { text: content });
+          } else if (typeof content === 'object') {
+            return await sock.sendMessage(jid, content);
+          }
+        } catch (fallbackError) {
+          console.error('[REPLY] Fallback also failed:', fallbackError.message);
+          return null;
+        }
+      }
+    };
   }
 }
 

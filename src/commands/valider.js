@@ -10,7 +10,7 @@ module.exports = {
   groupOnly: true,
   cooldown: 3,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     try {
@@ -34,9 +34,11 @@ module.exports = {
       }
 
       if (completedQuests.length === 0) {
-        await sock.sendMessage(senderJid, {
-          text: MessageFormatter.warning('❌ Aucune quête complétée à valider.')
-        });
+        if (reply) {
+        await reply({ text: MessageFormatter.warning('❌ Aucune quête complétée à valider.') });
+      } else {
+        await sock.sendMessage(senderJid, { text: MessageFormatter.warning('❌ Aucune quête complétée à valider.') });
+      }
         return;
       }
 
@@ -71,11 +73,19 @@ module.exports = {
 Bravo! Reviens demain pour de nouvelles quêtes! 🚀
 `;
 
-      await sock.sendMessage(senderJid, { text: validationMsg });
+      if (reply) {
+        await reply({ text: validationMsg });
+      } else {
+        await sock.sendMessage(senderJid, { text: validationMsg });
+      }
 
     } catch (error) {
       console.error('Error in valider command:', error.message);
-      await sock.sendMessage(senderJid, { text: '❌ Erreur lors de la validation!' });
+      if (reply) {
+        await reply({ text: '❌ Erreur lors de la validation!' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur lors de la validation!' });
+      }
     }
   }
 };

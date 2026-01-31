@@ -14,7 +14,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 5,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     try {
@@ -22,9 +22,11 @@ module.exports = {
       if (isGroup) {
         const groupDoc = await Group.findOne({ groupJid: senderJid }).catch(() => null);
         if (groupDoc?.permissions?.allowHentai === false) {
-          await sock.sendMessage(senderJid, {
-            text: '❌ Les commandes hentai ne sont pas autorisées dans ce groupe!\n\n💬 Demande à un admin d\'utiliser: !allowhentai on'
-          });
+          if (reply) {
+        await reply({ text: '❌ Les commandes hentai ne sont pas autorisées dans ce groupe!\n\n💬 Demande à un admin d\'utiliser: !allowhentai on' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Les commandes hentai ne sont pas autorisées dans ce groupe!\n\n💬 Demande à un admin d\'utiliser: !allowhentai on' });
+      }
           return;
         }
       }
@@ -74,9 +76,11 @@ module.exports = {
       );
 
       if (files.length === 0) {
-        await sock.sendMessage(senderJid, {
-          text: '❌ Aucune image disponible pour Hentai.'
-        });
+        if (reply) {
+        await reply({ text: '❌ Aucune image disponible pour Hentai.' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Aucune image disponible pour Hentai.' });
+      }
         return;
       }
 
@@ -105,9 +109,11 @@ module.exports = {
 
     } catch (error) {
       console.error(`[HENTAI] Error: ${error.message}`);
-      await sock.sendMessage(senderJid, {
-        text: '❌ Erreur lors du chargement de l\'image.'
-      });
+      if (reply) {
+        await reply({ text: '❌ Erreur lors du chargement de l\'image.' });
+      } else {
+        await sock.sendMessage(senderJid, { text: '❌ Erreur lors du chargement de l\'image.' });
+      }
     }
   }
 };

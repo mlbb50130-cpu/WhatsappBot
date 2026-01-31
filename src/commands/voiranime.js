@@ -10,7 +10,7 @@ module.exports = {
   groupOnly: false,
   cooldown: 5,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     const voiranimeMessage = MessageFormatter.elegantBox('⚠️ 𝔙𝔒𝔌𝔕𝔄𝔑𝔌𝔐𝔈 ⚠️', [
@@ -18,7 +18,11 @@ module.exports = {
       { label: '🔍 Chercher', value: '!anime <nom>' }
     ]);
     
-    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(voiranimeMessage));
+    if (reply) {
+        await reply(MessageFormatter.createMessageWithImage(voiranimeMessage));
+      } else {
+        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(voiranimeMessage));
+      }
   }
 };
 

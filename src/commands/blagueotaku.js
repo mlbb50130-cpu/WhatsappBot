@@ -23,7 +23,7 @@ module.exports = {
     '💬 - Quelle est la règle n°1 de l\'otaku?\n🎌 - Ne JAMAIS spoiler un anime! Jamais!'
   ],
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     const joke = RandomUtils.choice(this.jokes);
@@ -38,6 +38,10 @@ module.exports = {
     user.xp += 5;
     await user.save();
 
-    await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(text));
+    if (reply) {
+        await reply(MessageFormatter.createMessageWithImage(text));
+      } else {
+        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(text));
+      }
   }
 };
