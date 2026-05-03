@@ -126,13 +126,13 @@
     "quete": true
   },
   "120363175369604161@g.us": {
-    "mlbb": false,
     "anime": true,
     "fun": true,
-    "nsfw": false,
     "xp": true,
     "items": true,
-    "quete": true
+    "quete": true,
+    "nsfw": true,
+    "mlbb": false
   },
   "120363407399700836@g.us": {
     "mlbb": false,
@@ -151,5 +151,32 @@
     "xp": true,
     "items": true,
     "quete": true
+  },
+  "120363171030238766@g.us": {
+    "anime": true,
+    "fun": true,
+    "xp": true,
+    "items": true,
+    "quete": true,
+    "nsfw": true,
+    "mlbb": false
+  },
+  "120363152654668423@g.us": {
+    "anime": true,
+    "fun": true,
+    "xp": true,
+    "items": true,
+    "quete": true,
+    "nsfw": true,
+    "mlbb": false
+  },
+  "120363425121622675@g.us": {
+    "anime": true,
+    "fun": true,
+    "xp": true,
+    "items": true,
+    "quete": true,
+    "nsfw": true,
+    "mlbb": false
   }
 }
