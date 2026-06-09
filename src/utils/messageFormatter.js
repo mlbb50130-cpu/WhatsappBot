@@ -1,8 +1,9 @@
 /**
  * Centralized WhatsApp message formatting for TetsuBot.
  *
- * The public method names are kept stable because most commands already call
- * this utility directly.
+ * WhatsApp does not allow a bot to set a real font size. This formatter keeps
+ * messages visually smaller by using plain text, short headings and compact
+ * lists instead of decorative boxes or gothic Unicode text.
  */
 class MessageFormatter {
   static STYLES = {
@@ -13,18 +14,18 @@ class MessageFormatter {
   };
 
   static EMOJIS = {
-    SUCCESS: '✅',
-    ERROR: '❌',
-    WARNING: '⚠️',
-    INFO: 'ℹ️',
-    STAR: '⭐',
-    FIRE: '🔥',
-    CROWN: '👑',
-    DIAMOND: '💎',
-    GIFT: '🎁',
-    ARROW: '→',
-    CHECK: '✓',
-    CROSS: '✕',
+    SUCCESS: 'OK',
+    ERROR: 'Erreur',
+    WARNING: 'Attention',
+    INFO: 'Info',
+    STAR: '*',
+    FIRE: '*',
+    CROWN: '*',
+    DIAMOND: '*',
+    GIFT: '*',
+    ARROW: '>',
+    CHECK: 'OK',
+    CROSS: 'X',
   };
 
   static FANCY_CHARS = {
@@ -54,7 +55,7 @@ class MessageFormatter {
 
   static repairEncoding(text = '') {
     const value = String(text ?? '');
-    if (!/[ÃÂâð�]/.test(value)) return value;
+    if (!/[\u00c3\u00c2\u00e2\u00f0\u00ef\u00bf\u00bd]/.test(value)) return value;
 
     try {
       const repaired = Buffer.from(value, 'latin1').toString('utf8');
@@ -66,19 +67,78 @@ class MessageFormatter {
     }
   }
 
-  static normalizeTitle(text = '') {
-    return this.repairEncoding(text)
+  static isDecorativeLine(line = '') {
+    const value = String(line ?? '').trim();
+    if (value.length < 6) return false;
+
+    const stripped = value.replace(/[╔╗╚╝╦╩╠╣║═─━┌┐└┘|+\-=*_~\s]/g, '');
+    if (stripped.length === 0) return true;
+
+    return value.replace(/[^\p{L}\p{N}]/gu, '').length === 0;
+  }
+
+  static compactText(text = '') {
+    const value = this.repairEncoding(String(text ?? ''))
       .normalize('NFKC')
       .replace(/\uFFFD/g, '')
-      .replace(/\s+/g, ' ')
-      .trim();
+      .replace(/\*\*/g, '*');
+
+    const compactLines = [];
+    let previousBlank = false;
+
+    value.split(/\r?\n/).forEach((rawLine) => {
+      let line = rawLine.trimEnd();
+      if (this.isDecorativeLine(line)) return;
+
+      line = line
+        .replace(/^[╔╗╚╝╦╩╠╣║|]\s*/, '')
+        .replace(/\s*[╔╗╚╝╦╩╠╣║|]$/, '')
+        .replace(/^\?+\s*/, '')
+        .replace(/\s*\?+$/, '')
+        .replace(/^[•·]\s*/, '- ')
+        .replace(/^\s*[-*]\s+[-*]\s+/, '- ')
+        .replace(/[ \t]{2,}/g, ' ')
+        .trimEnd();
+
+      if (!line.trim()) {
+        if (!previousBlank && compactLines.length > 0) {
+          compactLines.push('');
+          previousBlank = true;
+        }
+        return;
+      }
+
+      compactLines.push(line);
+      previousBlank = false;
+    });
+
+    return compactLines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+  }
+
+  static limitText(text = '', maxLines = 22, maxChars = 1600) {
+    let value = String(text ?? '');
+
+    if (value.length > maxChars) {
+      value = `${value.slice(0, maxChars).trimEnd()}\n_Suite: utilise une commande plus precise._`;
+    }
+
+    const lines = value.split('\n');
+    if (lines.length > maxLines) {
+      value = [
+        ...lines.slice(0, maxLines),
+        '_Message reduit. Utilise !help ou !menu pour le detail._',
+      ].join('\n');
+    }
+
+    return value;
+  }
+
+  static normalizeTitle(text = '') {
+    return this.compactText(text).replace(/\s+/g, ' ').trim();
   }
 
   static cleanText(text = '') {
-    return this.repairEncoding(text)
-      .normalize('NFKC')
-      .replace(/\uFFFD/g, '')
-      .trim();
+    return this.compactText(text).trim();
   }
 
   static valueToText(value) {
@@ -92,7 +152,7 @@ class MessageFormatter {
     const safeSubtitle = this.cleanText(subtitle);
     const lines = [];
 
-    if (safeTitle) lines.push(`*${safeTitle.toUpperCase()}*`);
+    if (safeTitle) lines.push(`*${safeTitle}*`);
     if (safeSubtitle) lines.push(`_${safeSubtitle}_`);
 
     return lines.join('\n');
@@ -109,18 +169,14 @@ class MessageFormatter {
       .forEach((field) => {
         const label = this.cleanText(field.label || field.name || '');
         const value = this.valueToText(field.value);
-        if (label) {
-          lines.push(`• *${label}*: ${value}`);
-        } else {
-          lines.push(`• ${value}`);
-        }
+        lines.push(label ? `- *${label}:* ${value}` : `- ${value}`);
       });
 
     body
       .filter((item) => item !== null && item !== undefined)
       .forEach((item) => {
         const safeItem = this.cleanText(item);
-        lines.push(safeItem ? `• ${safeItem}` : '');
+        lines.push(safeItem ? `- ${safeItem}` : '');
       });
 
     const safeFooter = this.cleanText(footer);
@@ -138,46 +194,47 @@ class MessageFormatter {
 
   static error(message) {
     return this.panel({
-      title: `${this.EMOJIS.ERROR} Erreur`,
+      title: 'Erreur',
       body: [message],
     });
   }
 
   static success(message) {
     return this.panel({
-      title: `${this.EMOJIS.SUCCESS} Succès`,
+      title: 'OK',
       body: [message],
     });
   }
 
   static warning(message) {
     return this.panel({
-      title: `${this.EMOJIS.WARNING} Attention`,
+      title: 'Attention',
       body: [message],
     });
   }
 
   static info(message) {
     return this.panel({
-      title: `${this.EMOJIS.INFO} Information`,
+      title: 'Info',
       body: [message],
     });
   }
 
-  static progressBar(current, max, length = 15) {
+  static progressBar(current, max, length = 10) {
     const safeMax = Number(max) > 0 ? Number(max) : 1;
     const safeCurrent = Math.max(0, Number(current) || 0);
+    const barLength = Math.min(Math.max(Number(length) || 10, 6), 10);
     const percentage = Math.min((safeCurrent / safeMax) * 100, 100);
-    const filled = Math.round((percentage / 100) * length);
-    const empty = Math.max(0, length - filled);
+    const filled = Math.round((percentage / 100) * barLength);
+    const empty = Math.max(0, barLength - filled);
     const bar = '#'.repeat(filled) + '-'.repeat(empty);
 
     return `[${bar}] ${Math.round(percentage)}%`;
   }
 
-  static divider(char = '-', length = 32) {
+  static divider(char = '-', length = 24) {
     const safeChar = String(char || '-').slice(0, 1);
-    return safeChar.repeat(Math.max(1, length));
+    return safeChar.repeat(Math.min(Math.max(1, length), 24));
   }
 
   static status(success, message) {
@@ -188,10 +245,10 @@ class MessageFormatter {
     return items.map((item, index) => {
       const safeItem = this.cleanText(item);
       if (type === 'number') return `${index + 1}. ${safeItem}`;
-      if (type === 'arrow') return `→ ${safeItem}`;
-      if (type === 'star') return `⭐ ${safeItem}`;
-      if (type === 'check') return `✓ ${safeItem}`;
-      return `• ${safeItem}`;
+      if (type === 'arrow') return `> ${safeItem}`;
+      if (type === 'star') return `* ${safeItem}`;
+      if (type === 'check') return `OK ${safeItem}`;
+      return `- ${safeItem}`;
     }).join('\n');
   }
 
@@ -200,10 +257,10 @@ class MessageFormatter {
     if (!safeTitle) return '';
 
     if (style === 'line') {
-      return `*${safeTitle.toUpperCase()}*\n${this.divider('-', Math.min(40, Math.max(16, safeTitle.length)))}`;
+      return `*${safeTitle}*\n${this.divider('-', Math.min(24, Math.max(12, safeTitle.length)))}`;
     }
 
-    return `*${safeTitle.toUpperCase()}*`;
+    return `*${safeTitle}*`;
   }
 
   static table(headers = [], rows = []) {
@@ -215,17 +272,20 @@ class MessageFormatter {
       const maxRowWidth = safeRows.reduce((max, row) => {
         return Math.max(max, String(row[columnIndex] || '').length);
       }, header.length);
-      return maxRowWidth;
+      return Math.min(maxRowWidth, 18);
     });
 
+    const formatCell = (cell, width) => {
+      const value = String(cell || '');
+      return value.length > width ? value.slice(0, width - 1).padEnd(width) : value.padEnd(width);
+    };
+
     const formatRow = (row) => row
-      .map((cell, index) => String(cell || '').padEnd(widths[index]))
+      .map((cell, index) => formatCell(cell, widths[index]))
       .join(' | ');
 
-    const separator = widths.map((width) => '-'.repeat(width)).join('-|-');
     return [
       formatRow(safeHeaders),
-      separator,
       ...safeRows.map(formatRow),
     ].join('\n');
   }
@@ -234,23 +294,20 @@ class MessageFormatter {
     const safeIcon = this.cleanText(icon);
     const safeLabel = this.cleanText(label);
     const safeValue = this.valueToText(value);
-    return value ? `${safeIcon} *${safeLabel}*: ${safeValue}` : `${safeIcon} ${safeLabel}`;
+    return value ? `${safeIcon} *${safeLabel}:* ${safeValue}` : `${safeIcon} ${safeLabel}`;
   }
 
   static commandHelp(command, description, usage, examples = []) {
-    const fields = [
-      { label: 'Commande', value: `!${command}` },
-      { label: 'Description', value: description },
-      { label: 'Utilisation', value: usage },
-    ];
-
     const body = examples.length > 0
-      ? ['Exemples:', ...examples.map((example, index) => `${index + 1}. ${example}`)]
+      ? [`Exemples: ${examples.slice(0, 2).join(' | ')}`]
       : [];
 
     return this.panel({
-      title: 'Aide commande',
-      fields,
+      title: `Aide: ${command}`,
+      fields: [
+        { label: 'Usage', value: usage },
+        { label: 'Description', value: description },
+      ],
       body,
     });
   }
@@ -263,7 +320,7 @@ class MessageFormatter {
     const label = this.cleanText(text);
     const prefix = this.cleanText(emoji);
     const safeCommand = this.cleanText(command);
-    return safeCommand ? `${prefix} ${label}\n   \`${safeCommand}\`` : `${prefix} ${label}`;
+    return safeCommand ? `${prefix} ${label} (${safeCommand})` : `${prefix} ${label}`;
   }
 
   static elegantBox(title = '', items = []) {
@@ -323,9 +380,29 @@ class MessageFormatter {
     }
   }
 
+  static formatOutgoingContent(content) {
+    if (typeof content === 'string') {
+      return this.limitText(this.compactText(content));
+    }
+
+    if (!content || typeof content !== 'object') {
+      return content;
+    }
+
+    const formatted = { ...content };
+    if (typeof formatted.text === 'string') {
+      formatted.text = this.limitText(this.compactText(formatted.text));
+    }
+    if (typeof formatted.caption === 'string') {
+      formatted.caption = this.limitText(this.compactText(formatted.caption));
+    }
+
+    return formatted;
+  }
+
   static createMessageWithImage(caption) {
     const image = this.getRandomThemeImage();
-    const safeCaption = this.cleanText(caption);
+    const safeCaption = this.limitText(this.compactText(caption));
 
     if (image) {
       return {
@@ -350,7 +427,7 @@ class MessageFormatter {
       try {
         if (typeof content === 'string') {
           return await sock.sendMessage(jid, {
-            text: content,
+            text: this.limitText(this.compactText(content)),
             ...options,
           }, {
             quoted: message,
@@ -359,7 +436,7 @@ class MessageFormatter {
         }
 
         if (typeof content === 'object') {
-          return await sock.sendMessage(jid, content, {
+          return await sock.sendMessage(jid, this.formatOutgoingContent(content), {
             quoted: message,
             ...options,
           });
@@ -369,11 +446,11 @@ class MessageFormatter {
 
         try {
           if (typeof content === 'string') {
-            return await sock.sendMessage(jid, { text: content });
+            return await sock.sendMessage(jid, { text: this.limitText(this.compactText(content)) });
           }
 
           if (typeof content === 'object') {
-            return await sock.sendMessage(jid, content);
+            return await sock.sendMessage(jid, this.formatOutgoingContent(content));
           }
         } catch (fallbackError) {
           console.error('[REPLY] Fallback also failed:', fallbackError.message);

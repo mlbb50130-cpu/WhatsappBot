@@ -7,9 +7,18 @@ const { loadCommands, handleMessage } = require('./handler');
 const qrcode = require('qrcode-terminal');
 const fs = require('fs');
 const { getGroupMetadataWithCache, invalidateGroupCache } = require('./utils/metadataCache');
+const MessageFormatter = require('./utils/messageFormatter');
 
 let sock = null;
 let qrShown = false;
+
+function installCompactMessageFormatter(socket) {
+  const sendMessage = socket.sendMessage.bind(socket);
+
+  socket.sendMessage = async (jid, content, options) => {
+    return sendMessage(jid, MessageFormatter.formatOutgoingContent(content), options);
+  };
+}
 
 async function connectToWhatsApp() {
   qrShown = false;
@@ -34,6 +43,7 @@ async function connectToWhatsApp() {
     generateHighQualityLinkPreview: true,
     printQRInTerminal: false,
   });
+  installCompactMessageFormatter(sock);
 
   // Save credentials when updated
   sock.ev.on('creds.update', saveCreds);

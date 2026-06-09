@@ -14,19 +14,18 @@ module.exports = {
     const handler = require('../handler');
 
     if (!args[0]) {
-      const populars = [
-        '!profil - Ton profil',
-        '!level - Ton niveau',
-        '!duel @user - Défier',
-        '!quiz - Quiz otaku',
-        '!loot - Ouvrir un loot',
-        '!waifu - Image waifu',
-        '!chance - Chance du jour',
-        '!menu - Menu complet'
-      ];
-
-      const help = `${MessageFormatter.elegantSection('POPULAIRES', populars)}
-Tape: !help [commande]`;
+      const help = MessageFormatter.panel({
+        title: 'Aide rapide',
+        body: [
+          '`!profil` profil',
+          '`!level` niveau',
+          '`!duel @user` duel',
+          '`!quiz` quiz',
+          '`!loot` coffre',
+          '`!menu` categories',
+        ],
+        footer: 'Detail: !help <commande>',
+      });
 
       if (reply) {
         await reply(MessageFormatter.createMessageWithImage(help));
@@ -36,28 +35,26 @@ Tape: !help [commande]`;
       return;
     }
 
-    const commandName = args[0].toLowerCase();
+    const commandName = args[0].replace(/^!/, '').toLowerCase();
     const command = handler.getCommand(commandName);
 
     if (!command) {
       await sock.sendMessage(senderJid, {
-        text: `❌ Commande \`${commandName}\` non trouvée.`
+        text: MessageFormatter.error(`Commande \`${commandName}\` introuvable.`),
       });
       return;
     }
 
-    const helpText = `╔════════════════════════════════════╗
-║  AIDE - ${command.name.toUpperCase()}
-╚════════════════════════════════════╝
-${command.description}
-Utilisation: ${command.usage}
-Catégorie: ${command.category}
-═════════════════════════════════════`;
+    const helpText = MessageFormatter.commandHelp(
+      command.name,
+      command.description,
+      command.usage
+    );
 
     if (reply) {
-        await reply(MessageFormatter.createMessageWithImage(helpText));
-      } else {
-        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(helpText));
-      }
-  }
+      await reply(MessageFormatter.createMessageWithImage(helpText));
+    } else {
+      await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(helpText));
+    }
+  },
 };

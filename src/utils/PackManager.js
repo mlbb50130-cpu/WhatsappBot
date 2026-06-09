@@ -185,26 +185,29 @@ class PackManager {
   }
 
   static getPackMessage() {
-    const packs = this.getPacks();
-    let message = `
-╔═══════════════════════════════════╗
-║   🎯 CHOISIR UN PACK DE COMMANDES ║
-╚═══════════════════════════════════╝
+    const labels = {
+      otaku: 'RPG Otaku',
+      gamin: 'MLBB',
+      complet: 'Complet',
+      custom: 'Personnalise',
+    };
+    const descriptions = {
+      otaku: 'Anime, XP, quetes, duels, images',
+      gamin: 'Mobile Legends uniquement',
+      complet: 'Otaku + MLBB',
+      custom: 'Modules au choix',
+    };
+    const lines = ['*Choisir un pack*'];
 
-Quel type de commandes voulez-vous?
-
-`;
-
-    packs.forEach((pack, i) => {
-      message += `${i + 1}. ${pack.emoji} *${pack.name}*\n   ${pack.description}\n\n`;
+    this.getPacks().forEach((pack, index) => {
+      const name = labels[pack.id] || pack.name;
+      const description = descriptions[pack.id] || pack.description;
+      lines.push(`${index + 1}. *${name}* - ${description}`);
     });
 
-    message += `_Réponds par le numéro (ex: 1, 2, 3, ou 4)_\n\n`;
-    message += `💡 *Exemple:* \`1\` pour RPG OTAKU`;
-
-    return message;
+    lines.push('', 'Reponds par: `1`, `2`, `3` ou `4`.');
+    return lines.join('\n');
   }
-
   static applyPack(packId, groupJid) {
     const pack = this.PACKS[packId.toLowerCase()];
     
@@ -225,6 +228,35 @@ Quel type de commandes voulez-vous?
     const pack = this.PACKS[packId.toLowerCase()];
     
     if (!pack) return null;
+
+    const compactDocs = {
+      otaku: `*Pack RPG Otaku*
+- Modules: anime, XP, quetes, duels, inventaire
+- Commandes: !profil, !quete, !duel, !loot, !waifu
+
+Activation: !activatebot`,
+
+      gamin: `*Pack MLBB*
+- Module: Mobile Legends
+- Commandes: !hero, !build, !counter, !combo, !meta
+
+Activation: !activatebot`,
+
+      complet: `*Pack Complet*
+- Modules: RPG Otaku + MLBB
+- Commandes: !menu puis !menu <numero>
+
+Activation: !activatebot`,
+
+      custom: `*Pack Personnalise*
+- !setmodule on <module>
+- !setmodule off <module>
+- !setmodule status
+
+Activation: !activatebot`,
+    };
+
+    return compactDocs[packId.toLowerCase()] || null;
 
     const docs = {
       otaku: `
