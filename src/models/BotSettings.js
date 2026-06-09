@@ -28,6 +28,13 @@ const botSettingsSchema = new mongoose.Schema({
       groups: { type: [String], default: [] },
       failedGroups: { type: [String], default: [] },
     },
+    atlasCommandRecapV2: {
+      sentAt: Date,
+      attemptedAt: Date,
+      groupCount: { type: Number, default: 0 },
+      groups: { type: [String], default: [] },
+      failedGroups: { type: [String], default: [] },
+    },
   },
 }, { timestamps: true });
 

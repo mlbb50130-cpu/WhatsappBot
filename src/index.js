@@ -18,9 +18,11 @@ let atlasRecapEmptyGroupRetries = 0;
 const recentMessages = new Map();
 const RECENT_MESSAGE_TTL = 15 * 60 * 1000;
 const RECENT_MESSAGE_MAX = 500;
-const ATLAS_RECAP_ANNOUNCEMENT_KEY = 'atlasCommandRecapV1';
+const ATLAS_RECAP_ANNOUNCEMENT_KEY = 'atlasCommandRecapV2';
 const ATLAS_RECAP_FILE = path.join(__dirname, '..', 'ATLAS_COMMANDES_RECAP.txt');
 const ATLAS_RECAP_MAX_EMPTY_GROUP_RETRIES = 3;
+const ATLAS_RECAP_OPEN_DELAY_MS = 30000;
+const ATLAS_RECAP_GROUP_DELAY_MS = 4500;
 
 function installCompactMessageFormatter(socket) {
   const sendMessage = socket.sendMessage.bind(socket);
@@ -124,7 +126,9 @@ async function sendAtlasCommandRecapOnce(socket) {
     const settings = await BotSettings.getGlobal();
     const announcement = settings.announcements?.[ATLAS_RECAP_ANNOUNCEMENT_KEY];
 
-    if (announcement?.sentAt) {
+    const failedPreviously = Array.isArray(announcement?.failedGroups) ? announcement.failedGroups : [];
+
+    if (announcement?.sentAt && failedPreviously.length === 0) {
       return;
     }
 
@@ -159,6 +163,22 @@ async function sendAtlasCommandRecapOnce(socket) {
     const sentGroups = [];
     const failedGroups = [];
 
+    if (pendingGroupJids.length === 0) {
+      await BotSettings.updateOne(
+        { key: 'global' },
+        {
+          $set: {
+            [`announcements.${ATLAS_RECAP_ANNOUNCEMENT_KEY}.sentAt`]: new Date(),
+            [`announcements.${ATLAS_RECAP_ANNOUNCEMENT_KEY}.groupCount`]: alreadySentGroups.size,
+            [`announcements.${ATLAS_RECAP_ANNOUNCEMENT_KEY}.failedGroups`]: [],
+          },
+        },
+        { upsert: true }
+      );
+      console.log('[ATLAS RECAP] Tous les groupes connus ont deja recu le recap.');
+      return;
+    }
+
     for (const groupJid of pendingGroupJids) {
       try {
         await socket.sendMessage(groupJid, {
@@ -180,29 +200,44 @@ async function sendAtlasCommandRecapOnce(socket) {
           { $addToSet: { [`announcements.${ATLAS_RECAP_ANNOUNCEMENT_KEY}.groups`]: groupJid } },
           { upsert: true }
         );
-        await new Promise((resolve) => setTimeout(resolve, 1200));
+        await new Promise((resolve) => setTimeout(resolve, ATLAS_RECAP_GROUP_DELAY_MS));
       } catch (error) {
         failedGroups.push(groupJid);
         console.error(`[ATLAS RECAP] Send failed for ${groupJid}:`, error.message);
       }
     }
 
-    await BotSettings.updateOne(
-      { key: 'global' },
-      {
+    const update = failedGroups.length === 0
+      ? {
         $set: {
           [`announcements.${ATLAS_RECAP_ANNOUNCEMENT_KEY}.sentAt`]: new Date(),
           [`announcements.${ATLAS_RECAP_ANNOUNCEMENT_KEY}.groupCount`]: alreadySentGroups.size,
           [`announcements.${ATLAS_RECAP_ANNOUNCEMENT_KEY}.groups`]: Array.from(alreadySentGroups),
+          [`announcements.${ATLAS_RECAP_ANNOUNCEMENT_KEY}.failedGroups`]: [],
+        },
+      }
+      : {
+        $set: {
+          [`announcements.${ATLAS_RECAP_ANNOUNCEMENT_KEY}.groupCount`]: alreadySentGroups.size,
+          [`announcements.${ATLAS_RECAP_ANNOUNCEMENT_KEY}.groups`]: Array.from(alreadySentGroups),
           [`announcements.${ATLAS_RECAP_ANNOUNCEMENT_KEY}.failedGroups`]: failedGroups,
         },
-      },
+        $unset: {
+          [`announcements.${ATLAS_RECAP_ANNOUNCEMENT_KEY}.sentAt`]: '',
+        },
+      };
+
+    await BotSettings.updateOne(
+      { key: 'global' },
+      update,
       { upsert: true }
     );
 
-    console.log(`[ATLAS RECAP] Sent to ${sentGroups.length}/${pendingGroupJids.length} pending groups.`);
+    console.log(`[ATLAS RECAP] Sent to ${sentGroups.length}/${pendingGroupJids.length} pending groups. Failed: ${failedGroups.length}.`);
   } catch (error) {
     console.error('[ATLAS RECAP] Announcement failed:', error.message);
+  } finally {
+    atlasRecapAnnouncementStarted = false;
   }
 }
 
@@ -254,7 +289,7 @@ async function connectToWhatsApp() {
         sendAtlasCommandRecapOnce(sock).catch((error) => {
           console.error('[ATLAS RECAP] Unexpected error:', error.message);
         });
-      }, 5000);
+      }, ATLAS_RECAP_OPEN_DELAY_MS);
     }
 
     if (connection === 'close') {
