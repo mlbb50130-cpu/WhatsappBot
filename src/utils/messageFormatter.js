@@ -1,10 +1,10 @@
 /**
- * 📝 Advanced Message Formatter Utility
- * Centralizes all message formatting for consistent styling across commands
+ * Centralized WhatsApp message formatting for TetsuBot.
+ *
+ * The public method names are kept stable because most commands already call
+ * this utility directly.
  */
-
 class MessageFormatter {
-  // Color codes and styles
   static STYLES = {
     BOLD: '*',
     ITALIC: '_',
@@ -22,337 +22,264 @@ class MessageFormatter {
     CROWN: '👑',
     DIAMOND: '💎',
     GIFT: '🎁',
-    ARROW: '➜',
+    ARROW: '→',
     CHECK: '✓',
-    CROSS: '✗',
+    CROSS: '✕',
   };
 
-  // Unicode fancy characters
   static FANCY_CHARS = {
-    H_THICK: '═',
-    H_THIN: '─',
-    V_THICK: '║',
-    V_THIN: '│',
-    TL_THICK: '╔',
-    TR_THICK: '╗',
-    BL_THICK: '╚',
-    BR_THICK: '╝',
-    TL_THIN: '┌',
-    TR_THIN: '┐',
-    BL_THIN: '└',
-    BR_THIN: '┘',
-    T_JUNCTION: '╦',
-    B_JUNCTION: '╩',
-    L_JUNCTION: '╠',
-    R_JUNCTION: '╣',
-    CROSS: '╬',
-    BULLET: '▸',
-    FILLED: '█',
-    EMPTY: '░',
+    H_THICK: '-',
+    H_THIN: '-',
+    V_THICK: '|',
+    V_THIN: '|',
+    TL_THICK: '+',
+    TR_THICK: '+',
+    BL_THICK: '+',
+    BR_THICK: '+',
+    TL_THIN: '+',
+    TR_THIN: '+',
+    BL_THIN: '+',
+    BR_THIN: '+',
+    T_JUNCTION: '+',
+    B_JUNCTION: '+',
+    L_JUNCTION: '+',
+    R_JUNCTION: '+',
+    CROSS: '+',
+    BULLET: '-',
+    FILLED: '#',
+    EMPTY: '-',
   };
 
-  /**
-   * Normalize fancy Unicode text
-   */
+  static _theme = 'default';
+
+  static repairEncoding(text = '') {
+    const value = String(text ?? '');
+    if (!/[ÃÂâð�]/.test(value)) return value;
+
+    try {
+      const repaired = Buffer.from(value, 'latin1').toString('utf8');
+      const currentBad = (value.match(/\uFFFD/g) || []).length;
+      const repairedBad = (repaired.match(/\uFFFD/g) || []).length;
+      return repairedBad <= currentBad ? repaired : value;
+    } catch {
+      return value;
+    }
+  }
+
   static normalizeTitle(text = '') {
-    const map = {
-      '𝔄': 'A', '𝔅': 'B', '𝔆': 'C', '𝔇': 'D', '𝔈': 'E', '𝔉': 'F', '𝔊': 'G',
-      '𝔋': 'H', '𝔌': 'I', '𝔍': 'J', '𝔎': 'K', '𝔏': 'L', '𝔐': 'M', '𝔑': 'N',
-      '𝔒': 'O', '𝔓': 'P', '𝔔': 'Q', '𝔕': 'R', '𝔖': 'S', '𝔗': 'T', '𝔘': 'U',
-      '𝔙': 'V', '𝔚': 'W', '𝔛': 'X', '𝔜': 'Y', '𝔝': 'Z',
-      '𝔞': 'a', '𝔟': 'b', '𝔠': 'c', '𝔡': 'd', '𝔢': 'e', '𝔣': 'f', '𝔤': 'g',
-      '𝔥': 'h', '𝔦': 'i', '𝔧': 'j', '𝔨': 'k', '𝔩': 'l', '𝔪': 'm', '𝔫': 'n',
-      '𝔬': 'o', '𝔭': 'p', '𝔮': 'q', '𝔯': 'r', '𝔰': 's', '𝔱': 't', '𝔲': 'u',
-      '𝔳': 'v', '𝔴': 'w', '𝔵': 'x', '𝔶': 'y', '𝔷': 'z',
-      'ℭ': 'C', 'ℌ': 'H', 'ℑ': 'I', 'ℜ': 'R', 'ℨ': 'Z'
-    };
-    return String(text).replace(/[𝔄𝔅𝔆𝔇𝔈𝔉𝔊𝔋𝔌𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔𝔕𝔖𝔗𝔘𝔙𝔚𝔛𝔜𝔝𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰𝔱𝔲𝔳𝔴𝔵𝔶𝔷ℭℌℑℜℨ]/g, (ch) => map[ch] || ch);
+    return this.repairEncoding(text)
+      .normalize('NFKC')
+      .replace(/\uFFFD/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
   }
-  /**
-   * Create a fancy box with thick borders
-   * @param {string} title - Title text
-   * @param {Array<{label: string, value: string}>} items - Content items
-   * @param {number} width - Box width (default: 50)
-   * @returns {string} Formatted box
-   */
-  static createBox(title = '', items = [], width = 50) {
-    const C = this.FANCY_CHARS;
-    const top = `${C.TL_THICK}${C.H_THICK.repeat(width - 2)}${C.TR_THICK}`;
-    const bottom = `${C.BL_THICK}${C.H_THICK.repeat(width - 2)}${C.BR_THICK}`;
 
-    let content = top + '\n';
+  static cleanText(text = '') {
+    return this.repairEncoding(text)
+      .normalize('NFKC')
+      .replace(/\uFFFD/g, '')
+      .trim();
+  }
 
-    if (title) {
-      const titleStr = ` ${this.normalizeTitle(title)} `;
-      const padding = Math.max(0, width - titleStr.length - 2);
-      const leftPad = Math.floor(padding / 2);
-      const rightPad = padding - leftPad;
-      content += `${C.V_THICK}${' '.repeat(leftPad)}${titleStr}${' '.repeat(rightPad)}${C.V_THICK}\n`;
-      content += `${C.L_JUNCTION}${C.H_THICK.repeat(width - 2)}${C.R_JUNCTION}\n`;
-    }
+  static valueToText(value) {
+    if (value === null || value === undefined || value === '') return '-';
+    if (Array.isArray(value)) return value.map((item) => this.cleanText(item)).join(', ');
+    return this.cleanText(value);
+  }
 
-    if (items.length > 0) {
-      items.forEach((item, index) => {
-        const isLast = index === items.length - 1;
-        const line = `${C.BULLET} ${item.label}: ${item.value}`;
-        const padding = Math.max(0, width - line.length - 2);
-        content += `${C.V_THICK}${line}${' '.repeat(padding)}${C.V_THICK}\n`;
+  static header(title = '', subtitle = '') {
+    const safeTitle = this.normalizeTitle(title);
+    const safeSubtitle = this.cleanText(subtitle);
+    const lines = [];
+
+    if (safeTitle) lines.push(`*${safeTitle.toUpperCase()}*`);
+    if (safeSubtitle) lines.push(`_${safeSubtitle}_`);
+
+    return lines.join('\n');
+  }
+
+  static panel({ title = '', subtitle = '', fields = [], body = [], footer = '' } = {}) {
+    const lines = [];
+    const safeHeader = this.header(title, subtitle);
+
+    if (safeHeader) lines.push(safeHeader);
+
+    fields
+      .filter(Boolean)
+      .forEach((field) => {
+        const label = this.cleanText(field.label || field.name || '');
+        const value = this.valueToText(field.value);
+        if (label) {
+          lines.push(`• *${label}*: ${value}`);
+        } else {
+          lines.push(`• ${value}`);
+        }
       });
+
+    body
+      .filter((item) => item !== null && item !== undefined)
+      .forEach((item) => {
+        const safeItem = this.cleanText(item);
+        lines.push(safeItem ? `• ${safeItem}` : '');
+      });
+
+    const safeFooter = this.cleanText(footer);
+    if (safeFooter) {
+      if (lines.length > 0) lines.push('');
+      lines.push(`_${safeFooter}_`);
     }
 
-    content += bottom;
-    return content;
+    return lines.join('\n');
   }
 
-  /**
-   * Create error message
-   * @param {string} message - Error message
-   * @returns {string} Formatted error
-   */
+  static createBox(title = '', items = []) {
+    return this.elegantBox(title, items);
+  }
+
   static error(message) {
-    return `❌ *ERREUR*\n\n${message}`;
+    return this.panel({
+      title: `${this.EMOJIS.ERROR} Erreur`,
+      body: [message],
+    });
   }
 
-  /**
-   * Create success message
-   * @param {string} message - Success message
-   * @returns {string} Formatted success
-   */
   static success(message) {
-    return `✅ *SUCCÈS*\n\n${message}`;
+    return this.panel({
+      title: `${this.EMOJIS.SUCCESS} Succès`,
+      body: [message],
+    });
   }
 
-  /**
-   * Create warning message
-   * @param {string} message - Warning message
-   * @returns {string} Formatted warning
-   */
   static warning(message) {
-    return `⚠️ *ATTENTION*\n\n${message}`;
+    return this.panel({
+      title: `${this.EMOJIS.WARNING} Attention`,
+      body: [message],
+    });
   }
 
-  /**
-   * Create info message
-   * @param {string} message - Info message
-   * @returns {string} Formatted info
-   */
   static info(message) {
-    return `ℹ️ *INFORMATION*\n\n${message}`;
+    return this.panel({
+      title: `${this.EMOJIS.INFO} Information`,
+      body: [message],
+    });
   }
 
-  /**
-   * Create a progress bar
-   * @param {number} current - Current value
-   * @param {number} max - Maximum value
-   * @param {number} length - Bar length
-   * @returns {string} Progress bar
-   */
   static progressBar(current, max, length = 15) {
-    const percentage = Math.min((current / max) * 100, 100);
+    const safeMax = Number(max) > 0 ? Number(max) : 1;
+    const safeCurrent = Math.max(0, Number(current) || 0);
+    const percentage = Math.min((safeCurrent / safeMax) * 100, 100);
     const filled = Math.round((percentage / 100) * length);
-    const empty = length - filled;
-    
-    const bar = '█'.repeat(filled) + '░'.repeat(empty);
-    const percent = Math.round(percentage);
-    
-    return `${bar} ${percent}%`;
+    const empty = Math.max(0, length - filled);
+    const bar = '#'.repeat(filled) + '-'.repeat(empty);
+
+    return `[${bar}] ${Math.round(percentage)}%`;
   }
 
-  /**
-   * Create a divider line
-   * @param {string} char - Character to use (default: ─)
-   * @param {number} length - Length (default: 40)
-   * @returns {string} Divider
-   */
-  static divider(char = '─', length = 40) {
-    return char.repeat(length);
+  static divider(char = '-', length = 32) {
+    const safeChar = String(char || '-').slice(0, 1);
+    return safeChar.repeat(Math.max(1, length));
   }
 
-  /**
-   * Create a status message
-   * @param {boolean} success - Success status
-   * @param {string} message - Message content
-   * @returns {string} Status message
-   */
   static status(success, message) {
-    const emoji = success ? this.EMOJIS.SUCCESS : this.EMOJIS.ERROR;
-    const status = success ? '*✅ SUCCÈS*' : '*❌ ERREUR*';
-    return `${emoji} ${status}\n${message}`;
+    return success ? this.success(message) : this.error(message);
   }
 
-  /**
-   * Create a formatted list
-   * @param {Array<string>} items - List items
-   * @param {string} type - 'bullet' (default), 'number', or 'arrow'
-   * @returns {string} Formatted list
-   */
   static list(items = [], type = 'bullet') {
-    const bullets = {
-      'bullet': '▸',
-      'number': (i) => `${i + 1}.`,
-      'arrow': '➜',
-      'star': '⭐',
-      'check': '✓'
-    };
-
-    const bullet = bullets[type] || bullets.bullet;
-    return items.map((item, i) => {
-      const prefix = typeof bullet === 'function' ? bullet(i) : bullet;
-      return `${prefix} ${item}`;
+    return items.map((item, index) => {
+      const safeItem = this.cleanText(item);
+      if (type === 'number') return `${index + 1}. ${safeItem}`;
+      if (type === 'arrow') return `→ ${safeItem}`;
+      if (type === 'star') return `⭐ ${safeItem}`;
+      if (type === 'check') return `✓ ${safeItem}`;
+      return `• ${safeItem}`;
     }).join('\n');
   }
 
-  /**
-   * Create a title with decorations
-   * @param {string} text - Title text
-   * @param {string} style - 'thick', 'thin', 'star', 'equal'
-   * @returns {string} Decorated title
-   */
-  static title(text, style = 'thick') {
-    const styles = {
-      'thick': { top: '═', bottom: '═', char: '═' },
-      'thin': { top: '─', bottom: '─', char: '─' },
-      'star': { top: '★', bottom: '★', char: '★' },
-      'equal': { top: '=', bottom: '=', char: '=' }
-    };
+  static title(text, style = 'simple') {
+    const safeTitle = this.normalizeTitle(text);
+    if (!safeTitle) return '';
 
-    const s = styles[style] || styles.thick;
-    const line = s.char.repeat(Math.max(text.length + 4, 30));
-    return `${line}\n  ${text}\n${line}`;
+    if (style === 'line') {
+      return `*${safeTitle.toUpperCase()}*\n${this.divider('-', Math.min(40, Math.max(16, safeTitle.length)))}`;
+    }
+
+    return `*${safeTitle.toUpperCase()}*`;
   }
 
-  /**
-   * Create an ASCII table
-   * @param {Array<string>} headers - Column headers
-   * @param {Array<Array<string>>} rows - Table rows
-   * @returns {string} Formatted table
-   */
-  static table(headers, rows) {
+  static table(headers = [], rows = []) {
     if (!headers || headers.length === 0) return '';
 
-    // Calculate column widths
-    const widths = headers.map((h, i) => {
-      let maxWidth = h.length;
-      rows.forEach(row => {
-        if (row[i]) maxWidth = Math.max(maxWidth, String(row[i]).length);
-      });
-      return maxWidth + 2;
+    const safeHeaders = headers.map((header) => this.cleanText(header));
+    const safeRows = rows.map((row) => row.map((cell) => this.cleanText(cell)));
+    const widths = safeHeaders.map((header, columnIndex) => {
+      const maxRowWidth = safeRows.reduce((max, row) => {
+        return Math.max(max, String(row[columnIndex] || '').length);
+      }, header.length);
+      return maxRowWidth;
     });
 
-    // Build header
-    const headerRow = headers.map((h, i) => h.padEnd(widths[i])).join('│');
-    const separator = widths.map(w => '─'.repeat(w)).join('┼');
+    const formatRow = (row) => row
+      .map((cell, index) => String(cell || '').padEnd(widths[index]))
+      .join(' | ');
 
-    // Build rows
-    const dataRows = rows.map(row => {
-      return row.map((cell, i) => String(cell || '').padEnd(widths[i])).join('│');
-    });
-
-    return `┌${separator.replace(/┼/g, '┬')}┐\n│${headerRow}│\n├${separator}┤\n${dataRows.map(r => `│${r}│`).join('\n')}\n└${separator.replace(/┼/g, '┴')}┘`;
+    const separator = widths.map((width) => '-'.repeat(width)).join('-|-');
+    return [
+      formatRow(safeHeaders),
+      separator,
+      ...safeRows.map(formatRow),
+    ].join('\n');
   }
 
-  /**
-   * Create a list item
-   * @param {string} icon - Icon/emoji
-   * @param {string} label - Label text
-   * @param {string} value - Value (optional)
-   * @returns {string} List item
-   */
   static listItem(icon, label, value = '') {
-    return `${icon} ${label}${value ? ': ' + value : ''}`;
+    const safeIcon = this.cleanText(icon);
+    const safeLabel = this.cleanText(label);
+    const safeValue = this.valueToText(value);
+    return value ? `${safeIcon} *${safeLabel}*: ${safeValue}` : `${safeIcon} ${safeLabel}`;
   }
 
-  /**
-   * Create a command help box
-   * @param {string} command - Command name
-   * @param {string} description - Description
-   * @param {string} usage - Usage example
-   * @param {Array<string>} examples - Usage examples
-   * @returns {string} Help message
-   */
   static commandHelp(command, description, usage, examples = []) {
-    let content = `\n*📖 COMMANDE*: \`!${command}\`\n`;
-    content += `*📝 DESCRIPTION*: ${description}\n`;
-    content += `*💻 USAGE*: \`${usage}\`\n`;
-    
-    if (examples.length > 0) {
-      content += `\n*📚 EXEMPLES*\n`;
-      examples.forEach((ex, i) => {
-        content += `  ${i + 1}. \`${ex}\`\n`;
-      });
-    }
-    
-    return content;
-  }
+    const fields = [
+      { label: 'Commande', value: `!${command}` },
+      { label: 'Description', value: description },
+      { label: 'Utilisation', value: usage },
+    ];
 
-  /**
-   * Create a statistic display
-   * @param {string} icon - Icon
-   * @param {string} label - Label
-   * @param {string|number} value - Value
-   * @param {string} suffix - Optional suffix
-   * @returns {string} Stat line
-   */
-  static stat(icon, label, value, suffix = '') {
-    return `${icon} *${label}*: \`${value}\`${suffix}`;
-  }
+    const body = examples.length > 0
+      ? ['Exemples:', ...examples.map((example, index) => `${index + 1}. ${example}`)]
+      : [];
 
-  /**
-   * Create a menu item
-   * @param {string} emoji - Emoji
-   * @param {string} text - Text
-   * @param {string} command - Optional command
-   * @returns {string} Menu item
-   */
-  static menuItem(emoji, text, command = '') {
-    return command ? `${emoji} ${text}\n   \`${command}\`` : `${emoji} ${text}`;
-  }
-
-  /**
-   * Create elegant box (modern style)
-   * @param {string} title - Title with emoji
-   * @param {Array<{label: string, value: string}>} items - Items array
-   * @returns {string} Elegant formatted box
-   */
-  static elegantBox(title = '', items = []) {
-    const safeTitle = this.normalizeTitle(title);
-    let content = `╭─ ${safeTitle} ─╮\n`;
-
-    if (items.length > 0) {
-      items.forEach((item, index) => {
-        const isLast = index === items.length - 1;
-        const line = `├ ${item.label}: ${item.value}`;
-        content += line + '\n';
-      });
-      content = content.slice(0, -1) + '\n';
-    }
-
-    content += `╰${'─'.repeat(Math.max(safeTitle.length + 5, 20))}╯`;
-    return content;
-  }
-
-  /**
-   * Create an elegant section with star bullets
-   * @param {string} title - Section title
-   * @param {Array<string>} items - Items to display
-   * @returns {string} Formatted elegant section
-   */
-  static elegantSection(title, items = []) {
-    const safeTitle = this.normalizeTitle(title);
-    const lines = items.map((item, index) => {
-      return `├ ☆ ${item}`;
+    return this.panel({
+      title: 'Aide commande',
+      fields,
+      body,
     });
-    
-    const content = lines.join('\n');
-    const borderLength = Math.max(safeTitle.length + 6, 30);
-    
-    return `╭───⟪ ${safeTitle} ⟫───╮\n${content}\n╰${'─'.repeat(borderLength)}╯`;
   }
 
-  /**
-   * Get a random image from LAKERSWaifu or NSFW theme folders
-   * @returns {Buffer|null} Image buffer or null if no image found
-   */
+  static stat(icon, label, value, suffix = '') {
+    return this.listItem(icon, label, `\`${value}\`${suffix}`);
+  }
+
+  static menuItem(emoji, text, command = '') {
+    const label = this.cleanText(text);
+    const prefix = this.cleanText(emoji);
+    const safeCommand = this.cleanText(command);
+    return safeCommand ? `${prefix} ${label}\n   \`${safeCommand}\`` : `${prefix} ${label}`;
+  }
+
+  static elegantBox(title = '', items = []) {
+    return this.panel({
+      title,
+      fields: items,
+    });
+  }
+
+  static elegantSection(title, items = []) {
+    return this.panel({
+      title,
+      body: items,
+    });
+  }
+
   static getRandomThemeImage(themeName = null) {
     const fs = require('fs');
     const path = require('path');
@@ -365,26 +292,26 @@ class MessageFormatter {
           : 'LAKERSWaifu';
 
       const assetDir = path.join(__dirname, '../asset');
-      const folders = fs.readdirSync(assetDir).filter(f => {
+      const folders = fs.readdirSync(assetDir).filter((folder) => {
         try {
-          return fs.statSync(path.join(assetDir, f)).isDirectory();
+          return fs.statSync(path.join(assetDir, folder)).isDirectory();
         } catch {
           return false;
         }
       });
 
-      const match = folders.find(f => f.toLowerCase() === requestedTheme.toLowerCase());
+      const match = folders.find((folder) => folder.toLowerCase() === requestedTheme.toLowerCase());
       const resolvedFolder = match || 'LAKERSWaifu';
       const themeDir = path.join(assetDir, resolvedFolder);
-      
+
       if (!fs.existsSync(themeDir)) {
         console.warn(`Theme directory not found: ${themeDir}`);
         return null;
       }
 
       const images = fs.readdirSync(themeDir)
-        .filter(file => /\.(jpg|jpeg|png|gif)$/i.test(file))
-        .map(file => path.join(themeDir, file));
+        .filter((file) => /\.(jpg|jpeg|png|gif)$/i.test(file))
+        .map((file) => path.join(themeDir, file));
 
       if (images.length === 0) return null;
 
@@ -396,80 +323,66 @@ class MessageFormatter {
     }
   }
 
-  /**
-   * Create a message object with image and caption
-   * @param {string} caption - Message caption
-   * @returns {Object} Message object with image or just text
-   */
   static createMessageWithImage(caption) {
     const image = this.getRandomThemeImage();
-    
+    const safeCaption = this.cleanText(caption);
+
     if (image) {
       return {
-        image: image,
-        caption: caption
-      };
-    } else {
-      return {
-        text: caption
+        image,
+        caption: safeCaption,
       };
     }
+
+    return {
+      text: safeCaption,
+    };
   }
 
-  /**
-   * Set current theme for image selection
-   * @param {string} themeName
-   */
   static setTheme(themeName) {
     this._theme = themeName || 'default';
   }
 
-  /**
-   * Create a reply function that automatically quotes messages
-   * @param {object} sock - Socket connection
-   * @param {object} message - Original message to reply to
-   * @returns {function} Reply function
-   */
   static createReplyFunction(sock, message) {
     const jid = message.key.remoteJid;
-    const messageKey = message.key;
-    
+
     return async (content, options = {}) => {
       try {
         if (typeof content === 'string') {
-          // Pour du texte simple, ajouter quoted dans les options
-          return await sock.sendMessage(jid, { 
+          return await sock.sendMessage(jid, {
             text: content,
-            ...options
-          }, { 
+            ...options,
+          }, {
             quoted: message,
-            ...options
+            ...options,
           });
-        } else if (typeof content === 'object') {
-          // Pour du contenu complexe (image, etc)
-          return await sock.sendMessage(jid, content, { 
+        }
+
+        if (typeof content === 'object') {
+          return await sock.sendMessage(jid, content, {
             quoted: message,
-            ...options
+            ...options,
           });
         }
       } catch (error) {
         console.error('[REPLY] Error sending reply:', error.message);
-        // Fallback: send without reply if error
+
         try {
           if (typeof content === 'string') {
             return await sock.sendMessage(jid, { text: content });
-          } else if (typeof content === 'object') {
+          }
+
+          if (typeof content === 'object') {
             return await sock.sendMessage(jid, content);
           }
         } catch (fallbackError) {
           console.error('[REPLY] Fallback also failed:', fallbackError.message);
-          return null;
         }
       }
+
+      return null;
     };
   }
 }
-
-MessageFormatter._theme = 'default';
 
 module.exports = MessageFormatter;

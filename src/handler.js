@@ -15,17 +15,45 @@ const Group = require('./models/Group');
 
 const commands = new Map();
 
+async function sendText(sock, jid, text) {
+  return sock.sendMessage(jid, { text });
+}
+
+function activationRequiredMessage(pack) {
+  return MessageFormatter.panel({
+    title: 'Activation requise',
+    subtitle: 'Bienvenue dans TetsuBot',
+    body: [
+      `Pack ${pack.emoji} ${pack.name} sélectionné avec succès.`,
+      'Un administrateur du groupe doit maintenant envoyer `!activatebot`.',
+      'Les commandes `!documentation` et `!help` restent disponibles avant activation.',
+    ],
+  });
+}
+
+function extractText(msg) {
+  if (!msg) return '';
+  if (msg.ephemeralMessage?.message) return extractText(msg.ephemeralMessage.message);
+  if (msg.viewOnceMessage?.message) return extractText(msg.viewOnceMessage.message);
+  if (msg.viewOnceMessageV2?.message) return extractText(msg.viewOnceMessageV2.message);
+  if (msg.conversation) return msg.conversation;
+  if (msg.extendedTextMessage?.text) return msg.extendedTextMessage.text;
+  if (msg.imageMessage?.caption) return msg.imageMessage.caption;
+  if (msg.videoMessage?.caption) return msg.videoMessage.caption;
+  return '';
+}
+
 // Load all commands dynamically
 function loadCommands() {
   const commandsPath = path.join(__dirname, 'commands');
-  
+
   const loadDir = (dir) => {
     const files = fs.readdirSync(dir);
-    
+
     for (const file of files) {
       const filePath = path.join(dir, file);
       const stat = fs.statSync(filePath);
-      
+
       if (stat.isDirectory()) {
         loadDir(filePath);
       } else if (file.endsWith('.js')) {
@@ -33,7 +61,6 @@ function loadCommands() {
           const command = require(filePath);
           if (command.name) {
             commands.set(command.name.toLowerCase(), command);
-            // Command loaded
           }
         } catch (error) {
           console.error(`${config.COLORS.RED}❌ Error loading command ${file}: ${error.message}${config.COLORS.RESET}`);
@@ -41,26 +68,24 @@ function loadCommands() {
       }
     }
   };
-  
+
   loadDir(commandsPath);
-  // Commands loaded
 }
 
-// Get or create user
 async function getOrCreateUser(jid, username) {
   try {
     let user = await User.findOne({ jid });
-    
+
     if (!user) {
       user = new User({
         jid,
         username: username || 'Anonymous',
         xp: 0,
-        level: 1
+        level: 1,
       });
       await user.save();
     }
-    
+
     return user;
   } catch (error) {
     console.error(`Error getting/creating user: ${error.message}`);
@@ -68,25 +93,22 @@ async function getOrCreateUser(jid, username) {
   }
 }
 
-// Add XP to user
 async function addXP(jid, amount = config.XP_PER_MESSAGE) {
   try {
     const user = await User.findOne({ jid });
-    if (!user) return;
+    if (!user) return null;
 
     const now = Date.now();
     const lastXpTime = user.lastXpTime ? new Date(user.lastXpTime).getTime() : 0;
 
-    // Check cooldown
     if (now - lastXpTime < config.XP_COOLDOWN) {
-      return;
+      return null;
     }
 
     user.xp += amount;
-    user.stats.messages++; // Les messages sont déjà comptés dans handler
+    user.stats.messages++;
     user.lastXpTime = new Date();
 
-    // Check level up
     const levelInfo = XPSystem.calculateLevelFromXp(user.xp);
     const oldLevel = user.level;
     user.level = levelInfo.level;
@@ -94,43 +116,34 @@ async function addXP(jid, amount = config.XP_PER_MESSAGE) {
     if (levelInfo.level > oldLevel) {
       const rankInfo = XPSystem.getRank(levelInfo.level);
       user.rank = rankInfo.rank;
-      
-      // Augmenter le maxChakra quand on level up: +10 par niveau
-      const newMaxChakra = 100 + (levelInfo.level - 1) * 10;
-      user.maxChakra = newMaxChakra;
-      
-      // Vérifier et mettre à jour le rang automatiquement avec RankSystem
+      user.maxChakra = 100 + (levelInfo.level - 1) * 10;
+
       const rankUpdate = RankSystem.checkAndUpdateRank(user);
 
-      // Weekly quest progress (level)
       if (QuestSystem.needsWeeklyReset(user)) {
         QuestSystem.resetWeeklyQuests(user);
       }
       QuestSystem.updateWeeklyProgress(user, 'level', levelInfo.level);
-      
+
       await user.save();
-      
+
       return {
         user,
         leveledUp: true,
         oldLevel,
         newLevel: levelInfo.level,
         rankInfo,
-        rankUpdate: rankUpdate.rankChanged ? rankUpdate : null
+        rankUpdate: rankUpdate.rankChanged ? rankUpdate : null,
       };
     }
 
-    // Vérifier et mettre à jour le rang automatiquement à chaque message avec RankSystem
     const rankUpdate = RankSystem.checkAndUpdateRank(user);
-    if (rankUpdate.rankChanged) {
-      await user.save();
-    }
-
     await user.save();
+
     return {
       user,
       leveledUp: false,
-      rankUpdate: rankUpdate.rankChanged ? rankUpdate : null
+      rankUpdate: rankUpdate.rankChanged ? rankUpdate : null,
     };
   } catch (error) {
     console.error(`Error adding XP: ${error.message}`);
@@ -138,25 +151,73 @@ async function addXP(jid, amount = config.XP_PER_MESSAGE) {
   }
 }
 
-// Main message handler
+async function routeDirectQuizAnswer(sock, message, senderJid, participantJid, directMessage, isGroup, groupData) {
+  if (!['a', 'b', 'c', 'd'].includes(directMessage)) return false;
+
+  if (!global.quizSessions) global.quizSessions = new Map();
+  const quizSession = global.quizSessions.get(senderJid);
+
+  if (quizSession && !quizSession.answered.has(participantJid)) {
+    const reponseCommand = commands.get('reponse');
+    if (reponseCommand) {
+      const userLatest = await User.findOne({ jid: participantJid });
+      await reponseCommand.execute(sock, message, [directMessage.toUpperCase()], userLatest, isGroup, groupData);
+      return true;
+    }
+  }
+
+  if (global.tournaments && global.tournaments.has(senderJid)) {
+    const tournament = global.tournaments.get(senderJid);
+    if (tournament.isActive) {
+      const reponseCommand = commands.get('reponse');
+      if (reponseCommand) {
+        const userLatest = await User.findOne({ jid: participantJid });
+        await reponseCommand.execute(sock, message, [directMessage.toUpperCase()], userLatest, isGroup, groupData);
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+async function handlePackSelection(sock, senderJid, messageContent) {
+  if (!global.packSelections || !global.packSelections[senderJid]) return false;
+
+  const choice = messageContent.trim().toLowerCase();
+  if (isNaN(choice) && !PackManager.PACKS[choice]) return false;
+
+  let packId = null;
+
+  if (!isNaN(choice)) {
+    const num = parseInt(choice, 10) - 1;
+    const packs = PackManager.getPacks();
+    if (num >= 0 && num < packs.length) {
+      packId = packs[num].id;
+    }
+  } else if (PackManager.PACKS[choice]) {
+    packId = choice;
+  }
+
+  if (!packId) return false;
+
+  const pack = PackManager.applyPack(packId, senderJid);
+  if (!pack) return false;
+
+  global.packSelections[senderJid] = false;
+
+  const doc = PackManager.getPackDocumentation(packId);
+  await sendText(sock, senderJid, MessageFormatter.cleanText(doc));
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+  await sendText(sock, senderJid, activationRequiredMessage(pack));
+
+  return true;
+}
+
 async function handleMessage(sock, message, isGroup, groupData) {
   try {
-    const extractText = (msg) => {
-      if (!msg) return '';
-      if (msg.ephemeralMessage?.message) return extractText(msg.ephemeralMessage.message);
-      if (msg.viewOnceMessage?.message) return extractText(msg.viewOnceMessage.message);
-      if (msg.viewOnceMessageV2?.message) return extractText(msg.viewOnceMessageV2.message);
-      if (msg.conversation) return msg.conversation;
-      if (msg.extendedTextMessage?.text) return msg.extendedTextMessage.text;
-      if (msg.imageMessage?.caption) return msg.imageMessage.caption;
-      if (msg.videoMessage?.caption) return msg.videoMessage.caption;
-      return '';
-    };
-
     const messageContent = extractText(message.message);
-    if (!messageContent) {
-      return; // Ignore if no text message
-    }
+    if (!messageContent) return;
 
     const senderJid = message.key.remoteJid;
     const participantJid = message.key.participant || senderJid;
@@ -168,155 +229,64 @@ async function handleMessage(sock, message, isGroup, groupData) {
     }
     MessageFormatter.setTheme(groupDoc?.theme);
 
-
-
-    // TOUJOURS enregistrer les messages (même les non-commandes)
     const user = await getOrCreateUser(participantJid, username);
     if (user) {
       user.stats.messages++;
-      
-      // Récupérer la photo de profil de l'utilisateur
+
       try {
         const profilePicture = await sock.profilePictureUrl(participantJid, 'image').catch(() => null);
         if (profilePicture && profilePicture !== user.profilePicture) {
           user.profilePicture = profilePicture;
         }
-      } catch (error) {
-        // Silently ignore if picture can't be fetched
+      } catch {
+        // Profile pictures are optional.
       }
-      
-      // Reset et update des quêtes journalières/hebdomadaires
+
       if (QuestSystem.needsDailyReset(user)) {
         QuestSystem.resetDailyQuests(user);
       }
       if (QuestSystem.needsWeeklyReset(user)) {
         QuestSystem.resetWeeklyQuests(user);
       }
-      
-      // Update daily quest progress
+
       QuestSystem.updateDailyProgress(user, 'messages', 1);
-      
       await user.save();
 
-      // 💰 Ajouter XP pour le message (en groupe seulement)
       if (isGroup) {
         await addXP(participantJid, config.XP_PER_MESSAGE);
       }
     }
 
-    // 🎯 Traiter les réponses directes au quiz (a, b, c, d en minuscule)
     const directMessage = messageContent.trim().toLowerCase();
-    if (['a', 'b', 'c', 'd'].includes(directMessage)) {
-      // Vérifier s'il y a une session de quiz active dans le GROUPE
-      if (!global.quizSessions) global.quizSessions = new Map();
-      const quizSession = global.quizSessions.get(senderJid);
-      
-      if (quizSession && !quizSession.answered.has(participantJid)) {
-        // Exécuter la commande reponse avec la réponse directe
-        const reponseCommand = commands.get('reponse');
-        if (reponseCommand) {
-          const userLatest = await User.findOne({ jid: participantJid });
-          await reponseCommand.execute(sock, message, [directMessage.toUpperCase()], userLatest, isGroup, groupData);
-          return;
-        }
-      }
-      
-      // Vérifier si un tournoi est en cours
-      if (global.tournaments && global.tournaments.has(senderJid)) {
-        const tournament = global.tournaments.get(senderJid);
-        if (tournament.isActive) {
-          const reponseCommand = commands.get('reponse');
-          if (reponseCommand) {
-            const userLatest = await User.findOne({ jid: participantJid });
-            await reponseCommand.execute(sock, message, [directMessage.toUpperCase()], userLatest, isGroup, groupData);
-            return;
-          }
-        }
-      }
+    const directAnswerHandled = await routeDirectQuizAnswer(
+      sock,
+      message,
+      senderJid,
+      participantJid,
+      directMessage,
+      isGroup,
+      groupData
+    );
+    if (directAnswerHandled) return;
+
+    if (isGroup) {
+      const packHandled = await handlePackSelection(sock, senderJid, messageContent);
+      if (packHandled) return;
     }
 
-    // Gestion de la sélection de pack pour nouveaux groupes
-    if (isGroup && global.packSelections && global.packSelections[senderJid]) {
-      const PackManager = require('./utils/PackManager');
-      const choice = messageContent.trim().toLowerCase();
-      
-      if (!isNaN(choice) || PackManager.PACKS[choice]) {
-        let packId = null;
-
-        // Gestion par numéro (1, 2, 3, 4)
-        if (!isNaN(choice)) {
-          const num = parseInt(choice) - 1;
-          const packs = PackManager.getPacks();
-          if (num >= 0 && num < packs.length) {
-            packId = packs[num].id;
-          }
-        }
-        // Gestion par nom
-        else if (PackManager.PACKS[choice]) {
-          packId = choice;
-        }
-
-        if (packId) {
-          const pack = PackManager.applyPack(packId, senderJid);
-          if (pack) {
-            global.packSelections[senderJid] = false;
-
-            // 1️⃣ Envoyer la documentation du pack
-            const doc = PackManager.getPackDocumentation(packId);
-            await sock.sendMessage(senderJid, { text: doc });
-
-            // 2️⃣ Envoyer la demande d'activation par l'admin
-            await new Promise(resolve => setTimeout(resolve, 1000)); // Délai pour lisibilité
-            
-            await sock.sendMessage(senderJid, {
-              text: `
-╔═══════════════════════════════════╗
-║     ⚙️ ACTIVATION REQUISE ⚙️       ║
-╚═══════════════════════════════════╝
-
-👋 *Bienvenue dans TetsuBot!*
-
-✅ Pack ${pack.emoji} *${pack.name}* **sélectionné avec succès!**
-
-🔐 *PROCHAINE ÉTAPE - ACTIVATION:*
-
-Seul l'**Admin** du groupe peut envoyer:
-
-\`!activatebot\`
-
-Cela activera les fonctions du bot dans ce groupe.
-
-💡 *Note:* Certaines commandes (!documentation, !help) fonctionnent même sans activation.`
-            });
-            
-            return;
-          }
-        }
-      }
-    }
-
-    // 💬 Envoyer la documentation (PAGE 1 SEULEMENT) automatiquement en DM une seule fois par 24h
     if (!isGroup) {
       const docCommand = commands.get('documentation');
-      if (docCommand) {
-        const userLatest = await User.findOne({ jid: participantJid });
-        const now = new Date();
-        
-        // Vérifier si la doc a été envoyée récemment (cooldown 24h)
-        if (!userLatest.lastDocumentationDM || (now - userLatest.lastDocumentationDM) > 86400000) {
-          // Envoyer SEULEMENT la page 1 de la doc en DM
-          await docCommand.execute(sock, message, ['1'], userLatest, isGroup, null);
-          // Mettre à jour le timestamp
-          userLatest.lastDocumentationDM = now;
-          await userLatest.save();
-        }
-        // NE PAS retourner - laisser les commandes en DM fonctionner
+      const userLatest = await User.findOne({ jid: participantJid });
+      const now = new Date();
+
+      if (docCommand && userLatest && (!userLatest.lastDocumentationDM || (now - userLatest.lastDocumentationDM) > 86400000)) {
+        await docCommand.execute(sock, message, ['1'], userLatest, isGroup, null);
+        userLatest.lastDocumentationDM = now;
+        await userLatest.save();
       }
     }
 
-    // Check if it's a command
     if (!messageContent.startsWith(config.PREFIX)) {
-      // 🏆 Vérifier si on est en setup de tournoi (accepter les réponses directes sans prefix)
       if (global.tournamentSetup && global.tournamentSetup.has(senderJid)) {
         const tournoisquizCommand = commands.get('tournoisquiz');
         if (tournoisquizCommand && tournoisquizCommand.handleTournamentSetup) {
@@ -328,94 +298,64 @@ Cela activera les fonctions du bot dans ce groupe.
       return;
     }
 
-    // Parse command
     const args = messageContent.slice(config.PREFIX.length).trim().split(/\s+/);
     let commandName = args.shift().toLowerCase();
-    
-    // Normaliser les accents dans le nom de la commande
     commandName = commandName.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
-    // Get command
     const command = commands.get(commandName);
-    if (!command) {
-      return;
-    }
+    if (!command) return;
 
-    // 🏆 Vérifier si un tournoi est en cours dans ce groupe
     if (global.tournaments && global.tournaments.has(senderJid)) {
       const tournament = global.tournaments.get(senderJid);
       if (tournament.isActive && commandName !== 'reponse') {
-        // Seule la commande 'reponse' est autorisée pendant un tournoi
-        await sock.sendMessage(senderJid, {
-          text: '🏆 ⛔ Un tournoi est en cours! Seule la commande \`!reponse\` est autorisée.'
-        });
+        await sendText(sock, senderJid, MessageFormatter.warning('Un tournoi est en cours. Seule la commande `!reponse` est autorisée jusqu’à la fin du tournoi.'));
         return;
       }
     }
 
-    // 🤖 Vérifier si le bot est désactivé dans ce groupe
     if (isGroup && groupDoc && !groupDoc.isActive) {
-      // Autoriser seulement les commandes d'activation/gestion du bot
-      const allowedWhenInactive = ['activatebot', 'help', 'profil', 'profile'];
+      const allowedWhenInactive = ['activatebot', 'help', 'menu', 'documentation', 'profil', 'profile'];
       if (!allowedWhenInactive.includes(commandName)) {
-        await sock.sendMessage(senderJid, {
-          text: '🚫 **Le bot est désactivé dans ce groupe.**\n\nSeul un administrateur peut réactiver le bot avec: `!activatebot`'
-        });
+        await sendText(sock, senderJid, MessageFormatter.warning('Le bot est désactivé dans ce groupe. Un administrateur peut le réactiver avec `!activatebot`.'));
         return;
       }
     }
 
-    // User already retrieved and message count updated above
     const userLatest = await User.findOne({ jid: participantJid });
     if (!userLatest) {
-      await sock.sendMessage(senderJid, {
-        text: '❌ Erreur lors de la récupération du profil. Essayez à nouveau.'
-      });
+      await sendText(sock, senderJid, MessageFormatter.error('Impossible de récupérer ton profil. Réessaie dans quelques instants.'));
       return;
     }
 
-    // 🚫 Check if user is spam banned
     if (userLatest.spamBannedUntil && new Date() < new Date(userLatest.spamBannedUntil)) {
-      // Autoriser que le profil pendant le ban
       if (commandName !== 'profil' && commandName !== 'profile') {
         const remaining = Math.ceil((new Date(userLatest.spamBannedUntil) - new Date()) / 1000 / 60);
-        await sock.sendMessage(senderJid, {
-          text: `⛔ *SPAM DÉTECTÉ!*\n\nVous êtes banni pour ${remaining} minute(s).\n\nSeule la commande \`!profil\` est accessible.`
-        });
+        await sendText(sock, senderJid, MessageFormatter.warning(`Restriction anti-spam active. Réessaie dans ${remaining} minute(s). Seule la commande \`!profil\` est accessible pendant ce délai.`));
         return;
       }
     } else if (userLatest.spamBannedUntil) {
-      // Débloquer l'utilisateur après le ban
       userLatest.spamBannedUntil = null;
       await userLatest.save();
     }
 
-    // 🔍 Détection de spam (utilisation simultanée/rapide d'une même commande)
     const now = Date.now();
     const lastCmdTime = userLatest.lastCommandTime ? new Date(userLatest.lastCommandTime).getTime() : 0;
     const timeSinceLastCmd = now - lastCmdTime;
     const antiSpamEnabled = groupDoc?.features?.antiSpam ?? true;
-    const spamThresholdMs = 1000; // Plus rapide
+    const spamThresholdMs = 1000;
 
     if (antiSpamEnabled && timeSinceLastCmd < spamThresholdMs && timeSinceLastCmd > 0) {
-
-      
-      // Appliquer le ban de 30 minutes
-      const banUntil = new Date(now + 30 * 60 * 1000); // 30 minutes
+      const banUntil = new Date(now + 30 * 60 * 1000);
       userLatest.spamBannedUntil = banUntil;
       await userLatest.save();
 
-      await sock.sendMessage(senderJid, {
-        text: `⛔ *SPAM DÉTECTÉ!*\n\n🚷 Vous avez été banni pour 30 minutes en raison d'une utilisation rapide/simultanée de commande.\n\n📛 Seule la commande \`!profil\` est accessible pendant ce délai.\n\n💡 N'oubliez pas: les commandes ont un cooldown pour de bonnes raisons!`
-      });
+      await sendText(sock, senderJid, MessageFormatter.warning('Anti-spam déclenché. Tu es limité pendant 30 minutes à cause d’une utilisation trop rapide des commandes. Pendant ce délai, seule la commande `!profil` reste accessible.'));
       return;
     }
 
-    // Mettre à jour le timestamp de la dernière commande
     userLatest.lastCommandTime = new Date();
     await userLatest.save();
 
-    // Vérifier si c'est une continuation du setup du tournoi
     if (commandName === 'tournoisquiz' && global.tournamentSetup && global.tournamentSetup.has(senderJid)) {
       const tournoisquizCommand = commands.get('tournoisquiz');
       if (tournoisquizCommand && tournoisquizCommand.handleTournamentSetup) {
@@ -424,25 +364,19 @@ Cela activera les fonctions du bot dans ce groupe.
       }
     }
 
-    // Check cooldown
     if (CooldownManager.isOnCooldown(participantJid, commandName)) {
       const remaining = CooldownManager.getRemainingTime(participantJid, commandName);
-      await sock.sendMessage(senderJid, {
-        text: `⏱️ Attendez ${remaining}s avant d'utiliser cette commande à nouveau.`
-      });
+      await sendText(sock, senderJid, MessageFormatter.info(`Patiente encore ${remaining}s avant de relancer cette commande.`));
       return;
     }
 
-    // Set cooldown
     CooldownManager.set(participantJid, commandName, command.cooldown * 1000 || 1000);
 
     const xpBefore = userLatest.xp || 0;
 
     console.log(`[CMD] ${participantJid} -> ${config.PREFIX}${commandName} ${args.join(' ')}`.trim());
-    
-    // 🔐 Check admin permission
+
     if (command.adminOnly) {
-      // Get group participants if in group
       let participants = [];
       if (isGroup) {
         try {
@@ -452,7 +386,7 @@ Cela activera les fonctions du bot dans ce groupe.
           console.error('Error fetching group metadata:', error.message);
         }
       }
-      
+
       const hasPermission = PermissionManager.canUseCommand(
         participantJid,
         command,
@@ -461,27 +395,20 @@ Cela activera les fonctions du bot dans ce groupe.
         participantJid,
         participants
       );
-      
+
       if (!hasPermission) {
-        await sock.sendMessage(senderJid, {
-          text: '🔐 *Erreur:* Cette commande est réservée aux administrateurs du groupe!'
-        });
+        await sendText(sock, senderJid, MessageFormatter.error('Cette commande est réservée aux administrateurs du groupe.'));
         return;
       }
     }
-    
-    // Create and attach reply function
-    const reply = MessageFormatter.createReplyFunction(sock, message);
-    message.reply = reply; // Attach to message
-    sock.reply = reply; // Attach to sock for convenience
-    
-    // Execute command with reply function
-    await command.execute(sock, message, args, userLatest, isGroup, groupData, reply);
 
-    // Add automatic reaction to user's command message
+    const reply = MessageFormatter.createReplyFunction(sock, message);
+    message.reply = reply;
+    sock.reply = reply;
+
+    await command.execute(sock, message, args, userLatest, isGroup, groupData, reply);
     await ReactionSystem.addReaction(sock, message, commandName);
 
-    // Apply command XP bonus for RPG packs when XP was gained
     if (isGroup && config.XP_COMMAND_BONUS > 0) {
       const activePack = PackManager.getActivePack(senderJid);
       if (activePack === 'otaku' || activePack === 'complet') {
@@ -492,16 +419,13 @@ Cela activera les fonctions du bot dans ce groupe.
         }
       }
     }
-
   } catch (error) {
     console.error(`${config.COLORS.RED}❌ Handler Error: ${error.message}${config.COLORS.RESET}`);
     try {
       const senderJid = message.key.remoteJid;
-      await sock.sendMessage(senderJid, {
-        text: '❌ Une erreur s\'est produite lors de l\'exécution de la commande.'
-      });
-    } catch (e) {
-      console.error('Error sending error message:', e.message);
+      await sendText(sock, senderJid, MessageFormatter.error('Une erreur est survenue pendant l’exécution de la commande.'));
+    } catch (sendError) {
+      console.error('Error sending error message:', sendError.message);
     }
   }
 }
@@ -512,5 +436,5 @@ module.exports = {
   getOrCreateUser,
   addXP,
   getCommand: (name) => commands.get(name.toLowerCase()),
-  getAllCommands: () => Array.from(commands.values())
+  getAllCommands: () => Array.from(commands.values()),
 };
