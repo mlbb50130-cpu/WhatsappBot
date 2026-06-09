@@ -12,6 +12,8 @@ const PackManager = require('./utils/PackManager');
 const MessageFormatter = require('./utils/messageFormatter');
 const ReactionSystem = require('./utils/reactionSystem');
 const Group = require('./models/Group');
+const ChatbotService = require('./services/chatbotService');
+const BotAccessService = require('./services/botAccessService');
 
 const commands = new Map();
 
@@ -22,7 +24,7 @@ async function sendText(sock, jid, text) {
 function activationRequiredMessage(pack) {
   return MessageFormatter.panel({
     title: 'Activation requise',
-    subtitle: 'Bienvenue dans TetsuBot',
+    subtitle: `Bienvenue dans ${config.BOT_NAME}`,
     body: [
       `Pack ${pack.emoji} ${pack.name} sélectionné avec succès.`,
       'Un administrateur du groupe doit maintenant envoyer `!activatebot`.',
@@ -43,6 +45,52 @@ function extractText(msg) {
   return '';
 }
 
+function getBotJid(sock) {
+  const raw = sock?.user?.id || sock?.user?.jid || '';
+  if (!raw) return '';
+  return raw.includes(':') ? `${raw.split(':')[0]}@s.whatsapp.net` : raw;
+}
+
+function hasInviteLink(text = '') {
+  return /(chat\.whatsapp\.com\/|whatsapp\.com\/channel\/|wa\.me\/)/i.test(String(text || ''));
+}
+
+async function handleAntiLink(sock, message, groupDoc, text) {
+  if (!groupDoc?.features?.antiLink && !groupDoc?.permissions?.blockInviteLinks) {
+    return false;
+  }
+
+  if (!hasInviteLink(text)) return false;
+
+  const jid = message.key.remoteJid;
+  const participantJid = message.key.participant || jid;
+  const isAdmin = PermissionManager.canUseCommand(
+    participantJid,
+    { adminOnly: true },
+    true,
+    jid,
+    participantJid,
+    (await sock.groupMetadata(jid).catch(() => null))?.participants || []
+  );
+
+  if (isAdmin) return false;
+
+  const deleteKey = {
+    remoteJid: jid,
+    fromMe: false,
+    id: message.key.id,
+    participant: message.key.participant,
+  };
+
+  if (!global.botDeletedMsgIds) global.botDeletedMsgIds = new Set();
+  global.botDeletedMsgIds.add(message.key.id);
+  setTimeout(() => global.botDeletedMsgIds?.delete(message.key.id), 5 * 60 * 1000);
+
+  await sock.sendMessage(jid, { delete: deleteKey }).catch(() => null);
+  await sendText(sock, jid, MessageFormatter.warning('Lien WhatsApp bloque par l antilink.'));
+  return true;
+}
+
 // Load all commands dynamically
 function loadCommands() {
   const commandsPath = path.join(__dirname, 'commands');
@@ -61,6 +109,14 @@ function loadCommands() {
           const command = require(filePath);
           if (command.name) {
             commands.set(command.name.toLowerCase(), command);
+            if (Array.isArray(command.aliases)) {
+              command.aliases.forEach((alias) => {
+                const aliasName = String(alias || '').toLowerCase();
+                if (aliasName && !commands.has(aliasName)) {
+                  commands.set(aliasName, command);
+                }
+              });
+            }
           }
         } catch (error) {
           console.error(`${config.COLORS.RED}❌ Error loading command ${file}: ${error.message}${config.COLORS.RESET}`);
@@ -230,6 +286,20 @@ async function handleMessage(sock, message, isGroup, groupData) {
     MessageFormatter.setTheme(groupDoc?.theme);
 
     const user = await getOrCreateUser(participantJid, username);
+    if (user?.isBanned) {
+      return;
+    }
+
+    const canUseBot = await BotAccessService.canUseBot(participantJid, getBotJid(sock)).catch(() => true);
+    if (!canUseBot) {
+      return;
+    }
+
+    if (isGroup && groupDoc) {
+      const antiLinkHandled = await handleAntiLink(sock, message, groupDoc, messageContent);
+      if (antiLinkHandled) return;
+    }
+
     if (user) {
       user.stats.messages++;
 
@@ -277,9 +347,10 @@ async function handleMessage(sock, message, isGroup, groupData) {
     if (!isGroup) {
       const docCommand = commands.get('documentation');
       const userLatest = await User.findOne({ jid: participantJid });
+      const chatbotSettings = await ChatbotService.getSettings();
       const now = new Date();
 
-      if (docCommand && userLatest && (!userLatest.lastDocumentationDM || (now - userLatest.lastDocumentationDM) > 86400000)) {
+      if (!chatbotSettings.chatbot.pmEnabled && docCommand && userLatest && (!userLatest.lastDocumentationDM || (now - userLatest.lastDocumentationDM) > 86400000)) {
         await docCommand.execute(sock, message, ['1'], userLatest, isGroup, null);
         userLatest.lastDocumentationDM = now;
         await userLatest.save();
@@ -295,6 +366,12 @@ async function handleMessage(sock, message, isGroup, groupData) {
           if (handled) return;
         }
       }
+      const chatbotHandled = await ChatbotService.handleIncomingMessage(sock, message, {
+        text: messageContent,
+        isGroup,
+        groupDoc,
+      });
+      if (chatbotHandled) return;
       return;
     }
 
@@ -314,7 +391,7 @@ async function handleMessage(sock, message, isGroup, groupData) {
     }
 
     if (isGroup && groupDoc && !groupDoc.isActive) {
-      const allowedWhenInactive = ['activatebot', 'help', 'menu', 'documentation', 'profil', 'profile'];
+      const allowedWhenInactive = ['activatebot', 'unbangroup', 'unbangc', 'help', 'menu', 'documentation', 'profil', 'profile'];
       if (!allowedWhenInactive.includes(commandName)) {
         await sendText(sock, senderJid, MessageFormatter.warning('Le bot est désactivé dans ce groupe. Un administrateur peut le réactiver avec `!activatebot`.'));
         return;
@@ -336,6 +413,11 @@ async function handleMessage(sock, message, isGroup, groupData) {
     } else if (userLatest.spamBannedUntil) {
       userLatest.spamBannedUntil = null;
       await userLatest.save();
+    }
+
+    if (userLatest.isBanned) {
+      await sendText(sock, senderJid, MessageFormatter.error('Tu es banni du bot.'));
+      return;
     }
 
     const now = Date.now();
@@ -436,5 +518,7 @@ module.exports = {
   getOrCreateUser,
   addXP,
   getCommand: (name) => commands.get(name.toLowerCase()),
-  getAllCommands: () => Array.from(commands.values()),
+  getAllCommands: () => Array.from(
+    new Map(Array.from(commands.values()).map((command) => [command.name, command])).values()
+  ),
 };

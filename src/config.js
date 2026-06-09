@@ -4,7 +4,7 @@ module.exports = {
   // 🤖 Bot Configuration
   PREFIX: process.env.PREFIX || process.env.BOT_PREFIX || '!',
   ADMIN_JIDS: process.env.ADMIN_JIDS ? process.env.ADMIN_JIDS.split(',').map(j => j.trim()) : [],
-  BOT_NAME: 'TetsuBot',
+  BOT_NAME: process.env.BOT_NAME || 'Kassim-bot',
   BOT_VERSION: '1.0.0',
   
   // 💾 Database
@@ -52,6 +52,8 @@ module.exports = {
   // 🎌 APIs
   JIKAN_API: process.env.JIKAN_API || 'https://api.jikan.moe/v4',
   JIKAN_ENABLED: process.env.JIKAN_ENABLED !== 'false',
+  GEMINI_API_KEY: process.env.GEMINI_API_KEY || process.env.GEMINI_API || '',
+  GEMINI_MODEL: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
   
   // 🖥️ Console Colors
   COLORS: {

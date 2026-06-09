@@ -11,28 +11,31 @@ const OTAKU_CATEGORIES = {
   7: { name: 'Anime', commands: ['!anime <nom>', '!manga <nom>', '!personnage <nom>', '!voiranime'] },
   8: { name: 'Images', commands: ['!waifu', '!husbando', '!neko', '!animegif'] },
   9: { name: 'Persos', commands: ['!naruto', '!gojo', '!sukuna', '!miku', '!livai', '!nino'] },
-  10: { name: 'Fun', commands: ['!blagueotaku', '!roast @user', '!chance', '!ship', '!sticker'] },
-  11: { name: 'Classements', commands: ['!classement', '!topanime', '!topmanga'] },
-  12: { name: 'Admin', commands: ['!activatebot', '!selectpack', '!setmodule', '!warn', '!kick', '!mute'] },
-  13: { name: 'NSFW', commands: ['!hentai', '!hentaivd', '!nsfw', '!boahancook'] },
-  14: { name: 'Bot', commands: ['!menu', '!ping', '!info', '!help', '!documentation'] },
+  10: { name: 'Fun', commands: ['!blagueotaku', '!roast @user', '!chance', '!ship', '!sticker', '!q <texte>', '!emojimix 😎+🔥'] },
+  11: { name: 'Download', commands: ['!dl <url>', '!play <titre>', '!mp3 <lien>', '!mp4 <titre/lien>', '!tt <lien/recherche>'] },
+  12: { name: 'Media', commands: ['!image <recherche>', '!gif <recherche>', '!pin <recherche>', '!couplepp', '!revive', '!steal pack,author'] },
+  13: { name: 'Recherche', commands: ['!google <texte>', '!lyrics <titre>', '!yts <texte>', '!weather <ville>', '!github <user>', '!wiki <texte>'] },
+  14: { name: 'Tools', commands: ['!hd', '!calc 2+2', '!say <texte>', '!toimg', '!tomp3', '!topdf', '!toqr <texte>', '!tourl'] },
+  15: { name: 'Classements', commands: ['!classement', '!topanime', '!topmanga'] },
+  16: { name: 'Admin', commands: ['!activatebot', '!antilink on/off', '!welcome on/off', '!tagall <msg>', '!hidetag <msg>', '!gclink', '!ban @user', '!mode public'] },
+  17: { name: 'NSFW', commands: ['!hentai', '!hentaivd', '!nsfw', '!boahancook'] },
+  18: { name: 'Bot', commands: ['!menu', '!ping', '!info', '!help', '!documentation', '!ask <question>', '!chatbot status', '!characters'] },
 };
 
 const MLBB_CATEGORIES = {
   1: { name: 'Heros', commands: ['!hero <nom>', '!heroes', '!build <nom>', '!counter <nom>', '!combo <nom>'] },
   2: { name: 'Meta', commands: ['!meta', '!lane <role>', '!tip'] },
   3: { name: 'Profil MLBB', commands: ['!mlbb set <rang> <role>', '!mlbb me', '!team <nom>', '!join <team>'] },
-  4: { name: 'Admin', commands: ['!selectpack', '!setmodule', '!activatebot'] },
-  5: { name: 'Bot', commands: ['!mlbbmenu', '!ping', '!help <cmd>'] },
+  4: { name: 'Download', commands: ['!dl <url>', '!play <titre>', '!mp3 <lien>', '!mp4 <titre/lien>', '!tt <lien/recherche>'] },
+  5: { name: 'Media', commands: ['!image <recherche>', '!gif <recherche>', '!pin <recherche>', '!revive', '!stickersearch <texte>'] },
+  6: { name: 'Tools', commands: ['!hd', '!calc 2+2', '!say <texte>', '!toqr <texte>', '!tourl'] },
+  7: { name: 'Admin', commands: ['!selectpack', '!setmodule', '!activatebot', '!antilink on/off', '!tagall <msg>'] },
+  8: { name: 'Bot', commands: ['!mlbbmenu', '!ping', '!help <cmd>', '!ask <question>', '!chatbot status'] },
 };
 
 const COMPLET_CATEGORIES = {
   ...OTAKU_CATEGORIES,
-  11: { name: 'MLBB', commands: ['!mlbb', '!hero <nom>', '!build <nom>', '!counter <nom>', '!meta', '!team <nom>'] },
-  12: { name: 'Classements', commands: ['!classement', '!topanime', '!topmanga'] },
-  13: { name: 'Admin', commands: OTAKU_CATEGORIES[12].commands },
-  14: { name: 'NSFW', commands: OTAKU_CATEGORIES[13].commands },
-  15: { name: 'Bot', commands: OTAKU_CATEGORIES[14].commands },
+  19: { name: 'MLBB', commands: ['!mlbb', '!hero <nom>', '!build <nom>', '!counter <nom>', '!meta', '!team <nom>'] },
 };
 
 function resolveActiveMenu(senderJid, isGroup, groupData) {
@@ -127,3 +130,4 @@ module.exports = {
     }
   },
 };
+

@@ -6,11 +6,21 @@ const { connectDatabase } = require('./database');
 const { loadCommands, handleMessage } = require('./handler');
 const qrcode = require('qrcode-terminal');
 const fs = require('fs');
+const path = require('path');
 const { getGroupMetadataWithCache, invalidateGroupCache } = require('./utils/metadataCache');
 const MessageFormatter = require('./utils/messageFormatter');
+const BotSettings = require('./models/BotSettings');
 
 let sock = null;
 let qrShown = false;
+let atlasRecapAnnouncementStarted = false;
+let atlasRecapEmptyGroupRetries = 0;
+const recentMessages = new Map();
+const RECENT_MESSAGE_TTL = 15 * 60 * 1000;
+const RECENT_MESSAGE_MAX = 500;
+const ATLAS_RECAP_ANNOUNCEMENT_KEY = 'atlasCommandRecapV1';
+const ATLAS_RECAP_FILE = path.join(__dirname, '..', 'ATLAS_COMMANDES_RECAP.txt');
+const ATLAS_RECAP_MAX_EMPTY_GROUP_RETRIES = 3;
 
 function installCompactMessageFormatter(socket) {
   const sendMessage = socket.sendMessage.bind(socket);
@@ -18,6 +28,182 @@ function installCompactMessageFormatter(socket) {
   socket.sendMessage = async (jid, content, options) => {
     return sendMessage(jid, MessageFormatter.formatOutgoingContent(content), options);
   };
+}
+
+function recentMessageKey(key = {}) {
+  if (!key.remoteJid || !key.id) return '';
+  return `${key.remoteJid}:${key.id}`;
+}
+
+function rememberMessage(message) {
+  if (!message?.key?.id || !message?.key?.remoteJid || !message.message) return;
+  if (message.message.protocolMessage) return;
+
+  const key = recentMessageKey(message.key);
+  if (!key) return;
+
+  recentMessages.set(key, {
+    message,
+    storedAt: Date.now(),
+  });
+
+  if (recentMessages.size > RECENT_MESSAGE_MAX) {
+    const firstKey = recentMessages.keys().next().value;
+    if (firstKey) recentMessages.delete(firstKey);
+  }
+}
+
+function cleanupRecentMessages() {
+  const now = Date.now();
+  for (const [key, value] of recentMessages.entries()) {
+    if (now - value.storedAt > RECENT_MESSAGE_TTL) {
+      recentMessages.delete(key);
+    }
+  }
+}
+
+async function handleAntiDelete(sock, message, senderJid) {
+  const protocol = message.message?.protocolMessage;
+  if (!protocol || protocol.type !== 0 || !protocol.key?.id) return false;
+
+  const deletedId = protocol.key.id;
+  if (global.botDeletedMsgIds?.has(deletedId)) return true;
+
+  const originalJid = protocol.key.remoteJid || senderJid;
+  const cacheKey = recentMessageKey({ remoteJid: originalJid, id: deletedId });
+  const cached = recentMessages.get(cacheKey)?.message;
+  if (!cached) return false;
+
+  const Group = require('./models/Group');
+  const group = await Group.findOne({ groupJid: senderJid }).catch(() => null);
+  if (!group?.features?.antiDelete) return false;
+
+  const deletedBy = message.key.participant || message.key.remoteJid;
+  await sock.sendMessage(senderJid, {
+    text: MessageFormatter.panel({
+      title: 'Anti-delete',
+      body: [`Message supprime par @${deletedBy.split('@')[0]}`],
+    }),
+    mentions: [deletedBy],
+  }).catch(() => null);
+
+  await sock.sendMessage(senderJid, { forward: cached }).catch(async () => {
+    await sock.sendMessage(senderJid, {
+      text: MessageFormatter.warning('Message supprime detecte, mais impossible de le restaurer.'),
+    }).catch(() => null);
+  });
+
+  return true;
+}
+
+async function getCurrentGroupJids(socket) {
+  try {
+    if (typeof socket.groupFetchAllParticipating === 'function') {
+      const groups = await socket.groupFetchAllParticipating();
+      return Object.keys(groups || {}).filter((jid) => jid.endsWith('@g.us'));
+    }
+  } catch (error) {
+    console.error('[ATLAS RECAP] groupFetchAllParticipating failed:', error.message);
+  }
+
+  try {
+    const Group = require('./models/Group');
+    const groups = await Group.find({}).select('groupJid').lean();
+    return groups.map((group) => group.groupJid).filter((jid) => jid && jid.endsWith('@g.us'));
+  } catch (error) {
+    console.error('[ATLAS RECAP] DB group fallback failed:', error.message);
+    return [];
+  }
+}
+
+async function sendAtlasCommandRecapOnce(socket) {
+  if (atlasRecapAnnouncementStarted) return;
+  atlasRecapAnnouncementStarted = true;
+
+  try {
+    const settings = await BotSettings.getGlobal();
+    const announcement = settings.announcements?.[ATLAS_RECAP_ANNOUNCEMENT_KEY];
+
+    if (announcement?.sentAt) {
+      return;
+    }
+
+    const alreadySentGroups = new Set(Array.isArray(announcement?.groups) ? announcement.groups : []);
+    await BotSettings.updateOne(
+      { key: 'global' },
+      { $set: { [`announcements.${ATLAS_RECAP_ANNOUNCEMENT_KEY}.attemptedAt`]: new Date() } },
+      { upsert: true }
+    );
+
+    const fileBuffer = await fs.promises.readFile(ATLAS_RECAP_FILE);
+    const groupJids = await getCurrentGroupJids(socket);
+
+    if (groupJids.length === 0 && atlasRecapEmptyGroupRetries < ATLAS_RECAP_MAX_EMPTY_GROUP_RETRIES) {
+      atlasRecapEmptyGroupRetries += 1;
+      atlasRecapAnnouncementStarted = false;
+      console.log(`[ATLAS RECAP] Aucun groupe trouve, nouvelle tentative ${atlasRecapEmptyGroupRetries}/${ATLAS_RECAP_MAX_EMPTY_GROUP_RETRIES}.`);
+      setTimeout(() => {
+        sendAtlasCommandRecapOnce(socket).catch((error) => {
+          console.error('[ATLAS RECAP] Retry failed:', error.message);
+        });
+      }, 30000);
+      return;
+    }
+
+    if (groupJids.length === 0) {
+      console.log('[ATLAS RECAP] Aucun groupe trouve. Annonce non marquee comme envoyee.');
+      return;
+    }
+
+    const pendingGroupJids = groupJids.filter((groupJid) => !alreadySentGroups.has(groupJid));
+    const sentGroups = [];
+    const failedGroups = [];
+
+    for (const groupJid of pendingGroupJids) {
+      try {
+        await socket.sendMessage(groupJid, {
+          document: fileBuffer,
+          mimetype: 'text/plain',
+          fileName: 'ATLAS_COMMANDES_RECAP.txt',
+          caption: MessageFormatter.panel({
+            title: 'Nouvelles commandes',
+            body: [
+              'Recapitulatif des commandes Atlas ajoutees a Kassim-bot.',
+              'Ce fichier est envoye une seule fois apres ce redeploiement.',
+            ],
+          }),
+        });
+        sentGroups.push(groupJid);
+        alreadySentGroups.add(groupJid);
+        await BotSettings.updateOne(
+          { key: 'global' },
+          { $addToSet: { [`announcements.${ATLAS_RECAP_ANNOUNCEMENT_KEY}.groups`]: groupJid } },
+          { upsert: true }
+        );
+        await new Promise((resolve) => setTimeout(resolve, 1200));
+      } catch (error) {
+        failedGroups.push(groupJid);
+        console.error(`[ATLAS RECAP] Send failed for ${groupJid}:`, error.message);
+      }
+    }
+
+    await BotSettings.updateOne(
+      { key: 'global' },
+      {
+        $set: {
+          [`announcements.${ATLAS_RECAP_ANNOUNCEMENT_KEY}.sentAt`]: new Date(),
+          [`announcements.${ATLAS_RECAP_ANNOUNCEMENT_KEY}.groupCount`]: alreadySentGroups.size,
+          [`announcements.${ATLAS_RECAP_ANNOUNCEMENT_KEY}.groups`]: Array.from(alreadySentGroups),
+          [`announcements.${ATLAS_RECAP_ANNOUNCEMENT_KEY}.failedGroups`]: failedGroups,
+        },
+      },
+      { upsert: true }
+    );
+
+    console.log(`[ATLAS RECAP] Sent to ${sentGroups.length}/${pendingGroupJids.length} pending groups.`);
+  } catch (error) {
+    console.error('[ATLAS RECAP] Announcement failed:', error.message);
+  }
 }
 
 async function connectToWhatsApp() {
@@ -64,6 +250,11 @@ async function connectToWhatsApp() {
     // Connection states
     if (connection === 'open') {
       qrShown = false;
+      setTimeout(() => {
+        sendAtlasCommandRecapOnce(sock).catch((error) => {
+          console.error('[ATLAS RECAP] Unexpected error:', error.message);
+        });
+      }, 5000);
     }
 
     if (connection === 'close') {
@@ -93,6 +284,14 @@ async function connectToWhatsApp() {
 
     const senderJid = message.key.remoteJid;
     const isGroup = senderJid.endsWith('@g.us');
+
+    if (isGroup) {
+      const antiDeleteHandled = await handleAntiDelete(sock, message, senderJid);
+      if (antiDeleteHandled) return;
+    }
+
+    rememberMessage(message);
+    cleanupRecentMessages();
 
     // Get group data if in group with cache and retry
     let groupData = null;
@@ -141,7 +340,7 @@ async function connectToWhatsApp() {
           // Envoyer un message d'accueil
           await sock.sendMessage(update.id, {
             text: '👋 *Bienvenue!* 🎉\n\n' +
-                  'Je suis **TetsuBot** - Un bot RPG pour votre groupe!\n\n' +
+                  'Je suis **' + config.BOT_NAME + '** - Un bot RPG pour votre groupe!\n\n' +
                   '📚 *DOCUMENTATION COMPLÈTE:*\n' +
                   'Tape `!documentation` pour lire la documentation détaillée\n' +
                   '(Accessible même sans activation!)\n\n' +
@@ -210,7 +409,7 @@ async function connectToWhatsApp() {
 
 Bienvenue ${userTag} dans *${groupName}*! 🌟
 
-Je suis **TetsuBot** - Un bot RPG interactif pour WhatsApp!
+Je suis **${config.BOT_NAME}** - Un bot RPG interactif pour WhatsApp!
 
 📚 *POUR COMMENCER:*
 Envoie \`!documentation\` pour voir toutes mes commandes

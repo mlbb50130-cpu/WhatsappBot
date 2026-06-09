@@ -1,4 +1,5 @@
 const MessageFormatter = require('../utils/messageFormatter');
+const config = require('../config');
 
 module.exports = {
   name: 'info',
@@ -13,19 +14,19 @@ module.exports = {
     const senderJid = message.key.remoteJid;
 
     const infoItems = [
-      { label: 'Nom', value: 'TetsuBot' },
-      { label: 'Version', value: '1.0.0' },
-      { label: 'Type', value: 'Otaku RPG Bot' },
-      { label: 'Language', value: 'Node.js' },
-      { label: 'Database', value: 'MongoDB' }
+      { icon: '🤖', label: 'Nom', value: config.BOT_NAME },
+      { icon: '📦', label: 'Version', value: config.BOT_VERSION },
+      { icon: '🎮', label: 'Type', value: 'Otaku RPG Bot' },
+      { icon: '🧩', label: 'Langage', value: 'Node.js' },
+      { icon: '💾', label: 'Base de donnees', value: 'MongoDB' },
     ];
 
-    const info = `${MessageFormatter.elegantBox('𝔌𝔑𝔉𝔒 𝔗𝔈𝔗𝔖𝔘𝔅𝔒𝔗', infoItems)}`;
+    const info = MessageFormatter.elegantBox('Informations', infoItems);
 
     if (reply) {
-        await reply(MessageFormatter.createMessageWithImage(info));
-      } else {
-        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(info));
-      }
-  }
+      await reply(MessageFormatter.createMessageWithImage(info));
+    } else {
+      await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(info));
+    }
+  },
 };

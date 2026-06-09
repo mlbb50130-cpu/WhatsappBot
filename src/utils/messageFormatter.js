@@ -1,9 +1,8 @@
 /**
- * Centralized WhatsApp message formatting for TetsuBot.
+ * Centralized WhatsApp message formatting for Kassim-bot.
  *
  * WhatsApp does not allow a bot to set a real font size. This formatter keeps
- * messages visually smaller by using plain text, short headings and compact
- * lists instead of decorative boxes or gothic Unicode text.
+ * an Atlas-like visual style while staying compact enough for chat replies.
  */
 class MessageFormatter {
   static STYLES = {
@@ -14,18 +13,18 @@ class MessageFormatter {
   };
 
   static EMOJIS = {
-    SUCCESS: 'OK',
-    ERROR: 'Erreur',
-    WARNING: 'Attention',
-    INFO: 'Info',
-    STAR: '*',
-    FIRE: '*',
-    CROWN: '*',
-    DIAMOND: '*',
-    GIFT: '*',
-    ARROW: '>',
-    CHECK: 'OK',
-    CROSS: 'X',
+    SUCCESS: '✅',
+    ERROR: '❌',
+    WARNING: '⚠️',
+    INFO: 'ℹ️',
+    STAR: '✦',
+    FIRE: '🔥',
+    CROWN: '👑',
+    DIAMOND: '💎',
+    GIFT: '🎁',
+    ARROW: '❯',
+    CHECK: '✅',
+    CROSS: '❌',
   };
 
   static FANCY_CHARS = {
@@ -52,6 +51,10 @@ class MessageFormatter {
   };
 
   static _theme = 'default';
+
+  static botName() {
+    return process.env.BOT_NAME || 'Kassim-bot';
+  }
 
   static repairEncoding(text = '') {
     const value = String(text ?? '');
@@ -150,12 +153,33 @@ class MessageFormatter {
   static header(title = '', subtitle = '') {
     const safeTitle = this.normalizeTitle(title);
     const safeSubtitle = this.cleanText(subtitle);
+    const brand = this.botName();
+    const heading = safeTitle
+      ? safeTitle.toLowerCase().includes(brand.toLowerCase())
+        ? safeTitle
+        : `${brand} — ${safeTitle}`
+      : brand;
     const lines = [];
 
-    if (safeTitle) lines.push(`*${safeTitle}*`);
+    lines.push(`*『 ${heading} 』*`);
     if (safeSubtitle) lines.push(`_${safeSubtitle}_`);
 
     return lines.join('\n');
+  }
+
+  static brandDivider(label = '') {
+    const safeLabel = this.normalizeTitle(label || this.botName());
+    return `*━━━━━ ${safeLabel} ━━━━━*`;
+  }
+
+  static formatBodyItem(item) {
+    const safeItem = this.cleanText(item);
+    if (!safeItem) return '';
+
+    return safeItem.split('\n').map((line, index) => {
+      if (!line.trim()) return '';
+      return index === 0 ? `${this.EMOJIS.ARROW} ${line}` : `  ${line}`;
+    }).join('\n');
   }
 
   static panel({ title = '', subtitle = '', fields = [], body = [], footer = '' } = {}) {
@@ -163,20 +187,23 @@ class MessageFormatter {
     const safeHeader = this.header(title, subtitle);
 
     if (safeHeader) lines.push(safeHeader);
+    if (safeHeader && (fields.length > 0 || body.length > 0)) {
+      lines.push(this.brandDivider(title || 'Menu'));
+    }
 
     fields
       .filter(Boolean)
       .forEach((field) => {
         const label = this.cleanText(field.label || field.name || '');
         const value = this.valueToText(field.value);
-        lines.push(label ? `- *${label}:* ${value}` : `- ${value}`);
+        const icon = this.cleanText(field.icon || '🎀');
+        lines.push(label ? `${icon} *${label} :* ${value}` : `${this.EMOJIS.ARROW} ${value}`);
       });
 
     body
       .filter((item) => item !== null && item !== undefined)
       .forEach((item) => {
-        const safeItem = this.cleanText(item);
-        lines.push(safeItem ? `- ${safeItem}` : '');
+        lines.push(this.formatBodyItem(item));
       });
 
     const safeFooter = this.cleanText(footer);
@@ -194,28 +221,28 @@ class MessageFormatter {
 
   static error(message) {
     return this.panel({
-      title: 'Erreur',
+      title: `${this.EMOJIS.ERROR} Erreur`,
       body: [message],
     });
   }
 
   static success(message) {
     return this.panel({
-      title: 'OK',
+      title: `${this.EMOJIS.SUCCESS} Succès`,
       body: [message],
     });
   }
 
   static warning(message) {
     return this.panel({
-      title: 'Attention',
+      title: `${this.EMOJIS.WARNING} Attention`,
       body: [message],
     });
   }
 
   static info(message) {
     return this.panel({
-      title: 'Info',
+      title: `${this.EMOJIS.INFO} Info`,
       body: [message],
     });
   }
@@ -245,10 +272,10 @@ class MessageFormatter {
     return items.map((item, index) => {
       const safeItem = this.cleanText(item);
       if (type === 'number') return `${index + 1}. ${safeItem}`;
-      if (type === 'arrow') return `> ${safeItem}`;
-      if (type === 'star') return `* ${safeItem}`;
-      if (type === 'check') return `OK ${safeItem}`;
-      return `- ${safeItem}`;
+      if (type === 'arrow') return `${this.EMOJIS.ARROW} ${safeItem}`;
+      if (type === 'star') return `${this.EMOJIS.STAR} ${safeItem}`;
+      if (type === 'check') return `${this.EMOJIS.CHECK} ${safeItem}`;
+      return `${this.EMOJIS.ARROW} ${safeItem}`;
     }).join('\n');
   }
 
@@ -257,10 +284,10 @@ class MessageFormatter {
     if (!safeTitle) return '';
 
     if (style === 'line') {
-      return `*${safeTitle}*\n${this.divider('-', Math.min(24, Math.max(12, safeTitle.length)))}`;
+      return `*『 ${safeTitle} 』*\n${this.brandDivider(safeTitle)}`;
     }
 
-    return `*${safeTitle}*`;
+    return `*『 ${safeTitle} 』*`;
   }
 
   static table(headers = [], rows = []) {

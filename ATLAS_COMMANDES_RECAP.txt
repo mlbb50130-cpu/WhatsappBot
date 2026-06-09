@@ -1,0 +1,82 @@
+Kassim-bot - recapitulatif des nouvelles commandes Atlas
+
+Ce fichier resume les nouvelles commandes ajoutees au bot.
+Il est envoye une seule fois apres le redeploiement Railway.
+
+1. Chatbot et personnages
+- !ask <question> : poser une question a l'IA Gemini.
+- !chatbot on/off/status : activer ou desactiver le chatbot automatique.
+- !characters : voir les personnages disponibles.
+- !setchar <id> : choisir le personnage du chatbot.
+
+2. Downloaders
+- !dl <url> : downloader universel.
+- !tt / !tiktok <lien ou recherche> : TikTok.
+- !play <titre>, !mp3 <lien>, !mp4 <titre/lien> : YouTube audio/video.
+- !fb, !ig, !tw, !x, !mediafire, !mega, !sfile, !spotify, !threads, !videy : plateformes supportees selon le lien.
+
+3. View once et medias
+- !viewonce : renvoyer une image/video en vue unique.
+- !revive ou !antiviewonce : recuperer un media view-once cite.
+- !image <recherche> : rechercher une image.
+- !gif <recherche> : rechercher un GIF.
+- !pin <recherche> : rechercher sur Pinterest.
+- !couplepp : envoyer des photos de profil couple.
+
+4. Stickers avances
+- !sticker ou !s : creer un sticker depuis image/video/sticker.
+- !stickercrop : creer un sticker recadre.
+- !steal <pack,author> : reprendre un sticker avec un nouveau pack/auteur.
+- !smeme <texte> : creer un sticker meme.
+- !q <texte> : creer un sticker citation.
+- !emojimix emoji+emoji : mixer deux emojis.
+- !stickersearch <recherche> : rechercher un sticker.
+
+5. Outils et conversions
+- !toimg : convertir un sticker en image.
+- !togif / !tomp4 : convertir un sticker anime en GIF/video.
+- !tomp3 / !toaudio : extraire ou convertir en audio.
+- !topdf : convertir une image en PDF.
+- !tourl : uploader un media et obtenir un lien.
+- !toqr <texte/url> : generer un QR code.
+- !say <texte> : texte vers audio vocal.
+- !calc <operation> : calcul rapide.
+- !html <site> : recuperer une page HTML.
+- !shorturl <url> : raccourcir un lien.
+
+6. Recherche et infos
+- !google <recherche> : recherche web.
+- !lyrics <titre> : paroles.
+- !yts <recherche> : recherche YouTube.
+- !weather <ville> : meteo.
+- !github <user> : profil GitHub.
+- !wiki <recherche> : Wikipedia.
+- !wallpaper <recherche> : wallpaper.
+- !ringtone <recherche> : sonnerie.
+
+7. Groupe, moderation et modules
+- !antilink on/off : anti-liens WhatsApp.
+- !antidelete on/off : restaurer les messages supprimes.
+- !welcome on/off : accueil automatique.
+- !tagall, !hidetag : mention de groupe.
+- !setgcname, !setgcdesc, !setppgc : modifier le groupe.
+- !gclink, !revoke : lien de groupe.
+- !promote, !demote, !kick, !admins, !groupinfo : actions admin.
+- !ban, !unban, !banlist : moderation globale.
+- !addmod, !delmod, !modlist, !owners : moderateurs du bot.
+- !mode public/private/self : mode d'acces du bot.
+- !setmodule : activer/desactiver les modules par groupe.
+
+8. Systeme et proprietaire
+- !status / !alive : statut systeme du bot.
+- !support : lien support si configure.
+- !script : infos du script.
+- !restart : redemarrer le bot.
+- !exec <code> : executer du JavaScript, proprietaire uniquement.
+- !plugins, !install, !uninstall : gestion des plugins CommonJS.
+- !getcmd <commande> : exporter un fichier de commande.
+
+Notes importantes
+- Les commandes IA demandent GEMINI_API_KEY dans Railway.
+- Les commandes owner demandent ADMIN_JIDS.
+- Certaines recherches utilisent des APIs externes et peuvent echouer si le service externe bloque ou change.

@@ -1,8 +1,16 @@
 const AdminActionsManager = require('../../utils/adminActions');
+const MessageFormatter = require('../../utils/messageFormatter');
+
+function formatDate(value) {
+  if (!value) return '-';
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return '-';
+  return date.toLocaleDateString('fr-FR');
+}
 
 module.exports = {
   name: 'groupinfo',
-  aliases: ['infogroupes', 'groupeinfo'],
+  aliases: ['gcinfo', 'infogroupes', 'groupeinfo'],
   description: 'Afficher les informations du groupe',
   category: 'admin',
   usage: '!groupinfo',
@@ -10,56 +18,33 @@ module.exports = {
   groupOnly: true,
   cooldown: 3,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
-    const senderJid = message.key.remoteJid;
+  async execute(sock, message) {
+    const jid = message.key.remoteJid;
+    const infoResult = await AdminActionsManager.getGroupInfo(sock, jid);
 
-    try {
-      const infoResult = await AdminActionsManager.getGroupInfo(sock, senderJid);
-      
-      if (!infoResult.success) {
-        await sock.sendMessage(senderJid, {
-          text: `❌ Erreur: ${infoResult.error}`
-        });
-        return;
-      }
-
-      const data = infoResult.data;
-      const creationDate = new Date(data.creation).toLocaleDateString('fr-FR');
-      const status = data.announce ? '📢 Seuls les admins peuvent écrire' : '💬 Tous peuvent écrire';
-      const lockStatus = data.restrict ? '🔒 Verrouillé' : '🔓 Déverrouillé';
-
-      let infoText = `
-╔═══════════════════════════════════╗
-║    📊 𝔌𝔑𝔉𝔒𝔕𝔐𝔄𝔗𝔌𝔒𝔑𝔖 𝔇𝔘 𝔊𝔕𝔒𝔘𝔓𝔈      ║
-╚═══════════════════════════════════╝
-
-👥 Nom: ${data.subject}
-
-📈 Statistiques:
-  • Membres total: ${data.participants}
-  • Administrateurs: ${data.admins}
-  • Membres réguliers: ${data.participants - data.admins}
-
-⚙️ Paramètres:
-  • Message: ${status}
-  • Verrouillage: ${lockStatus}
-
-📅 Créé le: ${creationDate}
-
-👨‍💼 Propriétaire: ${data.owner || 'Non disponible'}
-
-${data.desc ? `📝 Description:\n${data.desc}` : '📝 Aucune description'}
-`;
-
-      await sock.sendMessage(senderJid, {
-        text: infoText.trim()
-      });
-
-    } catch (error) {
-      console.error('Error getting group info:', error.message);
-      await sock.sendMessage(senderJid, {
-        text: `❌ Erreur: ${error.message}`
-      });
+    if (!infoResult.success) {
+      return sock.sendMessage(jid, {
+        text: MessageFormatter.error(`Group info impossible: ${infoResult.error}`),
+      }, { quoted: message });
     }
-  }
+
+    const data = infoResult.data;
+    const owner = data.owner || '';
+    return sock.sendMessage(jid, {
+      text: MessageFormatter.panel({
+        title: 'Group Info',
+        fields: [
+          { label: 'Nom', value: data.subject || jid },
+          { label: 'Membres', value: String(data.participants || 0) },
+          { label: 'Admins', value: String(data.admins || 0) },
+          { label: 'Owner', value: owner ? `@${owner.split('@')[0]}` : '-' },
+          { label: 'Cree le', value: formatDate(data.creation) },
+          { label: 'Messages', value: data.announce ? 'admins seulement' : 'tous les membres' },
+          { label: 'Reglages', value: data.restrict ? 'admins seulement' : 'ouverts' },
+          { label: 'Description', value: data.desc || '-' },
+        ],
+      }),
+      mentions: owner ? [owner] : [],
+    }, { quoted: message });
+  },
 };

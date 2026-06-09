@@ -1,7 +1,15 @@
 const MessageFormatter = require('../utils/messageFormatter');
+const config = require('../config');
+
+function stripPrefix(value = '') {
+  const text = String(value || '').trim();
+  if (text.startsWith(config.PREFIX)) return text.slice(config.PREFIX.length);
+  return text.replace(/^!/, '');
+}
 
 module.exports = {
   name: 'help',
+  aliases: ['h'],
   description: 'Aide sur une commande',
   category: 'BOT',
   usage: '!help [commande]',
@@ -22,6 +30,17 @@ module.exports = {
           '`!duel @user` duel',
           '`!quiz` quiz',
           '`!loot` coffre',
+          '`!dl` downloader',
+          '`!play` YouTube audio',
+          '`!image` recherche media',
+          '`!wiki` recherche info',
+          '`!hd` tools',
+          '`!say` TTS',
+          '`!hug` reaction anime',
+          '`!truth` fun',
+          '`!toimg` converters',
+          '`!antilink` groupe',
+          '`!ask` chatbot IA',
           '`!menu` categories',
         ],
         footer: 'Detail: !help <commande>',
@@ -35,7 +54,7 @@ module.exports = {
       return;
     }
 
-    const commandName = args[0].replace(/^!/, '').toLowerCase();
+    const commandName = stripPrefix(args[0]).toLowerCase();
     const command = handler.getCommand(commandName);
 
     if (!command) {

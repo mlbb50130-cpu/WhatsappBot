@@ -1,65 +1,60 @@
-const { downloadContentFromMessage } = require('@whiskeysockets/baileys');
+const config = require('../config');
+const MessageFormatter = require('../utils/messageFormatter');
+const {
+  downloadMedia,
+  getInvokedCommand,
+  resolveMedia,
+} = require('../utils/mediaMessages');
 
 module.exports = {
   name: 'viewonce',
-  aliases: ['vo', 'vonce'],
-  description: 'Envoyer une vidéo en vue unique (répondre à une vidéo)',
+  aliases: ['vo', 'vonce', 'revive', 'antiviewonce'],
+  description: 'Envoyer en vue unique ou recuperer un media view-once',
   category: 'FUN',
-  usage: '!viewonce (en réponse à une vidéo)',
+  usage: '!viewonce | !revive en reponse a une image/video',
   adminOnly: false,
   groupOnly: false,
   cooldown: 5,
 
   async execute(sock, message) {
-    const senderJid = message.key.remoteJid;
+    const jid = message.key.remoteJid;
+    const commandName = getInvokedCommand(message, config.PREFIX);
+    const isRevive = commandName === 'revive' || commandName === 'antiviewonce';
 
     try {
-      let mediaMessage = null;
-      let mediaType = null;
+      const mediaInfo = resolveMedia(message);
 
-      // Cas 1: vidéo en réponse
-      if (message.message?.extendedTextMessage?.contextInfo?.quotedMessage) {
-        const quotedMsg = message.message.extendedTextMessage.contextInfo.quotedMessage;
-        if (quotedMsg.videoMessage) {
-          mediaMessage = quotedMsg.videoMessage;
-          mediaType = 'video';
-        }
-      }
-
-      // Cas 2: vidéo avec légende (commande dans la caption)
-      if (!mediaMessage && message.message?.videoMessage) {
-        mediaMessage = message.message.videoMessage;
-        mediaType = 'video';
-      }
-
-      if (!mediaMessage) {
-        return sock.sendMessage(senderJid, {
-          text: '❌ Réponds à une vidéo avec !viewonce pour l’envoyer en vue unique.'
+      if (!mediaInfo || !['image', 'video'].includes(mediaInfo.mediaType)) {
+        return sock.sendMessage(jid, {
+          text: MessageFormatter.warning('Reponds a une image/video avec !viewonce ou !revive.'),
         }, { quoted: message });
       }
 
-      const stream = await downloadContentFromMessage(mediaMessage, mediaType);
-      let buffer = Buffer.from([]);
-      for await (const chunk of stream) {
-        buffer = Buffer.concat([buffer, chunk]);
-      }
+      const buffer = await downloadMedia(mediaInfo.media, mediaInfo.mediaType);
+      const caption = isRevive
+        ? MessageFormatter.success(mediaInfo.caption || 'View-once recupere.')
+        : mediaInfo.caption;
 
-      if (!buffer || buffer.length === 0) {
-        return sock.sendMessage(senderJid, {
-          text: '❌ Impossible de récupérer la vidéo.'
+      if (mediaInfo.mediaType === 'image') {
+        return sock.sendMessage(jid, {
+          image: buffer,
+          caption,
+          mimetype: mediaInfo.mimetype || 'image/jpeg',
+          viewOnce: !isRevive,
         }, { quoted: message });
       }
 
-      await sock.sendMessage(senderJid, {
+      return sock.sendMessage(jid, {
         video: buffer,
-        mimetype: mediaMessage.mimetype || 'video/mp4',
-        viewOnce: true
+        caption,
+        mimetype: mediaInfo.mimetype || 'video/mp4',
+        viewOnce: !isRevive,
       }, { quoted: message });
     } catch (error) {
       console.error('[VIEWONCE] Error:', error.message);
-      await sock.sendMessage(senderJid, {
-        text: '❌ Erreur lors de l’envoi en vue unique.'
+      return sock.sendMessage(jid, {
+        text: MessageFormatter.error('Media impossible a recuperer. Il est peut-etre expire.'),
       }, { quoted: message });
     }
-  }
+  },
 };

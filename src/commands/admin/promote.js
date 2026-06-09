@@ -1,79 +1,72 @@
 const AdminActionsManager = require('../../utils/adminActions');
+const MessageFormatter = require('../../utils/messageFormatter');
+
+function getContextInfo(message) {
+  return message.message?.extendedTextMessage?.contextInfo ||
+    message.message?.imageMessage?.contextInfo ||
+    message.message?.videoMessage?.contextInfo ||
+    {};
+}
+
+function getTargetJid(message) {
+  const context = getContextInfo(message);
+  const mentioned = Array.isArray(context.mentionedJid) ? context.mentionedJid : [];
+  return mentioned[0] || context.participant || '';
+}
 
 module.exports = {
   name: 'promote',
   aliases: ['promouvoir'],
   description: 'Promouvoir un utilisateur en administrateur',
   category: 'admin',
-  usage: '!promote @user',
+  usage: '!promote @user ou reponds a un message avec !promote',
   adminOnly: true,
   groupOnly: true,
   cooldown: 5,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
-    const senderJid = message.key.remoteJid;
+  async execute(sock, message) {
+    const jid = message.key.remoteJid;
+    const actor = message.key.participant || jid;
+    const target = getTargetJid(message);
 
-    // La vérification admin est déjà faite par le handler
-    // Pas besoin de revérifier
-
-    // Parse mention
-    const mentions = message.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
-    
-    if (mentions.length === 0) {
-      await sock.sendMessage(senderJid, {
-        text: '❌ Utilisation: `!promote @user`\n\n📌 Exemple: `!promote @utilisateur`'
-      });
-      return;
+    if (!target) {
+      return sock.sendMessage(jid, {
+        text: MessageFormatter.warning('Utilise: !promote @user ou reponds a un message avec !promote.'),
+      }, { quoted: message });
     }
 
-    const userToPromote = mentions[0];
-    const participantJid = message.key.participant;
-
-    if (userToPromote === participantJid) {
-      await sock.sendMessage(senderJid, {
-        text: '❌ Tu es déjà administrateur! 👑'
-      });
-      return;
+    if (target === actor) {
+      return sock.sendMessage(jid, {
+        text: MessageFormatter.warning('Tu ne peux pas te promouvoir toi-meme.'),
+      }, { quoted: message });
     }
 
-    try {
-      // Check if bot is admin
-      const isBotAdmin = await AdminActionsManager.isBotAdmin(sock, senderJid);
-      
-      if (!isBotAdmin) {
-        await sock.sendMessage(senderJid, {
-          text: '❌ Le bot n\'est pas administrateur du groupe.\n\nPromois-moi administrateur pour que je puisse effectuer des actions!'
-        });
-        return;
-      }
-
-      // Check if user is already admin
-      const targetUserInfo = await AdminActionsManager.isUserAdmin(sock, senderJid, userToPromote);
-      if (targetUserInfo.isAdmin) {
-        await sock.sendMessage(senderJid, {
-          text: '❌ Cet utilisateur est déjà administrateur!'
-        });
-        return;
-      }
-
-      // Promote the user
-      const result = await AdminActionsManager.promoteUser(sock, senderJid, userToPromote);
-
-      if (result.success) {
-        await sock.sendMessage(senderJid, {
-          text: `✅ **PROMOTION EFFECTUÉE**\n\n👤 ${userToPromote}\n👑 Est maintenant administrateur!\n\n👮 Promu par: ${message.pushName || 'Admin'}`
-        });
-
-      } else {
-        await sock.sendMessage(senderJid, {
-          text: `❌ Erreur lors de la promotion:\n${result.error}`
-        });
-      }
-    } catch (error) {
-      console.error('Error promoting user:', error.message);
-      await sock.sendMessage(senderJid, {
-        text: `❌ Erreur lors de la promotion: ${error.message}`
-      });
+    if (target === AdminActionsManager.getBotJid(sock)) {
+      return sock.sendMessage(jid, {
+        text: MessageFormatter.warning('Je ne peux pas me promouvoir moi-meme.'),
+      }, { quoted: message });
     }
-  }
+
+    const botAdmin = await AdminActionsManager.isBotAdmin(sock, jid);
+    if (!botAdmin) {
+      return sock.sendMessage(jid, {
+        text: MessageFormatter.error('Le bot doit etre administrateur du groupe.'),
+      }, { quoted: message });
+    }
+
+    const targetInfo = await AdminActionsManager.isUserAdmin(sock, jid, target);
+    if (targetInfo.isAdmin) {
+      return sock.sendMessage(jid, {
+        text: MessageFormatter.warning('Cet utilisateur est deja administrateur.'),
+      }, { quoted: message });
+    }
+
+    const result = await AdminActionsManager.promoteUser(sock, jid, target);
+    return sock.sendMessage(jid, {
+      text: result.success
+        ? MessageFormatter.success(`@${target.split('@')[0]} est maintenant administrateur.`)
+        : MessageFormatter.error(`Promotion impossible: ${result.error}`),
+      mentions: [target],
+    }, { quoted: message });
+  },
 };

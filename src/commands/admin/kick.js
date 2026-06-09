@@ -1,78 +1,93 @@
-const PermissionManager = require('../../utils/permissions');
 const AdminActionsManager = require('../../utils/adminActions');
+const Access = require('../../services/botAccessService');
+const MessageFormatter = require('../../utils/messageFormatter');
+
+function getContextInfo(message) {
+  return message.message?.extendedTextMessage?.contextInfo ||
+    message.message?.imageMessage?.contextInfo ||
+    message.message?.videoMessage?.contextInfo ||
+    {};
+}
+
+function getTargetJid(message) {
+  const context = getContextInfo(message);
+  const mentioned = Array.isArray(context.mentionedJid) ? context.mentionedJid : [];
+  return mentioned[0] || context.participant || '';
+}
+
+function sameJid(a = '', b = '') {
+  const digitsA = String(a).split('@')[0].replace(/\D/g, '');
+  const digitsB = String(b).split('@')[0].replace(/\D/g, '');
+  return a === b || (digitsA && digitsA === digitsB);
+}
 
 module.exports = {
   name: 'kick',
-  aliases: ['expulser'],
+  aliases: ['expulser', 'remove'],
   description: 'Expulser un utilisateur du groupe',
   category: 'admin',
-  usage: '!kick @user [raison]',
+  usage: '!kick @user [raison] ou reponds a un message avec !remove',
   adminOnly: true,
   groupOnly: true,
   cooldown: 5,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
-    const senderJid = message.key.remoteJid;
-    const participantJid = message.key.participant;
+  async execute(sock, message, args) {
+    const jid = message.key.remoteJid;
+    const actor = message.key.participant || jid;
+    const target = getTargetJid(message);
+    const reason = args.filter((arg) => !arg.includes('@')).join(' ').trim() || 'Aucune raison specifiee';
 
-    // La vérification admin est déjà faite par le handler
-    // Pas besoin de revérifier
-
-    // Parse mention
-    const mentions = message.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
-    
-    if (mentions.length === 0) {
-      await sock.sendMessage(senderJid, {
-        text: '❌ Utilisation: `!kick @user [raison]`\n\n📌 Exemple: `!kick @user Spam`'
-      });
-      return;
+    if (!target) {
+      return sock.sendMessage(jid, {
+        text: MessageFormatter.warning('Utilise: !kick @user [raison] ou reponds a un message avec !remove.'),
+      }, { quoted: message });
     }
 
-    const userToKick = mentions[0];
-    const reason = args.slice(1).join(' ') || 'Aucune raison spécifiée';
-
-    if (userToKick === participantJid) {
-      await sock.sendMessage(senderJid, {
-        text: '❌ Tu ne peux pas t\'expulser toi-même! 😅'
-      });
-      return;
+    if (sameJid(target, actor)) {
+      return sock.sendMessage(jid, {
+        text: MessageFormatter.warning('Tu ne peux pas t expulser toi-meme.'),
+      }, { quoted: message });
     }
 
-    try {
-      // Check if bot is admin
-      const isBotAdmin = await AdminActionsManager.isBotAdmin(sock, senderJid);
-      
-      if (!isBotAdmin) {
-        await sock.sendMessage(senderJid, {
-          text: '❌ Le bot n\'est pas administrateur du groupe.\n\nPromois-moi administrateur pour que je puisse effectuer des actions!'
-        });
-        return;
-      }
-
-      // Get info about user to be kicked
-      const targetUserInfo = await AdminActionsManager.isUserAdmin(sock, senderJid, userToKick);
-      const targetUsername = message.message?.extendedTextMessage?.contextInfo?.quotedMessage?.pushName || userToKick;
-
-      // Kick the user
-      const result = await AdminActionsManager.kickUser(sock, senderJid, userToKick, reason);
-
-      if (result.success) {
-        // Send notification to group
-        await sock.sendMessage(senderJid, {
-          text: `⚠️ **UTILISATEUR EXPULSÉ**\n\n👤 ${targetUsername}\n📝 Raison: ${reason}\n👮 Modérateur: ${message.pushName || 'Admin'}`
-        });
-
-        // Log to console
-      } else {
-        await sock.sendMessage(senderJid, {
-          text: `❌ Erreur lors de l'expulsion:\n${result.error}`
-        });
-      }
-    } catch (error) {
-      console.error('Error kicking user:', error.message);
-      await sock.sendMessage(senderJid, {
-        text: `❌ Erreur lors de l'expulsion: ${error.message}`
-      });
+    if (sameJid(target, AdminActionsManager.getBotJid(sock))) {
+      return sock.sendMessage(jid, {
+        text: MessageFormatter.warning('Je ne peux pas m expulser moi-meme.'),
+      }, { quoted: message });
     }
-  }
+
+    if (await Access.isModerator(target)) {
+      return sock.sendMessage(jid, {
+        text: MessageFormatter.error('Impossible de retirer un proprietaire ou moderateur du bot.'),
+      }, { quoted: message });
+    }
+
+    const metadata = await sock.groupMetadata(jid).catch(() => null);
+    if (metadata?.owner && sameJid(target, metadata.owner)) {
+      return sock.sendMessage(jid, {
+        text: MessageFormatter.error('Impossible de retirer le createur du groupe.'),
+      }, { quoted: message });
+    }
+
+    const targetInfo = await AdminActionsManager.isUserAdmin(sock, jid, target);
+    if (targetInfo.isAdmin) {
+      return sock.sendMessage(jid, {
+        text: MessageFormatter.error('Impossible de retirer un administrateur du groupe.'),
+      }, { quoted: message });
+    }
+
+    const botAdmin = await AdminActionsManager.isBotAdmin(sock, jid);
+    if (!botAdmin) {
+      return sock.sendMessage(jid, {
+        text: MessageFormatter.error('Le bot doit etre administrateur du groupe.'),
+      }, { quoted: message });
+    }
+
+    const result = await AdminActionsManager.kickUser(sock, jid, target, reason);
+    return sock.sendMessage(jid, {
+      text: result.success
+        ? MessageFormatter.success(`@${target.split('@')[0]} a ete retire du groupe. Raison: ${reason}`)
+        : MessageFormatter.error(`Expulsion impossible: ${result.error}`),
+      mentions: [target],
+    }, { quoted: message });
+  },
 };

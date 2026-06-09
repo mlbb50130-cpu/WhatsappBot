@@ -37,6 +37,8 @@ const groupSchema = new mongoose.Schema({
     leaderboard: { type: Boolean, default: true },
     antiSpam: { type: Boolean, default: true },
     antiLink: { type: Boolean, default: false },
+    chatbot: { type: Boolean, default: false },
+    antiDelete: { type: Boolean, default: false },
     autoWelcome: { type: Boolean, default: true },
     autoGoodbye: { type: Boolean, default: false }
   },

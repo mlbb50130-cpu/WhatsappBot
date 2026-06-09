@@ -19,6 +19,7 @@ async function connectDatabase() {
     require('./models/Inventory');
     require('./models/Quest');
     require('./models/Warn');
+    require('./models/BotSettings');
 
   } catch (error) {
     console.error(`${config.COLORS.RED}❌ Database Connection Error: ${error.message}${config.COLORS.RESET}`);
