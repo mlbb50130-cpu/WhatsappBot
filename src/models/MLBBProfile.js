@@ -27,7 +27,6 @@ class MLBBProfile {
       const data = JSON.parse(fs.readFileSync(this.profilesPath, 'utf8'));
       return data[jid] || null;
     } catch (error) {
-      console.error('Error reading profile:', error);
       return null;
     }
   }
@@ -45,7 +44,6 @@ class MLBBProfile {
       fs.writeFileSync(this.profilesPath, JSON.stringify(data, null, 2));
       return data[jid];
     } catch (error) {
-      console.error('Error setting profile:', error);
       throw error;
     }
   }
@@ -57,7 +55,6 @@ class MLBBProfile {
       fs.writeFileSync(this.profilesPath, JSON.stringify(data, null, 2));
       return true;
     } catch (error) {
-      console.error('Error deleting profile:', error);
       return false;
     }
   }
@@ -80,7 +77,6 @@ class MLBBProfile {
       fs.writeFileSync(this.teamsPath, JSON.stringify(data, null, 2));
       return data[teamId];
     } catch (error) {
-      console.error('Error creating team:', error);
       throw error;
     }
   }
@@ -99,7 +95,6 @@ class MLBBProfile {
       
       return data[teamId];
     } catch (error) {
-      console.error('Error adding to team:', error);
       throw error;
     }
   }
@@ -115,7 +110,6 @@ class MLBBProfile {
       
       return data[teamId];
     } catch (error) {
-      console.error('Error removing from team:', error);
       throw error;
     }
   }
@@ -125,7 +119,6 @@ class MLBBProfile {
       const data = JSON.parse(fs.readFileSync(this.teamsPath, 'utf8'));
       return data[teamId] || null;
     } catch (error) {
-      console.error('Error getting team:', error);
       return null;
     }
   }
@@ -135,7 +128,6 @@ class MLBBProfile {
       const data = JSON.parse(fs.readFileSync(this.teamsPath, 'utf8'));
       return Object.values(data);
     } catch (error) {
-      console.error('Error getting teams:', error);
       return [];
     }
   }
@@ -147,7 +139,6 @@ class MLBBProfile {
       fs.writeFileSync(this.teamsPath, JSON.stringify(data, null, 2));
       return true;
     } catch (error) {
-      console.error('Error deleting team:', error);
       return false;
     }
   }

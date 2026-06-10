@@ -1,50 +1,44 @@
 const AdminActionsManager = require('../../utils/adminActions');
+const MessageFormatter = require('../../utils/messageFormatter');
 
 module.exports = {
   name: 'unmute',
   aliases: ['desimulet'],
-  description: 'Rendre le groupe vivant - Tous les membres peuvent écrire',
+  description: 'Rendre le groupe ouvert - tous les membres peuvent ecrire',
   category: 'admin',
   usage: '!unmute',
   adminOnly: true,
   groupOnly: true,
   cooldown: 5,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message) {
     const senderJid = message.key.remoteJid;
 
-    // La vérification admin est déjà faite par le handler
-    // Pas besoin de revérifier
-
     try {
-      // Check if bot is admin
       const isBotAdmin = await AdminActionsManager.isBotAdmin(sock, senderJid);
-      
+
       if (!isBotAdmin) {
         await sock.sendMessage(senderJid, {
-          text: '❌ Le bot n\'est pas administrateur du groupe.\n\nPromois-moi administrateur pour que je puisse effectuer des actions!'
+          text: MessageFormatter.error('Le bot doit etre administrateur du groupe.'),
         });
         return;
       }
 
-      // Unmute the group
       const result = await AdminActionsManager.unmuteGroup(sock, senderJid);
-
       if (result.success) {
         await sock.sendMessage(senderJid, {
-          text: `${result.message}\n\n👥 Tous les membres peuvent écrire!\n👮 Modérateur: ${message.pushName || 'Admin'}`
+          text: `${result.message}\n\nTous les membres peuvent ecrire.\nModerateur: ${message.pushName || 'Admin'}`,
         });
-
-      } else {
-        await sock.sendMessage(senderJid, {
-          text: `❌ Erreur lors de la réactivation:\n${result.error}`
-        });
+        return;
       }
-    } catch (error) {
-      console.error('Error unmuting group:', error.message);
+
       await sock.sendMessage(senderJid, {
-        text: `❌ Erreur lors de la réactivation: ${error.message}`
+        text: MessageFormatter.publicError('Reactivation impossible', result.error),
+      });
+    } catch (error) {
+      await sock.sendMessage(senderJid, {
+        text: MessageFormatter.publicError('Reactivation impossible', error),
       });
     }
-  }
+  },
 };

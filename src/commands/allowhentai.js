@@ -58,7 +58,6 @@ module.exports = {
       }
 
     } catch (error) {
-      console.error(`[ALLOWHENTAI] Error: ${error.message}`);
       const text = '❌ Erreur lors de la mise à jour des paramètres.';
       if (reply) {
         await reply({ text });

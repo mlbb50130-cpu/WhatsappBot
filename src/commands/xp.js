@@ -45,8 +45,6 @@ ${progressBar}`;
         await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(xpMessage));
       }
     } catch (error) {
-      console.error('Error in xp command:', error.message);
-      console.error('User object:', user);
       if (reply) {
         await reply({ text: '❌ Erreur lors de la récupération de ton XP!' });
       } else {

@@ -51,7 +51,6 @@ module.exports = {
         await sock.sendMessage(senderJid, { text: dailyMessage });
       }
     } catch (error) {
-      console.error('Error in quotidien command:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur!' });
       } else {

@@ -63,7 +63,6 @@ Que cette année soit remplie d'aventures! ✨
       }
 
     } catch (error) {
-      console.error('Error in anniversaire command:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur!' });
       } else {

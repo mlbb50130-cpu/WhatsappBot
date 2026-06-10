@@ -229,9 +229,8 @@ module.exports = {
 
       return sock.sendMessage(jid, { text: MessageFormatter.warning('Commande moderation inconnue.') }, { quoted: message });
     } catch (error) {
-      console.error('[MOD_ATLAS] Error:', error.message);
-      return sock.sendMessage(jid, {
-        text: MessageFormatter.error(`Moderation impossible: ${error.message}`),
+      return await sock.sendMessage(jid, {
+        text: MessageFormatter.publicError('Moderation impossible', error),
       }, { quoted: message });
     }
   },

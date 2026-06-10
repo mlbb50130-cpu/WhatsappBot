@@ -80,7 +80,6 @@ Bravo! Reviens demain pour de nouvelles quêtes! 🚀
       }
 
     } catch (error) {
-      console.error('Error in valider command:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur lors de la validation!' });
       } else {

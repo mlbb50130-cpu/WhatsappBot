@@ -60,7 +60,6 @@ module.exports = {
         await sock.sendMessage(senderJid, { text: chanceMessage });
       }
     } catch (error) {
-      console.error('Error in chance command:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur!' });
       } else {

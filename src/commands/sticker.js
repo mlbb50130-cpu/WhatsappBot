@@ -108,9 +108,8 @@ module.exports = {
           }, { quoted: message });
       }
     } catch (error) {
-      console.error('[STICKER] Error:', error.response?.data || error.message);
-      return sock.sendMessage(jid, {
-        text: MessageFormatter.error(`Sticker impossible: ${error.message}`),
+      return await sock.sendMessage(jid, {
+        text: MessageFormatter.publicError('Sticker impossible', error),
       }, { quoted: message });
     }
   },

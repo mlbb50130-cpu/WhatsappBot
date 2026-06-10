@@ -26,7 +26,6 @@ async function updateStatus() {
             document.getElementById('uptime').textContent = formatUptime(data.uptime);
         }
     } catch (error) {
-        console.error('Erreur lors de la récupération du statut:', error);
         document.getElementById('connection-status').textContent = '⚠️ Erreur';
     }
 }

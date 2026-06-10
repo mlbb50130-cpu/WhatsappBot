@@ -81,7 +81,6 @@ module.exports = {
         await sock.sendMessage(senderJid, { text: message_text });
       }
     } catch (error) {
-      console.error('Error in equip command:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur lors de l\'équipement!' });
       } else {

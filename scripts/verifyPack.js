@@ -37,8 +37,6 @@ try {
   const commandNames = readCommandNames();
 
   const missing = commandNames.filter((name) => !packCommands.has(name) && !['mlbb', 'mlbbmenu'].includes(name));
-  console.log('Missing in otaku pack:', missing);
 } catch (error) {
-  console.error(error.message);
   process.exit(1);
 }

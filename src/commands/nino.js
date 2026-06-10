@@ -87,7 +87,6 @@ module.exports = {
       await user.save();
 
     } catch (error) {
-      console.error('Error in nino command:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur lors du chargement de l\'image!' });
       } else {

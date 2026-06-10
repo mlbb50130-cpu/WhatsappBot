@@ -86,7 +86,7 @@ module.exports = {
     return sock.sendMessage(jid, {
       text: result.success
         ? MessageFormatter.success(`@${target.split('@')[0]} a ete retire du groupe. Raison: ${reason}`)
-        : MessageFormatter.error(`Expulsion impossible: ${result.error}`),
+        : MessageFormatter.publicError('Expulsion impossible', result.error),
       mentions: [target],
     }, { quoted: message });
   },

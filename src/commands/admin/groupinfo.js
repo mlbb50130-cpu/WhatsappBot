@@ -24,7 +24,7 @@ module.exports = {
 
     if (!infoResult.success) {
       return sock.sendMessage(jid, {
-        text: MessageFormatter.error(`Group info impossible: ${infoResult.error}`),
+        text: MessageFormatter.publicError('Group info impossible', infoResult.error),
       }, { quoted: message });
     }
 

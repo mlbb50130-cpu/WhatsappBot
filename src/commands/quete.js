@@ -53,7 +53,6 @@ ${this.formatQuestList(weeklyQuests, user.weeklyQuests)}
         await user.save();
       }
     } catch (error) {
-      console.error('Error in quete command:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur!' });
       } else {

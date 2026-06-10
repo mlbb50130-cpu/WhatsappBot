@@ -74,7 +74,6 @@ ${isSuperSurprise ? 'WOW! Tu as trouvé une SUPER SURPRISE! 🤑' : 'Quelle chan
       }
 
     } catch (error) {
-      console.error('Error in surprise command:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur!' });
       } else {

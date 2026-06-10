@@ -1,9 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 
-console.log('\n╔════════════════════════════════════════════════════════════════════╗');
-console.log('║         ⚠️  COMMANDES NON CONFIGURÉES DANS LES PACKS              ║');
-console.log('╚════════════════════════════════════════════════════════════════════╝\n');
 
 // Récupérer toutes les commandes existantes
 function getAllCommands() {
@@ -115,28 +112,13 @@ allCommands.forEach((cmd, name) => {
 notConfigured.sort((a, b) => a.name.localeCompare(b.name));
 
 if (notConfigured.length === 0) {
-  console.log('✅ EXCELLENT! Toutes les commandes sont configurées dans les packs!\n');
 } else {
-  console.log(`❌ ${notConfigured.length} commandes ne sont pas configurées:\n`);
   
   notConfigured.forEach((cmd, idx) => {
-    console.log(`${(idx + 1).toString().padStart(2, ' ')}. ${cmd.name.padEnd(25)} (${cmd.file})`);
     if (cmd.aliases.length > 0) {
-      console.log(`    Aliases: ${cmd.aliases.join(', ')}`);
     }
   });
   
-  console.log('\n');
-  console.log('📝 SUGGESTIONS:');
-  console.log('─'.repeat(70));
   notConfigured.forEach(cmd => {
-    console.log(`  • ${cmd.name}`);
   });
 }
-
-console.log('\n📊 RÉSUMÉ');
-console.log('═'.repeat(70));
-console.log(`  ✅ Commandes configurées: ${allCommands.size - notConfigured.length}/${allCommands.size}`);
-console.log(`  ❌ Commandes non configurées: ${notConfigured.length}/${allCommands.size}`);
-console.log(`  📈 Couverture: ${Math.round(((allCommands.size - notConfigured.length) / allCommands.size) * 100)}%`);
-console.log('');

@@ -23,7 +23,6 @@ class AdminActionsManager {
       }
       return botJid;
     } catch (error) {
-      console.error('Error getting bot JID:', error.message);
       return null;
     }
   }
@@ -35,21 +34,18 @@ class AdminActionsManager {
     try {
       const groupMetadata = await getGroupMetadataWithCache(sock, groupJid);
       if (!groupMetadata) {
-        console.error('Could not fetch group metadata');
         return false;
       }
       
       const botJid = this.getBotJid(sock);
       
       if (!botJid) {
-        console.error('Could not determine bot JID');
         return false;
       }
       
       const botParticipant = groupMetadata.participants.find(p => p.id === botJid);
       return botParticipant && (botParticipant.admin === 'admin' || botParticipant.admin === 'superadmin');
     } catch (error) {
-      console.error('Error checking bot admin status:', error.message);
       return false;
     }
   }
@@ -88,7 +84,6 @@ class AdminActionsManager {
         reason
       };
     } catch (error) {
-      console.error('Error kicking user:', error.message);
       return {
         success: false,
         error: error.message,
@@ -129,7 +124,6 @@ class AdminActionsManager {
         userJid
       };
     } catch (error) {
-      console.error('Error promoting user:', error.message);
       return {
         success: false,
         error: error.message,
@@ -170,7 +164,6 @@ class AdminActionsManager {
         userJid
       };
     } catch (error) {
-      console.error('Error demoting user:', error.message);
       return {
         success: false,
         error: error.message,
@@ -210,7 +203,6 @@ class AdminActionsManager {
         newSubject
       };
     } catch (error) {
-      console.error('Error changing group subject:', error.message);
       return {
         success: false,
         error: error.message,
@@ -250,7 +242,6 @@ class AdminActionsManager {
         newDescription
       };
     } catch (error) {
-      console.error('Error changing group description:', error.message);
       return {
         success: false,
         error: error.message,
@@ -300,7 +291,6 @@ class AdminActionsManager {
         value
       };
     } catch (error) {
-      console.error('Error changing group settings:', error.message);
       return {
         success: false,
         error: error.message,
@@ -323,7 +313,6 @@ class AdminActionsManager {
 
       return result;
     } catch (error) {
-      console.error('Error muting group:', error.message);
       return {
         success: false,
         error: error.message,
@@ -345,7 +334,6 @@ class AdminActionsManager {
 
       return result;
     } catch (error) {
-      console.error('Error unmuting group:', error.message);
       return {
         success: false,
         error: error.message,
@@ -367,7 +355,6 @@ class AdminActionsManager {
 
       return result;
     } catch (error) {
-      console.error('Error locking group:', error.message);
       return {
         success: false,
         error: error.message,
@@ -389,7 +376,6 @@ class AdminActionsManager {
 
       return result;
     } catch (error) {
-      console.error('Error unlocking group:', error.message);
       return {
         success: false,
         error: error.message,
@@ -428,7 +414,6 @@ class AdminActionsManager {
         }
       };
     } catch (error) {
-      console.error('Error getting group info:', error.message);
       return {
         success: false,
         error: error.message,
@@ -451,7 +436,6 @@ class AdminActionsManager {
         message: 'Notification envoyée'
       };
     } catch (error) {
-      console.error('Error sending notification:', error.message);
       return {
         success: false,
         error: error.message,
@@ -481,7 +465,6 @@ class AdminActionsManager {
         participant
       };
     } catch (error) {
-      console.error('Error checking user admin status:', error.message);
       return {
         success: false,
         error: error.message,
@@ -517,7 +500,6 @@ class AdminActionsManager {
         count: admins.length
       };
     } catch (error) {
-      console.error('Error getting group admins:', error.message);
       return {
         success: false,
         error: error.message,

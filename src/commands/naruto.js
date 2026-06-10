@@ -103,7 +103,6 @@ module.exports = {
       await user.save();
 
     } catch (error) {
-      console.error(`[NARUTO] Error: ${error.message}`);
       if (reply) {
         await reply({ text: MessageFormatter.error('Erreur lors du chargement de l\'image.') });
       } else {

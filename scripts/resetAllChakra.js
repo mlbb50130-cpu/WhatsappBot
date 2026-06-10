@@ -11,11 +11,9 @@ mongoose.connect(mongoUrl, {
 
 async function resetAllChakra() {
   try {
-    console.log('🔄 Réinitialisation du chakra de tous les utilisateurs...');
     
     // Récupérer tous les utilisateurs
     const users = await User.find({});
-    console.log(`📊 Nombre d'utilisateurs trouvés: ${users.length}`);
     
     let updatedCount = 0;
     
@@ -31,15 +29,11 @@ async function resetAllChakra() {
       await user.save();
       updatedCount++;
       
-      console.log(`✅ ${user.username} (Niveau ${user.level}) - Chakra réinitialisé à ${newMaxChakra}`);
     }
     
-    console.log(`\n✨ Réinitialisation terminée!`);
-    console.log(`📈 ${updatedCount}/${users.length} utilisateurs mis à jour`);
     
     process.exit(0);
   } catch (error) {
-    console.error('❌ Erreur:', error.message);
     process.exit(1);
   }
 }

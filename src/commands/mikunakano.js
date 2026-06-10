@@ -91,7 +91,7 @@ module.exports = {
 
       await sock.sendMessage(senderJid, {
         image: imageBuffer,
-        caption: isGroup ? MessageFormatter.elegantBox('💕 𝔐𝔦𝔯𝔞 𝔑𝔞𝔡𝔞𝔫𝔯 💕', [{ label: '✨ Récompense', value: allowXp ? '+2 XP' : '🚫 Limite atteinte (10/jour)' }]) : MessageFormatter.elegantBox('💕 𝔐𝔦𝔠𝔲 𝔑𝔞𝔨𝔞𝔫𝔡 💕', [{ label: '📺 Type', value: 'Personnage' }])
+        caption: isGroup ? MessageFormatter.elegantBox('Miku Nakano', [{ label: '✨ Récompense', value: allowXp ? '+2 XP' : '🚫 Limite atteinte (10/jour)' }]) : MessageFormatter.elegantBox('Miku Nakano', [{ label: '📺 Type', value: 'Personnage' }])
       });
 
       if (isGroup && allowXp) {
@@ -102,7 +102,6 @@ module.exports = {
       user.assetUsageToday.count += 1;
       await user.save();
     } catch (error) {
-      console.error('Error in mikunakano command:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur!' });
       } else {

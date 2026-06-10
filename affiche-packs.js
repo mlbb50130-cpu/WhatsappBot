@@ -1,8 +1,5 @@
 const PackManager = require('./src/utils/PackManager');
 
-console.log('\n╔════════════════════════════════════════════════════════════════════╗');
-console.log('║                   📦 COMMANDES PAR PACK                          ║');
-console.log('╚════════════════════════════════════════════════════════════════════╝\n');
 
 // Accès aux commandes
 const PACK_COMMANDS = {
@@ -43,9 +40,6 @@ const PACK_COMMANDS = {
 };
 
 // Afficher pack OTAKU
-console.log('🎌 PACK OTAKU (RPG) - ' + PACK_COMMANDS.otaku.length + ' commandes');
-console.log('═'.repeat(70));
-console.log('');
 
 const otakuGroups = {
   '📊 Profil & Niveau': ['profil', 'level', 'xp', 'rank', 'stats', 'badges'],
@@ -63,14 +57,8 @@ const otakuGroups = {
 };
 
 Object.entries(otakuGroups).forEach(([group, cmds]) => {
-  console.log(`  ${group}`);
-  console.log(`  ${cmds.join(', ')}`);
-  console.log('');
 });
 
-console.log('\n🎮 PACK GAMIN (MLBB) - ' + PACK_COMMANDS.gamin.length + ' commandes');
-console.log('═'.repeat(70));
-console.log('');
 
 const gaminGroups = {
   '👤 Profil MLBB': ['mlbb', 'ml', 'legends', 'moba', 'mlbb-profile', 'mlbbprofile'],
@@ -88,32 +76,4 @@ const gaminGroups = {
 };
 
 Object.entries(gaminGroups).forEach(([group, cmds]) => {
-  console.log(`  ${group}`);
-  console.log(`  ${cmds.join(', ')}`);
-  console.log('');
 });
-
-console.log('\n🌟 PACK COMPLET');
-console.log('═'.repeat(70));
-console.log('✅ Inclut TOUTES les commandes des packs OTAKU + GAMIN');
-console.log('');
-console.log('  ➕ Modération (Admin seulement)');
-console.log('  warn, avertir, kick, expulser, lock, verrouiller, unlock, deverrouiller');
-console.log('  mute, silence, desimulet, unmute, promote, promouvoir, demote, retrograder');
-console.log('  ');
-console.log('  ➕ Gestion Groupe (Admin seulement)');
-console.log('  clear, nettoyer, groupinfo, groupeinfo, infogroupes, everyone, tous, all');
-console.log('  ');
-console.log('  ➕ Système (Admin seulement)');
-console.log('  setxp, fixerxp, tournoisquiz, tournoi, tourquiz, assets, chakratest');
-console.log('  ');
-console.log('  ➕ NSFW (Si activé)');
-console.log('  hentai, hentaivd, boahancook, nsfw');
-console.log('');
-
-console.log('📊 RÉSUMÉ');
-console.log('═'.repeat(70));
-console.log(`  🎌 Pack OTAKU:   ${PACK_COMMANDS.otaku.length} commandes`);
-console.log(`  🎮 Pack GAMIN:   ${PACK_COMMANDS.gamin.length} commandes`);
-console.log(`  🌟 Pack COMPLET: 130+ commandes (OTAKU + GAMIN + ADMIN + NSFW)`);
-console.log('');

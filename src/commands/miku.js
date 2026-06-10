@@ -87,7 +87,7 @@ module.exports = {
 
       await sock.sendMessage(senderJid, {
         image: imageBuffer,
-        caption: isGroup ? MessageFormatter.elegantBox('💗 𝔐𝔦𝔠𝔯𝔯 💗', [{ label: '✨ Récompense', value: allowXp ? '+2 XP' : '🚫 Limite atteinte (10/jour)' }]) : MessageFormatter.elegantBox('💗 𝔐𝔦𝔯𝔯𝔯 💗', [{ label: '📺 Type', value: 'Personnage' }])
+        caption: isGroup ? MessageFormatter.elegantBox('Miku', [{ label: '✨ Récompense', value: allowXp ? '+2 XP' : '🚫 Limite atteinte (10/jour)' }]) : MessageFormatter.elegantBox('Miku', [{ label: '📺 Type', value: 'Personnage' }])
       });
 
       if (isGroup && allowXp) {
@@ -98,7 +98,6 @@ module.exports = {
       user.assetUsageToday.count += 1;
       await user.save();
     } catch (error) {
-      console.error('Error in miku command:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur!' });
       } else {

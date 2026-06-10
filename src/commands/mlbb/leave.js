@@ -81,9 +81,8 @@ module.exports = {
         text: MessageFormatter.success(`Tu as quitte l'equipe "${teamName}".`),
       }, { quoted: msg });
     } catch (error) {
-      console.error('Erreur leave:', error);
       return sock.sendMessage(jid, {
-        text: MessageFormatter.error(`Erreur leave: ${error.message}`),
+        text: MessageFormatter.publicError('Leave impossible', error),
       }, { quoted: msg });
     }
   },

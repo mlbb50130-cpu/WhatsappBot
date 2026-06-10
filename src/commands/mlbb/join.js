@@ -1,27 +1,29 @@
 const MLBBProfile = require('../../models/MLBBProfile');
+const MessageFormatter = require('../../utils/messageFormatter');
 
 module.exports = {
   name: 'join',
   aliases: ['j'],
   category: 'gaming',
-  description: 'Rejoindre une équipe MLBB',
+  description: 'Rejoindre une equipe MLBB',
   cooldown: 2,
 
   async execute(sock, msg, args) {
+    const jid = msg.key.remoteJid;
+
     try {
-      const jid = msg.key.remoteJid;
       const sender = msg.key.participant || jid;
       const isGroup = jid.endsWith('@g.us');
-      
+
       if (!isGroup) {
         return sock.sendMessage(jid, {
-          text: '❌ Cette commande ne fonctionne que en groupe'
+          text: MessageFormatter.warning('Cette commande fonctionne seulement en groupe.'),
         });
       }
 
       if (!args.length) {
         return sock.sendMessage(jid, {
-          text: '❌ Utilise: !join <nom_team>'
+          text: MessageFormatter.warning('Utilise: !join <nom_team>'),
         });
       }
 
@@ -31,25 +33,25 @@ module.exports = {
 
       if (!team) {
         return sock.sendMessage(jid, {
-          text: `❌ Équipe "${teamName}" non trouvée.`
+          text: MessageFormatter.warning(`Equipe "${teamName}" introuvable.`),
         });
       }
 
-      if (team.members.some(m => m === sender)) {
+      if (team.members.some((member) => member === sender)) {
         return sock.sendMessage(jid, {
-          text: `❌ Tu es déjà dans l'équipe "${teamName}"`
+          text: MessageFormatter.warning(`Tu es deja dans l equipe "${teamName}".`),
         });
       }
 
       MLBBProfile.joinTeam(jid, teamName, sender);
 
       return sock.sendMessage(jid, {
-        text: `✅ Bienvenue dans l'équipe "${teamName}"!\n\n👥 Membres: ${team.members.length + 1}`
+        text: MessageFormatter.success(`Bienvenue dans l equipe "${teamName}". Membres: ${team.members.length + 1}`),
       });
-
     } catch (error) {
-      console.error('Erreur join:', error);
-      sock.sendMessage(msg.key.remoteJid, { text: '❌ Erreur: ' + error.message });
+      return sock.sendMessage(jid, {
+        text: MessageFormatter.publicError('Join impossible', error),
+      });
     }
-  }
+  },
 };

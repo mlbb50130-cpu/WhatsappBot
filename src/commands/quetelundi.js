@@ -62,7 +62,6 @@ module.exports = {
         await sock.sendMessage(senderJid, { text: questMessage });
       }
     } catch (error) {
-      console.error('Error in quetelundi command:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur!' });
       } else {

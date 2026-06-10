@@ -91,9 +91,8 @@ module.exports = {
         }, { quoted: message });
       }
     } catch (error) {
-      console.error('[REACTION] Error:', error.response?.data || error.message);
-      return sock.sendMessage(jid, {
-        text: MessageFormatter.error(`Reaction impossible: ${error.message}`),
+      return await sock.sendMessage(jid, {
+        text: MessageFormatter.publicError('Reaction impossible', error),
       }, { quoted: message });
     }
   },

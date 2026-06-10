@@ -1,50 +1,44 @@
 const AdminActionsManager = require('../../utils/adminActions');
+const MessageFormatter = require('../../utils/messageFormatter');
 
 module.exports = {
   name: 'lock',
   aliases: ['verrouiller'],
-  description: 'Verrouiller le groupe (seuls les admins peuvent envoyer des messages)',
+  description: 'Verrouiller les reglages du groupe',
   category: 'admin',
   usage: '!lock',
   adminOnly: true,
   groupOnly: true,
   cooldown: 5,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message) {
     const senderJid = message.key.remoteJid;
 
-    // La vérification admin est déjà faite par le handler
-    // Pas besoin de revérifier
-
     try {
-      // Check if bot is admin
       const isBotAdmin = await AdminActionsManager.isBotAdmin(sock, senderJid);
-      
+
       if (!isBotAdmin) {
         await sock.sendMessage(senderJid, {
-          text: '❌ Le bot n\'est pas administrateur du groupe.'
+          text: MessageFormatter.error('Le bot doit etre administrateur du groupe.'),
         });
         return;
       }
 
-      // Lock the group
       const result = await AdminActionsManager.lockGroup(sock, senderJid);
-
       if (result.success) {
         await sock.sendMessage(senderJid, {
-          text: `${result.message}\n\n🔐 Les paramètres du groupe sont protégés!\n👮 Modérateur: ${message.pushName || 'Admin'}`
+          text: `${result.message}\n\nLes parametres du groupe sont proteges.\nModerateur: ${message.pushName || 'Admin'}`,
         });
-
-      } else {
-        await sock.sendMessage(senderJid, {
-          text: `❌ Erreur lors du verrouillage:\n${result.error}`
-        });
+        return;
       }
-    } catch (error) {
-      console.error('Error locking group:', error.message);
+
       await sock.sendMessage(senderJid, {
-        text: `❌ Erreur lors du verrouillage: ${error.message}`
+        text: MessageFormatter.publicError('Verrouillage impossible', result.error),
+      });
+    } catch (error) {
+      await sock.sendMessage(senderJid, {
+        text: MessageFormatter.publicError('Verrouillage impossible', error),
       });
     }
-  }
+  },
 };

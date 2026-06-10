@@ -26,7 +26,6 @@ module.exports = {
         await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(whoamiMessage));
       }
     } catch (error) {
-      console.error('Error in whoami command:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur!' });
       } else {

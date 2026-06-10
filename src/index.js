@@ -105,7 +105,6 @@ async function getCurrentGroupJids(socket) {
       return Object.keys(groups || {}).filter((jid) => jid.endsWith('@g.us'));
     }
   } catch (error) {
-    console.error('[ATLAS RECAP] groupFetchAllParticipating failed:', error.message);
   }
 
   try {
@@ -113,7 +112,6 @@ async function getCurrentGroupJids(socket) {
     const groups = await Group.find({}).select('groupJid').lean();
     return groups.map((group) => group.groupJid).filter((jid) => jid && jid.endsWith('@g.us'));
   } catch (error) {
-    console.error('[ATLAS RECAP] DB group fallback failed:', error.message);
     return [];
   }
 }
@@ -145,17 +143,14 @@ async function sendAtlasCommandRecapOnce(socket) {
     if (groupJids.length === 0 && atlasRecapEmptyGroupRetries < ATLAS_RECAP_MAX_EMPTY_GROUP_RETRIES) {
       atlasRecapEmptyGroupRetries += 1;
       atlasRecapAnnouncementStarted = false;
-      console.log(`[ATLAS RECAP] Aucun groupe trouve, nouvelle tentative ${atlasRecapEmptyGroupRetries}/${ATLAS_RECAP_MAX_EMPTY_GROUP_RETRIES}.`);
       setTimeout(() => {
         sendAtlasCommandRecapOnce(socket).catch((error) => {
-          console.error('[ATLAS RECAP] Retry failed:', error.message);
         });
       }, 30000);
       return;
     }
 
     if (groupJids.length === 0) {
-      console.log('[ATLAS RECAP] Aucun groupe trouve. Annonce non marquee comme envoyee.');
       return;
     }
 
@@ -175,7 +170,6 @@ async function sendAtlasCommandRecapOnce(socket) {
         },
         { upsert: true }
       );
-      console.log('[ATLAS RECAP] Tous les groupes connus ont deja recu le recap.');
       return;
     }
 
@@ -203,7 +197,6 @@ async function sendAtlasCommandRecapOnce(socket) {
         await new Promise((resolve) => setTimeout(resolve, ATLAS_RECAP_GROUP_DELAY_MS));
       } catch (error) {
         failedGroups.push(groupJid);
-        console.error(`[ATLAS RECAP] Send failed for ${groupJid}:`, error.message);
       }
     }
 
@@ -233,9 +226,7 @@ async function sendAtlasCommandRecapOnce(socket) {
       { upsert: true }
     );
 
-    console.log(`[ATLAS RECAP] Sent to ${sentGroups.length}/${pendingGroupJids.length} pending groups. Failed: ${failedGroups.length}.`);
   } catch (error) {
-    console.error('[ATLAS RECAP] Announcement failed:', error.message);
   } finally {
     atlasRecapAnnouncementStarted = false;
   }
@@ -278,7 +269,6 @@ async function connectToWhatsApp() {
       try {
         qrcode.generate(qr, { small: true });
       } catch (err) {
-        console.log(qr);
       }
     }
 
@@ -287,7 +277,6 @@ async function connectToWhatsApp() {
       qrShown = false;
       setTimeout(() => {
         sendAtlasCommandRecapOnce(sock).catch((error) => {
-          console.error('[ATLAS RECAP] Unexpected error:', error.message);
         });
       }, ATLAS_RECAP_OPEN_DELAY_MS);
     }
@@ -395,7 +384,6 @@ async function connectToWhatsApp() {
           
         }
       } catch (error) {
-        console.error('[GROUP UPDATE ERROR]', error.message);
       }
     }
   });
@@ -497,13 +485,11 @@ Merci d'avoir participé! À bientôt! 🤗`;
         }
       }
     } catch (error) {
-      console.error('[PARTICIPANTS UPDATE ERROR]', error.message);
     }
   });
 
   // Handle errors
   sock.ev.on('error', (error) => {
-    console.error('[SOCKET ERROR]', error);
   });
 
   return sock;
@@ -536,6 +522,5 @@ process.on('SIGINT', async () => {
 });
 
 main().catch(error => {
-  console.error(`${config.COLORS.RED}❌ Fatal Error: ${error.message}${config.COLORS.RESET}`);
   process.exit(1);
 });

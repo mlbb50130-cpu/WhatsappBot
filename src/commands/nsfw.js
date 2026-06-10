@@ -97,7 +97,6 @@ module.exports = {
         caption: isGroup ? '🔥 *NSFW*\n\n➕ 2 XP ✨' : '🔥 *NSFW*\n\n'
       });
     } catch (error) {
-      console.error('Error in nsfw command:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur!' });
       } else {

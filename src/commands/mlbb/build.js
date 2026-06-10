@@ -59,7 +59,6 @@ ${(hero.build.support || hero.build.tank || hero.build.balanced).map((item, i) =
           caption: `🛠️ Builds ${hero.name}`
         });
       } catch (err) {
-        console.error('Erreur lors de l\'envoi de l\'image:', err);
         return sock.sendMessage(from, { text: buildInfo });
       }
     } else {

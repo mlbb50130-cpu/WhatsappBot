@@ -4,6 +4,12 @@ const { Sticker, StickerTypes } = require('wa-sticker-formatter');
 const MessageFormatter = require('../utils/messageFormatter');
 const config = require('../config');
 
+const WEB_HEADERS = {
+  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+  Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+  'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
+};
+
 function tenorKey() {
   const key = process.env.TENOR_API_KEY || '';
   if (!key) throw new Error('TENOR_API_KEY manquant dans Railway.');
@@ -99,6 +105,104 @@ async function sendCouplePp(sock, jid, message) {
   return sock.sendMessage(jid, { image: { url: data.female }, caption: 'For her' }, { quoted: message });
 }
 
+function normalizeWebResults(results = []) {
+  const seen = new Set();
+
+  return results
+    .map((result, index) => ({
+      index,
+      page: result.page || result.title || '',
+      title: result.title || result.page || '',
+      desc: result.desc || result.description || '',
+      url: result.url || result.link || '',
+    }))
+    .filter((result) => result.page && /^https?:\/\//i.test(result.url))
+    .filter((result) => {
+      const key = result.url.replace(/\/$/, '');
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+}
+
+async function searchWithSearchIt(query, total = 8) {
+  const mod = await import('@fantox01/search-it');
+  const searchit = mod.searchit || mod.default?.searchit || mod.default;
+  if (typeof searchit !== 'function') throw new Error('Module search-it invalide.');
+  return normalizeWebResults(await searchit(query, total));
+}
+
+async function searchBingWeb(query, total = 8) {
+  const { data } = await axios.get(
+    `https://www.bing.com/search?q=${encodeURIComponent(query)}&count=${total}`,
+    {
+      headers: WEB_HEADERS,
+      timeout: 15000,
+    }
+  );
+
+  const $ = cheerio.load(data);
+  const results = [];
+
+  $('li.b_algo').each((index, item) => {
+    const link = $(item).find('h2 a').first();
+    const title = link.text().trim();
+    const url = link.attr('href') || '';
+    const desc = $(item).find('.b_caption p').first().text().trim() ||
+      $(item).find('.b_snippet').first().text().trim();
+
+    if (title && url) {
+      results.push({ index, page: title, desc, url });
+    }
+  });
+
+  return normalizeWebResults(results).slice(0, total);
+}
+
+function decodeDuckDuckGoUrl(rawUrl = '') {
+  if (!rawUrl) return '';
+  try {
+    const parsed = new URL(rawUrl, 'https://duckduckgo.com');
+    return parsed.searchParams.get('uddg') || parsed.href;
+  } catch {
+    return rawUrl;
+  }
+}
+
+async function searchDuckDuckGoWeb(query, total = 8) {
+  const { data } = await axios.get(
+    `https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`,
+    {
+      headers: WEB_HEADERS,
+      timeout: 15000,
+    }
+  );
+
+  const $ = cheerio.load(data);
+  const results = [];
+
+  $('.result').each((index, item) => {
+    const link = $(item).find('.result__a').first();
+    const title = link.text().trim();
+    const url = decodeDuckDuckGoUrl(link.attr('href') || '');
+    const desc = $(item).find('.result__snippet').first().text().trim();
+
+    if (title && url) {
+      results.push({ index, page: title, desc, url });
+    }
+  });
+
+  return normalizeWebResults(results).slice(0, total);
+}
+
+function directGoogleResult(query) {
+  return [{
+    page: `Recherche Google: ${query}`,
+    desc: 'Les moteurs de recherche ont refuse le scraping. Voici le lien direct.',
+    url: `https://www.google.com/search?q=${encodeURIComponent(query)}`,
+  }];
+}
+
 async function sendGoogleSearch(sock, jid, message, query) {
   if (!query) {
     return sock.sendMessage(jid, {
@@ -106,10 +210,34 @@ async function sendGoogleSearch(sock, jid, message, query) {
     }, { quoted: message });
   }
 
-  const mod = await import('@fantox01/search-it');
-  const searchit = mod.searchit || mod.default?.searchit || mod.default;
-  const results = await searchit(query, 8);
-  if (!results?.length) throw new Error('Aucun resultat trouve.');
+  let results = [];
+  const errors = [];
+
+  try {
+    results = await searchWithSearchIt(query, 8);
+  } catch (error) {
+    errors.push(`Yahoo: ${error.message}`);
+  }
+
+  if (!results.length) {
+    try {
+      results = await searchBingWeb(query, 8);
+    } catch (error) {
+      errors.push(`Bing: ${error.response?.status || ''} ${error.message}`.trim());
+    }
+  }
+
+  if (!results.length) {
+    try {
+      results = await searchDuckDuckGoWeb(query, 8);
+    } catch (error) {
+      errors.push(`DuckDuckGo: ${error.response?.status || ''} ${error.message}`.trim());
+    }
+  }
+
+  if (!results?.length) {
+    results = directGoogleResult(query);
+  }
 
   const body = results.slice(0, 6).map((result, index) => {
     return `${index + 1}. ${result.page || result.title || 'Resultat'}\n${result.desc || ''}\n${result.url || ''}`;

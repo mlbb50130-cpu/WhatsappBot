@@ -84,9 +84,8 @@ module.exports = {
         text: MessageFormatter.panel({ title: 'Fact', body: [data?.fact || 'Aucun fact trouve.'] }),
       }, { quoted: message });
     } catch (error) {
-      console.error('[FUN] Error:', error.response?.data || error.message);
-      return sock.sendMessage(jid, {
-        text: MessageFormatter.error(`Commande fun impossible: ${error.message}`),
+      return await sock.sendMessage(jid, {
+        text: MessageFormatter.publicError('Commande fun impossible', error),
       }, { quoted: message });
     }
   },

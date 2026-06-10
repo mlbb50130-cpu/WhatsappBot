@@ -25,7 +25,6 @@ class MessageParser {
 
       return [];
     } catch (error) {
-      console.error('Error extracting mentions:', error.message);
       return [];
     }
   }
@@ -44,7 +43,6 @@ class MessageParser {
       // Filter out mentions (they start with @)
       return args.filter(arg => !arg.startsWith('@'));
     } catch (error) {
-      console.error('Error parsing args:', error.message);
       return [];
     }
   }
@@ -80,7 +78,6 @@ class MessageParser {
       
       return args.join(' ') || 'Aucune raison spécifiée';
     } catch (error) {
-      console.error('Error extracting reason:', error.message);
       return 'Aucune raison spécifiée';
     }
   }

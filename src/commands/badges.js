@@ -50,7 +50,6 @@ module.exports = {
         await sock.sendMessage(senderJid, { text: badgeMessage });
       }
     } catch (error) {
-      console.error('Error in badges command:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur!' });
       } else {

@@ -119,7 +119,6 @@ function loadCommands() {
             }
           }
         } catch (error) {
-          console.error(`${config.COLORS.RED}❌ Error loading command ${file}: ${error.message}${config.COLORS.RESET}`);
         }
       }
     }
@@ -144,7 +143,6 @@ async function getOrCreateUser(jid, username) {
 
     return user;
   } catch (error) {
-    console.error(`Error getting/creating user: ${error.message}`);
     return null;
   }
 }
@@ -202,7 +200,6 @@ async function addXP(jid, amount = config.XP_PER_MESSAGE) {
       rankUpdate: rankUpdate.rankChanged ? rankUpdate : null,
     };
   } catch (error) {
-    console.error(`Error adding XP: ${error.message}`);
     return null;
   }
 }
@@ -456,7 +453,6 @@ async function handleMessage(sock, message, isGroup, groupData) {
 
     const xpBefore = userLatest.xp || 0;
 
-    console.log(`[CMD] ${participantJid} -> ${config.PREFIX}${commandName} ${args.join(' ')}`.trim());
 
     if (command.adminOnly) {
       let participants = [];
@@ -465,7 +461,6 @@ async function handleMessage(sock, message, isGroup, groupData) {
           const groupMetadata = await sock.groupMetadata(senderJid);
           participants = groupMetadata.participants || [];
         } catch (error) {
-          console.error('Error fetching group metadata:', error.message);
         }
       }
 
@@ -502,12 +497,10 @@ async function handleMessage(sock, message, isGroup, groupData) {
       }
     }
   } catch (error) {
-    console.error(`${config.COLORS.RED}❌ Handler Error: ${error.message}${config.COLORS.RESET}`);
     try {
       const senderJid = message.key.remoteJid;
       await sendText(sock, senderJid, MessageFormatter.error('Une erreur est survenue pendant l’exécution de la commande.'));
     } catch (sendError) {
-      console.error('Error sending error message:', sendError.message);
     }
   }
 }

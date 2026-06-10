@@ -56,7 +56,7 @@ module.exports = {
       // Si aucune image n'a pu être trouvée
       if (!imageUrl) {
         const waifuItems = [{ label: '⚠️ Status', value: 'APIs indisponibles' }];
-        const text = `${MessageFormatter.elegantBox('🥰 𝔠𝔞𝔦𝔞𝔣𝔞𝔠𝔠𝔩 🥰', waifuItems)}
+        const text = `${MessageFormatter.elegantBox('Waifu', waifuItems)}
 ➕ ${allowXp ? '5 XP' : '🚫 Limite atteinte (10/jour)'}`;
         await sock.sendMessage(senderJid, { text });
         if (isGroup && allowXp) user.xp += 5;
@@ -73,7 +73,7 @@ module.exports = {
           timeout: 10000
         });
         const imageBuffer = Buffer.from(imageResponse.data, 'binary');
-        const caption = `🥰 Une belle waifu pour toi!\n\n➕ ` + (allowXp ? '5 XP' : '🚫 Limite atteinte (10/jour)');
+        const caption = `Une image waifu pour toi!\n\n➕ ` + (allowXp ? '5 XP' : '🚫 Limite atteinte (10/jour)');
 
         if (reply) {
           await reply({
@@ -91,16 +91,14 @@ module.exports = {
         user.assetUsageToday.count += 1;
         await user.save();
       } catch (downloadErr) {
-        console.error('[WAIFU] Error downloading image:', downloadErr.message);
         if (reply) {
-          await reply({ text: '🥰 Une belle waifu pour toi!\n\n➕ ' + (allowXp ? '5 XP' : '🚫 Limite atteinte (10/jour)') });
+          await reply({ text: 'Une image waifu pour toi!\n\n➕ ' + (allowXp ? '5 XP' : '🚫 Limite atteinte (10/jour)') });
         } else {
-          await sock.sendMessage(senderJid, { text: '🥰 Une belle waifu pour toi!\n\n➕ ' + (allowXp ? '5 XP' : '🚫 Limite atteinte (10/jour)') });
+          await sock.sendMessage(senderJid, { text: 'Une image waifu pour toi!\n\n➕ ' + (allowXp ? '5 XP' : '🚫 Limite atteinte (10/jour)') });
         }
       }
 
     } catch (error) {
-      console.error('Error fetching waifu:', error.message);
       if (reply) {
         await reply({ text: MessageFormatter.error('Erreur lors de la récupération!') });
       } else {

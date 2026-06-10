@@ -21,7 +21,6 @@ module.exports = {
       const data = fs.readFileSync(quizzesPath, 'utf8');
       return JSON.parse(data);
     } catch (error) {
-      console.error('Error loading quizzes:', error);
       return [];
     }
   },
@@ -542,7 +541,6 @@ Total de participants: ${sortedParticipants.length}
       
       await user.save();
     } catch (error) {
-      console.error(`Error awarding XP to ${userJid}:`, error);
     }
   }
 };

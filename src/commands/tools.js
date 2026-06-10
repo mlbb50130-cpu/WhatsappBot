@@ -37,7 +37,7 @@ module.exports = {
 
     try {
       if (['hd', 'upscale', 'upscalehd'].includes(command)) {
-        return handleUpscale(sock, jid, message);
+        return await handleUpscale(sock, jid, message);
       }
 
       if (['calc', 'calculate'].includes(command)) {
@@ -58,18 +58,17 @@ module.exports = {
       }
 
       if (['html', 'gethtml'].includes(command)) {
-        return handleHtml(sock, jid, message, text);
+        return await handleHtml(sock, jid, message, text);
       }
 
       if (['shorturl', 'short', 'tinyurl'].includes(command)) {
-        return handleShortUrl(sock, jid, message, text);
+        return await handleShortUrl(sock, jid, message, text);
       }
 
       return sock.sendMessage(jid, { text: MessageFormatter.warning('Outil inconnu.') }, { quoted: message });
     } catch (error) {
-      console.error('[TOOLS] Error:', error.response?.data || error.message);
       return sock.sendMessage(jid, {
-        text: MessageFormatter.error(`Outil impossible: ${error.message}`),
+        text: MessageFormatter.publicError('Outil impossible', error),
       }, { quoted: message });
     }
   },

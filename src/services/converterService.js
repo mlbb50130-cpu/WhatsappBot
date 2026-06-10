@@ -161,7 +161,7 @@ function assertMedia(mediaInfo, allowed, usage) {
 }
 
 function converterError(error) {
-  return MessageFormatter.error(`Conversion impossible: ${error.message}`);
+  return MessageFormatter.publicError('Conversion impossible', error);
 }
 
 module.exports = {

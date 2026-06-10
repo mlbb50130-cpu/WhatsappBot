@@ -22,7 +22,6 @@ async function connectDatabase() {
     require('./models/BotSettings');
 
   } catch (error) {
-    console.error(`${config.COLORS.RED}❌ Database Connection Error: ${error.message}${config.COLORS.RESET}`);
     setTimeout(connectDatabase, 5000); // Retry after 5 seconds
   }
 }
@@ -32,7 +31,6 @@ async function disconnectDatabase() {
     await mongoose.disconnect();
     isConnected = false;
   } catch (error) {
-    console.error(`${config.COLORS.RED}❌ Disconnect Error: ${error.message}${config.COLORS.RESET}`);
   }
 }
 

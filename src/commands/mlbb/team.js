@@ -49,7 +49,6 @@ module.exports = {
           text: `✅ Équipe créée!\n\n🏆 *${team.name}*\n👥 Membres: ${team.members.length}\n👤 Capitaine: ${team.creatorName}`
         });
       } catch (error) {
-        console.error('Team creation error:', error);
         return sock.sendMessage(from, {
           text: '❌ Erreur lors de la création de l\'équipe'
         });
@@ -85,7 +84,6 @@ ${teamsList}
           `
         });
       } catch (error) {
-        console.error('Teams list error:', error);
         return sock.sendMessage(from, {
           text: '❌ Erreur lors de la récupération des équipes'
         });
@@ -127,7 +125,6 @@ ${teamsList}
           text: `✅ Tu as rejoint ${team.name}!\n\n👥 Membres: ${updated.members.length}\n🏆 ${team.name}`
         });
       } catch (error) {
-        console.error('Team join error:', error);
         return sock.sendMessage(from, {
           text: '❌ Erreur lors de la rejointe'
         });
@@ -154,7 +151,6 @@ ${teamsList}
           text: `✅ Tu as quitté ${userTeam.name}!`
         });
       } catch (error) {
-        console.error('Team leave error:', error);
         return sock.sendMessage(from, {
           text: '❌ Erreur lors de la sortie'
         });
@@ -199,7 +195,6 @@ ${membersList}
           `
         });
       } catch (error) {
-        console.error('Team info error:', error);
         return sock.sendMessage(from, {
           text: '❌ Erreur'
         });
@@ -226,7 +221,6 @@ ${membersList}
           text: `✅ Équipe ${userTeam.name} dissoute!`
         });
       } catch (error) {
-        console.error('Team disband error:', error);
         return sock.sendMessage(from, {
           text: '❌ Erreur lors de la dissolution'
         });

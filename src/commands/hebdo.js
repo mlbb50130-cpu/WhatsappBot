@@ -52,7 +52,6 @@ module.exports = {
         await sock.sendMessage(senderJid, { text: weeklyMessage });
       }
     } catch (error) {
-      console.error('Error in hebdo command:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur!' });
       } else {

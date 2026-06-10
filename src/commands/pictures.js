@@ -20,19 +20,18 @@ module.exports = {
 
     try {
       if (['ppcouple', 'couplepp'].includes(command)) {
-        return MediaSearch.sendCouplePp(sock, jid, message);
+        return await MediaSearch.sendCouplePp(sock, jid, message);
       }
       if (['gif', 'gifsearch'].includes(command)) {
-        return MediaSearch.sendGifSearch(sock, jid, message, text);
+        return await MediaSearch.sendGifSearch(sock, jid, message, text);
       }
       if (['pin', 'pinterest'].includes(command)) {
-        return MediaSearch.sendImageSearch(sock, jid, message, text, true);
+        return await MediaSearch.sendImageSearch(sock, jid, message, text, true);
       }
-      return MediaSearch.sendImageSearch(sock, jid, message, text, false);
+      return await MediaSearch.sendImageSearch(sock, jid, message, text, false);
     } catch (error) {
-      console.error('[PICTURES] Error:', error.response?.data || error.message);
-      return sock.sendMessage(jid, {
-        text: MessageFormatter.error(`Recherche media impossible: ${error.message}`),
+      return await sock.sendMessage(jid, {
+        text: MessageFormatter.publicError('Recherche media impossible', error),
       }, { quoted: message });
     }
   },

@@ -41,28 +41,28 @@ const commandReactions = {
   'badges': '🏆',
   
   // Assets & Images
-  'naruto': '🧡',
+  'naruto': '🌀',
   'madara': '🔴',
   'gokuui': '⚡',
-  'deku': '💚',
+  'deku': '⚡',
   'gojo': '👁️',
   'sukuna': '👹',
-  'jinwoo': '💜',
-  'zerotwo': '💕',
+  'jinwoo': '⚔️',
+  'zerotwo': '🎌',
   'livai': '❄️',
   'tengen': '⚔️',
   'rengokudemon': '🔥',
-  'tsunade': '💛',
-  'miku': '💙',
-  'mikunakano': '💗',
-  'nino': '💚',
+  'tsunade': '🏥',
+  'miku': '🎤',
+  'mikunakano': '🎌',
+  'nino': '🎌',
   'makima': '🔴',
   'yoruichi': '🌙',
   'boahancook': '🐍',
-  'waifu': '🥰',
-  'husbando': '😍',
+  'waifu': '🎌',
+  'husbando': '🎌',
   'bleach': '⚪',
-  'yami': '🖤',
+  'yami': '⚫',
   'neko': '😸',
   'vegito': '🔵',
   'animegif': '🎬',
@@ -74,7 +74,7 @@ const commandReactions = {
   'voiranime': '📺',
   
   // Social & Fun
-  'ship': '💕',
+  'ship': '🎯',
   'roast': '🔥',
   'blagueotaku': '😂',
   
@@ -124,7 +124,6 @@ async function addReaction(sock, message, commandName) {
     });
   } catch (error) {
     // Silencieusement échouer - les réactions ne sont pas critiques
-    // console.error('Erreur lors de l\'ajout de réaction:', error.message);
   }
 }
 

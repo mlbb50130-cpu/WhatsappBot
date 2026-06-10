@@ -43,7 +43,6 @@ module.exports = {
       }
 
       } catch (apiError) {
-        console.error('Jikan API error:', apiError.message);
         if (reply) {
         await reply({ text: MessageFormatter.error('Erreur lors de la récupération!') });
       } else {
@@ -52,7 +51,6 @@ module.exports = {
         return;
       }
     } catch (error) {
-      console.error('Error in topmanga command:', error.message);
     }
   }
 };

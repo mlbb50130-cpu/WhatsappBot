@@ -57,7 +57,6 @@ module.exports = {
           text: `✅ Profil mis à jour!\n\n👤 *Joueur:* ${senderName}\n🎖️ *Rang:* ${profile.rank}\n🎯 *Rôle:* ${profile.role}\n⏰ *Date:* ${new Date(profile.updatedAt).toLocaleDateString('fr-FR')}`
         });
       } catch (error) {
-        console.error('Profile set error:', error);
         return sock.sendMessage(from, {
           text: '❌ Erreur lors de la sauvegarde du profil'
         });
@@ -94,7 +93,6 @@ module.exports = {
 
         return sock.sendMessage(from, { text: statsText });
       } catch (error) {
-        console.error('Profile get error:', error);
         return sock.sendMessage(from, {
           text: '❌ Erreur lors de la lecture du profil'
         });
@@ -111,7 +109,6 @@ module.exports = {
           });
         }
       } catch (error) {
-        console.error('Profile delete error:', error);
       }
     }
   }

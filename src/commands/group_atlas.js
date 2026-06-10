@@ -238,9 +238,8 @@ module.exports = {
 
       return sock.sendMessage(jid, { text: MessageFormatter.warning('Commande groupe inconnue.') }, { quoted: message });
     } catch (error) {
-      console.error('[GROUP_ATLAS] Error:', error.message);
-      return sock.sendMessage(jid, {
-        text: MessageFormatter.error(`Commande groupe impossible: ${error.message}`),
+      return await sock.sendMessage(jid, {
+        text: MessageFormatter.publicError('Commande groupe impossible', error),
       }, { quoted: message });
     }
   },

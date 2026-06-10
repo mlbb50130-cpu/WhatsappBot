@@ -183,7 +183,6 @@ module.exports = {
         await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(quiz));
       }
     } catch (error) {
-      console.error('Error in quizanime command:', error.message);
       if (reply) {
         await reply({ text: MessageFormatter.error('Erreur!') });
       } else {

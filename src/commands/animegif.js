@@ -83,7 +83,6 @@ module.exports = {
       await user.save();
 
     } catch (error) {
-      console.error('Error in animegif command:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur!' });
       } else {

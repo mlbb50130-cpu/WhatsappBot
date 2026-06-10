@@ -16,21 +16,15 @@ let demotionCount = 0;
 
 async function recalculateUserRanks() {
   try {
-    console.log(`📊 Connexion à MongoDB (${config.MONGODB_URI})...`);
     await mongoose.connect(config.MONGODB_URI);
-    console.log('✅ Connecté à MongoDB\n');
 
-    console.log('🔄 Récupération de tous les utilisateurs...');
     const users = await User.find();
-    console.log(`📌 Total utilisateurs: ${users.length}\n`);
 
     if (users.length === 0) {
-      console.log('❌ Aucun utilisateur trouvé.');
       await mongoose.disconnect();
       return;
     }
 
-    console.log('🔄 Calcul des rangs...\n');
 
     for (const user of users) {
       const oldRank = user.rank || 'Aucun';
@@ -46,33 +40,19 @@ async function recalculateUserRanks() {
 
         if (newRankLevel > oldRankLevel) {
           promotionCount++;
-          console.log(`⬆️  PROMOTION: ${user.username || 'Anonymous'} (L${user.level})`);
-          console.log(`   ${oldRank} → ${rankResult.newRank} ${rankResult.rankInfo.emoji}`);
         } else if (newRankLevel < oldRankLevel) {
           demotionCount++;
-          console.log(`⬇️  RÉTROGRADATION: ${user.username || 'Anonymous'} (L${user.level})`);
-          console.log(`   ${oldRank} → ${rankResult.newRank} ${rankResult.rankInfo.emoji}`);
         }
 
         await user.save();
       }
     }
 
-    console.log('\n═══════════════════════════════════');
-    console.log('📊 RÉSUMÉ');
-    console.log('═══════════════════════════════════');
-    console.log(`✅ Utilisateurs mis à jour: ${updateCount}/${users.length}`);
-    console.log(`📈 Changements de rang: ${rankChangeCount}`);
-    console.log(`⬆️  Promotions: ${promotionCount}`);
-    console.log(`⬇️  Rétrograrations: ${demotionCount}`);
-    console.log('═══════════════════════════════════\n');
 
     await mongoose.disconnect();
-    console.log('✅ Déconnecté de MongoDB');
     process.exit(0);
 
   } catch (error) {
-    console.error('❌ Erreur:', error.message);
     await mongoose.disconnect();
     process.exit(1);
   }

@@ -81,7 +81,6 @@ module.exports = {
         caption: isGroup ? MessageFormatter.elegantBox('💜 𝔜𝔬𝔞𝔠𝔦𝔧𝔦 💜', [{ label: '✨ Récompense', value: allowXp ? '+15 XP' : '🚫 Limite atteinte (10/jour)' }]) : MessageFormatter.elegantBox('💜 𝔜𝔞𝔰𝔞𝔰𝔠𝔞𝔞 💜', [{ label: '📺 Type', value: 'Personnage' }])
       });
     } catch (error) {
-      console.error('Error in yoruichi command:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur lors du chargement de l\'image!' });
       } else {

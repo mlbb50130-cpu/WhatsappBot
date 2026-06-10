@@ -10,10 +10,8 @@ async function resetChakraAndLoot() {
       useNewUrlParser: true,
       useUnifiedTopology: true
     });
-    console.log('✅ Connected to MongoDB\n');
 
     const users = await User.find({});
-    console.log(`📊 Resetting ${users.length} users...\n`);
 
     let resetCount = 0;
 
@@ -32,19 +30,12 @@ async function resetChakraAndLoot() {
       await user.save();
       resetCount++;
 
-      console.log(`✅ ${user.username}`);
-      console.log(`   Chakra: ${oldChakra} → ${maxChakra}`);
-      console.log(`   LootTime: ${oldLootTime ? 'reset' : 'already null'}\n`);
     }
 
-    console.log('═══════════════════════════════════════');
-    console.log(`✅ Reset completed: ${resetCount} users`);
-    console.log('═══════════════════════════════════════');
 
     await mongoose.connection.close();
     process.exit(0);
   } catch (error) {
-    console.error('❌ Error:', error.message);
     process.exit(1);
   }
 }

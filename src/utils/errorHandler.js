@@ -28,9 +28,7 @@ class ErrorHandler {
     }
 
     if (level === 'error') {
-      console.error(`${prefix} ${logMessage}`);
     } else if (level === 'warn') {
-      console.warn(`${prefix} ${logMessage}`);
     }
     this.writeToFile(logMessage);
   }
@@ -95,7 +93,6 @@ class ErrorHandler {
     try {
       fs.appendFileSync(this.logFile, message + '\n');
     } catch (err) {
-      console.error('Failed to write to log file:', err);
     }
   }
 

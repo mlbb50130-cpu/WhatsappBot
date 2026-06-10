@@ -34,7 +34,7 @@ module.exports = {
   cooldown: 8,
 
   async execute(sock, message, args) {
-    return DownloaderService.sendUniversalDownload(
+    return await DownloaderService.sendUniversalDownload(
       sock,
       message,
       args.join(' '),

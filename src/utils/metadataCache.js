@@ -31,10 +31,8 @@ async function getGroupMetadataWithCache(sock, groupJid) {
     } catch (error) {
       if (attempt < RETRY_DELAYS.length) {
         const delay = RETRY_DELAYS[attempt];
-        console.warn(`⚠️  Tentative ${attempt + 1} échouée, retry dans ${delay}ms: ${error.message}`);
         await new Promise(resolve => setTimeout(resolve, delay));
       } else {
-        console.error(`❌ Impossible de récupérer les métadonnées après ${attempt + 1} tentatives: ${error.message}`);
         
         // En cas d'erreur, retourner les données en cache même expirées si disponibles
         if (cached) {

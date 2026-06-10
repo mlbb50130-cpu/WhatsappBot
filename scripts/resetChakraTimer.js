@@ -11,11 +11,9 @@ mongoose.connect(mongoUrl, {
 
 async function resetChakraTimer() {
   try {
-    console.log('⏰ Réinitialisation du timer de chakra pour tous les utilisateurs...');
     
     // Récupérer tous les utilisateurs
     const users = await User.find({});
-    console.log(`📊 Nombre d'utilisateurs trouvés: ${users.length}`);
     
     let updatedCount = 0;
     
@@ -26,16 +24,11 @@ async function resetChakraTimer() {
       await user.save();
       updatedCount++;
       
-      console.log(`✅ ${user.username} (Niveau ${user.level}) - Timer chakra réinitialisé`);
     }
     
-    console.log(`\n✨ Réinitialisation terminée!`);
-    console.log(`📈 ${updatedCount}/${users.length} utilisateurs mis à jour`);
-    console.log(`\n💡 Le chakra sera plein la prochaine fois qu'ils utilisent !chakra`);
     
     process.exit(0);
   } catch (error) {
-    console.error('❌ Erreur:', error.message);
     process.exit(1);
   }
 }

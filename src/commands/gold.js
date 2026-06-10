@@ -46,7 +46,6 @@ module.exports = {
         await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(content));
       }
     } catch (error) {
-      console.error('Error in gold command:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur lors de la récupération du gold!' });
       } else {

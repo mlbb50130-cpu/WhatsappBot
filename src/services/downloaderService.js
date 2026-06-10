@@ -113,37 +113,36 @@ async function sendUniversalDownload(sock, message, raw, prefix = '!') {
 
     switch (detected.type) {
       case 'tt':
-        return sendTikTokUrl(sock, message, detected.url);
+        return await sendTikTokUrl(sock, message, detected.url);
       case 'ig':
-        return sendInstagram(sock, message, detected.url);
+        return await sendInstagram(sock, message, detected.url);
       case 'pin':
-        return sendPinterest(sock, message, detected.url);
+        return await sendPinterest(sock, message, detected.url);
       case 'fb':
-        return sendFacebook(sock, message, detected.url);
+        return await sendFacebook(sock, message, detected.url);
       case 'tw':
-        return sendTwitter(sock, message, detected.url);
+        return await sendTwitter(sock, message, detected.url);
       case 'vd':
-        return sendVidey(sock, message, detected.url);
+        return await sendVidey(sock, message, detected.url);
       case 'mf':
-        return sendMediaFire(sock, message, detected.url);
+        return await sendMediaFire(sock, message, detected.url);
       case 'th':
-        return sendThreads(sock, message, detected.url);
+        return await sendThreads(sock, message, detected.url);
       case 'mg':
-        return sendMega(sock, message, detected.url);
+        return await sendMega(sock, message, detected.url);
       case 'sc':
-        return sendSoundCloud(sock, message, detected.url);
+        return await sendSoundCloud(sock, message, detected.url);
       case 'sp':
-        return sendSpotify(sock, message, detected.url);
+        return await sendSpotify(sock, message, detected.url);
       case 'yt':
-        return sendYoutubeAudioFromUrl(sock, message, detected.url);
+        return await sendYoutubeAudioFromUrl(sock, message, detected.url);
       case 'sf':
-        return sendSfile(sock, message, detected.url);
+        return await sendSfile(sock, message, detected.url);
       default:
-        return sendText(sock, jid, message, MessageFormatter.warning('Plateforme non supportee.'));
+        return await sendText(sock, jid, message, MessageFormatter.warning('Plateforme non supportee.'));
     }
   } catch (error) {
-    console.error('[DOWNLOADER] Error:', error.response?.data || error.message);
-    return sendText(sock, jid, message, MessageFormatter.error(`Telechargement impossible: ${error.message}`));
+    return await sendText(sock, jid, message, MessageFormatter.publicError('Telechargement impossible', error));
   } finally {
     await sock.sendPresenceUpdate('paused', jid).catch(() => null);
   }
@@ -367,17 +366,16 @@ async function sendYoutubeCommand(sock, message, commandName, query, prefix = '!
     await sock.sendPresenceUpdate('composing', jid).catch(() => null);
 
     if (['mp4', 'ytmp4', 'video'].includes(commandName)) {
-      return sendYoutubeVideo(sock, message, input);
+      return await sendYoutubeVideo(sock, message, input);
     }
     if (['mp3', 'ytmp3'].includes(commandName)) {
       const url = extractYoutubeUrl(input);
-      if (!url) return sendText(sock, jid, message, MessageFormatter.warning('Pour !mp3, donne un lien YouTube valide.'));
-      return sendYoutubeMp3(sock, message, url);
+      if (!url) return await sendText(sock, jid, message, MessageFormatter.warning('Pour !mp3, donne un lien YouTube valide.'));
+      return await sendYoutubeMp3(sock, message, url);
     }
-    return sendYoutubePlay(sock, message, input);
+    return await sendYoutubePlay(sock, message, input);
   } catch (error) {
-    console.error('[YOUTUBE] Error:', error.response?.data || error.message);
-    return sendText(sock, jid, message, MessageFormatter.error(`YouTube impossible: ${error.message}`));
+    return await sendText(sock, jid, message, MessageFormatter.publicError('YouTube impossible', error));
   } finally {
     await sock.sendPresenceUpdate('paused', jid).catch(() => null);
   }
@@ -482,24 +480,23 @@ async function sendTikTokCommand(sock, message, input, prefix = '!') {
 
     const detectedUrl = query.match(/(https:\/\/(vt|vm)\.tiktok\.com\/[^\s]+|https:\/\/www\.tiktok\.com\/@[\w.-]+\/video\/\d+)/)?.[0];
     if (detectedUrl) {
-      return sendTikTokDetailed(sock, message, detectedUrl);
+      return await sendTikTokDetailed(sock, message, detectedUrl);
     }
 
     const apiRes = await fetch(`https://kelvdraapi.domku.xyz/search/tiktok?query=${encodeURIComponent(query)}&count=1&apikey=tesApi`);
     const json = await apiRes.json();
     const video = json?.data?.videos?.[0];
-    if (!video) return sendText(sock, jid, message, MessageFormatter.warning(`Aucun resultat pour "${query}".`));
+    if (!video) return await sendText(sock, jid, message, MessageFormatter.warning(`Aucun resultat pour "${query}".`));
 
     const videoUrl = video.play.startsWith('http') ? video.play : `https://www.tikwm.com${video.play}`;
     const buffer = await fetchBuffer(videoUrl);
 
-    return sock.sendMessage(jid, {
+    return await sock.sendMessage(jid, {
       video: buffer,
       caption: buildTikTokCaption(video),
     }, { quoted: message });
   } catch (error) {
-    console.error('[TIKTOK] Error:', error.response?.data || error.message);
-    return sendText(sock, jid, message, MessageFormatter.error('TikTok impossible: API down ou CDN bloque.'));
+    return await sendText(sock, jid, message, MessageFormatter.publicError('TikTok impossible', error));
   } finally {
     await sock.sendPresenceUpdate('paused', jid).catch(() => null);
   }

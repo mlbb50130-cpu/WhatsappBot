@@ -69,7 +69,6 @@ module.exports = {
           caption: `🖼️ ${hero.name}`
         });
       } catch (err) {
-        console.error('Erreur lors de l\'envoi de l\'image:', err);
         return sock.sendMessage(from, { text: heroInfo });
       }
     } else {

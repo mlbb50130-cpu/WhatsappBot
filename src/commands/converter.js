@@ -93,7 +93,6 @@ module.exports = {
         text: MessageFormatter.warning('Convertisseur inconnu.'),
       }, { quoted: message });
     } catch (error) {
-      console.error('[CONVERTER] Error:', error.response?.data || error.message);
       return sock.sendMessage(jid, {
         text: Converter.converterError(error),
       }, { quoted: message });

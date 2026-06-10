@@ -31,7 +31,6 @@ class GroupManager {
 
       return group;
     } catch (error) {
-      console.error(`❌ Erreur getOrCreateGroup: ${error.message}`);
       return null;
     }
   }
@@ -46,7 +45,6 @@ class GroupManager {
 
       return group.features[featureName] ?? true;
     } catch (error) {
-      console.error(`❌ Erreur isFeatureEnabled: ${error.message}`);
       return true;
     }
   }
@@ -65,7 +63,6 @@ class GroupManager {
       const state = group.features[featureName] ? 'activée' : 'désactivée';
       return { success: true, message: `Feature ${state}` };
     } catch (error) {
-      console.error(`❌ Erreur toggleFeature: ${error.message}`);
       return { success: false, message: 'Erreur' };
     }
   }
@@ -85,7 +82,6 @@ class GroupManager {
 
       return true;
     } catch (error) {
-      console.error(`❌ Erreur addModerator: ${error.message}`);
       return false;
     }
   }
@@ -103,7 +99,6 @@ class GroupManager {
 
       return true;
     } catch (error) {
-      console.error(`❌ Erreur removeModerator: ${error.message}`);
       return false;
     }
   }
@@ -128,7 +123,6 @@ class GroupManager {
       await group.save();
       return true;
     } catch (error) {
-      console.error(`❌ Erreur banMember: ${error.message}`);
       return false;
     }
   }
@@ -146,7 +140,6 @@ class GroupManager {
 
       return true;
     } catch (error) {
-      console.error(`❌ Erreur unbanMember: ${error.message}`);
       return false;
     }
   }
@@ -170,7 +163,6 @@ class GroupManager {
 
       return true;
     } catch (error) {
-      console.error(`❌ Erreur isBanned: ${error.message}`);
       return false;
     }
   }
@@ -185,7 +177,6 @@ class GroupManager {
         { $inc: { 'stats.totalCommands': 1 } }
       );
     } catch (error) {
-      console.error(`❌ Erreur logCommand: ${error.message}`);
     }
   }
 
@@ -209,7 +200,6 @@ class GroupManager {
         { $set: update }
       );
     } catch (error) {
-      console.error(`❌ Erreur updateStats: ${error.message}`);
     }
   }
 
@@ -229,7 +219,6 @@ class GroupManager {
         stats: group.stats
       };
     } catch (error) {
-      console.error(`❌ Erreur getSettings: ${error.message}`);
       return null;
     }
   }
@@ -245,7 +234,6 @@ class GroupManager {
       );
       return true;
     } catch (error) {
-      console.error(`❌ Erreur setPrefix: ${error.message}`);
       return false;
     }
   }
@@ -258,7 +246,6 @@ class GroupManager {
       const group = await Group.findOne({ groupJid }, { prefix: 1 });
       return group?.prefix || '!';
     } catch (error) {
-      console.error(`❌ Erreur getPrefix: ${error.message}`);
       return '!';
     }
   }
@@ -270,7 +257,6 @@ class GroupManager {
     try {
       return await Group.find();
     } catch (error) {
-      console.error(`❌ Erreur getAllGroups: ${error.message}`);
       return [];
     }
   }
@@ -282,7 +268,6 @@ class GroupManager {
     try {
       return await Group.countDocuments();
     } catch (error) {
-      console.error(`❌ Erreur countGroups: ${error.message}`);
       return 0;
     }
   }

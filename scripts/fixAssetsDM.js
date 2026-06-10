@@ -30,7 +30,6 @@ for (const cmdName of assetCommands) {
           }
           imageTracker = group;
         } catch (error) {
-          console.log('Note: Using user-level image tracking for this command');
           imageTracker = user;
         }
       }`;
@@ -51,7 +50,6 @@ for (const cmdName of assetCommands) {
           }
           imageTracker = group;
         } catch (error) {
-          console.log('Note: Using user-level image tracking for this command');
           imageTracker = user;
         }
       } else {
@@ -62,13 +60,8 @@ for (const cmdName of assetCommands) {
     if (content.includes(oldPattern)) {
       content = content.replace(oldPattern, newPattern);
       fs.writeFileSync(filePath, content, 'utf8');
-      console.log(`✓ Updated ${cmdName}.js`);
     } else {
-      console.log(`✗ Pattern not found in ${cmdName}.js`);
     }
   } else {
-    console.log(`✗ File not found: ${cmdName}.js`);
   }
 }
-
-console.log('\n✅ All asset commands updated!');

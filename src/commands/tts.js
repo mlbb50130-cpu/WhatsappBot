@@ -70,9 +70,8 @@ module.exports = {
       }, { quoted: message });
     } catch (error) {
       await sock.sendPresenceUpdate('paused', jid).catch(() => null);
-      console.error('[TTS] Error:', error.message);
       return sock.sendMessage(jid, {
-        text: MessageFormatter.error(`TTS impossible: ${error.message}`),
+        text: MessageFormatter.publicError('TTS impossible', error),
       }, { quoted: message });
     }
   },

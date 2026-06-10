@@ -14,11 +14,9 @@ async function syncUserRanks() {
       useNewUrlParser: true,
       useUnifiedTopology: true
     });
-    console.log('✅ Connected to MongoDB');
 
     // Get all users
     const users = await User.find({});
-    console.log(`\n📊 Vérification de ${users.length} utilisateurs...\n`);
 
     let fixedCount = 0;
     let correctCount = 0;
@@ -53,30 +51,16 @@ async function syncUserRanks() {
     }
 
     // Print results
-    console.log('═══════════════════════════════════════════════════════════');
-    console.log(`✅ Rangs corrects: ${correctCount}`);
-    console.log(`🔧 Rangs corrigés: ${fixedCount}`);
-    console.log('═══════════════════════════════════════════════════════════\n');
 
     if (issues.length > 0) {
-      console.log('📋 UTILISATEURS CORRIGÉS:\n');
       for (const issue of issues) {
-        console.log(`👤 ${issue.username} (${issue.jid})`);
-        console.log(`   XP: ${issue.xp} → Niveau: ${issue.level}`);
-        console.log(`   ❌ Ancien rang: ${issue.currentRank}`);
-        console.log(`   ✅ Nouveau rang: ${issue.correctRank} ${issue.correctEmoji}`);
-        console.log('');
       }
     }
 
-    console.log('═══════════════════════════════════════════════════════════');
-    console.log('✅ Synchronisation des rangs terminée!');
-    console.log('═══════════════════════════════════════════════════════════');
 
     await mongoose.connection.close();
     process.exit(0);
   } catch (error) {
-    console.error('❌ Erreur:', error.message);
     process.exit(1);
   }
 }

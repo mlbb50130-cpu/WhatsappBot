@@ -52,7 +52,20 @@ module.exports = {
   // 🎌 APIs
   JIKAN_API: process.env.JIKAN_API || 'https://api.jikan.moe/v4',
   JIKAN_ENABLED: process.env.JIKAN_ENABLED !== 'false',
-  GEMINI_API_KEY: process.env.GEMINI_API_KEY || process.env.GEMINI_API || '',
+  GEMINI_API_KEY: process.env.GEMINI_API_KEY ||
+    process.env.GEMINI_APIKEY ||
+    process.env.GEMINI_API ||
+    process.env.GEMINI_KEY ||
+    process.env.GOOGLE_GEMINI_API_KEY ||
+    process.env.GOOGLE_API_KEY ||
+    process.env.GOOGLE_AI_API_KEY ||
+    process.env.GOOGLE_GENAI_API_KEY ||
+    process.env.GENAI_API_KEY ||
+    process.env.GEMENI_API_KEY ||
+    process.env.GEMENI_APIKEY ||
+    process.env.GEMENI_API ||
+    process.env.GEMENI_KEY ||
+    '',
   GEMINI_MODEL: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
   
   // 🖥️ Console Colors

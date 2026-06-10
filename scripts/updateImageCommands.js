@@ -46,7 +46,6 @@ for (const cmdName of imageCommands) {
           }
           imageTracker = group;
         } catch (error) {
-          console.log('Note: Using user-level image tracking for this command');
           imageTracker = user;
         }
       }
@@ -72,7 +71,6 @@ for (const cmdName of imageCommands) {
           }
           imageTracker = group;
         } catch (error) {
-          console.log('Note: Using user-level image tracking for this command');
           imageTracker = user;
         }
       }
@@ -83,8 +81,5 @@ for (const cmdName of imageCommands) {
     }
     
     fs.writeFileSync(filePath, content);
-    console.log(`✅ Updated ${cmdName}.js`);
   }
 }
-
-console.log('\n✅ All image commands updated!');

@@ -6,7 +6,6 @@ function getAssetBuffer(folderName, fileName) {
   const assetPath = path.join(__dirname, '../asset', folderName, fileName);
   
   if (!fs.existsSync(assetPath)) {
-    console.error(`Asset not found: ${assetPath}`);
     return null;
   }
   

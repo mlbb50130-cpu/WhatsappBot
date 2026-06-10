@@ -31,7 +31,6 @@ class JikanAPI {
       const anime = response.data.data[0];
       return this._formatAnimeData(anime);
     } catch (error) {
-      console.error(`[Jikan] Anime search error: ${error.message}`);
       return null;
     }
   }
@@ -61,7 +60,6 @@ class JikanAPI {
       const manga = response.data.data[0];
       return this._formatMangaData(manga);
     } catch (error) {
-      console.error(`[Jikan] Manga search error: ${error.message}`);
       return null;
     }
   }
@@ -91,7 +89,6 @@ class JikanAPI {
       const character = response.data.data[0];
       return this._formatCharacterData(character);
     } catch (error) {
-      console.error(`[Jikan] Character search error: ${error.message}`);
       return null;
     }
   }
@@ -116,7 +113,6 @@ class JikanAPI {
 
       return response.data.data.map(anime => this._formatAnimeData(anime));
     } catch (error) {
-      console.error(`[Jikan] Top anime error: ${error.message}`);
       return [];
     }
   }
@@ -141,7 +137,6 @@ class JikanAPI {
 
       return response.data.data.map(manga => this._formatMangaData(manga));
     } catch (error) {
-      console.error(`[Jikan] Top manga error: ${error.message}`);
       return [];
     }
   }
@@ -167,7 +162,6 @@ class JikanAPI {
 
       return response.data.data.map(anime => this._formatAnimeData(anime));
     } catch (error) {
-      console.error(`[Jikan] Genre search error: ${error.message}`);
       return [];
     }
   }

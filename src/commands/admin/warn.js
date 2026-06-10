@@ -1,5 +1,6 @@
 const AdminActionsManager = require('../../utils/adminActions');
 const User = require('../../models/User');
+const MessageFormatter = require('../../utils/messageFormatter');
 
 module.exports = {
   name: 'warn',
@@ -11,95 +12,95 @@ module.exports = {
   groupOnly: true,
   cooldown: 5,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message, args) {
     const senderJid = message.key.remoteJid;
     const participantJid = message.key.participant;
 
-    // Check if sender is admin
     const isUserAdmin = await AdminActionsManager.isUserAdmin(sock, senderJid, participantJid);
-    
     if (!isUserAdmin.isAdmin) {
       await sock.sendMessage(senderJid, {
-        text: '🚫 Seuls les administrateurs peuvent utiliser cette commande.'
+        text: MessageFormatter.error('Seuls les administrateurs peuvent utiliser cette commande.'),
       });
       return;
     }
 
-    // Parse mention
     const mentions = message.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
-    
     if (mentions.length === 0) {
       await sock.sendMessage(senderJid, {
-        text: '❌ Utilisation: `!warn @user [raison]`\n\n📌 Exemple: `!warn @user Spam/Insulte`'
+        text: MessageFormatter.warning('Utilise: !warn @user [raison]'),
       });
       return;
     }
 
     const userToWarn = mentions[0];
-    const reason = args.slice(1).join(' ') || 'Comportement inapproprié';
+    const reason = args.slice(1).join(' ') || 'Comportement inapproprie';
 
     if (userToWarn === participantJid) {
       await sock.sendMessage(senderJid, {
-        text: '❌ Tu ne peux pas t\'avertir toi-même! 😅'
+        text: MessageFormatter.warning('Tu ne peux pas t avertir toi-meme.'),
       });
       return;
     }
 
     try {
-      // Check if bot is admin
       const isBotAdmin = await AdminActionsManager.isBotAdmin(sock, senderJid);
-      
       if (!isBotAdmin) {
         await sock.sendMessage(senderJid, {
-          text: '❌ Le bot n\'est pas administrateur du groupe.'
+          text: MessageFormatter.error('Le bot doit etre administrateur du groupe.'),
         });
         return;
       }
 
-      // Get or create user in database
       let warnedUser = await User.findOne({ jid: userToWarn });
-      
       if (!warnedUser) {
         warnedUser = new User({
           jid: userToWarn,
           username: 'Unknown',
           warnings: 0,
-          isBanned: false
+          isBanned: false,
         });
       }
 
-      const previousWarnings = warnedUser.warnings || 0;
       warnedUser.warnings = (warnedUser.warnings || 0) + 1;
 
-      // Auto-ban after 3 warnings
       if (warnedUser.warnings >= 3) {
         warnedUser.isBanned = true;
         await warnedUser.save();
-
-        // Kick the user
-        const kickResult = await AdminActionsManager.kickUser(sock, senderJid, userToWarn, `Banni après ${warnedUser.warnings} avertissements`);
-
-        // Send notification
-        await sock.sendMessage(senderJid, {
-          text: `⛔ **UTILISATEUR BANNI**\n\n👤 ${userToWarn}\n📝 Raison: ${reason}\n🚫 Avertissements: ${warnedUser.warnings}/3\n\n👮 Modérateur: ${message.pushName || 'Admin'}`
-        });
-
-      } else {
-        await warnedUser.save();
-
-        // Calculate remaining warnings
-        const remainingWarnings = 3 - warnedUser.warnings;
+        await AdminActionsManager.kickUser(sock, senderJid, userToWarn, `Banni apres ${warnedUser.warnings} avertissements`);
 
         await sock.sendMessage(senderJid, {
-          text: `⚠️ **AVERTISSEMENT ENREGISTRÉ**\n\n👤 ${userToWarn}\n📝 Raison: ${reason}\n📊 Avertissements: ${warnedUser.warnings}/3\n⏰ Avertissements restants avant ban: ${remainingWarnings}\n\n👮 Modérateur: ${message.pushName || 'Admin'}`
+          text: MessageFormatter.panel({
+            title: 'Utilisateur banni',
+            body: [
+              `Utilisateur: @${userToWarn.split('@')[0]}`,
+              `Raison: ${reason}`,
+              `Avertissements: ${warnedUser.warnings}/3`,
+              `Moderateur: ${message.pushName || 'Admin'}`,
+            ],
+          }),
+          mentions: [userToWarn],
         });
-
+        return;
       }
-    } catch (error) {
-      console.error('Error warning user:', error.message);
+
+      await warnedUser.save();
       await sock.sendMessage(senderJid, {
-        text: `❌ Erreur lors de l'avertissement: ${error.message}`
+        text: MessageFormatter.panel({
+          title: 'Avertissement enregistre',
+          body: [
+            `Utilisateur: @${userToWarn.split('@')[0]}`,
+            `Raison: ${reason}`,
+            `Avertissements: ${warnedUser.warnings}/3`,
+            `Restants avant ban: ${3 - warnedUser.warnings}`,
+            `Moderateur: ${message.pushName || 'Admin'}`,
+          ],
+        }),
+        mentions: [userToWarn],
+      });
+    } catch (error) {
+      await sock.sendMessage(senderJid, {
+        text: MessageFormatter.publicError('Avertissement impossible', error),
       });
     }
-  }
+  },
 };

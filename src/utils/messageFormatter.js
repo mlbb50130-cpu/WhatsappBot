@@ -196,7 +196,7 @@ class MessageFormatter {
       .forEach((field) => {
         const label = this.cleanText(field.label || field.name || '');
         const value = this.valueToText(field.value);
-        const icon = this.cleanText(field.icon || '🎀');
+        const icon = this.cleanText(field.icon || '-');
         lines.push(label ? `${icon} *${label} :* ${value}` : `${this.EMOJIS.ARROW} ${value}`);
       });
 
@@ -245,6 +245,65 @@ class MessageFormatter {
       title: `${this.EMOJIS.INFO} Info`,
       body: [message],
     });
+  }
+
+  static errorDetail(error) {
+    const raw = String(error?.message || error || '').trim();
+    if (!raw) return 'Reessaie dans quelques instants.';
+
+    const clean = this.cleanText(raw.split('\n')[0]).slice(0, 140);
+    const lower = clean.toLowerCase();
+
+    if (/api[_ -]?key|apikey|token|credential|secret|unauthorized|forbidden|401|403/.test(lower)) {
+      return 'configuration API manquante ou invalide.';
+    }
+
+    if (/timeout|timed out|econn|eacces|enotfound|eai_again|network|fetch failed|socket|connection|request failed|http \d{3}/.test(lower)) {
+      return 'service externe indisponible.';
+    }
+
+    if (/bad mac|decrypt|session/i.test(clean)) {
+      return 'session WhatsApp instable.';
+    }
+
+    if (/cannot read|cannot set|is not a function|is not iterable|undefined|null|typeerror|referenceerror|syntaxerror|module not found|cannot find module/.test(lower)) {
+      return 'erreur interne detectee.';
+    }
+
+    if (/aucun|aucune|introuvable|not found|no result/.test(lower)) {
+      return 'aucun resultat trouve.';
+    }
+
+    if (/utilise|reponds|réponds|lien non supporte|plateforme non supportee|expression invalide|media vide|expire|le bot doit|commande reservee|impossible de|tu ne peux/.test(lower)) {
+      return clean;
+    }
+
+    if (/api|cdn|scraper|ytmp|ffmpeg|node_modules|\/app\//.test(lower)) {
+      return 'service externe indisponible.';
+    }
+
+    return clean.length <= 90 ? clean : 'Reessaie dans quelques instants.';
+  }
+
+  static publicError(title = 'Commande impossible', error = null) {
+    return this.error(`${title}: ${this.errorDetail(error)}`);
+  }
+
+  static sanitizeOutgoingErrorText(text = '') {
+    const value = String(text ?? '');
+    if (!value) return value;
+
+    const hasErrorContext = /(Erreur|error|impossible|failed|indisponible|manquant|absent|invalide|refuse|denied|ex[eé]cution|handler)/i.test(value);
+    if (!hasErrorContext) return value;
+
+    if (/GEMINI_API_KEY|GEMINI_API|GOOGLE_API_KEY|GENAI|GoogleGenAI/i.test(value)) {
+      return this.warning('La cle Gemini nest pas visible ou nest pas valide sur Railway.');
+    }
+
+    const hasTechnicalDetail = /(TENOR_API_KEY|OPENWEATHER_API_KEY|API_KEY|apikey|api key|EACCES|ECONN|ENOTFOUND|ETIMEDOUT|EAI_AGAIN|Request failed with status code|HTTP \d{3}|node_modules|\/app\/|stack|Bad MAC|decrypt|ytmp|api-faa|nexray|tikwm|kelvdra|ffmpeg exit|connect\s+\S+|Cannot read|Cannot set|is not a function|TypeError|ReferenceError|SyntaxError|Cannot find module)/i.test(value);
+    if (!hasTechnicalDetail) return value;
+
+    return this.error('Service temporairement indisponible. Reessaie plus tard.');
   }
 
   static progressBar(current, max, length = 10) {
@@ -389,7 +448,6 @@ class MessageFormatter {
       const themeDir = path.join(assetDir, resolvedFolder);
 
       if (!fs.existsSync(themeDir)) {
-        console.warn(`Theme directory not found: ${themeDir}`);
         return null;
       }
 
@@ -402,7 +460,6 @@ class MessageFormatter {
       const randomImage = images[Math.floor(Math.random() * images.length)];
       return fs.readFileSync(randomImage);
     } catch (error) {
-      console.error('Error getting theme image:', error.message);
       return null;
     }
   }
@@ -418,10 +475,10 @@ class MessageFormatter {
 
     const formatted = { ...content };
     if (typeof formatted.text === 'string') {
-      formatted.text = this.limitText(this.compactText(formatted.text));
+      formatted.text = this.limitText(this.compactText(this.sanitizeOutgoingErrorText(formatted.text)));
     }
     if (typeof formatted.caption === 'string') {
-      formatted.caption = this.limitText(this.compactText(formatted.caption));
+      formatted.caption = this.limitText(this.compactText(this.sanitizeOutgoingErrorText(formatted.caption)));
     }
 
     return formatted;
@@ -469,7 +526,6 @@ class MessageFormatter {
           });
         }
       } catch (error) {
-        console.error('[REPLY] Error sending reply:', error.message);
 
         try {
           if (typeof content === 'string') {
@@ -480,7 +536,6 @@ class MessageFormatter {
             return await sock.sendMessage(jid, this.formatOutgoingContent(content));
           }
         } catch (fallbackError) {
-          console.error('[REPLY] Fallback also failed:', fallbackError.message);
         }
       }
 

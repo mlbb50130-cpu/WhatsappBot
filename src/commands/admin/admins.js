@@ -33,7 +33,7 @@ module.exports = {
 
     if (!adminsResult.success) {
       return sock.sendMessage(jid, {
-        text: MessageFormatter.error(`Admins introuvables: ${adminsResult.error}`),
+        text: MessageFormatter.publicError('Admins introuvables', adminsResult.error),
       }, { quoted: message });
     }
 

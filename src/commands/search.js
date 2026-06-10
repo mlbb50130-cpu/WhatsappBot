@@ -22,37 +22,36 @@ module.exports = {
       switch (command) {
         case 'google':
         case 'search':
-          return MediaSearch.sendGoogleSearch(sock, jid, message, text);
+          return await MediaSearch.sendGoogleSearch(sock, jid, message, text);
         case 'lyrics':
-          return MediaSearch.sendLyrics(sock, jid, message, text);
+          return await MediaSearch.sendLyrics(sock, jid, message, text);
         case 'yts':
         case 'youtubesearch':
-          return MediaSearch.sendYoutubeSearch(sock, jid, message, text);
+          return await MediaSearch.sendYoutubeSearch(sock, jid, message, text);
         case 'ringtone':
-          return MediaSearch.sendRingtone(sock, jid, message, text);
+          return await MediaSearch.sendRingtone(sock, jid, message, text);
         case 'stickersearch':
         case 'getsticker':
-          return MediaSearch.sendStickerSearch(sock, jid, message, text, message.pushName || config.BOT_NAME);
+          return await MediaSearch.sendStickerSearch(sock, jid, message, text, message.pushName || config.BOT_NAME);
         case 'weather':
-          return MediaSearch.sendWeather(sock, jid, message, text);
+          return await MediaSearch.sendWeather(sock, jid, message, text);
         case 'github':
         case 'gh':
-          return MediaSearch.sendGithub(sock, jid, message, text);
+          return await MediaSearch.sendGithub(sock, jid, message, text);
         case 'wallpaper':
         case 'wall':
-          return MediaSearch.sendWallpaper(sock, jid, message, text);
+          return await MediaSearch.sendWallpaper(sock, jid, message, text);
         case 'wikipedia':
         case 'wiki':
-          return MediaSearch.sendWiki(sock, jid, message, text);
+          return await MediaSearch.sendWiki(sock, jid, message, text);
         default:
-          return sock.sendMessage(jid, {
+          return await sock.sendMessage(jid, {
             text: MessageFormatter.warning('Recherche inconnue.'),
           }, { quoted: message });
       }
     } catch (error) {
-      console.error('[SEARCH] Error:', error.response?.data || error.message);
-      return sock.sendMessage(jid, {
-        text: MessageFormatter.error(`Recherche impossible: ${error.message}`),
+      return await sock.sendMessage(jid, {
+        text: MessageFormatter.publicError('Recherche impossible', error),
       }, { quoted: message });
     }
   },

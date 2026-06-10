@@ -91,7 +91,7 @@ module.exports = {
 
       await sock.sendMessage(senderJid, {
         image: imageBuffer,
-        caption: isGroup ? '❤️ *Zero Two*\n\n➕ ' + (allowXp ? '2 XP ✨' : '🚫 Limite atteinte (10/jour)') : '❤️ *Zero Two*\n\n'
+        caption: isGroup ? '*Zero Two*\n\n➕ ' + (allowXp ? '2 XP ✨' : '🚫 Limite atteinte (10/jour)') : '*Zero Two*\n\n'
       });
 
       if (isGroup && allowXp) {
@@ -102,7 +102,6 @@ module.exports = {
       user.assetUsageToday.count += 1;
       await user.save();
     } catch (error) {
-      console.error('Error in zerotwo command:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur!' });
       } else {

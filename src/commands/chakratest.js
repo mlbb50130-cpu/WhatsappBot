@@ -48,7 +48,6 @@ module.exports = {
         await sock.sendMessage(senderJid, { text: debugInfo });
       }
     } catch (error) {
-      console.error('Error in chakratest:', error.message);
       await sock.sendMessage(senderJid, { text: `❌ Erreur: ${error.message}` });
     }
   }

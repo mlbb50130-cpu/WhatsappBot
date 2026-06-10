@@ -50,7 +50,6 @@ class PermissionManagerV2 {
         reason: 'SUCCESS'
       };
     } catch (error) {
-      console.error('Error checking permission:', error.message);
       return {
         allowed: false,
         reason: 'ERROR',
@@ -105,7 +104,6 @@ class PermissionManagerV2 {
         reason: 'SUCCESS'
       };
     } catch (error) {
-      console.error('Error checking target permission:', error.message);
       return {
         allowed: false,
         reason: 'ERROR',
@@ -149,7 +147,6 @@ class PermissionManagerV2 {
         check: 'ALL_CLEAR'
       };
     } catch (error) {
-      console.error('Error in full permission check:', error.message);
       return {
         allowed: false,
         check: 'ERROR',
@@ -182,7 +179,6 @@ class PermissionManagerV2 {
 
       return available;
     } catch (error) {
-      console.error('Error getting available commands:', error.message);
       return {
         general: ['help', 'ping', 'profil', 'info'],
         games: ['pfc', 'duel', 'quiz', 'roulette']

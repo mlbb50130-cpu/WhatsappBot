@@ -72,12 +72,10 @@ async function applyPassiveEquipmentXP() {
           updatedCount++;
         }
       } catch (userError) {
-        console.error(`Erreur XP passif pour ${user.username}:`, userError.message);
       }
     }
 
   } catch (error) {
-    console.error('Erreur appliquant XP passifs des équipements:', error.message);
   }
 }
 

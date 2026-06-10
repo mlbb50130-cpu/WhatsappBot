@@ -78,7 +78,7 @@ module.exports = {
     return sock.sendMessage(jid, {
       text: result.success
         ? MessageFormatter.success(`@${target.split('@')[0]} nest plus administrateur.`)
-        : MessageFormatter.error(`Retrogradation impossible: ${result.error}`),
+        : MessageFormatter.publicError('Retrogradation impossible', result.error),
       mentions: [target],
     }, { quoted: message });
   },

@@ -78,7 +78,6 @@ module.exports = {
         });
       }
     } catch (error) {
-      console.error('Error setting XP:', error.message);
       await sock.sendMessage(senderJid, {
         text: '❌ Erreur lors de la modification de l\'XP.'
       });

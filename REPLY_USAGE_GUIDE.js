@@ -51,7 +51,6 @@
  *       });
  * 
  *     } catch (error) {
- *       console.error('Error:', error.message);
  *       await reply("❌ Une erreur s'est produite!");
  *     }
  *   }
@@ -108,7 +107,6 @@ module.exports = {
       await reply(formatted);
 
     } catch (error) {
-      console.error('Error in exampleReply:', error);
       await reply("❌ Une erreur s'est produite!");
     }
   }

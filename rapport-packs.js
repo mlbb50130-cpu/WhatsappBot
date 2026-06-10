@@ -89,27 +89,14 @@ const PACK_COMMANDS = {
 
 const allCommands = getAllCommands();
 
-console.log('\n╔════════════════════════════════════════════════════════════════╗');
-console.log('║            📊 RAPPORT CONFIGURATION DES PACKS              ║');
-console.log('╚════════════════════════════════════════════════════════════════╝\n');
 
 // Afficher pack OTAKU
-console.log('🎌 PACK OTAKU (RPG) - ' + PACK_COMMANDS.otaku.length + ' commandes');
-console.log('═'.repeat(65));
 const otakuCommands = PACK_COMMANDS.otaku;
-console.log(otakuCommands.join(', '));
-console.log('');
 
 // Afficher pack GAMIN
-console.log('🎮 PACK GAMIN (MLBB) - ' + PACK_COMMANDS.gamin.length + ' commandes');
-console.log('═'.repeat(65));
 const gaminCommands = PACK_COMMANDS.gamin;
-console.log(gaminCommands.join(', '));
-console.log('');
 
 // Commandes non configurées
-console.log('⚠️  COMMANDES NON CONFIGURÉES');
-console.log('═'.repeat(65));
 const allCommandNames = new Set();
 allCommands.forEach(cmd => {
   allCommandNames.add(cmd.name);
@@ -120,21 +107,10 @@ const configuredCommands = new Set([...PACK_COMMANDS.otaku, ...PACK_COMMANDS.gam
 const notConfigured = Array.from(allCommandNames).filter(cmd => !configuredCommands.has(cmd)).sort();
 
 if (notConfigured.length > 0) {
-  console.log('❌ ' + notConfigured.length + ' commandes non configurées:\n');
   notConfigured.forEach(cmd => {
     const cmdInfo = allCommands.find(c => c.name === cmd || c.aliases.includes(cmd));
     if (cmdInfo) {
-      console.log(`   • ${cmd.padEnd(20)} (fichier: ${cmdInfo.file})`);
     }
   });
 } else {
-  console.log('✅ Toutes les commandes sont configurées!');
 }
-
-console.log('\n📈 RÉSUMÉ');
-console.log('═'.repeat(65));
-console.log(`✅ Commandes OTAKU: ${PACK_COMMANDS.otaku.length}`);
-console.log(`✅ Commandes GAMIN: ${PACK_COMMANDS.gamin.length}`);
-console.log(`❌ Commandes non configurées: ${notConfigured.length}`);
-console.log(`📦 Commandes total trouvées: ${allCommandNames.size}`);
-console.log('\n');

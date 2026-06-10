@@ -72,7 +72,6 @@ module.exports = {
       await user.save();
 
     } catch (error) {
-      console.error('Error in neko command:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur!' });
       } else {

@@ -95,7 +95,6 @@ Utilise \`!inventaire\` pour voir tes items!
         await sock.sendMessage(senderJid, { text: equipmentMessage });
       }
     } catch (error) {
-      console.error('Error in equipement command:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur lors de la récupération de l\'équipement!' });
       } else {

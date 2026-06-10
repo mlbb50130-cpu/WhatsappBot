@@ -63,7 +63,7 @@ module.exports = {
 
       await sock.sendMessage(senderJid, {
         image: imageBuffer,
-        caption: isGroup ? MessageFormatter.elegantBox('😍 𝔉𝔲𝔰𝔳𝔞𝔫𝔡𝔬 😍', [{ label: '✨ Récompense', value: allowXp ? '+5 XP' : '🚫 Limite atteinte (10/jour)' }]) : MessageFormatter.elegantBox('😍 𝔊𝔦𝔰𝔞𝔠𝔞𝔞𝔞𝔞 😍', [{ label: '📺 Type', value: 'Personnage' }])
+        caption: isGroup ? MessageFormatter.elegantBox('Husbando', [{ label: '✨ Récompense', value: allowXp ? '+5 XP' : '🚫 Limite atteinte (10/jour)' }]) : MessageFormatter.elegantBox('Personnage', [{ label: '📺 Type', value: 'Personnage' }])
       });
 
       if (isGroup && allowXp) {
@@ -75,7 +75,6 @@ module.exports = {
       await user.save();
 
     } catch (error) {
-      console.error('Error fetching husbando:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur lors de la récupération de l\'image. Réessaie!' });
       } else {

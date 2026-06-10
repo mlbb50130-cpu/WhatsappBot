@@ -30,7 +30,6 @@ class MLBBAssets {
       const randomImage = files[Math.floor(Math.random() * files.length)];
       return path.join(heroPath, randomImage);
     } catch (error) {
-      console.error(`Erreur lors de la récupération d'image pour ${heroName}:`, error);
       return null;
     }
   }
@@ -66,7 +65,6 @@ class MLBBAssets {
 
       return heroes;
     } catch (error) {
-      console.error('Erreur lors de la récupération des héros disponibles:', error);
       return [];
     }
   }

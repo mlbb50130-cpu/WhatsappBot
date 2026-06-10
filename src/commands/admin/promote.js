@@ -65,7 +65,7 @@ module.exports = {
     return sock.sendMessage(jid, {
       text: result.success
         ? MessageFormatter.success(`@${target.split('@')[0]} est maintenant administrateur.`)
-        : MessageFormatter.error(`Promotion impossible: ${result.error}`),
+        : MessageFormatter.publicError('Promotion impossible', result.error),
       mentions: [target],
     }, { quoted: message });
   },

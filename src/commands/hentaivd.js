@@ -121,7 +121,6 @@ module.exports = {
       await user.save();
 
     } catch (error) {
-      console.error(`[HENTAIVD] Error: ${error.message}`);
       if (reply) {
         await reply({ text: '❌ Erreur lors du chargement de l\'image.' });
       } else {

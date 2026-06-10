@@ -1,50 +1,44 @@
 const AdminActionsManager = require('../../utils/adminActions');
+const MessageFormatter = require('../../utils/messageFormatter');
 
 module.exports = {
   name: 'unlock',
   aliases: ['deverrouiller'],
-  description: 'Déverrouiller le groupe (tout le monde peut envoyer des messages)',
+  description: 'Deverrouiller les reglages du groupe',
   category: 'admin',
   usage: '!unlock',
   adminOnly: true,
   groupOnly: true,
   cooldown: 5,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message) {
     const senderJid = message.key.remoteJid;
 
-    // La vérification admin est déjà faite par le handler
-    // Pas besoin de revérifier
-
     try {
-      // Check if bot is admin
       const isBotAdmin = await AdminActionsManager.isBotAdmin(sock, senderJid);
-      
+
       if (!isBotAdmin) {
         await sock.sendMessage(senderJid, {
-          text: '❌ Le bot n\'est pas administrateur du groupe.'
+          text: MessageFormatter.error('Le bot doit etre administrateur du groupe.'),
         });
         return;
       }
 
-      // Unlock the group
       const result = await AdminActionsManager.unlockGroup(sock, senderJid);
-
       if (result.success) {
         await sock.sendMessage(senderJid, {
-          text: `${result.message}\n\n🔓 Les paramètres du groupe sont accessibles!\n👮 Modérateur: ${message.pushName || 'Admin'}`
+          text: `${result.message}\n\nLes parametres du groupe sont accessibles.\nModerateur: ${message.pushName || 'Admin'}`,
         });
-
-      } else {
-        await sock.sendMessage(senderJid, {
-          text: `❌ Erreur lors du déverrouillage:\n${result.error}`
-        });
+        return;
       }
-    } catch (error) {
-      console.error('Error unlocking group:', error.message);
+
       await sock.sendMessage(senderJid, {
-        text: `❌ Erreur lors du déverrouillage: ${error.message}`
+        text: MessageFormatter.publicError('Deverrouillage impossible', result.error),
+      });
+    } catch (error) {
+      await sock.sendMessage(senderJid, {
+        text: MessageFormatter.publicError('Deverrouillage impossible', error),
       });
     }
-  }
+  },
 };

@@ -81,7 +81,6 @@ Tape \`!quete\` pour voir toutes tes quêtes!
       }
 
     } catch (error) {
-      console.error('Error in nouvellequete command:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur lors de la génération!' });
       } else {

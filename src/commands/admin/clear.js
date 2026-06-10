@@ -37,7 +37,6 @@ module.exports = {
         text: '🧹 Les messages ne peuvent pas être supprimés en masse via ce bot.\nVeuillez utiliser les paramètres du groupe WhatsApp.'
       });
     } catch (error) {
-      console.error('Error clearing messages:', error.message);
       await sock.sendMessage(senderJid, {
         text: '❌ Erreur lors du nettoyage.'
       });

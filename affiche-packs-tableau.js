@@ -59,9 +59,6 @@ function categorizePack(commands) {
 }
 
 // Afficher le tableau
-console.log('\n╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗');
-console.log('║                              📊 TABLEAU COMPLET DES PACKS DE COMMANDES                                                  ║');
-console.log('╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝\n');
 
 const packNames = ['otaku', 'gamin', 'complet'];
 const packInfo = {
@@ -75,39 +72,27 @@ for (const packName of packNames) {
   const categorized = categorizePack(commands);
   const info = packInfo[packName];
   
-  console.log(`\n${info.emoji} ${info.color}${info.name}\x1b[0m (${commands.length} commandes)`);
-  console.log('═'.repeat(95));
   
   let totalCommands = 0;
   for (const [category, cmds] of Object.entries(categorized)) {
-    console.log(`\n  📌 ${category} (${cmds.length}):`);
     
     // Afficher les commandes en colonnes
     let line = '     ';
     for (const cmd of cmds) {
       if (line.length + cmd.length + 4 > 95) {
-        console.log(line);
         line = '     ';
       }
       line += cmd.padEnd(20);
     }
     if (line.trim()) {
-      console.log(line);
     }
     
     totalCommands += cmds.length;
   }
   
-  console.log(`\n  ✅ Total: ${totalCommands} commandes`);
-  console.log('');
 }
 
 // Tableau comparatif
-console.log('\n╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗');
-console.log('║                              📈 TABLEAU COMPARATIF DES PACKS                                                           ║');
-console.log('╠════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣');
-console.log('║ Catégorie                      │  OTAKU  │ GAMIN │ COMPLET │                                                         ║');
-console.log('╠════════════════════════════════╪═════════╪═══════╪═════════╣');
 
 const allCategories = new Set();
 for (const commands of Object.values(packs)) {
@@ -125,10 +110,8 @@ for (const category of Array.from(allCategories).sort()) {
   }
   
   line += ' '.repeat(48) + '║';
-  console.log(line);
 }
 
-console.log('╠════════════════════════════════╪═════════╪═══════╪═════════╣');
 
 let totalLine = '║ ' + 'TOTAL'.padEnd(29) + ' │';
 const totals = {};
@@ -138,11 +121,5 @@ for (const packName of ['otaku', 'gamin', 'complet']) {
   totalLine += ` ${count.toString().padEnd(6)} │`;
 }
 totalLine += ' '.repeat(48) + '║';
-console.log(totalLine);
-console.log('╚════════════════════════════════╧═════════╧═══════╧═════════╛\n');
 
 // Résumé
-console.log('📊 RÉSUMÉ:');
-console.log(`  📺 OTAKU:    ${totals.otaku} commandes (Anime, RPG, Quêtes, Fun)`);
-console.log(`  🎮 GAMIN:    ${totals.gamin} commandes (MLBB uniquement)`);
-console.log(`  🌟 COMPLET:  ${totals.complet} commandes (Tout + Admin + NSFW)\n`);

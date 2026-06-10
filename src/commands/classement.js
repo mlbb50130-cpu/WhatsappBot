@@ -87,7 +87,6 @@ module.exports = {
         await sock.sendMessage(senderJid, { text: leaderboard });
       }
     } catch (error) {
-      console.error('Error fetching leaderboard:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur lors de la récupération du classement.' });
       } else {

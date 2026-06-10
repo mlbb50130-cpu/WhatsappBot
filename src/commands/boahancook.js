@@ -102,7 +102,6 @@ module.exports = {
       user.assetUsageToday.count += 1;
       await user.save();
     } catch (error) {
-      console.error('Error in boahancook command:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur!' });
       } else {

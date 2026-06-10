@@ -55,7 +55,6 @@ class ModuleManager {
         return JSON.parse(fs.readFileSync(MODULES_PATH, 'utf8'));
       }
     } catch (err) {
-      console.error('Erreur chargement modules:', err);
     }
     return {};
   }
@@ -64,7 +63,6 @@ class ModuleManager {
     try {
       fs.writeFileSync(MODULES_PATH, JSON.stringify(modules, null, 2));
     } catch (err) {
-      console.error('Erreur sauvegarde modules:', err);
     }
   }
 

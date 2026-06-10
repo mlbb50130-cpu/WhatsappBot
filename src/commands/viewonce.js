@@ -51,7 +51,6 @@ module.exports = {
         viewOnce: !isRevive,
       }, { quoted: message });
     } catch (error) {
-      console.error('[VIEWONCE] Error:', error.message);
       return sock.sendMessage(jid, {
         text: MessageFormatter.error('Media impossible a recuperer. Il est peut-etre expire.'),
       }, { quoted: message });

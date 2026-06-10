@@ -49,7 +49,6 @@ ${totalPower > 5000 ? '🌟 Puissance incroyable!' : totalPower > 2000 ? '💪 T
         await sock.sendMessage(senderJid, { text: powerMessage });
       }
     } catch (error) {
-      console.error('Error in powerlevel command:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur!' });
       } else {

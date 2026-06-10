@@ -64,7 +64,6 @@ module.exports = {
 
 
     } catch (error) {
-      console.error('Error activating bot:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur lors de l\'activation du bot!' });
       } else {

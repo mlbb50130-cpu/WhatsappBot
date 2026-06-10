@@ -6,6 +6,8 @@ const { getCharacter } = require('../data/botCharacters');
 const conversations = new Map();
 const missingKeyWarnings = new Map();
 
+const EMPTY_GEMINI_REPLY = 'Gemini na pas renvoye de texte. Reessaie avec une autre formulation.';
+
 function cleanJid(jid = '') {
   const value = String(jid || '');
   const [local, domain] = value.split('@');
@@ -64,6 +66,34 @@ function isBotMentionedOrQuoted(sock, message) {
   });
 }
 
+function normalizeNameText(text = '') {
+  return String(text || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
+
+function isBotNamedInText(text = '') {
+  const normalizedText = normalizeNameText(text);
+  if (!normalizedText) return false;
+
+  const names = [
+    config.BOT_NAME,
+    'Kassim-bot',
+    'Kassim bot',
+    'Kassim',
+  ]
+    .map(normalizeNameText)
+    .filter(Boolean);
+
+  return [...new Set(names)].some((name) => {
+    const pattern = new RegExp(`(^|\\s)${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(\\s|$)`);
+    return pattern.test(normalizedText);
+  });
+}
+
 function getApiKey() {
   const raw = config.GEMINI_API_KEY || '';
   const keys = raw
@@ -83,7 +113,6 @@ function buildSystemPrompt(character) {
     'Reponds en francais par defaut, sauf si l utilisateur parle une autre langue.',
     'Garde les reponses courtes, naturelles et utiles pour WhatsApp.',
     'Evite les longs paragraphes, les grosses listes et les emojis excessifs.',
-    'Si une demande est dangereuse, illegale ou abusive, refuse brievement.',
   ].join('\n');
 }
 
@@ -93,19 +122,62 @@ function getGeminiSdkConfig(character) {
     safetySettings: [
       {
         category: 'HARM_CATEGORY_HARASSMENT',
-        threshold: 'BLOCK_LOW_AND_ABOVE',
+        threshold: 'BLOCK_NONE',
       },
       {
         category: 'HARM_CATEGORY_HATE_SPEECH',
-        threshold: 'BLOCK_LOW_AND_ABOVE',
+        threshold: 'BLOCK_NONE',
       },
       {
         category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
         threshold: 'BLOCK_NONE',
       },
+      {
+        category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
+        threshold: 'BLOCK_NONE',
+      },
+      {
+        category: 'HARM_CATEGORY_CIVIC_INTEGRITY',
+        threshold: 'BLOCK_NONE',
+      },
     ],
     systemInstruction: [{ text: buildSystemPrompt(character) }],
   };
+}
+
+function getCandidateInfo(result) {
+  const candidates = Array.isArray(result?.candidates) ? result.candidates : [];
+  return candidates[0] || null;
+}
+
+function isProviderBlocked(result) {
+  const candidate = getCandidateInfo(result);
+  const finishReason = String(candidate?.finishReason || result?.promptFeedback?.blockReason || '').toUpperCase();
+  return finishReason.includes('SAFETY') ||
+    finishReason.includes('BLOCK') ||
+    Boolean(result?.promptFeedback?.blockReason);
+}
+
+function createEmptyResponseError(result) {
+  const candidate = getCandidateInfo(result);
+  const finishReason = candidate?.finishReason || result?.promptFeedback?.blockReason || 'empty';
+  const error = new Error(`Reponse Gemini vide: ${finishReason}`);
+  error.code = isProviderBlocked(result) ? 'GEMINI_PROVIDER_BLOCK' : 'GEMINI_EMPTY_RESPONSE';
+  return error;
+}
+
+function isEmptyOrProviderBlockedResponseError(error) {
+  if (!error) return false;
+  if (error.code === 'GEMINI_PROVIDER_BLOCK' || error.code === 'GEMINI_EMPTY_RESPONSE') return true;
+
+  const detail = [
+    error.code,
+    error.message,
+    error.status,
+    error.reason,
+  ].filter(Boolean).join(' ').toLowerCase();
+
+  return /safety|blocked|block_reason|finishreason|empty response|reponse gemini vide|response was blocked/.test(detail);
 }
 
 function getHistory(chatJid) {
@@ -168,7 +240,7 @@ async function generateReply(prompt, chatJid, character) {
   const text = String(result.text || '').trim();
 
   if (!text) {
-    throw new Error('Reponse Gemini vide');
+    throw createEmptyResponseError(result);
   }
 
   addToHistory(chatJid, 'user', prompt);
@@ -184,7 +256,7 @@ async function warnMissingKeyOnce(sock, jid, message) {
 
   missingKeyWarnings.set(jid, now);
   await sock.sendMessage(jid, {
-    text: MessageFormatter.warning('Chatbot active, mais GEMINI_API_KEY est absent dans l environnement.'),
+    text: MessageFormatter.warning('Chatbot active, mais la cle Gemini nest pas visible sur Railway. Variable conseillee: GEMINI_API_KEY.'),
   }, { quoted: message });
 }
 
@@ -223,7 +295,9 @@ async function handleIncomingMessage(sock, message, options = {}) {
     const groupActive = groupDoc?.isActive !== false;
     const groupChatbotEnabled = groupDoc?.features?.chatbot === true;
 
-    if (!groupActive || !groupChatbotEnabled || !isBotMentionedOrQuoted(sock, message)) {
+    const botWasCalled = isBotMentionedOrQuoted(sock, message) || isBotNamedInText(text);
+
+    if (!groupActive || !groupChatbotEnabled || !botWasCalled) {
       return false;
     }
   } else if (!settings.chatbot.pmEnabled) {
@@ -244,7 +318,11 @@ async function handleIncomingMessage(sock, message, options = {}) {
       return true;
     }
 
-    console.error('[CHATBOT] Error:', error.message);
+    if (isEmptyOrProviderBlockedResponseError(error)) {
+      await sock.sendMessage(jid, { text: EMPTY_GEMINI_REPLY }, { quoted: message });
+      return true;
+    }
+
     await sock.sendMessage(jid, {
       text: MessageFormatter.error('Le chatbot ne peut pas repondre pour le moment.'),
     }, { quoted: message });
@@ -259,4 +337,7 @@ module.exports = {
   generateReply,
   handleIncomingMessage,
   isBotMentionedOrQuoted,
+  isBotNamedInText,
+  isEmptyOrProviderBlockedResponseError,
+  EMPTY_GEMINI_REPLY,
 };

@@ -93,9 +93,8 @@ module.exports = {
 
 
     } catch (error) {
-      console.error('Error in theme command:', error.message);
       await sock.sendMessage(senderJid, {
-        text: MessageFormatter.error(`Erreur: ${error.message}`)
+        text: MessageFormatter.publicError('Theme impossible', error)
       });
     }
   }

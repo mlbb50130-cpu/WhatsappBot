@@ -32,11 +32,7 @@ for (const cmdName of assetCommands) {
     if (content.includes(duplicatePattern)) {
       content = content.replace(duplicatePattern, fixedPattern);
       fs.writeFileSync(filePath, content, 'utf8');
-      console.log(`✓ Fixed duplicate in ${cmdName}.js`);
     } else {
-      console.log(`✓ ${cmdName}.js OK`);
     }
   }
 }
-
-console.log('\n✅ All duplicates fixed!');

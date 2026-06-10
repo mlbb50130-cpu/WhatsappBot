@@ -12,11 +12,9 @@ mongoose.connect(mongoUrl, {
 
 async function syncUserLevels() {
   try {
-    console.log('🔄 Synchronisation des niveaux de tous les utilisateurs...');
     
     // Récupérer tous les utilisateurs
     const users = await User.find({});
-    console.log(`📊 Nombre d'utilisateurs trouvés: ${users.length}`);
     
     let updatedCount = 0;
     
@@ -38,18 +36,13 @@ async function syncUserLevels() {
       updatedCount++;
       
       if (oldLevel !== levelInfo.level) {
-        console.log(`✅ ${user.username}: Niveau ${oldLevel} → ${levelInfo.level} (XP: ${user.xp})`);
       } else {
-        console.log(`✅ ${user.username}: Niveau ${levelInfo.level} synchronisé (XP: ${user.xp})`);
       }
     }
     
-    console.log(`\n✨ Synchronisation terminée!`);
-    console.log(`📈 ${updatedCount}/${users.length} utilisateurs mis à jour`);
     
     process.exit(0);
   } catch (error) {
-    console.error('❌ Erreur:', error.message);
     process.exit(1);
   }
 }

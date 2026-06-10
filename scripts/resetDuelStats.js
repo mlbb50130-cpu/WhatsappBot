@@ -11,11 +11,9 @@ mongoose.connect(mongoUrl, {
 
 async function resetDuelStats() {
   try {
-    console.log('⚔️ Réinitialisation des stats de duels pour tous les utilisateurs...');
     
     // Récupérer tous les utilisateurs
     const users = await User.find({});
-    console.log(`📊 Nombre d'utilisateurs trouvés: ${users.length}`);
     
     let updatedCount = 0;
     
@@ -28,16 +26,11 @@ async function resetDuelStats() {
       await user.save();
       updatedCount++;
       
-      console.log(`✅ ${user.username} (Niveau ${user.level}) - Stats duels réinitialisées`);
     }
     
-    console.log(`\n✨ Réinitialisation terminée!`);
-    console.log(`📈 ${updatedCount}/${users.length} utilisateurs mis à jour`);
-    console.log(`\n💡 Tous les stats de duels (wins, losses, duels) ont été réinitialisées à 0`);
     
     process.exit(0);
   } catch (error) {
-    console.error('❌ Erreur:', error.message);
     process.exit(1);
   }
 }

@@ -58,7 +58,6 @@ module.exports = {
         await sock.sendMessage(senderJid, { text: rules });
       }
     } catch (error) {
-      console.error('Error in regles command:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur!' });
       } else {

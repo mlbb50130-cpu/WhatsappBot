@@ -60,7 +60,6 @@ Synopsis: ${synopsis}`;
       }
 
       } catch (apiError) {
-        console.error('Jikan API error:', apiError.message);
         if (reply) {
         await reply({ text: '❌ Erreur API!' });
       } else {
@@ -69,7 +68,6 @@ Synopsis: ${synopsis}`;
         return;
       }
     } catch (error) {
-      console.error('Error in anime command:', error.message);
     }
   }
 };

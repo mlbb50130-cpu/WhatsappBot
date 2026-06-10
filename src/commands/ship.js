@@ -32,15 +32,15 @@ module.exports = {
 
     let response = '';
     if (compatibility >= 80) {
-      response = `💕💕 PARFAIT! ${compatibility}% de compatibilité!\nC'est la relation ultime!`;
+      response = `PARFAIT! ${compatibility}% de compatibilité!\nC'est la relation ultime!`;
     } else if (compatibility >= 60) {
-      response = `💗 BON MATCH! ${compatibility}% de compatibilité!\nCela pourrait marcher!`;
+      response = `BON MATCH! ${compatibility}% de compatibilité!\nCela pourrait marcher!`;
     } else if (compatibility >= 40) {
-      response = `💛 MOYEN! ${compatibility}% de compatibilité.\nC'est possible...`;
+      response = `MOYEN! ${compatibility}% de compatibilité.\nC'est possible...`;
     } else if (compatibility >= 20) {
-      response = `💙 DIFFICILE! ${compatibility}% de compatibilité.\nCa sera hard.`;
+      response = `DIFFICILE! ${compatibility}% de compatibilité.\nCa sera hard.`;
     } else {
-      response = `💔 NON! ${compatibility}% de compatibilité.\nN'insiste pas!`;
+      response = `NON! ${compatibility}% de compatibilité.\nN'insiste pas!`;
     }
 
     const shipItems = [

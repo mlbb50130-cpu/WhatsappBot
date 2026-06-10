@@ -12,7 +12,7 @@ module.exports = {
   cooldown: 8,
 
   async execute(sock, message, args) {
-    return DownloaderService.sendTikTokCommand(
+    return await DownloaderService.sendTikTokCommand(
       sock,
       message,
       args.join(' '),

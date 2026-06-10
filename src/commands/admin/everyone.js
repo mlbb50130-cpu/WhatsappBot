@@ -1,4 +1,4 @@
-const AdminActionsManager = require('../../utils/adminActions');
+const MessageFormatter = require('../../utils/messageFormatter');
 
 module.exports = {
   name: 'everyone',
@@ -14,7 +14,6 @@ module.exports = {
     const senderJid = message.key.remoteJid;
     const participantJid = message.key.participant || senderJid;
 
-    // Vérifier que c'est un admin
     const PermissionManager = require('../../utils/permissions');
     const canUse = PermissionManager.canUseCommand(
       participantJid,
@@ -27,46 +26,33 @@ module.exports = {
 
     if (!canUse) {
       await sock.sendMessage(senderJid, {
-        text: '🚫 Seul un administrateur peut utiliser cette commande.'
+        text: MessageFormatter.error('Seul un administrateur peut utiliser cette commande.'),
       });
       return;
     }
 
     try {
-      // Récupérer les participants du groupe
       const groupMetadata = await sock.groupMetadata(senderJid);
-      
-      if (!groupMetadata || !groupMetadata.participants) {
+
+      if (!groupMetadata?.participants) {
         await sock.sendMessage(senderJid, {
-          text: '❌ Impossible de récupérer la liste des participants.'
+          text: MessageFormatter.error('Impossible de recuperer la liste des participants.'),
         });
         return;
       }
 
-      const participants = groupMetadata.participants;
+      const mentions = groupMetadata.participants.map((participant) => participant.id);
       const messageContent = args.join(' ');
+      const tags = mentions.map((jid) => `@${jid.split('@')[0]}`).join(' ');
 
-      // Créer la liste des mentions
-      const mentions = participants.map(p => p.id);
-
-      // Créer le texte avec les mentions
-      let text = messageContent ? `${messageContent}\n\n` : '';
-      participants.forEach(participant => {
-        text += `@${participant.id.split('@')[0]} `;
-      });
-
-      // Envoyer le message avec les mentions
       await sock.sendMessage(senderJid, {
-        text: text.trim(),
-        mentions: mentions
+        text: `${messageContent ? `${messageContent}\n\n` : ''}${tags}`.trim(),
+        mentions,
       });
-
-
     } catch (error) {
-      console.error('Error in everyone command:', error.message);
       await sock.sendMessage(senderJid, {
-        text: `❌ Erreur: ${error.message}`
+        text: MessageFormatter.publicError('Mention impossible', error),
       });
     }
-  }
+  },
 };

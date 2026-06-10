@@ -56,7 +56,7 @@ module.exports = {
 
       return reply ? reply({ text }) : sock.sendMessage(jid, { text });
     } catch (error) {
-      const text = MessageFormatter.error(error.stack || error.message);
+      const text = MessageFormatter.publicError('Execution impossible', error);
       return reply ? reply({ text }) : sock.sendMessage(jid, { text });
     }
   },

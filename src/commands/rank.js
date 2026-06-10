@@ -100,7 +100,6 @@ ${topLabel}`;
         mentions: mentions });
       }
     } catch (error) {
-      console.error('Error in rank command:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur!' });
       } else {

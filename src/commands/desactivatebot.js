@@ -72,7 +72,6 @@ module.exports = {
       }
 
     } catch (error) {
-      console.error('Error in desactivatebot command:', error.message);
       if (reply) {
         await reply({ text: '❌ Erreur lors de la désactivation du bot.' });
       } else {

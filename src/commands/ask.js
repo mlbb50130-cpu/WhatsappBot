@@ -33,9 +33,12 @@ module.exports = {
     } catch (error) {
       await sock.sendPresenceUpdate('paused', jid).catch(() => null);
       const missingKey = error.code === 'MISSING_GEMINI_KEY' || /GEMINI_API_KEY/i.test(error.message);
+      const emptyOrBlocked = ChatbotService.isEmptyOrProviderBlockedResponseError(error);
       const text = missingKey
-        ? MessageFormatter.warning('Ajoute GEMINI_API_KEY dans l environnement pour utiliser !ask.')
-        : MessageFormatter.error('Le chatbot ne peut pas repondre pour le moment.');
+        ? MessageFormatter.warning('La cle Gemini nest pas visible sur Railway. Variable conseillee: GEMINI_API_KEY.')
+        : emptyOrBlocked
+          ? ChatbotService.EMPTY_GEMINI_REPLY
+          : MessageFormatter.error('Le chatbot ne peut pas repondre pour le moment.');
       return reply ? reply({ text }) : sock.sendMessage(jid, { text });
     }
   },

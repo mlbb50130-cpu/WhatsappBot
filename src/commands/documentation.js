@@ -174,7 +174,6 @@ module.exports = {
         await sock.sendMessage(senderJid, { text: responseText });
       }
     } catch (error) {
-      console.error('Error in documentation command:', error.message);
       const text = MessageFormatter.error('Impossible d’afficher la documentation pour le moment.');
 
       if (reply) {

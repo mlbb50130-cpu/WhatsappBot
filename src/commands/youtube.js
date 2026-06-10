@@ -13,7 +13,7 @@ module.exports = {
 
   async execute(sock, message, args) {
     const commandName = DownloaderService.getInvokedCommand(message, config.PREFIX) || 'play';
-    return DownloaderService.sendYoutubeCommand(
+    return await DownloaderService.sendYoutubeCommand(
       sock,
       message,
       commandName,

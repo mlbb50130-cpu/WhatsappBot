@@ -105,7 +105,6 @@ module.exports = {
       user.assetUsageToday.count += 1;
       await user.save();
     } catch (error) {
-      console.error('Error in bleach command:', error.message);
       if (reply) {
         await reply({ text: MessageFormatter.error('Erreur!') });
       } else {

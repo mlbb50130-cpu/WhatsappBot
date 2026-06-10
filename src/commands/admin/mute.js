@@ -1,50 +1,44 @@
 const AdminActionsManager = require('../../utils/adminActions');
+const MessageFormatter = require('../../utils/messageFormatter');
 
 module.exports = {
   name: 'mute',
   aliases: ['silence'],
-  description: 'Rendre le groupe muet - Seuls les admins peuvent écrire',
+  description: 'Rendre le groupe muet - seuls les admins peuvent ecrire',
   category: 'admin',
   usage: '!mute',
   adminOnly: true,
   groupOnly: true,
   cooldown: 5,
 
-  async execute(sock, message, args, user, isGroup, groupData) {
+  async execute(sock, message) {
     const senderJid = message.key.remoteJid;
 
-    // La vérification admin est déjà faite par le handler
-    // Pas besoin de revérifier
-
     try {
-      // Check if bot is admin
       const isBotAdmin = await AdminActionsManager.isBotAdmin(sock, senderJid);
-      
+
       if (!isBotAdmin) {
         await sock.sendMessage(senderJid, {
-          text: '❌ Le bot n\'est pas administrateur du groupe.\n\nPromois-moi administrateur pour que je puisse effectuer des actions!'
+          text: MessageFormatter.error('Le bot doit etre administrateur du groupe.'),
         });
         return;
       }
 
-      // Mute the group
       const result = await AdminActionsManager.muteGroup(sock, senderJid);
-
       if (result.success) {
         await sock.sendMessage(senderJid, {
-          text: `${result.message}\n\n👤 Seuls les admins peuvent écrire\n👮 Modérateur: ${message.pushName || 'Admin'}`
+          text: `${result.message}\n\nSeuls les admins peuvent ecrire.\nModerateur: ${message.pushName || 'Admin'}`,
         });
-
-      } else {
-        await sock.sendMessage(senderJid, {
-          text: `❌ Erreur lors du silence:\n${result.error}`
-        });
+        return;
       }
-    } catch (error) {
-      console.error('Error muting group:', error.message);
+
       await sock.sendMessage(senderJid, {
-        text: `❌ Erreur lors du silence: ${error.message}`
+        text: MessageFormatter.publicError('Silence impossible', result.error),
+      });
+    } catch (error) {
+      await sock.sendMessage(senderJid, {
+        text: MessageFormatter.publicError('Silence impossible', error),
       });
     }
-  }
+  },
 };
