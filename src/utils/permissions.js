@@ -1,21 +1,32 @@
 const config = require('../config');
+const {
+  cleanJid,
+  findParticipant,
+  jidDigits,
+  jidMatches,
+  participantJids,
+  uniqueJids,
+} = require('./jid');
 
 class PermissionManager {
   static isAdmin(jid) {
-    return config.ADMIN_JIDS.includes(jid);
+    const candidates = uniqueJids(jid);
+    if (candidates.length === 0) return false;
+
+    return (config.ADMIN_JIDS || []).some((adminJid) => jidMatches(adminJid, candidates));
   }
 
   static isGroupAdmin(groupJid, userJid, participants) {
     if (!participants) return false;
 
-    const participant = participants.find(p => p.id === userJid);
+    const participant = findParticipant(participants, userJid);
     return participant && (participant.admin === 'admin' || participant.admin === 'superadmin');
   }
 
   static isGroupOwner(groupJid, userJid, participants) {
     if (!participants) return false;
 
-    const participant = participants.find(p => p.id === userJid);
+    const participant = findParticipant(participants, userJid);
     return participant && participant.admin === 'superadmin';
   }
 
@@ -60,5 +71,11 @@ class PermissionManager {
     }
   }
 }
+
+PermissionManager.cleanJid = cleanJid;
+PermissionManager.jidDigits = jidDigits;
+PermissionManager.jidMatches = jidMatches;
+PermissionManager.participantJids = participantJids;
+PermissionManager.uniqueJids = uniqueJids;
 
 module.exports = PermissionManager;

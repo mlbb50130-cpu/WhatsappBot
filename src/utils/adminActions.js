@@ -5,6 +5,7 @@
 
 const config = require('../config');
 const { getGroupMetadataWithCache, invalidateGroupCache } = require('./metadataCache');
+const { findParticipant, jidMatches, uniqueJids } = require('./jid');
 
 class AdminActionsManager {
   /**
@@ -37,13 +38,13 @@ class AdminActionsManager {
         return false;
       }
       
-      const botJid = this.getBotJid(sock);
+      const botJid = uniqueJids(this.getBotJid(sock), sock?.user?.lid, sock?.user?.jid);
       
-      if (!botJid) {
+      if (botJid.length === 0) {
         return false;
       }
       
-      const botParticipant = groupMetadata.participants.find(p => p.id === botJid);
+      const botParticipant = findParticipant(groupMetadata.participants, botJid);
       return botParticipant && (botParticipant.admin === 'admin' || botParticipant.admin === 'superadmin');
     } catch (error) {
       return false;
@@ -67,7 +68,7 @@ class AdminActionsManager {
 
       // Check if target is the bot itself
       const botJid = this.getBotJid(sock);
-      if (userJid === botJid) {
+      if (jidMatches(userJid, botJid)) {
         return {
           success: false,
           error: 'Le bot ne peut pas s\'expulser lui-même',
@@ -108,7 +109,7 @@ class AdminActionsManager {
       }
 
       const botJid = this.getBotJid(sock);
-      if (userJid === botJid) {
+      if (jidMatches(userJid, botJid)) {
         return {
           success: false,
           error: 'Le bot ne peut pas se promouvoir lui-même',
@@ -148,7 +149,7 @@ class AdminActionsManager {
       }
 
       const botJid = this.getBotJid(sock);
-      if (userJid === botJid) {
+      if (jidMatches(userJid, botJid)) {
         return {
           success: false,
           error: 'Le bot ne peut pas se rétrograder lui-même',
@@ -457,7 +458,7 @@ class AdminActionsManager {
         };
       }
       
-      const participant = groupMetadata.participants.find(p => p.id === userJid);
+      const participant = findParticipant(groupMetadata.participants, userJid);
       
       return {
         success: true,

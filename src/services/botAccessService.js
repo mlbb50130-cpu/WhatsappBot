@@ -1,35 +1,32 @@
 const config = require('../config');
 const BotSettings = require('../models/BotSettings');
+const {
+  cleanJid,
+  jidDigits,
+  jidMatches,
+  uniqueJids,
+} = require('../utils/jid');
 
 function digits(jid = '') {
-  return String(jid).split('@')[0].replace(/\D/g, '');
+  return jidDigits(jid);
 }
 
 function normalizeJid(value = '') {
-  const raw = String(value || '').trim();
-  if (!raw) return '';
-  if (raw.includes('@')) return raw;
-  const number = raw.replace(/\D/g, '');
-  return number ? `${number}@s.whatsapp.net` : '';
+  return cleanJid(value);
 }
 
 function isOwner(jid = '') {
-  const userDigits = digits(jid);
-  return config.ADMIN_JIDS.some((owner) => {
-    const ownerDigits = digits(owner);
-    return owner === jid || (ownerDigits && ownerDigits === userDigits);
-  });
+  const candidates = uniqueJids(jid);
+  if (candidates.length === 0) return false;
+  return (config.ADMIN_JIDS || []).some((owner) => jidMatches(owner, candidates));
 }
 
 async function isModerator(jid = '') {
   if (isOwner(jid)) return true;
   const settings = await BotSettings.getGlobal();
   const moderators = Array.isArray(settings.moderators) ? settings.moderators : [];
-  const userDigits = digits(jid);
-  return moderators.some((mod) => {
-    const modDigits = digits(mod);
-    return mod === jid || (modDigits && modDigits === userDigits);
-  });
+  const candidates = uniqueJids(jid);
+  return moderators.some((mod) => jidMatches(mod, candidates));
 }
 
 async function canUseBot(jid = '', botJid = '') {
@@ -37,7 +34,7 @@ async function canUseBot(jid = '', botJid = '') {
   if (settings.botMode === 'public') return true;
   if (settings.botMode === 'private') return isModerator(jid);
   if (settings.botMode === 'self') {
-    return isOwner(jid) || (botJid && digits(jid) === digits(botJid));
+    return isOwner(jid) || (botJid && jidMatches(jid, botJid));
   }
   return true;
 }
@@ -47,7 +44,7 @@ async function addModerator(jid) {
   if (!normalized) throw new Error('JID invalide');
   const settings = await BotSettings.getGlobal();
   if (!Array.isArray(settings.moderators)) settings.moderators = [];
-  if (!settings.moderators.some((mod) => digits(mod) === digits(normalized))) {
+  if (!settings.moderators.some((mod) => jidMatches(mod, normalized))) {
     settings.moderators.push(normalized);
     await settings.save();
   }
@@ -58,7 +55,7 @@ async function removeModerator(jid) {
   const normalized = normalizeJid(jid);
   const settings = await BotSettings.getGlobal();
   const moderators = Array.isArray(settings.moderators) ? settings.moderators : [];
-  settings.moderators = moderators.filter((mod) => digits(mod) !== digits(normalized));
+  settings.moderators = moderators.filter((mod) => !jidMatches(mod, normalized));
   await settings.save();
   return settings;
 }

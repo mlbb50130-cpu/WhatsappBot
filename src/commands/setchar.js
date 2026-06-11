@@ -1,15 +1,7 @@
-const config = require('../config');
 const MessageFormatter = require('../utils/messageFormatter');
+const PermissionManager = require('../utils/permissions');
 const ChatbotService = require('../services/chatbotService');
 const { listCharacters } = require('../data/botCharacters');
-
-function isBotOwner(jid = '') {
-  const digits = String(jid).split('@')[0].replace(/\D/g, '');
-  return config.ADMIN_JIDS.some((adminJid) => {
-    const adminDigits = String(adminJid).split('@')[0].replace(/\D/g, '');
-    return adminJid === jid || (adminDigits && adminDigits === digits);
-  });
-}
 
 module.exports = {
   name: 'setchar',
@@ -25,7 +17,7 @@ module.exports = {
     const jid = message.key.remoteJid;
     const participantJid = message.key.participant || jid;
 
-    if (!isBotOwner(participantJid)) {
+    if (!PermissionManager.isAdmin(participantJid)) {
       const text = MessageFormatter.error('Seul le proprietaire du bot peut changer le personnage global.');
       return reply ? reply({ text }) : sock.sendMessage(jid, { text });
     }

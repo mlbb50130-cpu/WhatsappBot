@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const User = require('../../models/User');
-const config = require('../../config');
+const PermissionManager = require('../../utils/permissions');
 
 module.exports = {
   name: 'tournoisquiz',
@@ -29,8 +29,7 @@ module.exports = {
     const senderJid = message.key.remoteJid;
     const participantJid = message.key.participant || senderJid;
 
-    // Vérifier si c'est un admin
-    if (!config.ADMIN_JIDS.includes(participantJid)) {
+    if (!PermissionManager.isAdmin(participantJid)) {
       await sock.sendMessage(senderJid, {
         text: '🚫 Seul l\'admin peut lancer ce tournoi.'
       });

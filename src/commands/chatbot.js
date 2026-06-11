@@ -1,17 +1,8 @@
 const Group = require('../models/Group');
-const config = require('../config');
 const MessageFormatter = require('../utils/messageFormatter');
 const PermissionManager = require('../utils/permissions');
 const ChatbotService = require('../services/chatbotService');
 const { getCharacter } = require('../data/botCharacters');
-
-function isBotOwner(jid = '') {
-  const digits = String(jid).split('@')[0].replace(/\D/g, '');
-  return config.ADMIN_JIDS.some((adminJid) => {
-    const adminDigits = String(adminJid).split('@')[0].replace(/\D/g, '');
-    return adminJid === jid || (adminDigits && adminDigits === digits);
-  });
-}
 
 function parseAction(raw = '') {
   const action = String(raw).toLowerCase();
@@ -95,7 +86,7 @@ module.exports = {
       return reply ? reply({ text }) : sock.sendMessage(jid, { text });
     }
 
-    if (!isBotOwner(participantJid)) {
+    if (!PermissionManager.isAdmin(participantJid)) {
       const text = MessageFormatter.error('Seul le proprietaire du bot peut activer le chatbot en DM.');
       return reply ? reply({ text }) : sock.sendMessage(jid, { text });
     }

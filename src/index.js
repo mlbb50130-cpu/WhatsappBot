@@ -10,6 +10,7 @@ const path = require('path');
 const { getGroupMetadataWithCache, invalidateGroupCache } = require('./utils/metadataCache');
 const MessageFormatter = require('./utils/messageFormatter');
 const BotSettings = require('./models/BotSettings');
+const { rememberContactIdentity, rememberMessageIdentity } = require('./utils/jid');
 
 let sock = null;
 let qrShown = false;
@@ -260,6 +261,14 @@ async function connectToWhatsApp() {
   // Save credentials when updated
   sock.ev.on('creds.update', saveCreds);
 
+  sock.ev.on('contacts.upsert', (contacts = []) => {
+    contacts.forEach(rememberContactIdentity);
+  });
+
+  sock.ev.on('contacts.update', (updates = []) => {
+    updates.forEach(rememberContactIdentity);
+  });
+
   sock.ev.on('connection.update', async (update) => {
     const { connection, lastDisconnect, qr } = update;
 
@@ -322,6 +331,7 @@ async function connectToWhatsApp() {
     if (isGroup) {
       groupData = await getGroupMetadataWithCache(sock, senderJid);
     }
+    rememberMessageIdentity(message, groupData?.participants || []);
 
     // Handle message
     await handleMessage(sock, message, isGroup, groupData);

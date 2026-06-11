@@ -1,5 +1,6 @@
 const MessageFormatter = require('../utils/messageFormatter');
 const config = require('../config');
+const PermissionManager = require('../utils/permissions');
 
 module.exports = {
   name: 'activatebot',
@@ -12,9 +13,9 @@ module.exports = {
   async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
     
-    // Vérifier si c'est le propriétaire du bot
-    const senderNumber = (message.key.participant || message.key.remoteJid).split('@')[0];
-    const isBotOwner = config.ADMIN_JIDS && config.ADMIN_JIDS.includes(senderNumber);
+    const senderJidRaw = message.key.participant || message.key.remoteJid;
+    const senderNumber = PermissionManager.jidDigits(senderJidRaw) || senderJidRaw.split('@')[0];
+    const isBotOwner = PermissionManager.isAdmin(senderJidRaw);
 
     if (!isBotOwner) {
       if (reply) {
