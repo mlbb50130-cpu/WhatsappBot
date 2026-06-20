@@ -1,157 +1,92 @@
 const MessageFormatter = require('../utils/messageFormatter');
+const config = require('../config');
 
-const PAGES = {
-  1: {
-    title: 'Documentation - Profil',
-    subtitle: 'Page 1/5',
-    sections: [
-      {
-        title: 'Profil et progression',
-        items: [
-          '`!profil` - Profil complet du joueur.',
-          '`!level` - Niveau actuel et progression.',
-          '`!xp` - XP total et XP restant.',
-          '`!rank` - Rang et position.',
-          '`!stats` - Statistiques détaillées.',
-          '`!badges` - Badges débloqués.',
-        ],
-      },
-      {
-        title: 'À retenir',
-        items: [
-          'L’XP augmente avec l’activité, les quiz, les duels et certaines récompenses.',
-          'Le niveau met à jour le rang et peut améliorer les ressources du joueur.',
-        ],
-      },
-    ],
-    next: 'Tape `!documentation 2` pour les combats, jeux et gold.',
-  },
-  2: {
-    title: 'Documentation - Combats',
-    subtitle: 'Page 2/5',
-    sections: [
-      {
-        title: 'Duels et ressources',
-        items: [
-          '`!duel @user` - Lance un duel contre un joueur.',
-          '`!duel @user 5` - Lance plusieurs duels.',
-          '`!chakra` - Affiche le chakra disponible.',
-          '`!powerlevel` - Affiche le niveau de puissance.',
-        ],
-      },
-      {
-        title: 'Jeux et économie',
-        items: [
-          '`!pfc pierre|feuille|ciseaux` - Pierre-Feuille-Ciseaux.',
-          '`!roulette` - Jeu de hasard avec coût en gold.',
-          '`!chance` - Chance du jour.',
-          '`!work` - Gagne du gold avec un cooldown.',
-          '`!daily` - Bonus quotidien.',
-          '`!gold` - Solde actuel.',
-        ],
-      },
-    ],
-    next: 'Tape `!documentation 3` pour les quiz, quêtes et loots.',
-  },
-  3: {
-    title: 'Documentation - Quêtes',
-    subtitle: 'Page 3/5',
-    sections: [
-      {
-        title: 'Quiz',
-        items: [
-          '`!quiz` - Question otaku aléatoire.',
-          '`!quizanime` - Quiz anime.',
-          '`!reponse A` - Répond à une question active.',
-          'Les réponses directes `a`, `b`, `c`, `d` sont aussi acceptées quand un quiz est en cours.',
-        ],
-      },
-      {
-        title: 'Quêtes et récompenses',
-        items: [
-          '`!quete` - Liste des quêtes actives.',
-          '`!nouvellequete` - Génère une nouvelle quête.',
-          '`!valider` - Récupère les récompenses d’une quête terminée.',
-          '`!loot` - Ouvre un coffre avec récompenses.',
-          '`!quotidien` et `!hebdo` - Récompenses régulières.',
-        ],
-      },
-    ],
-    next: 'Tape `!documentation 4` pour les images, anime et manga.',
-  },
-  4: {
-    title: 'Documentation - Anime',
-    subtitle: 'Page 4/5',
-    sections: [
-      {
-        title: 'Images et personnages',
-        items: [
-          '`!waifu`, `!husbando`, `!neko`, `!animegif` - Images et médias anime.',
-          '`!naruto`, `!gojo`, `!madara`, `!sukuna`, `!miku`, `!zerotwo` et autres - Images par personnage.',
-          '`!assets` - Liste des catégories disponibles.',
-        ],
-      },
-      {
-        title: 'Recherche anime/manga',
-        items: [
-          '`!anime <nom>` - Infos sur un anime.',
-          '`!manga <nom>` - Infos sur un manga.',
-          '`!personnage <nom>` - Infos personnage.',
-          '`!topanime` et `!topmanga` - Classements.',
-          '`!voiranime` - Indications pour regarder des animes.',
-        ],
-      },
-    ],
-    next: 'Tape `!documentation 5` pour l’administration et les règles.',
-  },
-  5: {
-    title: 'Documentation - Admin',
-    subtitle: 'Page 5/5',
-    sections: [
-      {
-        title: 'Administration',
-        items: [
-          '`!activatebot` - Active le bot dans un groupe.',
-          '`!desactivatebot` - Désactive le bot dans un groupe.',
-          '`!selectpack` - Sélectionne le pack du groupe.',
-          '`!setmodule` - Active ou désactive des modules.',
-          '`!theme <nom>` - Change le thème visuel.',
-          '`!warn`, `!kick`, `!mute`, `!lock`, `!clear` - Modération.',
-        ],
-      },
-      {
-        title: 'Sécurité et limites',
-        items: [
-          'Les commandes ont des cooldowns pour limiter le spam.',
-          'Une utilisation trop rapide peut déclencher une restriction temporaire.',
-          'Certaines commandes NSFW nécessitent une activation explicite.',
-          'Utilise `!help <commande>` pour vérifier l’usage précis.',
-        ],
-      },
-    ],
-    next: 'Fin de la documentation. Retour au menu: `!menu`.',
-  },
-};
+const COMMANDS_PER_PAGE = 10;
 
-function buildDocumentationPage(page) {
-  const content = [
-    MessageFormatter.header(page.title, page.subtitle),
-  ];
+function normalizeCategory(category = '') {
+  return String(category || 'AUTRES')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toUpperCase()
+    .trim() || 'AUTRES';
+}
 
-  page.sections.forEach((section) => {
-    content.push('');
-    content.push(MessageFormatter.elegantSection(section.title, section.items));
+function commandLabel(command) {
+  const aliases = Array.isArray(command.aliases)
+    ? command.aliases.map((alias) => String(alias || '').trim()).filter(Boolean)
+    : [];
+  const visibleAliases = aliases.slice(0, 4).map((alias) => `${config.PREFIX}${alias}`);
+  const more = aliases.length > visibleAliases.length ? ` +${aliases.length - visibleAliases.length}` : '';
+
+  return visibleAliases.length > 0
+    ? `${config.PREFIX}${command.name} (${visibleAliases.join(', ')}${more})`
+    : `${config.PREFIX}${command.name}`;
+}
+
+function commandFlags(command) {
+  const flags = [];
+  if (command.adminOnly) flags.push('admin');
+  if (command.groupOnly) flags.push('groupe');
+  if (command.ownerOnly) flags.push('owner');
+  return flags.length ? ` [${flags.join(', ')}]` : '';
+}
+
+function commandEntry(command) {
+  const description = MessageFormatter.cleanText(command.description || command.usage || 'Commande disponible.');
+  return `\`${commandLabel(command)}\`${commandFlags(command)} - ${description}`;
+}
+
+function getUniqueCommands() {
+  const handler = require('../handler');
+  return handler.getAllCommands()
+    .filter((command) => command && command.name)
+    .sort((left, right) => {
+      const categoryCompare = normalizeCategory(left.category).localeCompare(normalizeCategory(right.category));
+      if (categoryCompare !== 0) return categoryCompare;
+      return String(left.name).localeCompare(String(right.name));
+    });
+}
+
+function getPageCommands(commands, pageNum) {
+  const start = (pageNum - 1) * COMMANDS_PER_PAGE;
+  return commands.slice(start, start + COMMANDS_PER_PAGE);
+}
+
+function buildCategorySummary(commands) {
+  const counts = new Map();
+  commands.forEach((command) => {
+    const category = normalizeCategory(command.category);
+    counts.set(category, (counts.get(category) || 0) + 1);
   });
 
-  content.push('');
-  content.push(`_${page.next}_`);
+  return Array.from(counts.entries())
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([category, count]) => `${category}: ${count}`);
+}
 
-  return content.join('\n');
+function buildDocumentationPage(pageNum) {
+  const commands = getUniqueCommands();
+  const totalPages = Math.max(1, Math.ceil(commands.length / COMMANDS_PER_PAGE));
+  const safePage = Math.min(Math.max(pageNum, 1), totalPages);
+  const pageCommands = getPageCommands(commands, safePage);
+
+  const body = pageCommands.map(commandEntry);
+  if (safePage === 1) {
+    body.unshift(...buildCategorySummary(commands).slice(0, 6));
+  }
+
+  return MessageFormatter.panel({
+    title: 'Documentation commandes',
+    subtitle: `Page ${safePage}/${totalPages} - ${commands.length} commandes`,
+    body,
+    footer: `Page suivante: ${config.PREFIX}documentation ${safePage < totalPages ? safePage + 1 : 1}. Detail: ${config.PREFIX}help <commande>.`,
+  });
 }
 
 module.exports = {
   name: 'documentation',
-  description: 'Documentation complète du bot',
+  aliases: ['docs', 'commandes', 'commands'],
+  description: 'Liste toutes les commandes chargees par le bot',
   category: 'BOT',
   usage: '!documentation [page]',
   adminOnly: false,
@@ -163,10 +98,7 @@ module.exports = {
 
     try {
       const pageNum = parseInt(args[0], 10) || 1;
-      const page = PAGES[pageNum];
-      const responseText = page
-        ? buildDocumentationPage(page)
-        : MessageFormatter.warning('Page introuvable. Utilise `!documentation 1` à `!documentation 5`.');
+      const responseText = buildDocumentationPage(pageNum);
 
       if (reply) {
         await reply({ text: responseText });
@@ -174,7 +106,7 @@ module.exports = {
         await sock.sendMessage(senderJid, { text: responseText });
       }
     } catch (error) {
-      const text = MessageFormatter.error('Impossible d’afficher la documentation pour le moment.');
+      const text = MessageFormatter.error('Impossible d afficher la documentation pour le moment.');
 
       if (reply) {
         await reply({ text });
@@ -183,4 +115,7 @@ module.exports = {
       }
     }
   },
+
+  buildDocumentationPage,
+  getUniqueCommands,
 };

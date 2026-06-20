@@ -2,11 +2,20 @@ const User = require('../models/User');
 
 const MessageFormatter = require('../utils/messageFormatter');
 
+function statValue(user, path, fallback = 0) {
+  return path.split('.').reduce((value, key) => value?.[key], user) ?? fallback;
+}
+
+function userName(user) {
+  return MessageFormatter.cleanText(user.username || user.jid?.split('@')[0] || 'Joueur');
+}
+
 module.exports = {
   name: 'classement',
+  aliases: ['leaderboard', 'top'],
   description: 'Voir les classements',
   category: 'CLASSEMENTS',
-  usage: '!classement level',
+  usage: '!classement level|xp|wins|quiz',
   adminOnly: false,
   groupOnly: false,
   cooldown: 5,
@@ -23,63 +32,62 @@ module.exports = {
         case 'level':
         case 'niveau':
           users = await User.find({}).sort({ level: -1, xp: -1 }).limit(10);
-          title = '🎖️ TOP 10 NIVEAUX';
+          title = 'Top 10 niveaux';
           break;
         case 'xp':
           users = await User.find({}).sort({ xp: -1 }).limit(10);
-          title = '⭐ TOP 10 XP';
+          title = 'Top 10 XP';
           break;
         case 'wins':
         case 'victoires':
           users = await User.find({}).sort({ 'stats.wins': -1 }).limit(10);
-          title = '🏆 TOP 10 VICTOIRES';
+          title = 'Top 10 victoires';
           break;
         case 'quiz':
           users = await User.find({}).sort({ 'stats.quiz': -1 }).limit(10);
-          title = '📚 TOP 10 QUIZ';
+          title = 'Top 10 quiz';
           break;
         default:
-          if (reply) {
-        await reply({ text: '❌ Type invalide. Options: \`level\`, \`xp\`, \`wins\`, \`quiz\`' });
-      } else {
-        await sock.sendMessage(senderJid, { text: '❌ Type invalide. Options: \`level\`, \`xp\`, \`wins\`, \`quiz\`' });
-      }
+          {
+            const text = MessageFormatter.warning('Type invalide. Options: `level`, `xp`, `wins`, `quiz`.');
+            if (reply) {
+              await reply({ text });
+            } else {
+              await sock.sendMessage(senderJid, { text });
+            }
+          }
           return;
       }
 
-      let leaderboard = `
-╔════════════════════════════════════════╗
-║           ${𝔱𝔦𝔱𝔩𝔢}           ║
-╚════════════════════════════════════════╝
-
-`;
-
-      users.forEach((u, index) => {
-        const medals = ['🥇', '🥈', '🥉'];
-        const medal = medals[index] || `${index + 1}.`;
+      const lines = users.length === 0 ? ['Aucun joueur trouve.'] : users.map((u, index) => {
+        const rank = `${index + 1}.`;
         
         let info = '';
         switch (type) {
           case 'level':
           case 'niveau':
-            info = `Niv ${u.level} | ${u.xp} XP`;
+            info = `Niv ${u.level || 1} | ${u.xp || 0} XP`;
             break;
           case 'xp':
-            info = `${u.xp} XP | Niv ${u.level}`;
+            info = `${u.xp || 0} XP | Niv ${u.level || 1}`;
             break;
           case 'wins':
           case 'victoires':
-            info = `${u.stats.wins} victoires | ${u.stats.losses} défaites`;
+            info = `${statValue(u, 'stats.wins')} victoires | ${statValue(u, 'stats.losses')} defaites`;
             break;
           case 'quiz':
-            info = `${u.stats.quiz} quiz complétés`;
+            info = `${statValue(u, 'stats.quiz')} quiz completes`;
             break;
         }
 
-        leaderboard += `${medal} ${u.username}\n   └─ ${info}\n\n`;
+        return `${rank} *${userName(u)}* - ${info}`;
       });
 
-      leaderboard += '════════════════════════════════════════';
+      const leaderboard = MessageFormatter.panel({
+        title,
+        body: lines,
+        footer: 'Options: !classement level, xp, wins, quiz.',
+      });
 
       if (reply) {
         await reply({ text: leaderboard });
@@ -87,10 +95,11 @@ module.exports = {
         await sock.sendMessage(senderJid, { text: leaderboard });
       }
     } catch (error) {
+      const text = MessageFormatter.publicError('Recuperation du classement impossible', error);
       if (reply) {
-        await reply({ text: '❌ Erreur lors de la récupération du classement.' });
+        await reply({ text });
       } else {
-        await sock.sendMessage(senderJid, { text: '❌ Erreur lors de la récupération du classement.' });
+        await sock.sendMessage(senderJid, { text });
       }
     }
   }
