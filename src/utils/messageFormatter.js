@@ -119,21 +119,7 @@ class MessageFormatter {
   }
 
   static limitText(text = '', maxLines = 22, maxChars = 1600) {
-    let value = String(text ?? '');
-
-    if (value.length > maxChars) {
-      value = `${value.slice(0, maxChars).trimEnd()}\n_Suite: utilise une commande plus precise._`;
-    }
-
-    const lines = value.split('\n');
-    if (lines.length > maxLines) {
-      value = [
-        ...lines.slice(0, maxLines),
-        '_Message reduit. Utilise !help ou !menu pour le detail._',
-      ].join('\n');
-    }
-
-    return value;
+    return String(text ?? '');
   }
 
   static normalizeTitle(text = '') {

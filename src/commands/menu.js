@@ -1,118 +1,58 @@
 const MessageFormatter = require('../utils/messageFormatter');
-const ModuleManager = require('../utils/ModuleManager');
+const config = require('../config');
+const {
+  buildContext,
+  buildSections,
+  commandShortEntry,
+  findSection,
+  moduleSummary,
+  sectionOverviewLine,
+} = require('../utils/commandCatalog');
 
-const OTAKU_CATEGORIES = {
-  1: { name: 'Profil', commands: ['!profil', '!level', '!xp', '!rank', '!stats', '!badges'] },
-  2: { name: 'Quetes', commands: ['!quete', '!quotidien', '!hebdo', '!quetelundi'] },
-  3: { name: 'Duels', commands: ['!duel @user', '!powerlevel', '!chakra'] },
-  4: { name: 'Jeux', commands: ['!quiz', '!quizanime', '!reponse A-D', '!pfc', '!roulette'] },
-  5: { name: 'Gold', commands: ['!work', '!daily', '!gold'] },
-  6: { name: 'Inventaire', commands: ['!loot', '!inventaire', '!equip', '!equipement'] },
-  7: { name: 'Anime', commands: ['!anime <nom>', '!manga <nom>', '!personnage <nom>', '!voiranime'] },
-  8: { name: 'Images', commands: ['!waifu', '!husbando', '!neko', '!animegif'] },
-  9: { name: 'Persos', commands: ['!naruto', '!gojo', '!sukuna', '!miku', '!livai', '!nino'] },
-  10: { name: 'Fun', commands: ['!blagueotaku', '!roast @user', '!chance', '!ship', '!sticker', '!q <texte>', '!emojimix 😎+🔥'] },
-  11: { name: 'Download', commands: ['!dl <url>', '!play <titre>', '!mp3 <lien>', '!mp4 <titre/lien>', '!tt <lien/recherche>'] },
-  12: { name: 'Media', commands: ['!image <recherche>', '!gif <recherche>', '!pin <recherche>', '!couplepp', '!revive', '!steal pack,author'] },
-  13: { name: 'Recherche', commands: ['!google <texte>', '!lyrics <titre>', '!yts <texte>', '!weather <ville>', '!github <user>', '!wiki <texte>'] },
-  14: { name: 'Tools', commands: ['!hd', '!calc 2+2', '!say <texte>', '!toimg', '!tomp3', '!topdf', '!toqr <texte>', '!tourl'] },
-  15: { name: 'Classements', commands: ['!classement', '!topanime', '!topmanga'] },
-  16: { name: 'Admin', commands: ['!activatebot', '!antilink on/off', '!welcome on/off', '!tagall <msg>', '!hidetag <msg>', '!gclink', '!ban @user', '!mode public'] },
-  17: { name: 'NSFW', commands: ['!hentai', '!hentaivd', '!nsfw', '!boahancook'] },
-  18: { name: 'Bot', commands: ['!menu', '!ping', '!info', '!help', '!documentation', '!ask <question>', '!chatbot status', '!characters'] },
-};
-
-const MLBB_CATEGORIES = {
-  1: { name: 'Heros', commands: ['!hero <nom>', '!heroes', '!build <nom>', '!counter <nom>', '!combo <nom>'] },
-  2: { name: 'Meta', commands: ['!meta', '!lane <role>', '!tip'] },
-  3: { name: 'Profil MLBB', commands: ['!mlbb set <rang> <role>', '!mlbb me', '!team <nom>', '!join <team>'] },
-  4: { name: 'Download', commands: ['!dl <url>', '!play <titre>', '!mp3 <lien>', '!mp4 <titre/lien>', '!tt <lien/recherche>'] },
-  5: { name: 'Media', commands: ['!image <recherche>', '!gif <recherche>', '!pin <recherche>', '!revive', '!stickersearch <texte>'] },
-  6: { name: 'Tools', commands: ['!hd', '!calc 2+2', '!say <texte>', '!toqr <texte>', '!tourl'] },
-  7: { name: 'Admin', commands: ['!selectpack', '!setmodule', '!activatebot', '!antilink on/off', '!tagall <msg>'] },
-  8: { name: 'Bot', commands: ['!mlbbmenu', '!ping', '!help <cmd>', '!ask <question>', '!chatbot status'] },
-};
-
-const COMPLET_CATEGORIES = {
-  ...OTAKU_CATEGORIES,
-  19: { name: 'MLBB', commands: ['!mlbb', '!hero <nom>', '!build <nom>', '!counter <nom>', '!meta', '!team <nom>'] },
-};
-
-function resolveActiveMenu(senderJid, isGroup, groupData) {
-  let activePack = 'otaku';
-  let activeCategories = OTAKU_CATEGORIES;
-
-  if (isGroup && groupData) {
-    const groupModules = ModuleManager.getGroupModules(senderJid);
-    const mlbbEnabled = groupModules.mlbb === true;
-    const animeEnabled = groupModules.anime !== false;
-    const xpEnabled = groupModules.xp !== false;
-    const queteEnabled = groupModules.quete !== false;
-
-    if (mlbbEnabled && !animeEnabled && !xpEnabled && !queteEnabled) {
-      activePack = 'mlbb';
-      activeCategories = MLBB_CATEGORIES;
-    } else if (mlbbEnabled && animeEnabled && xpEnabled && queteEnabled) {
-      activePack = 'complet';
-      activeCategories = COMPLET_CATEGORIES;
-    }
-  }
-
-  return { activePack, activeCategories };
+function getCommands() {
+  const handler = require('../handler');
+  return handler.getAllCommands();
 }
 
-function buildMainMenu(activePack, categories) {
-  const categoryLines = Object.entries(categories).map(([number, category]) => {
-    return `${number}. ${category.name} - !menu ${number}`;
-  });
-
+function buildMainMenu(sections, context) {
   return MessageFormatter.panel({
     title: 'Menu',
-    subtitle: `Pack: ${activePack}`,
-    body: categoryLines,
-    footer: 'Ouvre une categorie avec !menu <numero>.',
+    subtitle: context.isGroup ? 'Categories selon les modules du groupe' : 'Categories disponibles',
+    body: [
+      moduleSummary(context),
+      '',
+      ...sections.map((section, index) => sectionOverviewLine(section, index, context)),
+    ],
+    footer: `Ouvre une categorie avec ${config.PREFIX}menu <numero>.`,
   });
 }
 
-function buildCategoryMenu(number, category) {
-  const visibleCommands = category.commands.slice(0, 8);
-  const footer = category.commands.length > visibleCommands.length
-    ? 'Liste reduite. Detail: !help <commande>'
-    : 'Retour: !menu';
-
+function buildCategoryMenu(section, sectionIndex) {
   return MessageFormatter.panel({
-    title: `${number}. ${category.name}`,
-    body: visibleCommands,
-    footer,
+    title: `${sectionIndex + 1}. ${section.title}`,
+    body: section.commands.map(commandShortEntry),
+    footer: `Detail: ${config.PREFIX}help <commande>. Retour: ${config.PREFIX}menu.`,
   });
 }
 
 module.exports = {
   name: 'menu',
-  description: 'Affiche le menu principal du bot',
+  description: 'Affiche les commandes par categorie et modules actifs',
   category: 'BOT',
-  usage: '!menu [numero]',
+  usage: '!menu [categorie]',
   adminOnly: false,
   groupOnly: false,
   cooldown: 5,
 
   async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
-    const categoryNum = args[0] ? parseInt(args[0], 10) : null;
-    const { activePack, activeCategories } = resolveActiveMenu(senderJid, isGroup, groupData);
+    const context = buildContext({ groupJid: senderJid, isGroup });
+    const sections = buildSections(getCommands(), context);
+    const target = args[0] || '';
+    const section = findSection(sections, target);
 
-    if (categoryNum && activeCategories[categoryNum]) {
-      const menu = buildCategoryMenu(categoryNum, activeCategories[categoryNum]);
-      if (reply) {
-        await reply(MessageFormatter.createMessageWithImage(menu));
-      } else {
-        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(menu));
-      }
-      return;
-    }
-
-    if (categoryNum && !activeCategories[categoryNum]) {
-      const text = MessageFormatter.warning(`Categorie introuvable. Choisis 1 a ${Object.keys(activeCategories).length}.`);
+    if (target && !section) {
+      const text = MessageFormatter.warning(`Categorie introuvable. Choisis 1 a ${sections.length}.`);
       if (reply) {
         await reply({ text });
       } else {
@@ -121,13 +61,14 @@ module.exports = {
       return;
     }
 
-    const mainMenu = buildMainMenu(activePack, activeCategories);
+    const text = section
+      ? buildCategoryMenu(section, sections.indexOf(section))
+      : buildMainMenu(sections, context);
 
     if (reply) {
-      await reply(MessageFormatter.createMessageWithImage(mainMenu));
+      await reply({ text });
     } else {
-      await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(mainMenu));
+      await sock.sendMessage(senderJid, { text });
     }
   },
 };
-

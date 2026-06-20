@@ -1,50 +1,21 @@
 const MessageFormatter = require('../utils/messageFormatter');
 const config = require('../config');
+const {
+  buildContext,
+  buildSections,
+  commandEntry,
+  findSection,
+  moduleSummary,
+  sectionOverviewLine,
+} = require('../utils/commandCatalog');
 
 const COMMANDS_PER_PAGE = 10;
-
-function normalizeCategory(category = '') {
-  return String(category || 'AUTRES')
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toUpperCase()
-    .trim() || 'AUTRES';
-}
-
-function commandLabel(command) {
-  const aliases = Array.isArray(command.aliases)
-    ? command.aliases.map((alias) => String(alias || '').trim()).filter(Boolean)
-    : [];
-  const visibleAliases = aliases.slice(0, 4).map((alias) => `${config.PREFIX}${alias}`);
-  const more = aliases.length > visibleAliases.length ? ` +${aliases.length - visibleAliases.length}` : '';
-
-  return visibleAliases.length > 0
-    ? `${config.PREFIX}${command.name} (${visibleAliases.join(', ')}${more})`
-    : `${config.PREFIX}${command.name}`;
-}
-
-function commandFlags(command) {
-  const flags = [];
-  if (command.adminOnly) flags.push('admin');
-  if (command.groupOnly) flags.push('groupe');
-  if (command.ownerOnly) flags.push('owner');
-  return flags.length ? ` [${flags.join(', ')}]` : '';
-}
-
-function commandEntry(command) {
-  const description = MessageFormatter.cleanText(command.description || command.usage || 'Commande disponible.');
-  return `\`${commandLabel(command)}\`${commandFlags(command)} - ${description}`;
-}
 
 function getUniqueCommands() {
   const handler = require('../handler');
   return handler.getAllCommands()
     .filter((command) => command && command.name)
-    .sort((left, right) => {
-      const categoryCompare = normalizeCategory(left.category).localeCompare(normalizeCategory(right.category));
-      if (categoryCompare !== 0) return categoryCompare;
-      return String(left.name).localeCompare(String(right.name));
-    });
+    .sort((left, right) => String(left.name).localeCompare(String(right.name)));
 }
 
 function getPageCommands(commands, pageNum) {
@@ -52,35 +23,42 @@ function getPageCommands(commands, pageNum) {
   return commands.slice(start, start + COMMANDS_PER_PAGE);
 }
 
-function buildCategorySummary(commands) {
-  const counts = new Map();
-  commands.forEach((command) => {
-    const category = normalizeCategory(command.category);
-    counts.set(category, (counts.get(category) || 0) + 1);
-  });
-
-  return Array.from(counts.entries())
-    .sort(([left], [right]) => left.localeCompare(right))
-    .map(([category, count]) => `${category}: ${count}`);
-}
-
-function buildDocumentationPage(pageNum) {
-  const commands = getUniqueCommands();
-  const totalPages = Math.max(1, Math.ceil(commands.length / COMMANDS_PER_PAGE));
-  const safePage = Math.min(Math.max(pageNum, 1), totalPages);
-  const pageCommands = getPageCommands(commands, safePage);
-
-  const body = pageCommands.map(commandEntry);
-  if (safePage === 1) {
-    body.unshift(...buildCategorySummary(commands).slice(0, 6));
-  }
-
+function buildDocumentationIndex(commands, sections, context) {
+  const visibleCount = sections.reduce((count, section) => count + section.commands.length, 0);
   return MessageFormatter.panel({
     title: 'Documentation commandes',
-    subtitle: `Page ${safePage}/${totalPages} - ${commands.length} commandes`,
-    body,
-    footer: `Page suivante: ${config.PREFIX}documentation ${safePage < totalPages ? safePage + 1 : 1}. Detail: ${config.PREFIX}help <commande>.`,
+    subtitle: `${visibleCount}/${commands.length} commandes visibles`,
+    body: [
+      moduleSummary(context),
+      '',
+      ...sections.map((section, index) => sectionOverviewLine(section, index, context, { command: 'documentation' })),
+    ],
+    footer: `Detail: ${config.PREFIX}documentation <numero categorie>.`,
   });
+}
+
+function buildDocumentationSection(section, sectionIndex, pageNum, context) {
+  const totalPages = Math.max(1, Math.ceil(section.commands.length / COMMANDS_PER_PAGE));
+  const safePage = Math.min(Math.max(pageNum, 1), totalPages);
+  const body = getPageCommands(section.commands, safePage).map((command) => commandEntry(command, context));
+
+  return MessageFormatter.panel({
+    title: `Documentation - ${section.title}`,
+    subtitle: `Categorie ${sectionIndex + 1} - Page ${safePage}/${totalPages}`,
+    body,
+    footer: `Retour: ${config.PREFIX}documentation. Suite: ${config.PREFIX}documentation ${sectionIndex + 1} ${safePage < totalPages ? safePage + 1 : 1}.`,
+  });
+}
+
+function buildDocumentationPage(target = '', pageNum = 1, options = {}) {
+  const commands = getUniqueCommands();
+  const context = buildContext(options);
+  const sections = buildSections(commands, context);
+  const section = findSection(sections, target);
+
+  if (!section) return buildDocumentationIndex(commands, sections, context);
+
+  return buildDocumentationSection(section, sections.indexOf(section), pageNum, context);
 }
 
 module.exports = {
@@ -97,8 +75,12 @@ module.exports = {
     const senderJid = message.key.remoteJid;
 
     try {
-      const pageNum = parseInt(args[0], 10) || 1;
-      const responseText = buildDocumentationPage(pageNum);
+      const target = args[0] || '';
+      const pageNum = parseInt(args[1], 10) || 1;
+      const responseText = buildDocumentationPage(target, pageNum, {
+        groupJid: senderJid,
+        isGroup,
+      });
 
       if (reply) {
         await reply({ text: responseText });

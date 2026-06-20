@@ -9,6 +9,7 @@ const QuestSystem = require('./utils/questSystem');
 const BadgeSystem = require('./utils/badgeSystem');
 const RankSystem = require('./utils/rankSystem');
 const PackManager = require('./utils/PackManager');
+const { buildContext, commandVisible } = require('./utils/commandCatalog');
 const MessageFormatter = require('./utils/messageFormatter');
 const ReactionSystem = require('./utils/reactionSystem');
 const Group = require('./models/Group');
@@ -378,6 +379,11 @@ async function handleMessage(sock, message, isGroup, groupData) {
 
     const command = commands.get(commandName);
     if (!command) return;
+
+    if (isGroup && !commandVisible(command, buildContext({ groupJid: senderJid, isGroup }))) {
+      await sendText(sock, senderJid, MessageFormatter.warning('Cette commande nest pas disponible avec les modules actifs du groupe. Un admin peut utiliser `!setmodule status`.'));
+      return;
+    }
 
     if (global.tournaments && global.tournaments.has(senderJid)) {
       const tournament = global.tournaments.get(senderJid);

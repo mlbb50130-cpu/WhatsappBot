@@ -8,43 +8,43 @@ class ModuleManager {
     mlbb: {
       name: 'MLBB',
       description: 'Commandes Mobile Legends: Bang Bang',
-      commands: ['mlbb', 'hero', 'build', 'counter', 'combo', 'meta', 'lane', 'team', 'join', 'leave'],
+      commands: ['mlbb', 'ml', 'legends', 'moba', 'mlbb-profile', 'mlbbprofile', 'mlbbmenu', 'mlbbhelp', 'mlbbcommandes', 'mlbboptions', 'hero', 'heroe', 'champion', 'build', 'builds', 'items', 'set', 'counter', 'counters', 'beat', 'antiheroe', 'combo', 'combos', 'rotation', 'cc', 'meta', 'metagame', 'tier', 'tierlist', 'lane', 'position', 'role', 'guide', 'team', 'equipe', 'squad', 'crew', 'join', 'j', 'leave', 'l', 'heroes', 'heroslist', 'listheroe', 'herolist', 'heros', 'tip', 'tips', 'conseil', 'conseils'],
       enabled: false
     },
     anime: {
       name: 'Anime',
       description: 'Commandes Anime (personnages, infos)',
-      commands: ['anime', 'mangadex', 'personnage', 'husbando', 'waifu', 'ship', 'topanime', 'topmanga'],
+      commands: ['anime', 'manga', 'mangadex', 'personnage', 'topanime', 'topmanga', 'animegif', 'husbando', 'waifu', 'madara', 'naruto', 'vegito', 'yoruichi', 'bleach', 'deku', 'gojo', 'gokuui', 'jinwoo', 'livai', 'makima', 'miku', 'mikunakano', 'nino', 'rengokudemon', 'sukuna', 'tengen', 'tsunade', 'yami', 'zerotwo'],
       enabled: true
     },
     fun: {
       name: 'Amusement',
       description: 'Commandes fun et jeux',
-      commands: ['pfc', 'roulette', 'duel', 'roast', 'chance', 'quiz', 'quizanime'],
+      commands: ['pfc', 'roulette', 'duel', 'roast', 'chance', 'quiz', 'quizanime', 'reponse', 'blagueotaku', 'reaction', 'react', 'r', 'ship', 'sticker', 's', 'stick', 'steal', 'take', 'stickercrop', 'scrop', 'smeme', 'stickermeme', 'quote', 'q', 'emojimix', 'surprise', 'truth', 'dare', 'coinflip', 'dice', 'fact', 'viewonce', 'vo', 'vonce', 'revive', 'antiviewonce', 'voiranime', 'anniversaire'],
       enabled: true
     },
     nsfw: {
       name: 'NSFW',
       description: 'Contenu adulte (hentai, etc)',
-      commands: ['hentai', 'hentaivd', 'neko', 'boahancook'],
+      commands: ['hentai', 'hentaivd', 'neko', 'boahancook', 'nsfw'],
       enabled: false
     },
     xp: {
       name: 'Système XP',
       description: 'Niveaux, XP, classement',
-      commands: ['xp', 'level', 'rank', 'classement', 'stats'],
+      commands: ['xp', 'level', 'rank', 'classement', 'leaderboard', 'top', 'stats', 'badges', 'profil', 'profile', 'chakra', 'powerlevel', 'daily', 'gold', 'work'],
       enabled: true
     },
     items: {
       name: 'Inventaire',
       description: 'Loot, équipement, chakra',
-      commands: ['loot', 'inventaire', 'equip', 'equipement', 'chakra'],
+      commands: ['loot', 'inventaire', 'equip', 'equipement'],
       enabled: true
     },
     quete: {
       name: 'Quêtes',
       description: 'Quêtes et aventures',
-      commands: ['quete', 'quetelundi', 'quotidien', 'hebdo'],
+      commands: ['quete', 'nouvellequete', 'quetelundi', 'quotidien', 'hebdo', 'valider'],
       enabled: true
     }
   };
@@ -111,7 +111,7 @@ class ModuleManager {
     }
     
     // Commandes par défaut toujours autorisées
-    const alwaysAllowed = ['help', 'ping', 'modules', 'menu'];
+    const alwaysAllowed = ['help', 'h', 'ping', 'modules', 'module', 'setmodule', 'menu', 'documentation', 'docs', 'commandes', 'commands', 'info', 'regles', 'whoami', 'activatebot', 'selectpack', 'pack', 'packselect', 'choosepack'];
     return alwaysAllowed.includes(commandName);
   }
 
