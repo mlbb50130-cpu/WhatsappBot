@@ -67,6 +67,7 @@ const COMMAND_MODULE_OVERRIDES = {
   modatlas: null,
   neko: 'nsfw',
   nsfw: 'nsfw',
+  reaction: null,
   selectpack: null,
   setmodule: null,
   theme: null,
