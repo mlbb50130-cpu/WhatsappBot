@@ -42,6 +42,7 @@ module.exports = {
       name: item.name,
       quantity: 1,
       rarity: item.rarity,
+      slot: item.slot,
     });
     await user.save();
 

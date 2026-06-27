@@ -1,11 +1,16 @@
 const User = require('../models/User');
 
+// Rendement passif par rarete. Concu pour un maximum de 1000 XP/h
+// lorsque les 4 slots sont equipes en legendaire (4 x 250 = 1000).
 const RARITY_XP_RATES = {
-  common: 10,      // ⚪
-  rare: 25,        // 🔵
-  epic: 50,        // 🟣
-  legendary: 80    // 🟡
+  common: 50,      // ⚪  (4x = 200/h)
+  rare: 100,       // 🔵  (4x = 400/h)
+  epic: 175,       // 🟣  (4x = 700/h)
+  legendary: 250   // 🟡  (4x = 1000/h)
 };
+
+// Plafond theorique du passif (4 slots legendaires).
+const MAX_PASSIVE_XP = 1000;
 
 /**
  * Calcule les XP gagnés par les équipements équipés
@@ -115,5 +120,6 @@ module.exports = {
   calculateEquipmentXP,
   applyPassiveEquipmentXP,
   getEquipmentXPDetails,
-  RARITY_XP_RATES
+  RARITY_XP_RATES,
+  MAX_PASSIVE_XP
 };

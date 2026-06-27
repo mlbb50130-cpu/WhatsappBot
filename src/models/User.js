@@ -43,6 +43,7 @@ const userSchema = new mongoose.Schema({
     name: String,
     quantity: { type: Number, default: 1 },
     rarity: String, // common, rare, epic, legendary
+    slot: String,   // head, body, hands, feet (equipement) - null si non equipable
     addedAt: { type: Date, default: Date.now }
   }],
   stats: {

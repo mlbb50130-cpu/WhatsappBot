@@ -74,19 +74,16 @@ ${slots.feet} *Pieds:* ${getEquipmentText('feet')}
           equipmentMessage += `${rarityEmojis[item.rarity]} ${item.name}: +${item.xpPerHour} XP/h\n`;
         });
         equipmentMessage += `
-🎁 *TOTAL: +${totalXP} XP/h*`;
+🎁 *TOTAL: +${totalXP} XP/h* (max ${EquipmentPassiveXP.MAX_PASSIVE_XP} avec 4 legendaires)`;
       }
 
       equipmentMessage += `
 
 ═════════════════════════════════════
 
-*Pour équiper un objet:*
-\`!equip <id> <slot>\`
-
-*Exemple:* \`!equip 0 head\`
-
-Utilise \`!inventaire\` pour voir tes items!
+🛒 Acheter: \`!boutique\` puis \`!acheter <id>\`
+⚔️ Equiper: \`!equip <id>\` (le slot est automatique)
+📦 Voir tes items: \`!inventaire\`
 ═════════════════════════════════════`;
 
       if (reply) {

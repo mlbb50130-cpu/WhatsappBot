@@ -25,21 +25,27 @@ module.exports = {
 
     const chance = RandomUtils.range(1, 6);
     const win = chance > 2; // 4/6 chance de gagner
-    
-    // Déduire le coût d'utilisation de la roulette
-    user.gold -= goldBet;
-    
-    // Ajouter XP seulement
+
+    // Déduire la mise
+    user.gold = (user.gold || 0) - goldBet;
+
+    // Récompenses
+    let goldWin = 0;
+    let xpWin = 0;
     if (win) {
-      user.xp += 100;
+      goldWin = RandomUtils.range(800, 1500);   // gain net positif (mise deduite)
+      xpWin = Math.min(500, RandomUtils.range(200, 500)); // xp plafonne a 500
+      user.gold += goldWin;
+      user.xp += xpWin;
     } else {
-      user.xp += 20;
+      xpWin = RandomUtils.range(10, 50); // petite consolation
+      user.xp += xpWin;
     }
 
     const rouletteItems = [
       { label: '🎲 Résultat', value: win ? '✅ SURVÉCU!' : '💥 TOUCHÉ!' },
-      { label: '💰 Or', value: `-${goldBet} gold` },
-      { label: '⭐ XP', value: win ? '+100 XP' : '+20 XP' },
+      { label: '💰 Or', value: win ? `+${goldWin - goldBet} gold (net)` : `-${goldBet} gold` },
+      { label: '⭐ XP', value: `+${xpWin} XP` },
       { label: '🪙 Solde', value: `${user.gold} gold` }
     ];
     

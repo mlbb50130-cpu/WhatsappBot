@@ -25,27 +25,45 @@ const SLOTS = {
 };
 
 // name + slot + rarity suffisent, prix et xp/h sont calcules a partir de la rarete.
+// Chaque objet appartient a UN seul slot (tete/corps/mains/pieds) et ne peut etre
+// equipe que dans ce slot (verifie par !equip).
 const RAW_ITEMS = [
-  // Tete
+  // === TETE ===
   { name: 'Bandeau Frontal', slot: 'head', rarity: 'common' },
+  { name: 'Casque de Cuir', slot: 'head', rarity: 'common' },
   { name: 'Casque de Chunin', slot: 'head', rarity: 'rare' },
+  { name: 'Masque Anbu', slot: 'head', rarity: 'rare' },
   { name: 'Couronne de Jonin', slot: 'head', rarity: 'epic' },
+  { name: 'Heaume du Kage', slot: 'head', rarity: 'epic' },
   { name: 'Diademe du Hokage', slot: 'head', rarity: 'legendary' },
-  // Corps
+  { name: 'Couronne du Roi Demon', slot: 'head', rarity: 'legendary' },
+  // === CORPS ===
   { name: 'Tunique d\'Entrainement', slot: 'body', rarity: 'common' },
+  { name: 'Gilet de Genin', slot: 'body', rarity: 'common' },
   { name: 'Armure de Samourai', slot: 'body', rarity: 'rare' },
+  { name: 'Veste Tactique', slot: 'body', rarity: 'rare' },
   { name: 'Manteau de l\'Akatsuki', slot: 'body', rarity: 'epic' },
+  { name: 'Cuirasse de Mithril', slot: 'body', rarity: 'epic' },
   { name: 'Armure du Susanoo', slot: 'body', rarity: 'legendary' },
-  // Mains
+  { name: 'Manteau du Dieu Dragon', slot: 'body', rarity: 'legendary' },
+  // === MAINS ===
   { name: 'Gants de Cuir', slot: 'hands', rarity: 'common' },
+  { name: 'Mitaines d\'Entrainement', slot: 'hands', rarity: 'common' },
   { name: 'Gantelets de Chakra', slot: 'hands', rarity: 'rare' },
+  { name: 'Bracelets de Force', slot: 'hands', rarity: 'rare' },
   { name: 'Poings d\'Acier', slot: 'hands', rarity: 'epic' },
+  { name: 'Griffes d\'Ombre', slot: 'hands', rarity: 'epic' },
   { name: 'Gants du Dragon Divin', slot: 'hands', rarity: 'legendary' },
-  // Pieds
+  { name: 'Poings du Titan', slot: 'hands', rarity: 'legendary' },
+  // === PIEDS ===
   { name: 'Sandales Ninja', slot: 'feet', rarity: 'common' },
+  { name: 'Chaussures de Course', slot: 'feet', rarity: 'common' },
   { name: 'Bottes de Vitesse', slot: 'feet', rarity: 'rare' },
+  { name: 'Bottes Renforcees', slot: 'feet', rarity: 'rare' },
   { name: 'Bottes Volantes', slot: 'feet', rarity: 'epic' },
+  { name: 'Jambieres du Tonnerre', slot: 'feet', rarity: 'epic' },
   { name: 'Bottes du Dieu Eclair', slot: 'feet', rarity: 'legendary' },
+  { name: 'Bottes de l\'Eclair Jaune', slot: 'feet', rarity: 'legendary' },
 ];
 
 const SHOP_ITEMS = RAW_ITEMS.map((item, index) => ({

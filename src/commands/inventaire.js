@@ -1,5 +1,16 @@
 const MessageFormatter = require('../utils/messageFormatter');
 const equipmentPassiveXP = require('../utils/equipmentPassiveXP');
+const { getItemById } = require('../data/shopItems');
+
+function itemSlot(item) {
+  const valid = ['head', 'body', 'hands', 'feet'];
+  if (item.slot && valid.includes(item.slot)) return item.slot;
+  if (typeof item.itemId === 'string' && item.itemId.startsWith('shop_')) {
+    const shopItem = getItemById(item.itemId.slice(5));
+    if (shopItem) return shopItem.slot;
+  }
+  return null;
+}
 
 module.exports = {
   name: 'inventaire',
@@ -45,6 +56,10 @@ Tes items:`;
         inventoryText += ` x${item.quantity}`;
       }
       inventoryText += ` (${rarityText})`;
+      const slot = itemSlot(item);
+      if (slot) {
+        inventoryText += ` • slot: ${slot} → \`!equip ${index}\``;
+      }
     });
 
     inventoryText += `\n═════════════════════════════════════`;

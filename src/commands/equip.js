@@ -1,91 +1,97 @@
 const MessageFormatter = require('../utils/messageFormatter');
 const equipmentPassiveXP = require('../utils/equipmentPassiveXP');
+const { getItemById } = require('../data/shopItems');
+
+const VALID_SLOTS = ['head', 'body', 'hands', 'feet'];
+const SLOT_LABEL = { head: 'tete', body: 'corps', hands: 'mains', feet: 'pieds' };
+
+// Determine le slot d'un objet d'inventaire (champ slot, sinon catalogue boutique).
+function resolveItemSlot(item) {
+  if (item.slot && VALID_SLOTS.includes(item.slot)) return item.slot;
+  if (typeof item.itemId === 'string' && item.itemId.startsWith('shop_')) {
+    const shopItem = getItemById(item.itemId.slice(5));
+    if (shopItem) return shopItem.slot;
+  }
+  return null;
+}
 
 module.exports = {
   name: 'equip',
-  description: 'Équiper un objet de ton inventaire',
+  description: 'Equiper un objet de ton inventaire (chaque objet a un slot)',
   category: 'INVENTAIRE',
-  usage: '!equip <id> <slot>',
+  usage: '!equip <id> [slot]',
   adminOnly: false,
   groupOnly: false,
   cooldown: 2,
 
   async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
+    const send = async (payload) => (reply ? reply(payload) : sock.sendMessage(senderJid, payload));
 
     try {
-      if (args.length < 2) {
-        if (reply) {
-        await reply({ text: '❌ Utilisation: `!equip <id> <slot>`\n\n*Slots disponibles:*\n• head (tête)\n• body (corps)\n• hands (mains)\n• feet (pieds)\n\nExemple: `!equip 3 head`' });
-      } else {
-        await sock.sendMessage(senderJid, { text: '❌ Utilisation: `!equip <id> <slot>`\n\n*Slots disponibles:*\n• head (tête)\n• body (corps)\n• hands (mains)\n• feet (pieds)\n\nExemple: `!equip 3 head`' });
-      }
+      if (args.length < 1) {
+        await send({ text: MessageFormatter.error('Utilisation: `!equip <id> [slot]`\n\nL\'id est l\'index dans `!inventaire`.\nLe slot est deduit automatiquement; tu peux le forcer: head/body/hands/feet.\nExemple: `!equip 3`') });
         return;
       }
 
-      const itemId = parseInt(args[0]);
-      const slot = args[1].toLowerCase();
-
-      // Vérifier les slots valides
-      const validSlots = ['head', 'body', 'hands', 'feet'];
-      if (!validSlots.includes(slot)) {
-        await sock.sendMessage(senderJid, {
-          text: `❌ Slot invalide! Slots disponibles: ${validSlots.join(', ')}`
-        });
-        return;
-      }
-
-      // Vérifier si l'item existe dans l'inventaire
-      const item = user.inventory[itemId];
+      const itemIndex = parseInt(args[0], 10);
+      const item = Array.isArray(user.inventory) ? user.inventory[itemIndex] : null;
       if (!item) {
-        await sock.sendMessage(senderJid, {
-          text: `❌ Item non trouvé à l'index ${itemId}!`
-        });
+        await send({ text: MessageFormatter.error(`Objet introuvable a l'index ${args[0]}. Verifie avec \`!inventaire\`.`) });
         return;
       }
 
-      // Initialiser equipped si n'existe pas
+      const itemSlot = resolveItemSlot(item);
+      const requestedSlot = args[1] ? args[1].toLowerCase() : null;
+
+      if (requestedSlot && !VALID_SLOTS.includes(requestedSlot)) {
+        await send({ text: MessageFormatter.error(`Slot invalide. Slots: ${VALID_SLOTS.join(', ')}.`) });
+        return;
+      }
+
+      // Verrouillage: un objet ne va que dans son slot.
+      if (itemSlot && requestedSlot && requestedSlot !== itemSlot) {
+        await send({ text: MessageFormatter.error(`*${item.name}* se porte sur *${SLOT_LABEL[itemSlot]}* (${itemSlot}), pas sur *${SLOT_LABEL[requestedSlot]}*.`) });
+        return;
+      }
+
+      const slot = itemSlot || requestedSlot;
+      if (!slot) {
+        await send({ text: MessageFormatter.error(`Impossible de deduire le slot de *${item.name}*. Precise-le: \`!equip ${itemIndex} <head|body|hands|feet>\`.`) });
+        return;
+      }
+
       if (!user.equipped) {
         user.equipped = { head: null, body: null, hands: null, feet: null };
       }
 
-      // Équiper l'item
       const previousItem = user.equipped[slot];
       user.equipped[slot] = {
         itemId: item.itemId,
         name: item.name,
-        rarity: item.rarity
+        rarity: item.rarity,
       };
-
+      user.markModified('equipped');
       await user.save();
 
-      let message_text = `✅ *${item.name}* équipé au slot *${slot}*!`;
+      let text = `✅ *${item.name}* equipe sur *${SLOT_LABEL[slot]}* (${slot})!`;
       if (previousItem && previousItem.name) {
-        message_text += `\n\n⚠️ *${previousItem.name}* a été retiré.`;
+        text += `\n⚠️ *${previousItem.name}* a ete retire.`;
       }
 
-      // Afficher le passif XP mis à jour
-      const equipmentXPDetails = equipmentPassiveXP.getEquipmentXPDetails(user.equipped, user.inventory);
-      if (equipmentXPDetails && equipmentXPDetails.totalXP > 0) {
-        message_text += `\n\n📦 *Passif XP Équipement:*`;
-        equipmentXPDetails.items.forEach(eq => {
-          const rarityEmojis = { common: '⚪', rare: '🔵', epic: '🟣', legendary: '🟡' };
-          message_text += `\n  ${rarityEmojis[eq.rarity]} ${eq.name}: +${eq.xpPerHour}/h`;
+      const details = equipmentPassiveXP.getEquipmentXPDetails(user.equipped, user.inventory);
+      if (details && details.totalXP > 0) {
+        const emojis = { common: '⚪', rare: '🔵', epic: '🟣', legendary: '🟡' };
+        text += `\n\n📦 *Passif XP equipement:*`;
+        details.items.forEach((eq) => {
+          text += `\n  ${emojis[eq.rarity] || '⚪'} ${eq.name}: +${eq.xpPerHour}/h`;
         });
-        message_text += `\n  ⚡ *Total: +${equipmentXPDetails.totalXP} XP/heure*`;
+        text += `\n  ⚡ *Total: +${details.totalXP} XP/h* (max ${equipmentPassiveXP.MAX_PASSIVE_XP})`;
       }
 
-      if (reply) {
-        await reply({ text: message_text });
-      } else {
-        await sock.sendMessage(senderJid, { text: message_text });
-      }
+      await send({ text });
     } catch (error) {
-      if (reply) {
-        await reply({ text: '❌ Erreur lors de l\'équipement!' });
-      } else {
-        await sock.sendMessage(senderJid, { text: '❌ Erreur lors de l\'équipement!' });
-      }
+      await send({ text: MessageFormatter.error('Erreur lors de l\'equipement.') });
     }
-  }
+  },
 };
