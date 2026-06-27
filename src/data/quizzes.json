@@ -2224,5 +2224,705 @@
     ],
     "correct": 2,
     "reward": 100
+  },
+  {
+    "id": 160,
+    "category": "Naruto",
+    "type": "anime",
+    "question": "Quel demon a une queue est scelle dans Gaara ?",
+    "options": [
+      "Shukaku",
+      "Kurama",
+      "Gyuki",
+      "Matatabi"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 161,
+    "category": "Naruto",
+    "type": "anime",
+    "question": "Quelle technique permet a Naruto de creer des clones solides ?",
+    "options": [
+      "Henge no Jutsu",
+      "Multiclonage (Kage Bunshin)",
+      "Kawarimi no Jutsu",
+      "Edo Tensei"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 162,
+    "category": "Naruto",
+    "type": "anime",
+    "question": "Qui a fonde le village de Konoha ?",
+    "options": [
+      "Tobirama Senju",
+      "Hiruzen Sarutobi",
+      "Hashirama Senju",
+      "Minato Namikaze"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 163,
+    "category": "Naruto",
+    "type": "anime",
+    "question": "Quel est le nom du renard a neuf queues ?",
+    "options": [
+      "Shukaku",
+      "Gyuki",
+      "Son Goku",
+      "Kurama"
+    ],
+    "correct": 3,
+    "reward": 100
+  },
+  {
+    "id": 164,
+    "category": "One Piece",
+    "type": "anime",
+    "question": "Comment appelle-t-on les quatre empereurs des mers ?",
+    "options": [
+      "Les Yonko",
+      "Les Shichibukai",
+      "Les Tenryubito",
+      "Le Gorosei"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 165,
+    "category": "One Piece",
+    "type": "anime",
+    "question": "Qui est l'epeiste surnomme Oeil de Faucon, le plus fort du monde ?",
+    "options": [
+      "Shanks",
+      "Dracule Mihawk",
+      "Silvers Rayleigh",
+      "Kuzan"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 166,
+    "category": "One Piece",
+    "type": "anime",
+    "question": "Comment s'appelle le cuisinier de l'equipage du Chapeau de paille ?",
+    "options": [
+      "Zoro",
+      "Usopp",
+      "Sanji",
+      "Franky"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 167,
+    "category": "Dragon Ball",
+    "type": "anime",
+    "question": "Quelle attaque emblematique Goku lance a deux mains ?",
+    "options": [
+      "Final Flash",
+      "Galick Gun",
+      "Makankosappo",
+      "Kamehameha"
+    ],
+    "correct": 3,
+    "reward": 100
+  },
+  {
+    "id": 168,
+    "category": "Dragon Ball",
+    "type": "anime",
+    "question": "Qui est le maitre d'arts martiaux de Goku enfant ?",
+    "options": [
+      "Tortue Geniale (Kamesennin)",
+      "Kaio",
+      "Korin",
+      "Piccolo"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 169,
+    "category": "Dragon Ball",
+    "type": "anime",
+    "question": "Quel tyran de l'espace detruit la planete Vegeta ?",
+    "options": [
+      "Cell",
+      "Freezer",
+      "Boo",
+      "Cooler"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 170,
+    "category": "Bleach",
+    "type": "anime",
+    "question": "Quelle liberation est plus puissante que le Shikai ?",
+    "options": [
+      "La Hollowfication",
+      "Le Kido",
+      "Le Bankai",
+      "Le Reiatsu"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 171,
+    "category": "Bleach",
+    "type": "anime",
+    "question": "Qui est le capitaine-commandant du Gotei 13 au debut ?",
+    "options": [
+      "Byakuya Kuchiki",
+      "Kenpachi Zaraki",
+      "Toshiro Hitsugaya",
+      "Genryusai Yamamoto"
+    ],
+    "correct": 3,
+    "reward": 100
+  },
+  {
+    "id": 172,
+    "category": "Demon Slayer",
+    "type": "anime",
+    "question": "Quel Hashira manie la respiration de la flamme ?",
+    "options": [
+      "Kyojuro Rengoku",
+      "Giyu Tomioka",
+      "Tengen Uzui",
+      "Sanemi Shinazugawa"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 173,
+    "category": "Demon Slayer",
+    "type": "anime",
+    "question": "Quelle respiration est l'origine de toutes les autres ?",
+    "options": [
+      "La respiration de la Lune",
+      "La respiration du Soleil",
+      "La respiration de la Foudre",
+      "La respiration de la Pierre"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 174,
+    "category": "Attack on Titan",
+    "type": "anime",
+    "question": "Qui est surnomme le soldat le plus fort de l'humanite ?",
+    "options": [
+      "Erwin Smith",
+      "Mike Zacharias",
+      "Levi Ackerman",
+      "Jean Kirstein"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 175,
+    "category": "Attack on Titan",
+    "type": "anime",
+    "question": "Comment s'appellent les deux amis d'enfance d'Eren ?",
+    "options": [
+      "Jean et Connie",
+      "Reiner et Bertholdt",
+      "Sasha et Historia",
+      "Mikasa et Armin"
+    ],
+    "correct": 3,
+    "reward": 100
+  },
+  {
+    "id": 176,
+    "category": "Jujutsu Kaisen",
+    "type": "anime",
+    "question": "Quelle technique innee definit Satoru Gojo ?",
+    "options": [
+      "L'Illimite (Limitless)",
+      "Le Vide",
+      "Les Ombres",
+      "La Resonance"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 177,
+    "category": "Jujutsu Kaisen",
+    "type": "anime",
+    "question": "Comment appelle-t-on l'energie utilisee par les exorcistes ?",
+    "options": [
+      "Le chakra",
+      "L'energie maudite",
+      "Le nen",
+      "Le haki"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 178,
+    "category": "My Hero Academia",
+    "type": "anime",
+    "question": "Quel est le surnom de heros d'Izuku Midoriya ?",
+    "options": [
+      "Dynamight",
+      "Shoto",
+      "Deku",
+      "Red Riot"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 179,
+    "category": "My Hero Academia",
+    "type": "anime",
+    "question": "Comment appelle-t-on les super-pouvoirs dans My Hero Academia ?",
+    "options": [
+      "Le Nen",
+      "Les Stands",
+      "Le Haki",
+      "Les Alters (Quirks)"
+    ],
+    "correct": 3,
+    "reward": 100
+  },
+  {
+    "id": 180,
+    "category": "Hunter x Hunter",
+    "type": "anime",
+    "question": "Quel examen Gon doit-il reussir au debut de l'histoire ?",
+    "options": [
+      "L'examen Hunter",
+      "L'examen Chunin",
+      "L'examen de l'Academie",
+      "L'examen Jonin"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 181,
+    "category": "Fullmetal Alchemist",
+    "type": "anime",
+    "question": "Quelle loi fondamentale regit l'alchimie ?",
+    "options": [
+      "La conservation de l'ame",
+      "L'echange equivalent",
+      "La loi du sang",
+      "Le cercle parfait"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 182,
+    "category": "Death Note",
+    "type": "anime",
+    "question": "Quel objet permet de tuer en y ecrivant un nom ?",
+    "options": [
+      "Le Sharingan",
+      "Le grimoire",
+      "Le Death Note",
+      "Le parchemin"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 183,
+    "category": "One Punch Man",
+    "type": "anime",
+    "question": "Quel heros bat tous ses ennemis d'un seul coup de poing ?",
+    "options": [
+      "Genos",
+      "King",
+      "Mumen Rider",
+      "Saitama"
+    ],
+    "correct": 3,
+    "reward": 100
+  },
+  {
+    "id": 184,
+    "category": "One Punch Man",
+    "type": "anime",
+    "question": "Qui est le disciple cyborg de Saitama ?",
+    "options": [
+      "Genos",
+      "King",
+      "Bang",
+      "Boros"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 185,
+    "category": "One Punch Man",
+    "type": "anime",
+    "question": "Quel entrainement Saitama affirme avoir suivi chaque jour ?",
+    "options": [
+      "1000 repetitions par heure",
+      "100 pompes, 100 abdos, 100 squats et 10 km de course",
+      "Soulever des montagnes",
+      "La meditation"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 186,
+    "category": "Re:Zero",
+    "type": "anime",
+    "question": "Quel est le pouvoir de Subaru Natsuki ?",
+    "options": [
+      "La teleportation",
+      "La telepathie",
+      "Le Retour par la mort",
+      "L'invincibilite"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 187,
+    "category": "Re:Zero",
+    "type": "anime",
+    "question": "Quelle servante aux cheveux bleus tombe amoureuse de Subaru ?",
+    "options": [
+      "Ram",
+      "Emilia",
+      "Beatrice",
+      "Rem"
+    ],
+    "correct": 3,
+    "reward": 100
+  },
+  {
+    "id": 188,
+    "category": "Pokemon",
+    "type": "anime",
+    "question": "Quel Pokemon electrique accompagne Sacha (Ash) ?",
+    "options": [
+      "Pikachu",
+      "Salameche",
+      "Bulbizarre",
+      "Carapuce"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 189,
+    "category": "Pokemon",
+    "type": "anime",
+    "question": "Quelle organisation criminelle sevit dans la region de Kanto ?",
+    "options": [
+      "La Team Aqua",
+      "La Team Rocket",
+      "La Team Magma",
+      "La Team Galaxie"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 190,
+    "category": "Pokemon",
+    "type": "anime",
+    "question": "Quelle est l'evolution finale de Salameche ?",
+    "options": [
+      "Reptincel",
+      "Tortank",
+      "Dracaufeu",
+      "Florizarre"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 191,
+    "category": "Dr. Stone",
+    "type": "anime",
+    "question": "Quel domaine Senku utilise-t-il pour reconstruire la civilisation ?",
+    "options": [
+      "La magie",
+      "La politique",
+      "Le sport",
+      "La science"
+    ],
+    "correct": 3,
+    "reward": 100
+  },
+  {
+    "id": 192,
+    "category": "Dr. Stone",
+    "type": "anime",
+    "question": "Quel phenomene a transforme l'humanite en pierre ?",
+    "options": [
+      "La petrification",
+      "Une eruption volcanique",
+      "Une guerre nucleaire",
+      "Une eclipse"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 193,
+    "category": "Tokyo Revengers",
+    "type": "anime",
+    "question": "Quel pouvoir permet a Takemichi de modifier le passe ?",
+    "options": [
+      "La telepathie",
+      "Le voyage dans le temps",
+      "L'invisibilite",
+      "La super-force"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 194,
+    "category": "Tokyo Revengers",
+    "type": "anime",
+    "question": "Comment surnomme-t-on le chef charismatique du gang Toman ?",
+    "options": [
+      "Draken",
+      "Kisaki",
+      "Mikey",
+      "Baji"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 195,
+    "category": "The Promised Neverland",
+    "type": "anime",
+    "question": "Que cache reellement l'orphelinat de Grace Field ?",
+    "options": [
+      "Une ecole d'elite",
+      "Un hopital secret",
+      "Une prison",
+      "Une ferme a humains pour les demons"
+    ],
+    "correct": 3,
+    "reward": 100
+  },
+  {
+    "id": 196,
+    "category": "The Promised Neverland",
+    "type": "anime",
+    "question": "Quel trio d'enfants forme les esprits les plus brillants ?",
+    "options": [
+      "Emma, Norman et Ray",
+      "Emma, Phil et Don",
+      "Norman, Gilda et Anna",
+      "Ray, Don et Gilda"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 197,
+    "category": "Fire Force",
+    "type": "anime",
+    "question": "Quel type de pouvoir possedent les soldats de Fire Force ?",
+    "options": [
+      "Le controle de l'eau",
+      "La pyrokinesie",
+      "Le controle de la glace",
+      "Le controle du vent"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 198,
+    "category": "Berserk",
+    "type": "anime",
+    "question": "Comment s'appelle le guerrier a l'epee gigantesque, heros de Berserk ?",
+    "options": [
+      "Griffith",
+      "Judeau",
+      "Guts",
+      "Nosferatu Zodd"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 199,
+    "category": "Berserk",
+    "type": "anime",
+    "question": "Quel est le nom de l'enorme epee de Guts ?",
+    "options": [
+      "Excalibur",
+      "Zangetsu",
+      "Murasame",
+      "Le Briseur de Dragons (Dragon Slayer)"
+    ],
+    "correct": 3,
+    "reward": 100
+  },
+  {
+    "id": 200,
+    "category": "Gintama",
+    "type": "anime",
+    "question": "Quel genre de travail fait Gintoki avec son agence Yorozuya ?",
+    "options": [
+      "Des petits boulots en tout genre",
+      "Medecin",
+      "Policier",
+      "Cuisinier"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 201,
+    "category": "JoJo's Bizarre Adventure",
+    "type": "anime",
+    "question": "Quel est le cri emblematique de DIO ?",
+    "options": [
+      "ORA ORA",
+      "WRYYY",
+      "MUDA MUDA",
+      "YARE YARE"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 202,
+    "category": "JoJo's Bizarre Adventure",
+    "type": "anime",
+    "question": "Que permet le Stand The World de DIO ?",
+    "options": [
+      "Controler le feu",
+      "Lire les pensees",
+      "Arreter le temps",
+      "Voler"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 203,
+    "category": "Spy x Family",
+    "type": "anime",
+    "question": "Quel animal est Bond, membre de la famille Forger ?",
+    "options": [
+      "Un chat",
+      "Un oiseau",
+      "Un lapin",
+      "Un chien"
+    ],
+    "correct": 3,
+    "reward": 100
+  },
+  {
+    "id": 204,
+    "category": "Chainsaw Man",
+    "type": "anime",
+    "question": "Quelle mysterieuse superieure recrute Denji au debut ?",
+    "options": [
+      "Makima",
+      "Power",
+      "Himeno",
+      "Reze"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 205,
+    "category": "Solo Leveling",
+    "type": "anime",
+    "question": "Comment appelle-t-on les humains a pouvoirs qui explorent les donjons ?",
+    "options": [
+      "Les mages",
+      "Les chasseurs (hunters)",
+      "Les ninjas",
+      "Les exorcistes"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 206,
+    "category": "Vinland Saga",
+    "type": "anime",
+    "question": "A quelle epoque historique se deroule Vinland Saga ?",
+    "options": [
+      "L'epoque Edo",
+      "Le Moyen Age japonais",
+      "L'epoque des Vikings",
+      "L'Antiquite romaine"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 207,
+    "category": "Sailor Moon",
+    "type": "anime",
+    "question": "Combien de guerrieres composent le groupe interieur initial (Sailor Moon incluse) ?",
+    "options": [
+      "Trois",
+      "Sept",
+      "Quatre",
+      "Cinq"
+    ],
+    "correct": 3,
+    "reward": 100
+  },
+  {
+    "id": 208,
+    "category": "Fairy Tail",
+    "type": "anime",
+    "question": "Comment s'appelle la mage en armure surnommee Titania ?",
+    "options": [
+      "Erza Scarlet",
+      "Lucy Heartfilia",
+      "Juvia Lockser",
+      "Wendy Marvell"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 209,
+    "category": "Hellsing",
+    "type": "anime",
+    "question": "Quelle creature est Alucard, l'arme de l'organisation Hellsing ?",
+    "options": [
+      "Un loup-garou",
+      "Un vampire",
+      "Un demon",
+      "Un fantome"
+    ],
+    "correct": 1,
+    "reward": 100
   }
 ]
