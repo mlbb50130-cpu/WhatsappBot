@@ -76,6 +76,14 @@ const groupSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
   },
 
+  // Suivi des quiz par groupe (anti-repetition + compteur)
+  quizStats: {
+    count: { type: Number, default: 0 },        // nombre total de quiz lances dans le groupe
+    seenIds: { type: [Number], default: [] },   // ids des quiz deja passes (ne reviennent plus jusqu'au reset)
+    resets: { type: Number, default: 0 },       // nombre de fois que le pool a ete reinitialise
+    lastReset: { type: Date, default: Date.now }
+  },
+
   // Membres modérés
   moderators: [String], // JIDs des modérateurs
   bannedMembers: [
