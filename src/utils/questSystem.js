@@ -43,7 +43,8 @@ class QuestSystem {
         duels: 0,
         quizCorrect: 0
       },
-      completed: []
+      completed: [],
+      validated: []
     };
   }
 

@@ -20,14 +20,18 @@ module.exports = {
       }
 
       const dailyQuests = QuestSystem.getDailyQuests();
-      
-      // Vérifier les quêtes complétées
+
+      if (!user.dailyQuests.validated) {
+        user.dailyQuests.validated = [];
+      }
+
+      // Quêtes complétées et pas encore validées
       const completedQuests = [];
-      
+
       if (user.dailyQuests && user.dailyQuests.completed) {
         for (const questId of user.dailyQuests.completed) {
           const quest = dailyQuests.find(q => q.id === questId);
-          if (quest && !user.dailyQuests.validated) {
+          if (quest && !user.dailyQuests.validated.includes(questId)) {
             completedQuests.push({ quest, questId });
           }
         }
@@ -45,19 +49,15 @@ module.exports = {
       let totalReward = 0;
       let validatedCount = 0;
 
-      for (const { quest } of completedQuests) {
+      for (const { quest, questId } of completedQuests) {
         totalReward += quest.reward;
         validatedCount++;
+        // Marquer uniquement cette quête comme validée
+        user.dailyQuests.validated.push(questId);
       }
 
       // Ajouter les récompenses
       user.xp += totalReward;
-      
-      // Marquer les quêtes comme validées
-      if (!user.dailyQuests.validated) {
-        user.dailyQuests.validated = [];
-      }
-      user.dailyQuests.validated = user.dailyQuests.completed;
 
       await user.save();
 

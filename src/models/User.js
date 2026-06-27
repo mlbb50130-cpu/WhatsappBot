@@ -131,7 +131,8 @@ const userSchema = new mongoose.Schema({
       duels: { type: Number, default: 0 },
       quizCorrect: { type: Number, default: 0 }
     },
-    completed: { type: [Number], default: [] }
+    completed: { type: [Number], default: [] },
+    validated: { type: [Number], default: [] }
   },
   weeklyQuests: {
     lastReset: { type: Date, default: Date.now },
