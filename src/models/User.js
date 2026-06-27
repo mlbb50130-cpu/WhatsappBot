@@ -149,7 +149,12 @@ const userSchema = new mongoose.Schema({
       loots: { type: Number, default: 0 },
       level: { type: Number, default: 1 }
     },
-    completed: { type: [Number], default: [] }
+    completed: { type: [Number], default: [] },
+    validated: { type: [Number], default: [] }
+  },
+  newQuestCount: {
+    count: { type: Number, default: 0 },
+    lastReset: { type: Date, default: Date.now }
   },
   dailyImages: {
     lastReset: { type: Date, default: Date.now },

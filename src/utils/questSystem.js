@@ -56,7 +56,8 @@ class QuestSystem {
         loots: 0,
         level: user.level || 1
       },
-      completed: []
+      completed: [],
+      validated: []
     };
   }
 

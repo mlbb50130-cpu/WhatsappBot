@@ -1,9 +1,29 @@
 const QuestSystem = require('../utils/questSystem');
 const MessageFormatter = require('../utils/messageFormatter');
 
+// Collecte les quetes completees mais pas encore validees, et les marque validees.
+function claim(questBucket, questDefs) {
+  if (!questBucket) return { reward: 0, count: 0 };
+  if (!Array.isArray(questBucket.validated)) questBucket.validated = [];
+
+  let reward = 0;
+  let count = 0;
+
+  (questBucket.completed || []).forEach((questId) => {
+    const quest = questDefs.find((q) => q.id === questId);
+    if (quest && !questBucket.validated.includes(questId)) {
+      reward += quest.reward;
+      count += 1;
+      questBucket.validated.push(questId);
+    }
+  });
+
+  return { reward, count };
+}
+
 module.exports = {
   name: 'valider',
-  description: 'Valider une quête complétée',
+  description: 'Valider tes quetes completees (quotidiennes et hebdomadaires)',
   category: 'QUÊTES',
   usage: '!valider',
   adminOnly: false,
@@ -12,79 +32,43 @@ module.exports = {
 
   async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
+    const send = async (payload) => (reply ? reply(payload) : sock.sendMessage(senderJid, payload));
 
     try {
-      // Check if daily quests need reset
-      if (QuestSystem.needsDailyReset(user)) {
-        QuestSystem.resetDailyQuests(user);
-      }
+      // Resets si necessaire (n'ecrase pas si deja a jour)
+      if (QuestSystem.needsDailyReset(user)) QuestSystem.resetDailyQuests(user);
+      if (QuestSystem.needsWeeklyReset(user)) QuestSystem.resetWeeklyQuests(user);
 
-      const dailyQuests = QuestSystem.getDailyQuests();
+      const daily = claim(user.dailyQuests, QuestSystem.getDailyQuests());
+      const weekly = claim(user.weeklyQuests, QuestSystem.getWeeklyQuests());
 
-      if (!user.dailyQuests.validated) {
-        user.dailyQuests.validated = [];
-      }
+      const totalCount = daily.count + weekly.count;
+      const totalReward = daily.reward + weekly.reward;
 
-      // Quêtes complétées et pas encore validées
-      const completedQuests = [];
-
-      if (user.dailyQuests && user.dailyQuests.completed) {
-        for (const questId of user.dailyQuests.completed) {
-          const quest = dailyQuests.find(q => q.id === questId);
-          if (quest && !user.dailyQuests.validated.includes(questId)) {
-            completedQuests.push({ quest, questId });
-          }
-        }
-      }
-
-      if (completedQuests.length === 0) {
-        if (reply) {
-        await reply({ text: MessageFormatter.warning('❌ Aucune quête complétée à valider.') });
-      } else {
-        await sock.sendMessage(senderJid, { text: MessageFormatter.warning('❌ Aucune quête complétée à valider.') });
-      }
+      if (totalCount === 0) {
+        await send({ text: MessageFormatter.warning('Aucune quete completee a valider pour le moment.') });
         return;
       }
 
-      let totalReward = 0;
-      let validatedCount = 0;
-
-      for (const { quest, questId } of completedQuests) {
-        totalReward += quest.reward;
-        validatedCount++;
-        // Marquer uniquement cette quête comme validée
-        user.dailyQuests.validated.push(questId);
-      }
-
-      // Ajouter les récompenses
       user.xp += totalReward;
-
       await user.save();
+
+      let body = '';
+      if (daily.count > 0) body += `\n⏰ Quotidiennes: ${daily.count} (+${daily.reward} XP)`;
+      if (weekly.count > 0) body += `\n📅 Hebdomadaires: ${weekly.count} (+${weekly.reward} XP)`;
 
       const validationMsg = `
 ╔════════════════════════════════════════╗
 ║       ✅ QUÊTES VALIDÉES! ✅           ║
 ╚════════════════════════════════════════╝
+${body}
 
-🎯 Quêtes complétées: ${validatedCount}
-💰 Récompenses totales: +${totalReward} XP
+💰 Total: +${totalReward} XP
+═════════════════════════════════════════`;
 
-═════════════════════════════════════════
-Bravo! Reviens demain pour de nouvelles quêtes! 🚀
-`;
-
-      if (reply) {
-        await reply({ text: validationMsg });
-      } else {
-        await sock.sendMessage(senderJid, { text: validationMsg });
-      }
-
+      await send({ text: validationMsg });
     } catch (error) {
-      if (reply) {
-        await reply({ text: '❌ Erreur lors de la validation!' });
-      } else {
-        await sock.sendMessage(senderJid, { text: '❌ Erreur lors de la validation!' });
-      }
+      await send({ text: MessageFormatter.error('Erreur lors de la validation!') });
     }
-  }
+  },
 };
