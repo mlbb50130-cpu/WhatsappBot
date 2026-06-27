@@ -22,21 +22,10 @@ module.exports = {
         return;
       }
 
-      const now = Date.now();
-      const lastReset = user.lastGoldReset ? new Date(user.lastGoldReset).getTime() : 0;
-      const hoursPassed = (now - lastReset) / (1000 * 60 * 60);
-
-      if (hoursPassed >= 24) {
-        user.gold = 5000;
-        user.lastGoldReset = new Date();
-        await user.save();
-      }
-
-      const hoursRemaining = Math.max(0, 24 - Math.floor(hoursPassed));
       const goldItems = [
         { label: '👛 Gold', value: `${user.gold ?? 0}` },
-        { label: '🔁 Reset', value: hoursRemaining === 0 ? 'disponible' : `dans ${hoursRemaining}h` },
-        { label: '🏦 Max', value: '5000 / 24h' }
+        { label: '💼 Gagner', value: '!work (toutes les heures)' },
+        { label: '🛒 Dépenser', value: '!boutique pour acheter de l\'équipement' }
       ];
 
       const content = MessageFormatter.elegantBox('GOLD', goldItems);

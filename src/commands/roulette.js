@@ -13,22 +13,12 @@ module.exports = {
   async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
-    // Vérifier si 24h ont passé pour réinitialiser le gold
-    const now = Date.now();
-    const lastReset = user.lastGoldReset ? new Date(user.lastGoldReset).getTime() : 0;
-    const hoursPasssed = (now - lastReset) / (1000 * 60 * 60);
-    
-    if (hoursPasssed >= 24) {
-      user.gold = 5000;
-      user.lastGoldReset = new Date();
-    }
-
     const goldBet = 500;
-    
+
     // Vérifier si l'utilisateur a assez d'or
-    if (user.gold < goldBet) {
+    if ((user.gold || 0) < goldBet) {
       await sock.sendMessage(senderJid, {
-        text: `❌ Tu n'as pas assez d'or pour jouer!\n💰 Tu as: ${user.gold} gold | Coût: ${goldBet} gold\n⏰ Ton solde se réinitialisera dans ${Math.ceil(24 - (hoursPasssed))}h`
+        text: `❌ Tu n'as pas assez d'or pour jouer!\n💰 Tu as: ${user.gold || 0} gold | Coût: ${goldBet} gold\n💼 Utilise \`!work\` pour gagner du gold.`
       });
       return;
     }
