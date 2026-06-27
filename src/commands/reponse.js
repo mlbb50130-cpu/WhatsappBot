@@ -1,10 +1,13 @@
-const RandomUtils = require('../utils/random');
 const QuestSystem = require('../utils/questSystem');
 const MessageFormatter = require('../utils/messageFormatter');
 
+function sendText(sock, jid, reply, text) {
+  return reply ? reply({ text }) : sock.sendMessage(jid, { text });
+}
+
 module.exports = {
   name: 'reponse',
-  description: 'Répondre à un quiz',
+  description: 'Repondre a un quiz',
   category: 'QUIZ',
   usage: '!reponse A',
   adminOnly: false,
@@ -17,127 +20,92 @@ module.exports = {
     const username = message.pushName || user.username || 'Unknown';
 
     if (!args[0]) {
-      if (reply) {
-        await reply({ text: MessageFormatter.error('Utilisation: !reponse a (a, b, c ou d)\nOu réponds directement avec: a, b, c, ou d') });
-      } else {
-        await sock.sendMessage(senderJid, { text: MessageFormatter.error('Utilisation: !reponse a (a, b, c ou d)\nOu réponds directement avec: a, b, c, ou d') });
-      }
+      await sendText(
+        sock,
+        senderJid,
+        reply,
+        MessageFormatter.error('Utilisation: !reponse A (A, B, C ou D)')
+      );
       return;
     }
 
-    // Vérifier si un tournoi est en cours
     if (global.tournaments && global.tournaments.has(senderJid)) {
-      // Gérer la réponse du tournoi
-      await this.handleTournamentAnswer(sock, message, args, user, senderJid, participantJid, username);
+      await this.handleTournamentAnswer(sock, message, args, user, senderJid, participantJid, username, reply);
       return;
     }
 
-    // Get quiz session (par GROUPE, pas par utilisateur)
     if (!global.quizSessions) global.quizSessions = new Map();
     const session = global.quizSessions.get(senderJid);
 
-    if (!session) {
-      if (reply) {
-        await reply({ text: MessageFormatter.error('Aucun quiz en cours. Utilise !quiz pour commencer!') });
-      } else {
-        await sock.sendMessage(senderJid, { text: MessageFormatter.error('Aucun quiz en cours. Utilise !quiz pour commencer!') });
-      }
+    if (!session || !session.quiz) {
+      await sendText(sock, senderJid, reply, MessageFormatter.error('Aucun quiz en cours. Utilise !quiz pour commencer.'));
       return;
     }
 
-    // Vérifier si cet utilisateur a déjà répondu
     if (session.answered.has(participantJid)) {
-      if (reply) {
-        await reply({ text: MessageFormatter.warning('Vous avez déjà répondu à ce quiz.') });
-      } else {
-        await sock.sendMessage(senderJid, { text: MessageFormatter.warning('Vous avez déjà répondu à ce quiz.') });
-      }
+      await sendText(sock, senderJid, reply, MessageFormatter.warning('Vous avez deja repondu a ce quiz.'));
       return;
     }
 
-    const answer = args[0].toUpperCase();
-    const answerIndex = answer.charCodeAt(0) - 65; // Convert A to 0, B to 1, etc
+    const answer = String(args[0]).trim().toUpperCase();
+    const answerIndex = answer.charCodeAt(0) - 65;
 
     if (answerIndex < 0 || answerIndex > 3) {
-      if (reply) {
-        await reply({ text: MessageFormatter.error('Réponse invalide. Utilisez a, b, c ou d.') });
-      } else {
-        await sock.sendMessage(senderJid, { text: MessageFormatter.error('Réponse invalide. Utilisez a, b, c ou d.') });
-      }
+      await sendText(sock, senderJid, reply, MessageFormatter.error('Reponse invalide. Utilisez A, B, C ou D.'));
       return;
     }
 
-    // Enregistrer la réponse de cet utilisateur
     session.answered.set(participantJid, {
       name: username,
-      answer: answer,
-      isCorrect: answerIndex === session.quiz.correct
+      answer,
+      isCorrect: answerIndex === session.quiz.correct,
     });
 
     if (answerIndex === session.quiz.correct) {
-      // Correct answer
       user.xp += session.quiz.reward;
       user.stats.quiz += 1;
-      
-      // Reset quests si nécessaire
+
       if (QuestSystem.needsDailyReset(user)) {
         QuestSystem.resetDailyQuests(user);
       }
       if (QuestSystem.needsWeeklyReset(user)) {
         QuestSystem.resetWeeklyQuests(user);
       }
-      
-      // Update quest progress
+
       QuestSystem.updateDailyProgress(user, 'quizCorrect', 1);
-      
-      // Enregistrer ce quiz comme répondu (historique utilisateur)
-      if (!user.quizHistory) user.quizHistory = [];
-      if (Number.isInteger(session.quizIndex) && session.quizIndex >= 0) {
-        if (!user.quizHistory.includes(session.quizIndex)) {
-          user.quizHistory.push(session.quizIndex);
-        }
-        
-        // 🌍 ENREGISTRER GLOBALEMENT pour qu'il ne revienne jamais
-        if (!global.answeredQuizzes) global.answeredQuizzes = new Set();
-        global.answeredQuizzes.add(session.quizIndex);
-      }
-      
       await user.save();
 
-      await sock.sendMessage(senderJid, {
-        text: `✅ ${username} a répondu correctement!\nBonne réponse: ${String.fromCharCode(97 + session.quiz.correct)}. ${session.quiz.options[session.quiz.correct]}\n💰 +${session.quiz.reward} XP`
-      });
+      await sendText(
+        sock,
+        senderJid,
+        reply,
+        `✅ ${username} a repondu correctement!\nBonne reponse: ${String.fromCharCode(65 + session.quiz.correct)}. ${session.quiz.options[session.quiz.correct]}\n+${session.quiz.reward} XP`
+      );
     } else {
-      // Wrong answer - ne pas ajouter à l'historique
       user.stats.quiz += 1;
       await user.save();
-      
-      await sock.sendMessage(senderJid, {
-        text: `❌ ${username} a répondu: ${answer.toLowerCase()}. ${session.quiz.options[answerIndex]}\nBonne réponse: ${String.fromCharCode(97 + session.quiz.correct)}. ${session.quiz.options[session.quiz.correct]}`
-      });
+
+      await sendText(
+        sock,
+        senderJid,
+        reply,
+        `❌ ${username} a repondu: ${answer}.\nBonne reponse: ${String.fromCharCode(65 + session.quiz.correct)}. ${session.quiz.options[session.quiz.correct]}`
+      );
     }
 
     global.quizSessions.delete(senderJid);
   },
 
-  async handleTournamentAnswer(sock, message, args, user, senderJid, participantJid, username) {
+  async handleTournamentAnswer(sock, message, args, user, senderJid, participantJid, username, reply) {
     const tournament = global.tournaments.get(senderJid);
-    
+
     if (!tournament || !tournament.isActive) {
-      if (reply) {
-        await reply({ text: MessageFormatter.error('Aucun tournoi en cours.') });
-      } else {
-        await sock.sendMessage(senderJid, { text: MessageFormatter.error('Aucun tournoi en cours.') });
-      }
+      await sendText(sock, senderJid, reply, MessageFormatter.error('Aucun tournoi en cours.'));
       return;
     }
 
     if (!global.tournamentSessions) {
-      if (reply) {
-        await reply({ text: MessageFormatter.error('Erreur du système: sessions manquantes.') });
-      } else {
-        await sock.sendMessage(senderJid, { text: MessageFormatter.error('Erreur du système: sessions manquantes.') });
-      }
+      await sendText(sock, senderJid, reply, MessageFormatter.error('Erreur du systeme: sessions manquantes.'));
       return;
     }
 
@@ -145,58 +113,41 @@ module.exports = {
     const session = global.tournamentSessions.get(sessionKey);
 
     if (!session || !session.isActive) {
-      if (reply) {
-        await reply({ text: MessageFormatter.warning('Question fermée. Attendez la prochaine question.') });
-      } else {
-        await sock.sendMessage(senderJid, { text: MessageFormatter.warning('Question fermée. Attendez la prochaine question.') });
-      }
+      await sendText(sock, senderJid, reply, MessageFormatter.warning('Question fermee. Attendez la prochaine question.'));
       return;
     }
 
-    // Vérifier si l'utilisateur a déjà répondu
     if (session.answerers.has(participantJid)) {
-      if (reply) {
-        await reply({ text: MessageFormatter.warning('Vous avez déjà répondu à cette question.') });
-      } else {
-        await sock.sendMessage(senderJid, { text: MessageFormatter.warning('Vous avez déjà répondu à cette question.') });
-      }
+      await sendText(sock, senderJid, reply, MessageFormatter.warning('Vous avez deja repondu a cette question.'));
       return;
     }
 
-    const answer = args[0].toUpperCase();
+    const answer = String(args[0]).trim().toUpperCase();
     const answerIndex = answer.charCodeAt(0) - 65;
 
     if (answerIndex < 0 || answerIndex > 3) {
-      if (reply) {
-        await reply({ text: MessageFormatter.error('Réponse invalide. Utilisez A, B, C ou D.') });
-      } else {
-        await sock.sendMessage(senderJid, { text: MessageFormatter.error('Réponse invalide. Utilisez A, B, C ou D.') });
-      }
+      await sendText(sock, senderJid, reply, MessageFormatter.error('Reponse invalide. Utilisez A, B, C ou D.'));
       return;
     }
 
     const isCorrect = answerIndex === session.quiz.correct;
 
-    // Enregistrer la réponse
     session.answerers.set(participantJid, {
       name: username,
-      answer: answer,
-      isCorrect: isCorrect
+      answer,
+      isCorrect,
     });
 
-    // Feedback immédiat
     if (isCorrect) {
-      await sock.sendMessage(senderJid, {
-        text: `✅ ${username} a répondu correctement! (${answer})\n⏱️ Question fermée!`
-      });
-      
-      // 🔐 FERMER LA SESSION immédiatement après une bonne réponse
+      await sendText(
+        sock,
+        senderJid,
+        reply,
+        `✅ ${username} a repondu correctement! (${answer})\nQuestion fermee!`
+      );
       session.isActive = false;
-      
     } else {
-      await sock.sendMessage(senderJid, {
-        text: `❌ ${username} a répondu: ${answer} (incorrect)`
-      });
+      await sendText(sock, senderJid, reply, `❌ ${username} a repondu: ${answer} (incorrect)`);
     }
-  }
+  },
 };

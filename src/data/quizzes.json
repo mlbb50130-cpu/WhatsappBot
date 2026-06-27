@@ -1,1553 +1,2228 @@
 [
-    {
-        "question": "🤔 Quel est le pouvoir spécial de Naruto?",
-        "options": [
-            "Sharingan",
-            "Rinnegan",
-            "Kurama",
-            "Mangekyou"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "🤔 Quel est le nom du village de Naruto?",
-        "options": [
-            "Kirigakure",
-            "Sunagakure",
-            "Konohagakure",
-            "Kumogakure"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "🤔 Combien de Hokage y a-t-il avant Naruto?",
-        "options": [
-            "4",
-            "5",
-            "6",
-            "7"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "🤔 Quel est le vrai nom de Kakashi?",
-        "options": [
-            "Kakashi Hatake",
-            "Kakashi Uchiha",
-            "Kakashi Senju",
-            "Kakashi Namikaze"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "🤔 Quel est le groupe ninja de Naruto?",
-        "options": [
-            "Equipe 7",
-            "Equipe 8",
-            "Equipe 10",
-            "Equipe 1"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "🤔 Quel est le nom du meilleur ami de Naruto?",
-        "options": [
-            "Kakashi",
-            "Sasuke",
-            "Itachi",
-            "Obito"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "🤔 Quel est le sensei de l'équipe 7?",
-        "options": [
-            "Orochimaru",
-            "Kakashi",
-            "Jiraiya",
-            "Tsunade"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "🤔 Quel clan appartient Sasuke?",
-        "options": [
-            "Senju",
-            "Uzumaki",
-            "Uchiha",
-            "Haruno"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "🤔 Quel est le but principal de Pain?",
-        "options": [
-            "La paix",
-            "La destruction",
-            "Le pouvoir",
-            "La vengeance"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "🤔 Quel est le nombre de queues du Kurama?",
-        "options": [
-            "6",
-            "7",
-            "8",
-            "9"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "🤔 Quel est le signe distinctif d'un Uchiha?",
-        "options": [
-            "Rasengan",
-            "Sharingan",
-            "Byakugan",
-            "Rinnegan"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "🤔 Qui est le créateur du Rasengan?",
-        "options": [
-            "Naruto",
-            "Jiraiya",
-            "Minato",
-            "Kakashi"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "🤔 Quel est le nom du pays de Naruto?",
-        "options": [
-            "Pays de l'Eau",
-            "Pays du Feu",
-            "Pays de la Terre",
-            "Pays du Vent"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "🤔 Qui est le Quatrième Hokage?",
-        "options": [
-            "Naruto",
-            "Minato",
-            "Hiruzen",
-            "Tobirama"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "🤔 Quel est le style d'attaque préféré de Lee?",
-        "options": [
-            "Ninjutsu",
-            "Genjutsu",
-            "Taijutsu",
-            "Kenjutsu"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "🤔 Qui possède le Sharingan le plus puissant?",
-        "options": [
-            "Kakashi",
-            "Sasuke",
-            "Itachi",
-            "Madara"
-        ],
-        "correct": 3,
-        "reward": 100
-    },
-    {
-        "question": "🤔 Quel est le nom du village de Sasuke avant l'attaque d'Itachi?",
-        "options": [
-            "Konohagakure",
-            "Kirigakure",
-            "Sunagakure",
-            "Kumogakure"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "🤔 Combien d'Akatsuki members y a-t-il?",
-        "options": [
-            "10",
-            "12",
-            "15",
-            "8"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "🤔 Quel est le pouvoir de Jiraiya?",
-        "options": [
-            "Rasengan",
-            "Imprégnation de crapaud",
-            "Sharingan",
-            "Rinnegan"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "🤔 Qui tue Itachi?",
-        "options": [
-            "Naruto",
-            "Sasuke",
-            "Kakashi",
-            "Pain"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "👑 Quel est le titre du roi des Mers?",
-        "options": [
-            "Shichibukais",
-            "Gol D. Roger",
-            "Pirate King",
-            "Empereur"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "👑 Quel est le nom du bateau de Luffy?",
-        "options": [
-            "Merry Go",
-            "Going Merry",
-            "Sunny Go",
-            "Black Pearl"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "👑 Quel est le pouvoir de la Gomme Gomme?",
-        "options": [
-            "Devenir en acier",
-            "Devenir élastique",
-            "Devenir en pierre",
-            "Devenir invisible"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "👑 Quel est le nombre de Yonko?",
-        "options": [
-            "3",
-            "4",
-            "5",
-            "6"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "👑 Qui est le père de Luffy?",
-        "options": [
-            "Shanks",
-            "Gol D. Roger",
-            "Dragon",
-            "Ace"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "👑 Quel est le rêve de Luffy?",
-        "options": [
-            "Devenir riche",
-            "Devenir le Pirate King",
-            "Sauver le monde",
-            "Trouver l'One Piece"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "👑 Quel est le lieu d'origine de Luffy?",
-        "options": [
-            "Foosha Village",
-            "Water 7",
-            "Alabasta",
-            "Dressrosa"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "👑 Qui est Shanks pour Luffy?",
-        "options": [
-            "Un ami",
-            "Un mentor",
-            "Un ami d'enfance",
-            "Un père"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "👑 Combien de bras a Shanks?",
-        "options": [
-            "1",
-            "2",
-            "3",
-            "0"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "👑 Quel est le pouvoir de Nico Robin?",
-        "options": [
-            "Fleur Fleur",
-            "Gum Gum",
-            "Froid Froid",
-            "Poids Poids"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "👑 Quel est le nom du Shichibukais?",
-        "options": [
-            "7 grands corsaires",
-            "7 seigneurs de guerre",
-            "7 empereurs",
-            "7 capitaines"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "👑 Quel est le groupe de Luffy?",
-        "options": [
-            "Mink Alliance",
-            "Pirates du Chapeau de Paille",
-            "Supernovae",
-            "Alliance du Soleil"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "👑 Qui est le copilote du Going Merry?",
-        "options": [
-            "Luffy",
-            "Zoro",
-            "Nami",
-            "Usopp"
-        ],
-        "correct": 3,
-        "reward": 100
-    },
-    {
-        "question": "👑 Quel est le trésor de Gol D. Roger?",
-        "options": [
-            "Devlin",
-            "One Piece",
-            "L'île secrète",
-            "Le Raftel"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "👑 Quel clan appartient Luffy par sa mère?",
-        "options": [
-            "Clan Pirate",
-            "Clan Royale",
-            "Clan D",
-            "Clan des Rois"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "👑 Quel est le grade de capitaine de Zoro?",
-        "options": [
-            "Premier Maître d'épée",
-            "Épéiste du Chapeau de Paille",
-            "Maître de trois épées",
-            "Maître Épée"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "👑 Qui est le premier membre d'équipage de Luffy?",
-        "options": [
-            "Nami",
-            "Zoro",
-            "Usopp",
-            "Sanji"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "👑 Quel est l'objectif de Nami?",
-        "options": [
-            "Devenir pirate",
-            "Cartographier le monde",
-            "Trouver le One Piece",
-            "Devenir riche"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "👑 Quel est le fruit du démon de Zoro?",
-        "options": [
-            "Gomme Gomme",
-            "Aucun",
-            "Métal Métal",
-            "Pierre Pierre"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "🔥 Quel est le nom de l'épée d'Ichigo?",
-        "options": [
-            "Zangetsu",
-            "Senbonzakura",
-            "Kyoraku",
-            "Zanpakuto"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "🔥 Combien de divisions la Soul Society a-t-elle?",
-        "options": [
-            "10",
-            "11",
-            "13",
-            "15"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "🔥 Quel est le pouvoir de Aizen?",
-        "options": [
-            "Sharingan",
-            "Kyoka Suigetsu",
-            "Ichigo",
-            "Hollowfication"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "🔥 Qui est le Capitaine de la 1ère Division?",
-        "options": [
-            "Aizen",
-            "Yamamoto",
-            "Shunsui",
-            "Jushiro"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "🔥 Quel est le type de pouvoir de Chad?",
-        "options": [
-            "Zanpakuto",
-            "Fullbringer",
-            "Quincy",
-            "Bount"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "🔥 Quel est l'objectif d'Ichigo au début?",
-        "options": [
-            "Devenir Capitaine",
-            "Protéger le monde humain",
-            "Devenir un Hollow",
-            "Rejoindre la Soul Society"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "🔥 Qui est le best friend d'Ichigo?",
-        "options": [
-            "Renji",
-            "Chad",
-            "Uryu",
-            "Ishida"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "🔥 Quel est le clan d'Uryu?",
-        "options": [
-            "Clan Quincy",
-            "Clan Soul Reaper",
-            "Clan Hollow",
-            "Clan Bount"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "🔥 Quel est le rang de l'Espada?",
-        "options": [
-            "0-10",
-            "1-10",
-            "0-9",
-            "1-20"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "🔥 Quel est le nom du monde des hollows?",
-        "options": [
-            "Soul Society",
-            "Hueco Mundo",
-            "Real world",
-            "Dangai"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "🔥 Quel est le pouvoir Bankai d'Ichigo?",
-        "options": [
-            "Mugetsu",
-            "Tensa Zangetsu",
-            "Hollowfication",
-            "Getsuga Tensho"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "⚡ Quel est le rêve de Deku?",
-        "options": [
-            "Devenir riche",
-            "Devenir un Hero",
-            "Devenir fort",
-            "Devenir professeur"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "⚡ Quel est le Quirk de Deku au début?",
-        "options": [
-            "Quirkless",
-            "One For All",
-            "Fire",
-            "Speed"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "⚡ Qui donne son Quirk à Deku?",
-        "options": [
-            "Bakugo",
-            "All Might",
-            "Todoroki",
-            "Tsuyu"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "⚡ Quel est le Quirk de Bakugo?",
-        "options": [
-            "Explosion",
-            "Feu",
-            "Électricité",
-            "Tremor"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "⚡ Quel est l'école de Deku?",
-        "options": [
-            "UA High School",
-            "Demon Academy",
-            "Beginner High",
-            "Hero High"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "⚡ Quel est le Quirk de Todoroki?",
-        "options": [
-            "Feu et Glace",
-            "Explosion",
-            "Électricité",
-            "Eau"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "⚡ Quel est le nom du mentor de Deku?",
-        "options": [
-            "Might Guy",
-            "All Might",
-            "Gran Torino",
-            "Aizawa"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "⚡ Quel est le Quirk de Tsuyu?",
-        "options": [
-            "Crapaud",
-            "Frog",
-            "Amphibien",
-            "Aquatique"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "⚡ Quel est le nom de la classe de Deku?",
-        "options": [
-            "Class 1-A",
-            "Class 2-A",
-            "Class 3-A",
-            "Class 1-B"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "⚡ Quel est le Quirk d'All For One?",
-        "options": [
-            "Vol de Quirk",
-            "One For All",
-            "Création",
-            "Multiplication"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "⚡ Quel est le rang de Deku en tant que Hero?",
-        "options": [
-            "Pro",
-            "Student",
-            "Beginner",
-            "Master"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "⚡ Quel est le Quirk de Iida?",
-        "options": [
-            "Engine",
-            "Vitesse",
-            "Moteur",
-            "Jet"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "⚡ Qui est le premier villain que Deku affronte?",
-        "options": [
-            "Stain",
-            "Shigaraki",
-            "Nomu",
-            "Toga"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "🌟 Quel est l'épée principale d'Asta?",
-        "options": [
-            "Zangetsu",
-            "Demon Slayer Sword",
-            "Anti-Magic Sword",
-            "Grimoire"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "🌟 Quel est le Grimoire d'Asta?",
-        "options": [
-            "Noir",
-            "Blanc",
-            "Rouge",
-            "Vide"
-        ],
-        "correct": 3,
-        "reward": 100
-    },
-    {
-        "question": "🌟 Quel est le rival d'Asta?",
-        "options": [
-            "Noelle",
-            "Yuno",
-            "Mimosa",
-            "Finral"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "🌟 Quel est le groupe de Asta?",
-        "options": [
-            "Order of the Clover",
-            "Black Bulls",
-            "Silver Eagles",
-            "Purple Orcas"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "🌟 Quel est le pouvoir spécial de Yuno?",
-        "options": [
-            "Magie du vent",
-            "Magie de l'eau",
-            "Magie de la lumière",
-            "Magie des ombres"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "🌟 Quel est le capitaine des Black Bulls?",
-        "options": [
-            "William",
-            "Julius",
-            "Yami",
-            "Jack"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "🌟 Quel est le type de magie de Noelle?",
-        "options": [
-            "Magie du vent",
-            "Magie de l'eau",
-            "Magie de la terre",
-            "Magie du feu"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "🌟 Quel est le rêve d'Asta?",
-        "options": [
-            "Devenir riche",
-            "Devenir le Wizard King",
-            "Devenir fort",
-            "Devenir chef"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "🌟 Quel est le nombre de mages dans les Black Bulls?",
-        "options": [
-            "5",
-            "8",
-            "10",
-            "15"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "🌟 Quel est le pays dans Black Clover?",
-        "options": [
-            "Clover Kingdom",
-            "Diamond Kingdom",
-            "Heart Kingdom",
-            "Spade Kingdom"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "⚔️ Quel est le rêve de Tanjiro?",
-        "options": [
-            "Devenir pilier",
-            "Devenir riche",
-            "Guérir Nezuko",
-            "Devenir chef"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "⚔️ Quel est le statut de Nezuko?",
-        "options": [
-            "Humain",
-            "Démon",
-            "Hunter",
-            "God"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "⚔️ Quel est le style de respiration de Tanjiro?",
-        "options": [
-            "Water Breathing",
-            "Fire Breathing",
-            "Sun Breathing",
-            "Beast Breathing"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "⚔️ Quel est le nom du groupe de Tanjiro?",
-        "options": [
-            "Demon Slayer Corps",
-            "Demon Hunter",
-            "Night's Watch",
-            "Pillar Order"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "⚔️ Quel est le clan de Tanjiro?",
-        "options": [
-            "Kamado",
-            "Uzui",
-            "Kanroji",
-            "Rengoku"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "⚔️ Quel est le nombre de Piliers?",
-        "options": [
-            "7",
-            "8",
-            "9",
-            "10"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "⚔️ Quel est le nom du chef des démons?",
-        "options": [
-            "Muzan",
-            "Kokushibo",
-            "Douma",
-            "Akaza"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "⚔️ Quel est le style de respiration de Giyu?",
-        "options": [
-            "Water Breathing",
-            "Fire Breathing",
-            "Wind Breathing",
-            "Stone Breathing"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "⚔️ Quel est le Hashira Pilier de Rengoku?",
-        "options": [
-            "Flame Hashira",
-            "Water Hashira",
-            "Wind Hashira",
-            "Stone Hashira"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "⚔️ Quel est le pouvoir de Demon Form de Nezuko?",
-        "options": [
-            "Feu",
-            "Force",
-            "Vitesse",
-            "Régénération"
-        ],
-        "correct": 3,
-        "reward": 100
-    },
-    {
-        "question": "💀 Quel est l'objectif principal de Light?",
-        "options": [
-            "Devenir Dieu",
-            "Arrêter les criminels",
-            "Devenir riche",
-            "Trouver des amis"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "💀 Quel est le cahier de Death Note?",
-        "options": [
-            "Un grimoire",
-            "Un carnet magique",
-            "Un livre maudit",
-            "Un journal"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "💀 Qui est le propriétaire du Death Note?",
-        "options": [
-            "Ryuk",
-            "Light",
-            "L",
-            "Near"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "💀 Quel est le nom du détective qui chasse Light?",
-        "options": [
-            "M",
-            "N",
-            "L",
-            "K"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "💀 Quel est le règne de Light avec le Death Note?",
-        "options": [
-            "2 ans",
-            "5 ans",
-            "10 ans",
-            "20 ans"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "💀 Quel est le vrai nom de L?",
-        "options": [
-            "Lawliet",
-            "Lamew",
-            "Lawrence",
-            "Lorraine"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "💀 Quel est le pouvoir du Death Note?",
-        "options": [
-            "Arrêter les criminels",
-            "Tuer n'importe qui",
-            "Changer le monde",
-            "Tous les précédents"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "💀 Quel est le successeur de L?",
-        "options": [
-            "Near",
-            "Mello",
-            "Matt",
-            "Rem"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "💀 Quel est le rang de Light à l'école?",
-        "options": [
-            "Premier",
-            "Deuxième",
-            "Troisième",
-            "Dernier"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "💀 Quel est le destin final de Light?",
-        "options": [
-            "Arrêté",
-            "Tué",
-            "Fuit",
-            "Devient Dieu"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "🗡️ Quel est le statut initial de Yuji?",
-        "options": [
-            "Jujutsu Sorcier",
-            "Cursed Vessel",
-            "Poison Vessel",
-            "Demon Host"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "🗡️ Quel est le nom du cursé en Yuji?",
-        "options": [
-            "Sukuna",
-            "Mahito",
-            "Jogo",
-            "Hanami"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "🗡️ Quel est le style d'attaque de Gojo?",
-        "options": [
-            "Infinity",
-            "Six Eyes",
-            "Infinity & Six Eyes",
-            "Limitless"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "🗡️ Quel est le nombre de doigts de Sukuna?",
-        "options": [
-            "10",
-            "15",
-            "20",
-            "30"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "🗡️ Quel est l'école de Yuji?",
-        "options": [
-            "Tokyo Jujutsu High",
-            "Kyoto Jujutsu High",
-            "Shibuya High",
-            "Jujutsu Academy"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "🗡️ Quel est le pouvoir de Sukuna?",
-        "options": [
-            "Immense force",
-            "Feu",
-            "Électricité",
-            "Temps"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "🗡️ Quel est la Technique Maudite principale d'Itadori?",
-        "options": [
-            "Expansion",
-            "Tir Maudit",
-            "Contraction",
-            "Projection"
-        ],
-        "correct": 3,
-        "reward": 100
-    },
-    {
-        "question": "🗡️ Quel est le rang de Yuji?",
-        "options": [
-            "Grade 1",
-            "Grade 2",
-            "Special Grade",
-            "Jujutsu Sorcier"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "🗡️ Quel est le nom de l'école Kyoto?",
-        "options": [
-            "Tokyo Jujutsu High",
-            "Kyoto Jujutsu High",
-            "Kanto High",
-            "Kansai High"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "🗡️ Quel est le nombre de Spécial Grade Sorciers?",
-        "options": [
-            "2",
-            "3",
-            "4",
-            "5"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "⚡ Quel est le clan de Todoroki?",
-        "options": [
-            "Clan de la Glace",
-            "Clan du Feu",
-            "Clan des Tempêtes",
-            "Clan Royal"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "⚡ Quel est le père de Todoroki?",
-        "options": [
-            "Endeavor",
-            "All Might",
-            "Gran Torino",
-            "Aizawa"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "🐱 Quel est le nom du chat de Sailor Moon?",
-        "options": [
-            "Luna",
-            "Artemis",
-            "Diana",
-            "Apo"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "🐱 Quel est le cristal sacré de Sailor Moon?",
-        "options": [
-            "Silver Crystal",
-            "Golden Crystal",
-            "Red Crystal",
-            "Blue Crystal"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "🐱 Quel est le vrai nom de Sailor Moon?",
-        "options": [
-            "Usagi Tsukino",
-            "Ami Mizuno",
-            "Rei Hino",
-            "Makoto Kino"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "🐱 Quel est le nombre de Sailor Scouts?",
-        "options": [
-            "4",
-            "5",
-            "8",
-            "10"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "🐱 Quel est le rêve de Usagi?",
-        "options": [
-            "Devenir Reine",
-            "Sauver le monde",
-            "Devenir normale",
-            "Devenir princesse"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "🐱 Quel est l'ennemi principal de Sailor Moon?",
-        "options": [
-            "Queen Beryl",
-            "Dark Kingdom",
-            "Death Busters",
-            "Black Moon Clan"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "🐱 Quel est l'attaque spéciale d'Usagi?",
-        "options": [
-            "Moon Prism Power",
-            "Moon Love",
-            "Moon Crisis",
-            "Silver Moon"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "🐱 Quel est le nombre de saisons de Sailor Moon?",
-        "options": [
-            "3",
-            "4",
-            "5",
-            "6"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "⏰ Quel est le rêve de Okabe?",
-        "options": [
-            "Devenir riche",
-            "Voyager dans le temps",
-            "Devenir savant",
-            "Sauver le monde"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "⏰ Quel est le nom du microwave dans Steins;Gate?",
-        "options": [
-            "Banana Phone",
-            "Microwave Oven",
-            "Phonewave",
-            "Time Machine"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "⏰ Quel est l'univers parallèle principal?",
-        "options": [
-            "Alpha",
-            "Beta",
-            "Gamma",
-            "Delta"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "⏰ Quel est le nombre de world lines?",
-        "options": [
-            "2",
-            "3",
-            "Infini",
-            "1"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "⏰ Quel est le titre scientifique d'Okabe?",
-        "options": [
-            "Mad Scientist",
-            "Scientist",
-            "Researcher",
-            "Professor"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "⏰ Quel est le mécanisme de voyage temporel?",
-        "options": [
-            "Microwave",
-            "Phone",
-            "Phonewave",
-            "Time Device"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "⏰ Quel est l'organe clé d'Okabe?",
-        "options": [
-            "Cœur",
-            "Cerveau",
-            "Yeux",
-            "Mains"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "⏰ Quel est le nombre d'épisodes de Steins;Gate?",
-        "options": [
-            "12",
-            "24",
-            "26",
-            "36"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "🎭 Quel est l'âge de Lelouch?",
-        "options": [
-            "16",
-            "17",
-            "18",
-            "19"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "🎭 Quel est le pouvoir de Lelouch?",
-        "options": [
-            "Geass",
-            "Mind Control",
-            "Future Vision",
-            "Telekinesis"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "🎭 Quel est l'empire ennemi?",
-        "options": [
-            "Britannian Empire",
-            "Holy Britannian Empire",
-            "Japanese Empire",
-            "Chinese Empire"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "🎭 Quel est le nombre de saisons de Code Geass?",
-        "options": [
-            "1",
-            "2",
-            "3",
-            "4"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "🎭 Quel est le pilot du Knightmare?",
-        "options": [
-            "Suzaku",
-            "Lelouch",
-            "Kallen",
-            "Shirley"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "🎭 Quel est le but de Lelouch?",
-        "options": [
-            "Devenir Dieu",
-            "Détruire Britannian",
-            "Sauver le Japon",
-            "Obtenir le pouvoir"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "🎭 Quel est l'université de Lelouch?",
-        "options": [
-            "Ashford Academy",
-            "Military Academy",
-            "Magic Academy",
-            "Royal Academy"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "🎭 Quel est l'ordre secret?",
-        "options": [
-            "Black Knights",
-            "Illuminati",
-            "Templar",
-            "Freemasons"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "🎭 Quel est l'armée principale de Lelouch?",
-        "options": [
-            "Black Knights",
-            "Japanese Army",
-            "British Army",
-            "Chinese Army"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "🎭 Quel est le nombre d'épisodes?",
-        "options": [
-            "26",
-            "48",
-            "50",
-            "52"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "💎 Quel est le roi des Titans?",
-        "options": [
-            "Colossal Titan",
-            "Armored Titan",
-            "Attack Titan",
-            "Beast Titan"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "💎 Quel est le mur de la capitale?",
-        "options": [
-            "Mur Maria",
-            "Mur Rose",
-            "Mur Sina",
-            "Mur Trost"
-        ],
-        "correct": 2,
-        "reward": 100
-    },
-    {
-        "question": "💎 Quel est le nombre de Titan Shifters?",
-        "options": [
-            "5",
-            "7",
-            "9",
-            "11"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "💎 Quel est l'organisation secrète?",
-        "options": [
-            "Marley",
-            "Eldia",
-            "Paradis",
-            "Zeke's Army"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "💎 Quel est la vrai forme du monde?",
-        "options": [
-            "Plat",
-            "Sphérique",
-            "Cubique",
-            "Infini"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "💎 Quel est le Titan de Eren?",
-        "options": [
-            "Attack Titan",
-            "Founding Titan",
-            "War Hammer Titan",
-            "Beast Titan"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "💎 Quel est le vrai but de l'humanité?",
-        "options": [
-            "Survivre",
-            "Détruire les Titans",
-            "Trouver la paix",
-            "Tous les précédents"
-        ],
-        "correct": 3,
-        "reward": 100
-    },
-    {
-        "question": "💎 Quel est le nombre de saisons d'AOT?",
-        "options": [
-            "3",
-            "4",
-            "5",
-            "6"
-        ],
-        "correct": 1,
-        "reward": 100
-    },
-    {
-        "question": "💎 Quel est le nom du groupe d'exploration?",
-        "options": [
-            "Scout Regiment",
-            "Military Police",
-            "Garrison",
-            "Warriors"
-        ],
-        "correct": 0,
-        "reward": 100
-    },
-    {
-        "question": "💎 Quel est le secret du Founding Titan?",
-        "options": [
-            "Contrôler les Titans",
-            "Voyager dans le temps",
-            "Devenir immortel",
-            "Détruire le monde"
-        ],
-        "correct": 0,
-        "reward": 100
-    }
+  {
+    "id": 1,
+    "category": "Naruto",
+    "type": "anime",
+    "question": "Combien de queues possede Kurama, le demon renard scelle en Naruto ?",
+    "options": [
+      "7",
+      "8",
+      "9",
+      "10"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 2,
+    "category": "One Piece",
+    "type": "anime",
+    "question": "Quel fruit du demon Luffy a-t-il mange, d'abord presente comme son fruit principal ?",
+    "options": [
+      "Mera Mera no Mi",
+      "Gomu Gomu no Mi",
+      "Hito Hito no Mi",
+      "Ope Ope no Mi"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 3,
+    "category": "Bleach",
+    "type": "anime",
+    "question": "Quel est le nom du Zanpakuto d'Ichigo Kurosaki ?",
+    "options": [
+      "Zangetsu",
+      "Senbonzakura",
+      "Hyorinmaru",
+      "Zabimaru"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 4,
+    "category": "Dragon Ball",
+    "type": "anime",
+    "question": "Quelle est la planete d'origine de Goku ?",
+    "options": [
+      "Namek",
+      "Terre",
+      "Vegeta",
+      "Yardrat"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 5,
+    "category": "Demon Slayer",
+    "type": "anime",
+    "question": "Quel style de respiration Tanjiro maitrise-t-il au debut de l'histoire ?",
+    "options": [
+      "Respiration du Feu",
+      "Respiration de l'Eau",
+      "Respiration de la Foudre",
+      "Respiration du Vent"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 6,
+    "category": "Attack on Titan",
+    "type": "anime",
+    "question": "Quel Titan Eren Yeager peut-il devenir au debut de la serie ?",
+    "options": [
+      "Titan Cuirasse",
+      "Titan Colossal",
+      "Titan Assaillant",
+      "Titan Bestial"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 7,
+    "category": "Jujutsu Kaisen",
+    "type": "anime",
+    "question": "Quel roi des fleaux est scelle dans le corps de Yuji Itadori ?",
+    "options": [
+      "Mahito",
+      "Sukuna",
+      "Jogo",
+      "Geto"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 8,
+    "category": "Death Note",
+    "type": "anime",
+    "question": "Comment se nomme le Shinigami qui fait tomber son carnet dans le monde humain ?",
+    "options": [
+      "Rem",
+      "Sidoh",
+      "Ryuk",
+      "Gelus"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 9,
+    "category": "My Hero Academia",
+    "type": "anime",
+    "question": "Quel est le nom du Alter transmis a Izuku Midoriya par All Might ?",
+    "options": [
+      "One For All",
+      "All For One",
+      "Explosion",
+      "Half-Cold Half-Hot"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 10,
+    "category": "Fullmetal Alchemist",
+    "type": "anime",
+    "question": "Dans quel objet l'ame d'Alphonse Elric est-elle scellee ?",
+    "options": [
+      "Une poupee",
+      "Une armure",
+      "Une pierre",
+      "Un medaillon"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 11,
+    "category": "Hunter x Hunter",
+    "type": "anime",
+    "question": "Comment s'appelle l'energie vitale que les Hunters apprennent a maitriser ?",
+    "options": [
+      "Chakra",
+      "Haki",
+      "Nen",
+      "Reiatsu"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 12,
+    "category": "Tokyo Ghoul",
+    "type": "anime",
+    "question": "Quel organe forme l'arme predatrice des goules ?",
+    "options": [
+      "Le kagune",
+      "Le byakugan",
+      "Le nen",
+      "Le geass"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 13,
+    "category": "Code Geass",
+    "type": "anime",
+    "question": "Quel pouvoir C.C. accorde-t-elle a Lelouch ?",
+    "options": [
+      "Le Sharingan",
+      "Le Geass",
+      "Le Nen",
+      "Le Stand"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 14,
+    "category": "Neon Genesis Evangelion",
+    "type": "anime",
+    "question": "Comment nomme-t-on les ennemis que les EVA doivent combattre ?",
+    "options": [
+      "Les Titans",
+      "Les Hollows",
+      "Les Anges",
+      "Les Akuma"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 15,
+    "category": "Sword Art Online",
+    "type": "anime",
+    "question": "Quel est le nom du chateau flottant du premier arc de SAO ?",
+    "options": [
+      "Alfheim",
+      "Aincrad",
+      "Gun Gale",
+      "Underworld"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 16,
+    "category": "JoJo's Bizarre Adventure",
+    "type": "anime",
+    "question": "Comment s'appellent les pouvoirs combattants materialises dans JoJo a partir de la partie 3 ?",
+    "options": [
+      "Les Stands",
+      "Les Personas",
+      "Les Nen",
+      "Les Alters"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 17,
+    "category": "Cowboy Bebop",
+    "type": "anime",
+    "question": "Comment se nomme le vaisseau de l'equipage de chasseurs de primes ?",
+    "options": [
+      "Swordfish",
+      "Bebop",
+      "Outlaw Star",
+      "Red Tail"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 18,
+    "category": "Steins;Gate",
+    "type": "anime",
+    "question": "Quel appareil detourne permet d'envoyer des messages dans le passe ?",
+    "options": [
+      "Un telephone",
+      "Un four a micro-ondes",
+      "Un ordinateur",
+      "Une television"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 19,
+    "category": "Fairy Tail",
+    "type": "anime",
+    "question": "Quel type de magie Natsu Dragneel utilise-t-il ?",
+    "options": [
+      "Chasseur de Dragon de Glace",
+      "Chasseur de Dragon de Feu",
+      "Chasseur de Dragon de Foudre",
+      "Chasseur de Dragon de Fer"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 20,
+    "category": "Mob Psycho 100",
+    "type": "anime",
+    "question": "Quel est le veritable nom du personnage principal surnomme Mob ?",
+    "options": [
+      "Shigeo Kageyama",
+      "Arataka Reigen",
+      "Teruki Hanazawa",
+      "Ritsu Kageyama"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 21,
+    "category": "Naruto",
+    "type": "anime",
+    "question": "Qui est le sensei de l'equipe 7 au debut de Naruto ?",
+    "options": [
+      "Jiraiya",
+      "Kakashi Hatake",
+      "Might Guy",
+      "Asuma Sarutobi"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 22,
+    "category": "Naruto",
+    "type": "anime",
+    "question": "Quel clan est connu pour le Byakugan ?",
+    "options": [
+      "Uchiha",
+      "Hyuga",
+      "Nara",
+      "Akimichi"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 23,
+    "category": "Naruto",
+    "type": "anime",
+    "question": "Qui est le Quatrieme Hokage ?",
+    "options": [
+      "Hiruzen Sarutobi",
+      "Tobirama Senju",
+      "Minato Namikaze",
+      "Hashirama Senju"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 24,
+    "category": "Naruto",
+    "type": "anime",
+    "question": "Qui a cree le Rasengan ?",
+    "options": [
+      "Naruto Uzumaki",
+      "Jiraiya",
+      "Minato Namikaze",
+      "Kakashi Hatake"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 25,
+    "category": "Naruto",
+    "type": "anime",
+    "question": "A quel clan appartient Sasuke ?",
+    "options": [
+      "Senju",
+      "Uzumaki",
+      "Uchiha",
+      "Hyuga"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 26,
+    "category": "Naruto",
+    "type": "anime",
+    "question": "Dans quel art martial Rock Lee se specialise-t-il ?",
+    "options": [
+      "Ninjutsu",
+      "Genjutsu",
+      "Taijutsu",
+      "Fuinjutsu"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 27,
+    "category": "Naruto",
+    "type": "anime",
+    "question": "Quel animal Jiraiya invoque-t-il souvent ?",
+    "options": [
+      "Serpents",
+      "Crapauds",
+      "Limaces",
+      "Chiens ninja"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 28,
+    "category": "Naruto",
+    "type": "anime",
+    "question": "Quel village Naruto habite-t-il ?",
+    "options": [
+      "Kirigakure",
+      "Sunagakure",
+      "Konohagakure",
+      "Kumogakure"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 29,
+    "category": "One Piece",
+    "type": "anime",
+    "question": "Quel est le reve de Luffy ?",
+    "options": [
+      "Devenir roi des pirates",
+      "Trouver All Blue",
+      "Cartographier le monde",
+      "Devenir amiral"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 30,
+    "category": "One Piece",
+    "type": "anime",
+    "question": "Qui est le premier membre a rejoindre officiellement Luffy ?",
+    "options": [
+      "Nami",
+      "Zoro",
+      "Usopp",
+      "Sanji"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 31,
+    "category": "One Piece",
+    "type": "anime",
+    "question": "Qui est la navigatrice de l'equipage du Chapeau de paille ?",
+    "options": [
+      "Robin",
+      "Nami",
+      "Vivi",
+      "Perona"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 32,
+    "category": "One Piece",
+    "type": "anime",
+    "question": "Quel bateau remplace le Going Merry ?",
+    "options": [
+      "Oro Jackson",
+      "Moby Dick",
+      "Thousand Sunny",
+      "Red Force"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 33,
+    "category": "One Piece",
+    "type": "anime",
+    "question": "Qui est le medecin de l'equipage de Luffy ?",
+    "options": [
+      "Chopper",
+      "Franky",
+      "Brook",
+      "Jinbe"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 34,
+    "category": "One Piece",
+    "type": "anime",
+    "question": "Quel fruit du demon Nico Robin a-t-elle mange ?",
+    "options": [
+      "Hana Hana no Mi",
+      "Yomi Yomi no Mi",
+      "Suke Suke no Mi",
+      "Bara Bara no Mi"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 35,
+    "category": "One Piece",
+    "type": "anime",
+    "question": "Quel est le reve de Sanji ?",
+    "options": [
+      "Devenir empereur",
+      "Trouver All Blue",
+      "Devenir roi des pirates",
+      "Construire le meilleur navire"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 36,
+    "category": "One Piece",
+    "type": "anime",
+    "question": "Comment s'appelle l'ile finale de Grand Line ?",
+    "options": [
+      "Water Seven",
+      "Skypiea",
+      "Laugh Tale",
+      "Marineford"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 37,
+    "category": "Bleach",
+    "type": "anime",
+    "question": "Comment s'appelle le monde des Shinigami ?",
+    "options": [
+      "Hueco Mundo",
+      "Soul Society",
+      "Karakura",
+      "Dangai"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 38,
+    "category": "Bleach",
+    "type": "anime",
+    "question": "Quel est le pouvoir du Zanpakuto d'Aizen ?",
+    "options": [
+      "Kyoka Suigetsu",
+      "Senbonzakura",
+      "Benihime",
+      "Sode no Shirayuki"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 39,
+    "category": "Bleach",
+    "type": "anime",
+    "question": "A quelle famille noble appartient Rukia apres son adoption ?",
+    "options": [
+      "Shiba",
+      "Kuchiki",
+      "Abarai",
+      "Ishida"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 40,
+    "category": "Bleach",
+    "type": "anime",
+    "question": "Quel est le Bankai d'Ichigo ?",
+    "options": [
+      "Tensa Zangetsu",
+      "Senbonzakura Kageyoshi",
+      "Hakka no Togame",
+      "Daiguren Hyorinmaru"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 41,
+    "category": "Bleach",
+    "type": "anime",
+    "question": "Uryu Ishida appartient a quel groupe ?",
+    "options": [
+      "Quincy",
+      "Arrancar",
+      "Fullbringer",
+      "Vizard"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 42,
+    "category": "Bleach",
+    "type": "anime",
+    "question": "Comment s'appelle le monde des Hollows ?",
+    "options": [
+      "Soul Society",
+      "Hueco Mundo",
+      "Rukongai",
+      "Seireitei"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 43,
+    "category": "Dragon Ball",
+    "type": "anime",
+    "question": "Quel est le nom Saiyan de Goku ?",
+    "options": [
+      "Raditz",
+      "Kakarot",
+      "Bardock",
+      "Broly"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 44,
+    "category": "Dragon Ball",
+    "type": "anime",
+    "question": "Quel dragon est invoque avec les Dragon Balls de la Terre ?",
+    "options": [
+      "Porunga",
+      "Shenron",
+      "Zalama",
+      "Omega Shenron"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 45,
+    "category": "Dragon Ball",
+    "type": "anime",
+    "question": "Vegeta porte quel titre parmi les Saiyans ?",
+    "options": [
+      "Roi",
+      "Prince",
+      "General",
+      "Gardien"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 46,
+    "category": "Dragon Ball",
+    "type": "anime",
+    "question": "A quelle espece appartient Piccolo ?",
+    "options": [
+      "Saiyan",
+      "Namek",
+      "Humain",
+      "Android"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 47,
+    "category": "Dragon Ball",
+    "type": "anime",
+    "question": "Quelle fusion donne Vegito ?",
+    "options": [
+      "Danse de fusion",
+      "Potaras",
+      "Dragon Balls",
+      "Kaioken"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 48,
+    "category": "Dragon Ball",
+    "type": "anime",
+    "question": "Qui est le pere de Gohan ?",
+    "options": [
+      "Vegeta",
+      "Goku",
+      "Piccolo",
+      "Trunks"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 49,
+    "category": "Demon Slayer",
+    "type": "anime",
+    "question": "Qui est la soeur de Tanjiro ?",
+    "options": [
+      "Kanao",
+      "Nezuko",
+      "Shinobu",
+      "Mitsuri"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 50,
+    "category": "Demon Slayer",
+    "type": "anime",
+    "question": "Qui est le premier demon ?",
+    "options": [
+      "Akaza",
+      "Kokushibo",
+      "Muzan Kibutsuji",
+      "Doma"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 51,
+    "category": "Demon Slayer",
+    "type": "anime",
+    "question": "Quel Hashira maitrise la respiration de l'eau ?",
+    "options": [
+      "Giyu Tomioka",
+      "Tengen Uzui",
+      "Sanemi Shinazugawa",
+      "Gyomei Himejima"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 52,
+    "category": "Demon Slayer",
+    "type": "anime",
+    "question": "Quelle respiration Zenitsu utilise-t-il ?",
+    "options": [
+      "Respiration de l'Eau",
+      "Respiration de la Foudre",
+      "Respiration de la Flamme",
+      "Respiration du Vent"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 53,
+    "category": "Demon Slayer",
+    "type": "anime",
+    "question": "Quel animal recouvre le masque d'Inosuke ?",
+    "options": [
+      "Renard",
+      "Sanglier",
+      "Loup",
+      "Ours"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 54,
+    "category": "Demon Slayer",
+    "type": "anime",
+    "question": "Quel groupe combat les demons ?",
+    "options": [
+      "Demon Slayer Corps",
+      "Hunter Association",
+      "Soul Society",
+      "Black Bulls"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 55,
+    "category": "Attack on Titan",
+    "type": "anime",
+    "question": "Quel est le mur exterieur de Paradis ?",
+    "options": [
+      "Mur Sina",
+      "Mur Rose",
+      "Mur Maria",
+      "Mur Trost"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 56,
+    "category": "Attack on Titan",
+    "type": "anime",
+    "question": "Qui commande le Bataillon d exploration pendant une grande partie de la serie ?",
+    "options": [
+      "Erwin Smith",
+      "Nile Dok",
+      "Dot Pixis",
+      "Kenny Ackerman"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 57,
+    "category": "Attack on Titan",
+    "type": "anime",
+    "question": "A quel clan appartient Mikasa ?",
+    "options": [
+      "Yeager",
+      "Ackerman",
+      "Reiss",
+      "Braun"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 58,
+    "category": "Attack on Titan",
+    "type": "anime",
+    "question": "Qui detient le Titan Colossal dans les premieres saisons ?",
+    "options": [
+      "Reiner Braun",
+      "Bertholdt Hoover",
+      "Annie Leonhart",
+      "Zeke Yeager"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 59,
+    "category": "Attack on Titan",
+    "type": "anime",
+    "question": "Quel secret est conserve dans le sous-sol de la maison d'Eren ?",
+    "options": [
+      "Des informations sur le monde exterieur",
+      "Un Titan endormi",
+      "Une arme antique",
+      "Un tresor royal"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 60,
+    "category": "Attack on Titan",
+    "type": "anime",
+    "question": "Combien existe-t-il de Titans primordiaux ?",
+    "options": [
+      "7",
+      "8",
+      "9",
+      "10"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 61,
+    "category": "Jujutsu Kaisen",
+    "type": "anime",
+    "question": "Qui est le professeur principal de Yuji, Megumi et Nobara ?",
+    "options": [
+      "Kento Nanami",
+      "Satoru Gojo",
+      "Masamichi Yaga",
+      "Suguru Geto"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 62,
+    "category": "Jujutsu Kaisen",
+    "type": "anime",
+    "question": "Quelle arme Nobara utilise-t-elle souvent ?",
+    "options": [
+      "Marteau et clous",
+      "Katana",
+      "Arc",
+      "Fouet"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 63,
+    "category": "Jujutsu Kaisen",
+    "type": "anime",
+    "question": "Quelle technique Megumi Fushiguro utilise-t-il ?",
+    "options": [
+      "Ten Shadows",
+      "Limitless",
+      "Boogie Woogie",
+      "Idle Transfiguration"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 64,
+    "category": "Jujutsu Kaisen",
+    "type": "anime",
+    "question": "Quelle aptitude oculaire rend Gojo exceptionnel ?",
+    "options": [
+      "Sharingan",
+      "Six Eyes",
+      "Byakugan",
+      "Geass"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 65,
+    "category": "Jujutsu Kaisen",
+    "type": "anime",
+    "question": "Quel fleau manipule les ames humaines ?",
+    "options": [
+      "Jogo",
+      "Hanami",
+      "Mahito",
+      "Dagon"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 66,
+    "category": "Jujutsu Kaisen",
+    "type": "anime",
+    "question": "Combien de doigts de Sukuna existent au total ?",
+    "options": [
+      "10",
+      "15",
+      "20",
+      "25"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 67,
+    "category": "Death Note",
+    "type": "anime",
+    "question": "Quel est le vrai nom de L ?",
+    "options": [
+      "L Lawliet",
+      "Light Yagami",
+      "Nate River",
+      "Mihael Keehl"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 68,
+    "category": "Death Note",
+    "type": "anime",
+    "question": "Quel Shinigami accompagne souvent Misa Amane ?",
+    "options": [
+      "Ryuk",
+      "Rem",
+      "Sidoh",
+      "Gelus"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 69,
+    "category": "Death Note",
+    "type": "anime",
+    "question": "Quel surnom les enquetes donnent-elles a Light ?",
+    "options": [
+      "Kira",
+      "Near",
+      "Mello",
+      "Watari"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 70,
+    "category": "Death Note",
+    "type": "anime",
+    "question": "Qui prend le relais de L dans la derniere partie ?",
+    "options": [
+      "Near",
+      "Ryuk",
+      "Misa",
+      "Soichiro"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 71,
+    "category": "Death Note",
+    "type": "anime",
+    "question": "Que faut-il connaitre pour tuer avec le Death Note ?",
+    "options": [
+      "Le nom et le visage",
+      "La voix",
+      "La date de naissance",
+      "Le groupe sanguin"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 72,
+    "category": "My Hero Academia",
+    "type": "anime",
+    "question": "Quel est l'Alter de Katsuki Bakugo ?",
+    "options": [
+      "Explosion",
+      "Engine",
+      "Creation",
+      "Hardening"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 73,
+    "category": "My Hero Academia",
+    "type": "anime",
+    "question": "Quel est l'Alter de Shoto Todoroki ?",
+    "options": [
+      "Explosion",
+      "Half-Cold Half-Hot",
+      "Erasure",
+      "Zero Gravity"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 74,
+    "category": "My Hero Academia",
+    "type": "anime",
+    "question": "Quel professeur est surnomme Eraser Head ?",
+    "options": [
+      "Aizawa",
+      "All Might",
+      "Present Mic",
+      "Endeavor"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 75,
+    "category": "My Hero Academia",
+    "type": "anime",
+    "question": "Dans quelle classe est Izuku Midoriya a U.A. ?",
+    "options": [
+      "1-A",
+      "1-B",
+      "2-A",
+      "3-A"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 76,
+    "category": "My Hero Academia",
+    "type": "anime",
+    "question": "Quel est le nom hero de Ochaco Uraraka ?",
+    "options": [
+      "Froppy",
+      "Uravity",
+      "Creati",
+      "Ingenium"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 77,
+    "category": "Fullmetal Alchemist",
+    "type": "anime",
+    "question": "Quel titre d'alchimiste porte Edward Elric ?",
+    "options": [
+      "Flame Alchemist",
+      "Fullmetal Alchemist",
+      "Crimson Alchemist",
+      "Strong Arm Alchemist"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 78,
+    "category": "Fullmetal Alchemist",
+    "type": "anime",
+    "question": "Quel acte interdit ouvre la serie des freres Elric ?",
+    "options": [
+      "Transmutation humaine",
+      "Creation de pierre",
+      "Invocation de dragon",
+      "Voyage temporel"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 79,
+    "category": "Fullmetal Alchemist",
+    "type": "anime",
+    "question": "Quel alchimiste est Roy Mustang ?",
+    "options": [
+      "Flame Alchemist",
+      "Fullmetal Alchemist",
+      "Crystal Alchemist",
+      "Sewing-Life Alchemist"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 80,
+    "category": "Fullmetal Alchemist",
+    "type": "anime",
+    "question": "Les Homonculus portent des noms lies a quoi ?",
+    "options": [
+      "Les vertus",
+      "Les peches capitaux",
+      "Les saisons",
+      "Les planetes"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 81,
+    "category": "Fullmetal Alchemist",
+    "type": "anime",
+    "question": "Quel pays sert de cadre principal a Fullmetal Alchemist ?",
+    "options": [
+      "Amestris",
+      "Xing",
+      "Creta",
+      "Drachma"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 82,
+    "category": "Hunter x Hunter",
+    "type": "anime",
+    "question": "Qui est le pere de Gon ?",
+    "options": [
+      "Ging Freecss",
+      "Silva Zoldyck",
+      "Netero",
+      "Leorio"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 83,
+    "category": "Hunter x Hunter",
+    "type": "anime",
+    "question": "A quelle famille appartient Killua ?",
+    "options": [
+      "Kurta",
+      "Zoldyck",
+      "Freecss",
+      "Phantom"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 84,
+    "category": "Hunter x Hunter",
+    "type": "anime",
+    "question": "Quel est le pouvoir de Hisoka qui combine gomme et elasticite ?",
+    "options": [
+      "Bungee Gum",
+      "Godspeed",
+      "Jajanken",
+      "Emperor Time"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 85,
+    "category": "Hunter x Hunter",
+    "type": "anime",
+    "question": "Quel clan Kurapika veut-il venger ?",
+    "options": [
+      "Kurta",
+      "Zoldyck",
+      "Nostrade",
+      "Ryodan"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 86,
+    "category": "Hunter x Hunter",
+    "type": "anime",
+    "question": "Quel groupe criminel vole les yeux ecarlates du clan Kurta ?",
+    "options": [
+      "Phantom Troupe",
+      "Chimera Ants",
+      "Hunter Association",
+      "Zodiacs"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 87,
+    "category": "Tokyo Ghoul",
+    "type": "anime",
+    "question": "Comment se nomme le cafe qui sert de refuge a Kaneki ?",
+    "options": [
+      "Anteiku",
+      "Aogiri",
+      "CCG",
+      "V"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 88,
+    "category": "Tokyo Ghoul",
+    "type": "anime",
+    "question": "Quelle organisation chasse les goules ?",
+    "options": [
+      "CCG",
+      "Akatsuki",
+      "NERV",
+      "Wandenreich"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 89,
+    "category": "Tokyo Ghoul",
+    "type": "anime",
+    "question": "Qui est la goule qui attaque Kaneki au debut ?",
+    "options": [
+      "Rize Kamishiro",
+      "Touka Kirishima",
+      "Eto Yoshimura",
+      "Hinami Fueguchi"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 90,
+    "category": "Tokyo Ghoul",
+    "type": "anime",
+    "question": "Quel est le prenom de Kaneki ?",
+    "options": [
+      "Ken",
+      "Shin",
+      "Ren",
+      "Akira"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 91,
+    "category": "Code Geass",
+    "type": "anime",
+    "question": "Quel alias Lelouch utilise-t-il pour sa rebellion ?",
+    "options": [
+      "Zero",
+      "Kira",
+      "L",
+      "Vash"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 92,
+    "category": "Code Geass",
+    "type": "anime",
+    "question": "Quel empire domine le Japon au debut de l'histoire ?",
+    "options": [
+      "Empire de Britannia",
+      "Empire Marley",
+      "Empire Kouka",
+      "Empire Clover"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 93,
+    "category": "Code Geass",
+    "type": "anime",
+    "question": "Qui pilote le Knightmare Lancelot ?",
+    "options": [
+      "Suzaku Kururugi",
+      "Lelouch Lamperouge",
+      "Kallen Kozuki",
+      "Jeremiah Gottwald"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 94,
+    "category": "Code Geass",
+    "type": "anime",
+    "question": "Comment s'appelle l'organisation rebelle dirigee par Zero ?",
+    "options": [
+      "Black Knights",
+      "Survey Corps",
+      "Public Safety",
+      "Fairy Tail"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 95,
+    "category": "Code Geass",
+    "type": "anime",
+    "question": "Quel pouvoir central le Geass de Lelouch lui donne-t-il ?",
+    "options": [
+      "Donner un ordre absolu",
+      "Arreter le temps",
+      "Lire les pensees",
+      "Voir le futur"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 96,
+    "category": "Neon Genesis Evangelion",
+    "type": "anime",
+    "question": "Quelle unite Shinji Ikari pilote-t-il ?",
+    "options": [
+      "EVA-00",
+      "EVA-01",
+      "EVA-02",
+      "EVA-03"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 97,
+    "category": "Neon Genesis Evangelion",
+    "type": "anime",
+    "question": "Quelle organisation exploite les EVA ?",
+    "options": [
+      "NERV",
+      "SEELE",
+      "WILLE",
+      "Gehirn"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 98,
+    "category": "Neon Genesis Evangelion",
+    "type": "anime",
+    "question": "Quelle pilote est associee a EVA-00 ?",
+    "options": [
+      "Rei Ayanami",
+      "Asuka Langley",
+      "Misato Katsuragi",
+      "Mari Makinami"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 99,
+    "category": "Neon Genesis Evangelion",
+    "type": "anime",
+    "question": "Qui est le pere de Shinji ?",
+    "options": [
+      "Gendo Ikari",
+      "Kozo Fuyutsuki",
+      "Ryoji Kaji",
+      "Kaworu Nagisa"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 100,
+    "category": "Sword Art Online",
+    "type": "anime",
+    "question": "Quel est le vrai nom de Kirito ?",
+    "options": [
+      "Kazuto Kirigaya",
+      "Kirigaya Akihiko",
+      "Eugeo Kirigaya",
+      "Klein Tsuboi"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 101,
+    "category": "Sword Art Online",
+    "type": "anime",
+    "question": "Dans quelle guilde Asuna devient-elle une figure majeure a Aincrad ?",
+    "options": [
+      "Knights of the Blood",
+      "Laughing Coffin",
+      "Moonlit Black Cats",
+      "Sleeping Knights"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 102,
+    "category": "Sword Art Online",
+    "type": "anime",
+    "question": "Qui a cree Sword Art Online ?",
+    "options": [
+      "Akihiko Kayaba",
+      "Nobuyuki Sugou",
+      "Rinko Kojiro",
+      "Eiji Nochizawa"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 103,
+    "category": "Sword Art Online",
+    "type": "anime",
+    "question": "Combien de paliers compte Aincrad ?",
+    "options": [
+      "50",
+      "75",
+      "100",
+      "120"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 104,
+    "category": "JoJo's Bizarre Adventure",
+    "type": "anime",
+    "question": "Quel est le Stand de Jotaro Kujo ?",
+    "options": [
+      "Star Platinum",
+      "The World",
+      "Crazy Diamond",
+      "Gold Experience"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 105,
+    "category": "JoJo's Bizarre Adventure",
+    "type": "anime",
+    "question": "Quel est le Stand de Dio ?",
+    "options": [
+      "Hermit Purple",
+      "The World",
+      "Sticky Fingers",
+      "Stone Free"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 106,
+    "category": "JoJo's Bizarre Adventure",
+    "type": "anime",
+    "question": "Quelle energie Joseph Joestar utilise-t-il surtout dans Battle Tendency ?",
+    "options": [
+      "Hamon",
+      "Nen",
+      "Chakra",
+      "Reiatsu"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 107,
+    "category": "JoJo's Bizarre Adventure",
+    "type": "anime",
+    "question": "Quel est le Stand de Giorno Giovanna ?",
+    "options": [
+      "Gold Experience",
+      "King Crimson",
+      "Silver Chariot",
+      "Aerosmith"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 108,
+    "category": "JoJo's Bizarre Adventure",
+    "type": "anime",
+    "question": "Quelle famille est au centre de JoJo's Bizarre Adventure ?",
+    "options": [
+      "Joestar",
+      "Zoldyck",
+      "Elric",
+      "Ackerman"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 109,
+    "category": "Cowboy Bebop",
+    "type": "anime",
+    "question": "Quel est le nom complet de Spike ?",
+    "options": [
+      "Spike Spiegel",
+      "Jet Black",
+      "Vicious Red",
+      "Faye Valentine"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 110,
+    "category": "Cowboy Bebop",
+    "type": "anime",
+    "question": "Quel animal est Ein ?",
+    "options": [
+      "Un corgi",
+      "Un chat",
+      "Un faucon",
+      "Un singe"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 111,
+    "category": "Cowboy Bebop",
+    "type": "anime",
+    "question": "Quel metier exerce l equipage du Bebop ?",
+    "options": [
+      "Chasseurs de primes",
+      "Pirates",
+      "Policiers",
+      "Mercenaires militaires"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 112,
+    "category": "Steins;Gate",
+    "type": "anime",
+    "question": "Quel alias Okabe s'invente-t-il ?",
+    "options": [
+      "Hououin Kyouma",
+      "Kira",
+      "Zero",
+      "Kyon"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 113,
+    "category": "Steins;Gate",
+    "type": "anime",
+    "question": "Comment s'appellent les messages envoyes vers le passe ?",
+    "options": [
+      "D-mails",
+      "Stand mails",
+      "Nen mails",
+      "Soul mails"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 114,
+    "category": "Steins;Gate",
+    "type": "anime",
+    "question": "Quelle capacite permet a Okabe de conserver ses souvenirs lors des changements de ligne d'univers ?",
+    "options": [
+      "Reading Steiner",
+      "Geass",
+      "Limitless",
+      "Bankai"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 115,
+    "category": "Steins;Gate",
+    "type": "anime",
+    "question": "Quelle chercheuse travaille sur les neurosciences et rejoint le labo ?",
+    "options": [
+      "Kurisu Makise",
+      "Mayuri Shiina",
+      "Suzuha Amane",
+      "Moeka Kiryu"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 116,
+    "category": "Fairy Tail",
+    "type": "anime",
+    "question": "A quelle guilde appartient Natsu ?",
+    "options": [
+      "Fairy Tail",
+      "Blue Pegasus",
+      "Sabertooth",
+      "Lamia Scale"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 117,
+    "category": "Fairy Tail",
+    "type": "anime",
+    "question": "Quelle magie Lucy Heartfilia utilise-t-elle ?",
+    "options": [
+      "Magie des esprits stellaires",
+      "Magie de feu",
+      "Magie de glace",
+      "Magie de memoire"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 118,
+    "category": "Fairy Tail",
+    "type": "anime",
+    "question": "Quel type de creature est Happy ?",
+    "options": [
+      "Exceed",
+      "Dragon",
+      "Demon",
+      "Humain"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 119,
+    "category": "Fairy Tail",
+    "type": "anime",
+    "question": "Quel Dragon a eleve Natsu ?",
+    "options": [
+      "Igneel",
+      "Acnologia",
+      "Metalicana",
+      "Grandeeney"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 120,
+    "category": "Mob Psycho 100",
+    "type": "anime",
+    "question": "Qui se presente comme le mentor de Mob ?",
+    "options": [
+      "Reigen Arataka",
+      "Dimple",
+      "Toichiro Suzuki",
+      "Teru Hanazawa"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 121,
+    "category": "Mob Psycho 100",
+    "type": "anime",
+    "question": "Quel pourcentage annonce les explosions emotionnelles de Mob ?",
+    "options": [
+      "50%",
+      "80%",
+      "100%",
+      "200%"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 122,
+    "category": "Mob Psycho 100",
+    "type": "anime",
+    "question": "Comment s appelle le frere cadet de Mob ?",
+    "options": [
+      "Ritsu",
+      "Teru",
+      "Sho",
+      "Tome"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 123,
+    "category": "Mob Psycho 100",
+    "type": "anime",
+    "question": "Quel est le type de pouvoir principal de Mob ?",
+    "options": [
+      "Pouvoirs psychiques",
+      "Alchemy",
+      "Hamon",
+      "Ki"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 124,
+    "category": "Chainsaw Man",
+    "type": "anime",
+    "question": "Quel demon fusionne avec Denji ?",
+    "options": [
+      "Pochita",
+      "Power",
+      "Aki",
+      "Beam"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 125,
+    "category": "Chainsaw Man",
+    "type": "anime",
+    "question": "Quel type de demon est Pochita ?",
+    "options": [
+      "Demon-tronconneuse",
+      "Demon-renard",
+      "Demon-sang",
+      "Demon-fantome"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 126,
+    "category": "Chainsaw Man",
+    "type": "anime",
+    "question": "Power est associee a quel type de demon ?",
+    "options": [
+      "Sang",
+      "Controle",
+      "Futur",
+      "Katana"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 127,
+    "category": "Chainsaw Man",
+    "type": "anime",
+    "question": "Dans quelle organisation Denji travaille-t-il ?",
+    "options": [
+      "Public Safety",
+      "Soul Society",
+      "Hunter Association",
+      "NERV"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 128,
+    "category": "Spy x Family",
+    "type": "anime",
+    "question": "Quel est le nom de code de Loid Forger ?",
+    "options": [
+      "Twilight",
+      "Nightfall",
+      "Bondman",
+      "Strix"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 129,
+    "category": "Spy x Family",
+    "type": "anime",
+    "question": "Quel pouvoir possede Anya ?",
+    "options": [
+      "Telepathie",
+      "Teleportation",
+      "Invisibilite",
+      "Pyrokinesie"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 130,
+    "category": "Spy x Family",
+    "type": "anime",
+    "question": "Quel est le nom d'assassin de Yor ?",
+    "options": [
+      "Thorn Princess",
+      "Nightfall",
+      "Garden Rose",
+      "Black Lily"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 131,
+    "category": "Spy x Family",
+    "type": "anime",
+    "question": "Comment s'appelle le chien de la famille Forger ?",
+    "options": [
+      "Bond",
+      "Ein",
+      "Akamaru",
+      "Happy"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 132,
+    "category": "Frieren",
+    "type": "anime",
+    "question": "Quelle race est Frieren ?",
+    "options": [
+      "Elfe",
+      "Naine",
+      "Humaine",
+      "Demon"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 133,
+    "category": "Frieren",
+    "type": "anime",
+    "question": "Qui etait le heros du groupe ayant vaincu le Roi Demon ?",
+    "options": [
+      "Himmel",
+      "Heiter",
+      "Eisen",
+      "Stark"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 134,
+    "category": "Frieren",
+    "type": "anime",
+    "question": "Comment s'appelle l'apprentie mage de Frieren ?",
+    "options": [
+      "Fern",
+      "Aura",
+      "Flamme",
+      "Ubel"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 135,
+    "category": "Frieren",
+    "type": "anime",
+    "question": "Quel ancien compagnon de Frieren etait pretre ?",
+    "options": [
+      "Heiter",
+      "Eisen",
+      "Himmel",
+      "Stark"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 136,
+    "category": "Solo Leveling",
+    "type": "anime",
+    "question": "Quel est le rang initial de Sung Jinwoo ?",
+    "options": [
+      "E",
+      "D",
+      "C",
+      "S"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 137,
+    "category": "Solo Leveling",
+    "type": "anime",
+    "question": "Quel systeme donne des quetes a Jinwoo ?",
+    "options": [
+      "Le Systeme",
+      "Le Geass",
+      "Le Nen",
+      "Le Bankai"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 138,
+    "category": "Solo Leveling",
+    "type": "anime",
+    "question": "Quel titre Jinwoo obtient-il lie aux ombres ?",
+    "options": [
+      "Monarque des Ombres",
+      "Roi Pirate",
+      "Hokage",
+      "Wizard King"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 139,
+    "category": "Solo Leveling",
+    "type": "anime",
+    "question": "Quel chevalier devient une ombre celebre de Jinwoo ?",
+    "options": [
+      "Igris",
+      "Zangetsu",
+      "Kurama",
+      "Aincrad"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 140,
+    "category": "Blue Lock",
+    "type": "anime",
+    "question": "Quel est le protagoniste principal de Blue Lock ?",
+    "options": [
+      "Yoichi Isagi",
+      "Rin Itoshi",
+      "Seishiro Nagi",
+      "Meguru Bachira"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 141,
+    "category": "Blue Lock",
+    "type": "anime",
+    "question": "Qui dirige le programme Blue Lock ?",
+    "options": [
+      "Jinpachi Ego",
+      "Noel Noa",
+      "Sae Itoshi",
+      "Anri Teieri"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 142,
+    "category": "Blue Lock",
+    "type": "anime",
+    "question": "Quel poste Blue Lock veut-il former ?",
+    "options": [
+      "Attaquant",
+      "Gardien",
+      "Defenseur",
+      "Arbitre"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 143,
+    "category": "Blue Lock",
+    "type": "anime",
+    "question": "Quel sport est au centre de Blue Lock ?",
+    "options": [
+      "Football",
+      "Volley-ball",
+      "Basket-ball",
+      "Baseball"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 144,
+    "category": "Haikyuu!!",
+    "type": "anime",
+    "question": "Qui est le petit attaquant de Karasuno ?",
+    "options": [
+      "Shoyo Hinata",
+      "Tobio Kageyama",
+      "Kei Tsukishima",
+      "Yu Nishinoya"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 145,
+    "category": "Haikyuu!!",
+    "type": "anime",
+    "question": "Dans quelle equipe jouent Hinata et Kageyama au lycee ?",
+    "options": [
+      "Karasuno",
+      "Nekoma",
+      "Aoba Johsai",
+      "Shiratorizawa"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 146,
+    "category": "Haikyuu!!",
+    "type": "anime",
+    "question": "Quel poste occupe surtout Kageyama ?",
+    "options": [
+      "Passeur",
+      "Libero",
+      "Central",
+      "Pointu"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 147,
+    "category": "Haikyuu!!",
+    "type": "anime",
+    "question": "Quel sport est au centre de Haikyuu!! ?",
+    "options": [
+      "Volley-ball",
+      "Football",
+      "Tennis",
+      "Rugby"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 148,
+    "category": "Vinland Saga",
+    "type": "anime",
+    "question": "Qui est le protagoniste principal de Vinland Saga ?",
+    "options": [
+      "Thorfinn",
+      "Askeladd",
+      "Canute",
+      "Thors"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 149,
+    "category": "Vinland Saga",
+    "type": "anime",
+    "question": "Qui dirige la bande que Thorfinn suit longtemps ?",
+    "options": [
+      "Askeladd",
+      "Leif",
+      "Canute",
+      "Floki"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 150,
+    "category": "Vinland Saga",
+    "type": "anime",
+    "question": "Quel peuple historique est au coeur de Vinland Saga ?",
+    "options": [
+      "Vikings",
+      "Samourais",
+      "Romains",
+      "Mongols"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 151,
+    "category": "Sailor Moon",
+    "type": "anime",
+    "question": "Quel est le vrai nom de Sailor Moon ?",
+    "options": [
+      "Usagi Tsukino",
+      "Ami Mizuno",
+      "Rei Hino",
+      "Makoto Kino"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 152,
+    "category": "Sailor Moon",
+    "type": "anime",
+    "question": "Comment s appelle le chat noir qui guide Usagi ?",
+    "options": [
+      "Luna",
+      "Artemis",
+      "Diana",
+      "Kero"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 153,
+    "category": "Sailor Moon",
+    "type": "anime",
+    "question": "Quel cristal est central dans Sailor Moon ?",
+    "options": [
+      "Silver Crystal",
+      "Dragon Ball",
+      "Philosopher Stone",
+      "Geass Fragment"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 154,
+    "category": "Sailor Moon",
+    "type": "anime",
+    "question": "Quel est le nom civil de Tuxedo Mask ?",
+    "options": [
+      "Mamoru Chiba",
+      "Seiya Kou",
+      "Haruka Tenoh",
+      "Motoki Furuhata"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 155,
+    "category": "Black Clover",
+    "type": "anime",
+    "question": "Quel pouvoir Asta utilise-t-il principalement ?",
+    "options": [
+      "Anti-magie",
+      "Magie du vent",
+      "Magie du temps",
+      "Magie de lumiere"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 156,
+    "category": "Black Clover",
+    "type": "anime",
+    "question": "Quelle magie Yuno utilise-t-il surtout au debut ?",
+    "options": [
+      "Vent",
+      "Feu",
+      "Eau",
+      "Acier"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 157,
+    "category": "Black Clover",
+    "type": "anime",
+    "question": "Qui est le capitaine des Black Bulls ?",
+    "options": [
+      "Yami Sukehiro",
+      "Julius Novachrono",
+      "Fuegoleon Vermillion",
+      "Nozel Silva"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 158,
+    "category": "Black Clover",
+    "type": "anime",
+    "question": "Quel titre Asta reve-t-il d'obtenir ?",
+    "options": [
+      "Wizard King",
+      "Pirate King",
+      "Hokage",
+      "Shadow Monarch"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 159,
+    "category": "Black Clover",
+    "type": "anime",
+    "question": "Combien de feuilles possede le grimoire rare d'Asta ?",
+    "options": [
+      "Trois",
+      "Quatre",
+      "Cinq",
+      "Six"
+    ],
+    "correct": 2,
+    "reward": 100
+  }
 ]
