@@ -15,14 +15,18 @@ module.exports = {
     const senderJid = message.key.remoteJid;
 
     try {
+      let needsSave = false;
+
       // Check if daily quests need reset
       if (QuestSystem.needsDailyReset(user)) {
         QuestSystem.resetDailyQuests(user);
+        needsSave = true;
       }
-      
+
       // Check if weekly quests need reset
       if (QuestSystem.needsWeeklyReset(user)) {
         QuestSystem.resetWeeklyQuests(user);
+        needsSave = true;
       }
 
       const dailyQuests = QuestSystem.getDailyQuests();
@@ -49,7 +53,7 @@ ${this.formatQuestList(weeklyQuests, user.weeklyQuests)}
       }
       
       // Save user if any resets were done
-      if (QuestSystem.needsDailyReset(user) || QuestSystem.needsWeeklyReset(user)) {
+      if (needsSave) {
         await user.save();
       }
     } catch (error) {

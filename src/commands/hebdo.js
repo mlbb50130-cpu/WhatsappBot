@@ -14,7 +14,9 @@ module.exports = {
 
     try {
       const now = new Date();
-      const weekStart = new Date(now.setDate(now.getDate() - now.getDay()));
+      const weekStart = new Date(now);
+      weekStart.setDate(now.getDate() - now.getDay());
+      weekStart.setHours(0, 0, 0, 0);
       const lastWeekly = user.lastWeeklyQuest ? new Date(user.lastWeeklyQuest) : null;
 
       if (lastWeekly && lastWeekly >= weekStart) {

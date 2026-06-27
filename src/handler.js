@@ -480,7 +480,34 @@ async function handleMessage(sock, message, isGroup, groupData) {
       );
 
       if (!hasPermission) {
-        await sendText(sock, senderJid, MessageFormatter.error('Cette commande est réservée aux administrateurs du groupe.'));
+        // Auto-warn: tout utilisateur non autorise (ni admin/owner du groupe, ni admin bot, ni le bot)
+        // prend un avertissement et -2000 XP. 3 avertissements => ban.
+        const botJid = getBotJid(sock);
+        const isBot = message.key.fromMe
+          || (botJid && PermissionManager.jidMatches(botJid, PermissionManager.uniqueJids(participantJid)));
+
+        if (isBot) {
+          await sendText(sock, senderJid, MessageFormatter.error('Cette commande est réservée aux administrateurs du groupe.'));
+          return;
+        }
+
+        userLatest.warnings = (userLatest.warnings || 0) + 1;
+        const removedXp = Math.min(2000, userLatest.xp || 0);
+        userLatest.xp = Math.max(0, (userLatest.xp || 0) - 2000);
+
+        if (userLatest.warnings >= 3) {
+          userLatest.isBanned = true;
+          await userLatest.save();
+          await sendText(sock, senderJid, MessageFormatter.error(
+            `Commande non autorisée. Banni après ${userLatest.warnings}/3 avertissements (-${removedXp} XP).`
+          ));
+          return;
+        }
+
+        await userLatest.save();
+        await sendText(sock, senderJid, MessageFormatter.warning(
+          `Commande réservée aux admins. Avertissement ${userLatest.warnings}/3 et -${removedXp} XP.`
+        ));
         return;
       }
     }

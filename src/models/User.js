@@ -120,6 +120,14 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: null
   },
+  lastDailyQuest: {
+    type: Date,
+    default: null
+  },
+  lastWeeklyQuest: {
+    type: Date,
+    default: null
+  },
   lastDocumentationDM: {
     type: Date,
     default: null
