@@ -30,12 +30,13 @@ module.exports = {
     // Vérifier si c'est une opération d'ajout/retrait ou une définition
     const isAddition = xpInput.startsWith('+');
     const isSubtraction = xpInput.startsWith('-') && xpInput.length > 1;
-    
-    let xpAmount = parseInt(isAddition ? xpInput.slice(1) : xpInput);
+
+    // Magnitude sans le signe (+/-)
+    const xpAmount = parseInt((isAddition || isSubtraction) ? xpInput.slice(1) : xpInput);
 
     if (isNaN(xpAmount) || xpAmount < 0) {
       await sock.sendMessage(senderJid, {
-        text: '❌ L\'XP doit être un nombre positif.'
+        text: '❌ L\'XP doit être un nombre valide.'
       });
       return;
     }
