@@ -45,7 +45,8 @@ Tes items:`;
       'common': '⚪',
       'rare': '🔵',
       'epic': '🟣',
-      'legendary': '🟡'
+      'legendary': '🟡',
+      'exotic': '🌈'
     };
 
     user.inventory.forEach((item, index) => {
@@ -55,7 +56,7 @@ Tes items:`;
       if (item.quantity > 1) {
         inventoryText += ` x${item.quantity}`;
       }
-      inventoryText += ` (${rarityText})`;
+      inventoryText += ` (${rarityText}${item.rarity === 'exotic' ? ` Niv.${item.exoticLevel || 1}` : ''})`;
       const slot = itemSlot(item);
       if (slot) {
         inventoryText += ` • slot: ${slot} → \`!equip ${index}\``;

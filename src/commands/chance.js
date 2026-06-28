@@ -3,7 +3,7 @@ const Luck = require('../utils/luck');
 
 module.exports = {
   name: 'chance',
-  description: 'Voir ta chance du jour',
+  description: 'Tirer un buff de chance (30 min) qui booste loot/roulette/surprise',
   category: 'FUN',
   usage: '!chance',
   adminOnly: false,
@@ -12,59 +12,46 @@ module.exports = {
 
   async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
+    const send = async (payload) => (reply ? reply(payload) : sock.sendMessage(senderJid, payload));
 
     try {
-      // Chance du jour DETERMINISTE (stable toute la journee) qui influence
-      // reellement loot / roulette / surprise.
-      const luck = Luck.getDailyLuck(user);
+      // Si un buff est deja actif, on n'en retire pas un nouveau (pas de save-scum)
+      const alreadyActive = Luck.isBuffActive(user);
+      if (!alreadyActive) {
+        Luck.applyBuff(user);
+        await user.save();
+      }
 
-      const luckyItems = [
-        { luck: 80, text: '✨ Chance EXTRÊME! Tu peux faire l\'impossible aujourd\'hui!' },
-        { luck: 60, text: '🍀 Bonne chance! Les étoiles sont avec toi!' },
-        { luck: 40, text: '😐 Chance moyenne. Un jour normal.' },
-        { luck: 20, text: '😰 Pas de chance... Mais ce n\'est qu\'un jour!' },
-        { luck: 0, text: '🔥 Très malchanceux! Reste prudent!' }
-      ];
+      const luck = Luck.getActiveLuck(user);
+      const left = Luck.minutesLeft(user);
+      const winPct = Math.round(Luck.winProbability(user) * 100);
 
-      const message_luck = luckyItems.reduce((prev, curr) => 
-        luck >= curr.luck ? curr : prev
-      );
+      const status = luck >= 80 ? '✨ Chance EXTREME!'
+        : luck >= 60 ? '🍀 Grande chance!'
+        : luck >= 40 ? '😐 Chance moyenne'
+        : luck >= 20 ? '😰 Peu de chance'
+        : '🔥 Tres malchanceux';
 
       const bar = MessageFormatter.progressBar(luck, 100, 20);
 
-      let advice = '';
-      if (luck > 75) {
-        advice = '🎁 C\'est un bon jour pour tenter un loot!';
-      } else if (luck > 50) {
-        advice = '⚔️ Essaie un duel!';
-      } else if (luck > 25) {
-        advice = '📚 Fais un quiz pour gagner de l\'XP!';
-      } else {
-        advice = '💤 Reste prudent et ne prends pas de risques!';
-      }
-
-      const winPct = Math.round(Luck.winProbability(user) * 100);
-      const chanceItems = [
-        { label: 'Chance', value: `${luck}%` },
-        { label: 'Statut', value: message_luck.text },
-        { label: '🎰 Roulette', value: `${winPct}% de victoire aujourd'hui` },
+      const items = [
+        { label: '🍀 Chance', value: `${luck}%` },
+        { label: 'Statut', value: status },
+        { label: '⏳ Duree restante', value: `${left} min` },
+        { label: '🎰 Roulette', value: `${winPct}% de victoire` },
         { label: '🎁 Loot', value: luck >= 50 ? 'objets rares boostes' : 'objets rares reduits' },
-        { label: '💡 Conseil', value: advice }
+        { label: '🎉 Surprise', value: `${Math.round((0.05 + luck / 100 * 0.25) * 100)}% super-surprise` },
       ];
 
-      const chanceMessage = `${bar}\n${MessageFormatter.elegantBox('🍀 𝔆𝔋𝔄𝔑𝔆𝔈 𝔇𝔘 𝔍𝔒𝔘𝔕 🍀', chanceItems)}`;
+      const header = alreadyActive
+        ? 'Buff de chance deja actif (utilise tes commandes avant qu\'il expire):'
+        : 'Nouveau buff de chance active pour 30 minutes!';
 
-      if (reply) {
-        await reply({ text: chanceMessage });
-      } else {
-        await sock.sendMessage(senderJid, { text: chanceMessage });
-      }
+      const msg = `${header}\n${bar}\n${MessageFormatter.elegantBox('🍀 𝔅𝔘𝔉𝔉 𝔆𝔋𝔄𝔑𝔆𝔈 🍀', items)}\n\n💡 Lance !loot, !roulette ou !surprise pendant que le buff est actif.`;
+
+      await send({ text: msg });
     } catch (error) {
-      if (reply) {
-        await reply({ text: '❌ Erreur!' });
-      } else {
-        await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
-      }
+      await send({ text: '❌ Erreur!' });
     }
-  }
+  },
 };

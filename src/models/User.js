@@ -42,10 +42,15 @@ const userSchema = new mongoose.Schema({
     itemId: String,
     name: String,
     quantity: { type: Number, default: 1 },
-    rarity: String, // common, rare, epic, legendary
+    rarity: String, // common, rare, epic, legendary, exotic
     slot: String,   // head, body, hands, feet (equipement) - null si non equipable
+    exoticLevel: { type: Number, default: 0 }, // niveau d'amelioration (items exotiques)
     addedAt: { type: Date, default: Date.now }
   }],
+  luckBuff: {
+    percent: { type: Number, default: 0 },
+    expiresAt: { type: Date, default: null }
+  },
   stats: {
     messages: { type: Number, default: 0, min: 0 },
     quiz: { type: Number, default: 0, min: 0 },
@@ -108,10 +113,10 @@ const userSchema = new mongoose.Schema({
     default: []
   },
   equipped: {
-    head: { itemId: String, name: String, rarity: String },
-    body: { itemId: String, name: String, rarity: String },
-    hands: { itemId: String, name: String, rarity: String },
-    feet: { itemId: String, name: String, rarity: String }
+    head: { itemId: String, name: String, rarity: String, exoticLevel: { type: Number, default: 0 } },
+    body: { itemId: String, name: String, rarity: String, exoticLevel: { type: Number, default: 0 } },
+    hands: { itemId: String, name: String, rarity: String, exoticLevel: { type: Number, default: 0 } },
+    feet: { itemId: String, name: String, rarity: String, exoticLevel: { type: Number, default: 0 } }
   },
   lastEquipmentXpTime: {
     type: Date,

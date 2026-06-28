@@ -70,6 +70,7 @@ module.exports = {
         itemId: item.itemId,
         name: item.name,
         rarity: item.rarity,
+        exoticLevel: item.exoticLevel || 0,
       };
       user.markModified('equipped');
       await user.save();
@@ -86,7 +87,7 @@ module.exports = {
         details.items.forEach((eq) => {
           text += `\n  ${emojis[eq.rarity] || '⚪'} ${eq.name}: +${eq.xpPerHour}/h`;
         });
-        text += `\n  ⚡ *Total: +${details.totalXP} XP/h* (max ${equipmentPassiveXP.MAX_PASSIVE_XP})`;
+        text += `\n  ⚡ *Total: +${details.totalXP} XP/h*`;
       }
 
       await send({ text });

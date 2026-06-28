@@ -38,7 +38,7 @@ class ModuleManager {
     items: {
       name: 'Inventaire',
       description: 'Loot, équipement, chakra',
-      commands: ['loot', 'inventaire', 'equip', 'equipement', 'boutique', 'shop', 'store', 'acheter', 'buy'],
+      commands: ['loot', 'inventaire', 'equip', 'equipement', 'boutique', 'shop', 'store', 'acheter', 'buy', 'fusion', 'merge', 'fusionner', 'ameliorer', 'upgrade', 'ameliore'],
       enabled: true
     },
     quete: {
