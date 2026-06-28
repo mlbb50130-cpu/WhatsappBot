@@ -2924,5 +2924,1405 @@
     ],
     "correct": 1,
     "reward": 100
+  },
+  {
+    "id": 210,
+    "category": "Naruto",
+    "type": "anime",
+    "question": "Quel dojutsu legendaire Sasuke obtient-il adulte ?",
+    "options": [
+      "Byakugan",
+      "Rinnegan",
+      "Tenseigan",
+      "Jogan"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 211,
+    "category": "Naruto",
+    "type": "anime",
+    "question": "Comment s'appelle le fils de Naruto ?",
+    "options": [
+      "Boruto",
+      "Konohamaru",
+      "Shikadai",
+      "Inojin"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 212,
+    "category": "Naruto",
+    "type": "anime",
+    "question": "Qui devient le maitre de Sasuke apres sa fuite de Konoha ?",
+    "options": [
+      "Jiraiya",
+      "Orochimaru",
+      "Kabuto",
+      "Danzo"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 213,
+    "category": "Naruto",
+    "type": "anime",
+    "question": "Quel village est dirige par le Kazekage ?",
+    "options": [
+      "Konoha",
+      "Suna",
+      "Kiri",
+      "Iwa"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 214,
+    "category": "Naruto",
+    "type": "anime",
+    "question": "Qui devient l'epouse de Naruto ?",
+    "options": [
+      "Sakura Haruno",
+      "Ino Yamanaka",
+      "Hinata Hyuga",
+      "Temari"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 215,
+    "category": "Naruto",
+    "type": "anime",
+    "question": "Quelle organisation criminelle porte des manteaux noirs a nuages rouges ?",
+    "options": [
+      "Anbu",
+      "Akatsuki",
+      "Taka",
+      "La Racine"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 216,
+    "category": "One Piece",
+    "type": "anime",
+    "question": "Comment s'appelle l'archeologue de l'equipage du Chapeau de paille ?",
+    "options": [
+      "Nami",
+      "Nico Robin",
+      "Vivi",
+      "Bonney"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 217,
+    "category": "One Piece",
+    "type": "anime",
+    "question": "Qui est le tireur d'elite de l'equipage de Luffy ?",
+    "options": [
+      "Sanji",
+      "Usopp",
+      "Brook",
+      "Franky"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 218,
+    "category": "One Piece",
+    "type": "anime",
+    "question": "Quel empereur est surnomme Barbe Blanche ?",
+    "options": [
+      "Kaido",
+      "Edward Newgate",
+      "Shanks",
+      "Big Mom"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 219,
+    "category": "One Piece",
+    "type": "anime",
+    "question": "Quel fruit du demon donne a Ace le pouvoir du feu ?",
+    "options": [
+      "Gomu Gomu no Mi",
+      "Mera Mera no Mi",
+      "Hie Hie no Mi",
+      "Ope Ope no Mi"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 220,
+    "category": "One Piece",
+    "type": "anime",
+    "question": "Quel membre de l'equipage est un squelette musicien ?",
+    "options": [
+      "Franky",
+      "Brook",
+      "Jinbe",
+      "Chopper"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 221,
+    "category": "One Piece",
+    "type": "anime",
+    "question": "Quel arc se deroule dans un pays inspire du Japon feodal ?",
+    "options": [
+      "Alabasta",
+      "Wano",
+      "Dressrosa",
+      "Water Seven"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 222,
+    "category": "Bleach",
+    "type": "anime",
+    "question": "Quelle race d'humains spirituels combat a l'arc spirituel ?",
+    "options": [
+      "Quincy",
+      "Arrancar",
+      "Vizard",
+      "Fullbring"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 223,
+    "category": "Bleach",
+    "type": "anime",
+    "question": "Comment appelle-t-on un Hollow ayant retire son masque ?",
+    "options": [
+      "Vizard",
+      "Arrancar",
+      "Quincy",
+      "Bount"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 224,
+    "category": "Bleach",
+    "type": "anime",
+    "question": "Quel capitaine sanguinaire commande la 11e division ?",
+    "options": [
+      "Byakuya Kuchiki",
+      "Kenpachi Zaraki",
+      "Mayuri Kurotsuchi",
+      "Toshiro Hitsugaya"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 225,
+    "category": "Bleach",
+    "type": "anime",
+    "question": "Quelle technique de deplacement ultra-rapide utilisent les Shinigami ?",
+    "options": [
+      "Sonido",
+      "Shunpo",
+      "Hirenkyaku",
+      "Bringer Light"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 226,
+    "category": "Dragon Ball",
+    "type": "anime",
+    "question": "Quelle transformation doree Goku atteint-il en premier face a Freezer ?",
+    "options": [
+      "Super Saiyan Blue",
+      "Super Saiyan",
+      "Ultra Instinct",
+      "Kaioken"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 227,
+    "category": "Dragon Ball",
+    "type": "anime",
+    "question": "Quel objet sert a localiser les Dragon Balls ?",
+    "options": [
+      "Le Dragon Radar",
+      "Le Scouter",
+      "La boussole",
+      "La carte celeste"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 228,
+    "category": "Dragon Ball",
+    "type": "anime",
+    "question": "Qui entraine Gohan pour le rendre plus fort ?",
+    "options": [
+      "Goku",
+      "Piccolo",
+      "Vegeta",
+      "Krillin"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 229,
+    "category": "Dragon Ball",
+    "type": "anime",
+    "question": "Quelle transformation ultime apparait dans Dragon Ball Super ?",
+    "options": [
+      "Super Saiyan 4",
+      "Ultra Instinct",
+      "Kaioken",
+      "Grand Singe"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 230,
+    "category": "Demon Slayer",
+    "type": "anime",
+    "question": "Comment s'appelle le pourfendeur blond et froussard ?",
+    "options": [
+      "Inosuke Hashibira",
+      "Zenitsu Agatsuma",
+      "Genya Shinazugawa",
+      "Giyu Tomioka"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 231,
+    "category": "Demon Slayer",
+    "type": "anime",
+    "question": "Quel Hashira utilise la respiration du son ?",
+    "options": [
+      "Giyu Tomioka",
+      "Tengen Uzui",
+      "Kyojuro Rengoku",
+      "Gyomei Himejima"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 232,
+    "category": "Demon Slayer",
+    "type": "anime",
+    "question": "Quelle lune superieure tue Rengoku ?",
+    "options": [
+      "Doma",
+      "Akaza",
+      "Kokushibo",
+      "Gyutaro"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 233,
+    "category": "Demon Slayer",
+    "type": "anime",
+    "question": "Comment s'appellent les sabres des pourfendeurs qui changent de couleur ?",
+    "options": [
+      "Nichirin",
+      "Murasama",
+      "Wado",
+      "Tessaiga"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 234,
+    "category": "Attack on Titan",
+    "type": "anime",
+    "question": "Quel Titan appartient a Reiner ?",
+    "options": [
+      "Le Titan Colossal",
+      "Le Titan Cuirasse",
+      "Le Titan Femelle",
+      "Le Titan Bestial"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 235,
+    "category": "Attack on Titan",
+    "type": "anime",
+    "question": "Qui detient le Titan Bestial ?",
+    "options": [
+      "Eren Yeager",
+      "Zeke Yeager",
+      "Reiner Braun",
+      "Bertholdt Hoover"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 236,
+    "category": "Attack on Titan",
+    "type": "anime",
+    "question": "Quelle nation rivale d'Eldia mene la guerre ?",
+    "options": [
+      "Paradis",
+      "Marley",
+      "Trost",
+      "Sina"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 237,
+    "category": "Jujutsu Kaisen",
+    "type": "anime",
+    "question": "Quel fleau special manipule les ames et les corps (Idle Transfiguration) ?",
+    "options": [
+      "Jogo",
+      "Mahito",
+      "Hanami",
+      "Dagon"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 238,
+    "category": "Jujutsu Kaisen",
+    "type": "anime",
+    "question": "Quelle ecole rivale affronte celle de Tokyo ?",
+    "options": [
+      "L'ecole d'Osaka",
+      "L'ecole de Kyoto",
+      "L'ecole de Sendai",
+      "L'ecole de Nagoya"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 239,
+    "category": "Jujutsu Kaisen",
+    "type": "anime",
+    "question": "Qui est l'ancien meilleur ami devenu ennemi de Gojo ?",
+    "options": [
+      "Kento Nanami",
+      "Suguru Geto",
+      "Toji Fushiguro",
+      "Yuta Okkotsu"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 240,
+    "category": "My Hero Academia",
+    "type": "anime",
+    "question": "Qui est le grand vilain originel, maitre de Shigaraki ?",
+    "options": [
+      "Stain",
+      "All For One",
+      "Overhaul",
+      "Dabi"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 241,
+    "category": "My Hero Academia",
+    "type": "anime",
+    "question": "Quel heros pro est le pere de Shoto Todoroki ?",
+    "options": [
+      "All Might",
+      "Endeavor",
+      "Hawks",
+      "Best Jeanist"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 242,
+    "category": "My Hero Academia",
+    "type": "anime",
+    "question": "Quel est l'Alter d'Ochaco Uraraka ?",
+    "options": [
+      "Creation",
+      "Zero Gravity",
+      "Explosion",
+      "Engloutissement"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 243,
+    "category": "Hunter x Hunter",
+    "type": "anime",
+    "question": "Comment s'appelle le pere de Gon, Hunter legendaire ?",
+    "options": [
+      "Isaac Netero",
+      "Ging Freecss",
+      "Silva Zoldyck",
+      "Kite"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 244,
+    "category": "Hunter x Hunter",
+    "type": "anime",
+    "question": "Quelle categorie de Nen correspond a Gon ?",
+    "options": [
+      "Manipulation",
+      "Renforcement",
+      "Materialisation",
+      "Specialisation"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 245,
+    "category": "Fullmetal Alchemist",
+    "type": "anime",
+    "question": "Comment s'appelle le pere des freres Elric ?",
+    "options": [
+      "King Bradley",
+      "Van Hohenheim",
+      "Roy Mustang",
+      "Maes Hughes"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 246,
+    "category": "Fullmetal Alchemist",
+    "type": "anime",
+    "question": "Quelle militaire est la garde du corps fidele de Roy Mustang ?",
+    "options": [
+      "Olivier Armstrong",
+      "Riza Hawkeye",
+      "Maria Ross",
+      "Sheska"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 247,
+    "category": "Pokemon",
+    "type": "anime",
+    "question": "Quel Pokemon legendaire psychique a ete cree genetiquement a partir de Mew ?",
+    "options": [
+      "Mewtwo",
+      "Lugia",
+      "Rayquaza",
+      "Deoxys"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 248,
+    "category": "Pokemon",
+    "type": "anime",
+    "question": "Quel duo de la Team Rocket poursuit Pikachu dans l'anime ?",
+    "options": [
+      "Jessie et James",
+      "Pierre et Ondine",
+      "Regis et Flora",
+      "Max et May"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 249,
+    "category": "Pokemon",
+    "type": "anime",
+    "question": "Combien de types de Pokemon existent dans les generations recentes ?",
+    "options": [
+      "15",
+      "17",
+      "18",
+      "20"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 250,
+    "category": "JoJo's Bizarre Adventure",
+    "type": "anime",
+    "question": "Quelle partie introduit le Hamon (Ondulation) ?",
+    "options": [
+      "Phantom Blood",
+      "Stardust Crusaders",
+      "Diamond is Unbreakable",
+      "Golden Wind"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 251,
+    "category": "JoJo's Bizarre Adventure",
+    "type": "anime",
+    "question": "Qui est la premiere JoJo feminine (partie 6) ?",
+    "options": [
+      "Lisa Lisa",
+      "Jolyne Cujoh",
+      "Trish Una",
+      "Yasuho"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 252,
+    "category": "Death Note",
+    "type": "anime",
+    "question": "Quel fruit le Shinigami Ryuk adore-t-il ?",
+    "options": [
+      "Les pommes",
+      "Les raisins",
+      "Les fraises",
+      "Les bananes"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 253,
+    "category": "Death Note",
+    "type": "anime",
+    "question": "Quelle organisation americaine aide brievement l'enquete contre Kira ?",
+    "options": [
+      "La CIA",
+      "Le FBI",
+      "Le MI6",
+      "Interpol seul"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 254,
+    "category": "Chainsaw Man",
+    "type": "anime",
+    "question": "Quelle chasseuse possedee par le demon du sang devient l'amie de Denji ?",
+    "options": [
+      "Makima",
+      "Power",
+      "Himeno",
+      "Kobeni"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 255,
+    "category": "Spy x Family",
+    "type": "anime",
+    "question": "Dans quelle ecole prestigieuse Anya est-elle inscrite ?",
+    "options": [
+      "U.A.",
+      "Eden College",
+      "Ouran",
+      "Yuei"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 256,
+    "category": "Code Geass",
+    "type": "anime",
+    "question": "Comment s'appelle le meilleur ami et rival de Lelouch, chevalier de Britannia ?",
+    "options": [
+      "Schneizel",
+      "Suzaku Kururugi",
+      "Rolo",
+      "Jeremiah"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 257,
+    "category": "Sword Art Online",
+    "type": "anime",
+    "question": "Quelle arme de predilection utilise Sinon ?",
+    "options": [
+      "L'epee",
+      "Le fusil de precision",
+      "La lance",
+      "La hache"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 258,
+    "category": "Konosuba",
+    "type": "anime",
+    "question": "Quelle magicienne ne lance que des sorts d'explosion ?",
+    "options": [
+      "Aqua",
+      "Megumin",
+      "Darkness",
+      "Wiz"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 259,
+    "category": "Inuyasha",
+    "type": "anime",
+    "question": "Quel objet sacre tous les demons recherchent dans Inuyasha ?",
+    "options": [
+      "La Perle de Shikon",
+      "Le Sceptre Sacre",
+      "Le Cristal de Lune",
+      "L'Epee Tessaiga"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 260,
+    "category": "Naruto",
+    "type": "anime",
+    "question": "Quelle technique oculaire permet de copier les jutsu ?",
+    "options": [
+      "Byakugan",
+      "Sharingan",
+      "Rinnegan",
+      "Rasengan"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 261,
+    "category": "Naruto",
+    "type": "anime",
+    "question": "Quel bijuu a huit queues est scelle dans Killer Bee ?",
+    "options": [
+      "Shukaku",
+      "Kurama",
+      "Gyuki",
+      "Matatabi"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 262,
+    "category": "Naruto",
+    "type": "anime",
+    "question": "Quel est le grade ninja le plus eleve, chef d'un village ?",
+    "options": [
+      "Genin",
+      "Chunin",
+      "Jonin",
+      "Kage"
+    ],
+    "correct": 3,
+    "reward": 100
+  },
+  {
+    "id": 263,
+    "category": "Naruto",
+    "type": "anime",
+    "question": "Quelle equipe est dirigee par Asuma Sarutobi ?",
+    "options": [
+      "L'equipe 7",
+      "L'equipe 8",
+      "L'equipe 10",
+      "L'equipe Gai"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 264,
+    "category": "Naruto",
+    "type": "anime",
+    "question": "Quel ninja paresseux maitrise la technique des ombres (clan Nara) ?",
+    "options": [
+      "Choji",
+      "Shikamaru",
+      "Kiba",
+      "Shino"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 265,
+    "category": "One Piece",
+    "type": "anime",
+    "question": "Combien de sabres Zoro utilise-t-il dans son style ?",
+    "options": [
+      "Un",
+      "Deux",
+      "Trois",
+      "Quatre"
+    ],
+    "correct": 2,
+    "reward": 100
+  },
+  {
+    "id": 266,
+    "category": "One Piece",
+    "type": "anime",
+    "question": "Quel charpentier cyborg construit le Thousand Sunny ?",
+    "options": [
+      "Usopp",
+      "Franky",
+      "Brook",
+      "Jinbe"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 267,
+    "category": "One Piece",
+    "type": "anime",
+    "question": "Comment s'appelle le royaume sous-marin des hommes-poissons ?",
+    "options": [
+      "Skypiea",
+      "L'Ile des Hommes-Poissons",
+      "Dressrosa",
+      "Zou"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 268,
+    "category": "One Piece",
+    "type": "anime",
+    "question": "Quel pirate roux offre son chapeau de paille a Luffy ?",
+    "options": [
+      "Shanks",
+      "Rayleigh",
+      "Garp",
+      "Ace"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 269,
+    "category": "One Piece",
+    "type": "anime",
+    "question": "Quel grand-pere marine eleve Luffy ?",
+    "options": [
+      "Sengoku",
+      "Monkey D. Garp",
+      "Akainu",
+      "Kong"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 270,
+    "category": "Bleach",
+    "type": "anime",
+    "question": "Quelle amie d'enfance d'Ichigo possede des pouvoirs de rejet et de guerison ?",
+    "options": [
+      "Rukia Kuchiki",
+      "Orihime Inoue",
+      "Rangiku Matsumoto",
+      "Yoruichi"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 271,
+    "category": "Bleach",
+    "type": "anime",
+    "question": "Quelle ancienne capitaine se transforme en chat noir ?",
+    "options": [
+      "Soi Fon",
+      "Yoruichi Shihoin",
+      "Rangiku",
+      "Unohana"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 272,
+    "category": "Bleach",
+    "type": "anime",
+    "question": "Quel Espada numero 4 affronte Ichigo a Hueco Mundo ?",
+    "options": [
+      "Grimmjow",
+      "Ulquiorra",
+      "Nnoitra",
+      "Yammy"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 273,
+    "category": "Bleach",
+    "type": "anime",
+    "question": "Quel ami Quincy d'Ichigo porte des lunettes ?",
+    "options": [
+      "Yasutora Sado",
+      "Uryu Ishida",
+      "Keigo",
+      "Mizuiro"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 274,
+    "category": "Dragon Ball",
+    "type": "anime",
+    "question": "Quel meilleur ami chauve de Goku combat a ses cotes ?",
+    "options": [
+      "Yamcha",
+      "Krillin",
+      "Tenshinhan",
+      "Piccolo"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 275,
+    "category": "Dragon Ball",
+    "type": "anime",
+    "question": "Quel androide accompagne le plus souvent C-18 ?",
+    "options": [
+      "C-16",
+      "C-17",
+      "Cell",
+      "C-19"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 276,
+    "category": "Dragon Ball",
+    "type": "anime",
+    "question": "Quelle attaque Vegeta charge a deux mains au-dessus de la tete ?",
+    "options": [
+      "Le Kamehameha",
+      "Le Final Flash",
+      "Le Makankosappo",
+      "Le Masenko"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 277,
+    "category": "Dragon Ball",
+    "type": "anime",
+    "question": "Qui est l'epouse de Goku ?",
+    "options": [
+      "Bulma",
+      "Chichi",
+      "C-18",
+      "Videl"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 278,
+    "category": "Demon Slayer",
+    "type": "anime",
+    "question": "Quel Hashira aveugle est le plus puissant des piliers ?",
+    "options": [
+      "Sanemi Shinazugawa",
+      "Gyomei Himejima",
+      "Obanai Iguro",
+      "Muichiro Tokito"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 279,
+    "category": "Demon Slayer",
+    "type": "anime",
+    "question": "Quel pourfendeur sauvage porte un masque de sanglier ?",
+    "options": [
+      "Zenitsu",
+      "Inosuke Hashibira",
+      "Genya",
+      "Tanjiro"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 280,
+    "category": "Demon Slayer",
+    "type": "anime",
+    "question": "Quelle Hashira aux papillons maitrise la respiration de l'insecte ?",
+    "options": [
+      "Mitsuri Kanroji",
+      "Shinobu Kocho",
+      "Kanao Tsuyuri",
+      "Nezuko"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 281,
+    "category": "Attack on Titan",
+    "type": "anime",
+    "question": "Qui devient la vraie reine de l'humanite dans les murs ?",
+    "options": [
+      "Mikasa",
+      "Historia Reiss",
+      "Sasha",
+      "Ymir"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 282,
+    "category": "Attack on Titan",
+    "type": "anime",
+    "question": "Quel pouvoir special possede le Titan Fondateur ?",
+    "options": [
+      "Voler",
+      "Controler les autres Titans",
+      "Devenir invisible",
+      "Lire les pensees"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 283,
+    "category": "Attack on Titan",
+    "type": "anime",
+    "question": "Quel membre du Bataillon adore manger (les patates) ?",
+    "options": [
+      "Historia",
+      "Sasha Blouse",
+      "Ymir",
+      "Annie"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 284,
+    "category": "Jujutsu Kaisen",
+    "type": "anime",
+    "question": "Quel assassin sans energie maudite est le pere de Megumi ?",
+    "options": [
+      "Suguru Geto",
+      "Toji Fushiguro",
+      "Kento Nanami",
+      "Choso"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 285,
+    "category": "Jujutsu Kaisen",
+    "type": "anime",
+    "question": "Quel etudiant invoque des shikigami canins (chiens divins) ?",
+    "options": [
+      "Yuji Itadori",
+      "Megumi Fushiguro",
+      "Yuta Okkotsu",
+      "Toge Inumaki"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 286,
+    "category": "My Hero Academia",
+    "type": "anime",
+    "question": "Quel vilain aux mains desintegre tout ce qu'il touche ?",
+    "options": [
+      "Dabi",
+      "Tomura Shigaraki",
+      "Twice",
+      "Spinner"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 287,
+    "category": "My Hero Academia",
+    "type": "anime",
+    "question": "Quel mecanicien de soutien fournit les gadgets a U.A. ?",
+    "options": [
+      "Power Loader",
+      "Mei Hatsume",
+      "Present Mic",
+      "Snipe"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 288,
+    "category": "Hunter x Hunter",
+    "type": "anime",
+    "question": "Quel president fonde et dirige l'Association des Hunters ?",
+    "options": [
+      "Ging Freecss",
+      "Isaac Netero",
+      "Pariston",
+      "Cheadle"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 289,
+    "category": "Hunter x Hunter",
+    "type": "anime",
+    "question": "Quel medecin en devenir voyage avec Gon et Killua ?",
+    "options": [
+      "Kurapika",
+      "Leorio",
+      "Hisoka",
+      "Knuckle"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 290,
+    "category": "Fullmetal Alchemist",
+    "type": "anime",
+    "question": "Quel homonculus represente l'orgueil et est le fils du Fuhrer ?",
+    "options": [
+      "Envy",
+      "Pride",
+      "Lust",
+      "Greed"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 291,
+    "category": "Fullmetal Alchemist",
+    "type": "anime",
+    "question": "Quelle mecanicienne fabrique les automails d'Edward ?",
+    "options": [
+      "Riza Hawkeye",
+      "Winry Rockbell",
+      "Lan Fan",
+      "Maria Ross"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 292,
+    "category": "Pokemon",
+    "type": "anime",
+    "question": "Quel professeur offre son premier Pokemon a Sacha (Kanto) ?",
+    "options": [
+      "Le Professeur Chen",
+      "Le Professeur Orme",
+      "Le Professeur Sorbier",
+      "Le Professeur Platane"
+    ],
+    "correct": 0,
+    "reward": 100
+  },
+  {
+    "id": 293,
+    "category": "Pokemon",
+    "type": "anime",
+    "question": "Quel est le Pokemon de depart de type Feu a Kanto ?",
+    "options": [
+      "Bulbizarre",
+      "Salameche",
+      "Carapuce",
+      "Pikachu"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 294,
+    "category": "Pokemon",
+    "type": "anime",
+    "question": "Combien de Pokemon compte la premiere generation (Kanto) ?",
+    "options": [
+      "100",
+      "151",
+      "251",
+      "150"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 295,
+    "category": "JoJo's Bizarre Adventure",
+    "type": "anime",
+    "question": "Qui est le heros de la partie 4, Diamond is Unbreakable ?",
+    "options": [
+      "Jotaro Kujo",
+      "Josuke Higashikata",
+      "Giorno Giovanna",
+      "Joseph Joestar"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 296,
+    "category": "JoJo's Bizarre Adventure",
+    "type": "anime",
+    "question": "Quel est le Stand de Giorno Giovanna (partie 5) ?",
+    "options": [
+      "Star Platinum",
+      "Gold Experience",
+      "Crazy Diamond",
+      "The World"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 297,
+    "category": "Death Note",
+    "type": "anime",
+    "question": "Quel vieil homme finance et assiste le detective L ?",
+    "options": [
+      "Soichiro",
+      "Watari",
+      "Matsuda",
+      "Aizawa"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 298,
+    "category": "Tokyo Ghoul",
+    "type": "anime",
+    "question": "De quelle couleur deviennent les cheveux de Kaneki apres sa torture ?",
+    "options": [
+      "Noirs",
+      "Blancs",
+      "Rouges",
+      "Bleus"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 299,
+    "category": "Haikyuu!!",
+    "type": "anime",
+    "question": "Contre quelle equipe se joue la rivalite du duel de la poubelle ?",
+    "options": [
+      "Aoba Johsai",
+      "Nekoma",
+      "Shiratorizawa",
+      "Date Tech"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 300,
+    "category": "Vinland Saga",
+    "type": "anime",
+    "question": "Qui tue Thors, le pere de Thorfinn ?",
+    "options": [
+      "Canute",
+      "Askeladd",
+      "Floki",
+      "Bjorn"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 301,
+    "category": "Solo Leveling",
+    "type": "anime",
+    "question": "Comment s'appelle l'armee que Sung Jinwoo invoque ?",
+    "options": [
+      "La Legion Noire",
+      "L'Armee des Ombres",
+      "Le Pacte Demoniaque",
+      "La Garde Royale"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 302,
+    "category": "Berserk",
+    "type": "anime",
+    "question": "Comment s'appelle le chef de la Bande du Faucon, rival de Guts ?",
+    "options": [
+      "Judeau",
+      "Griffith",
+      "Pippin",
+      "Serpico"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 303,
+    "category": "Re:Zero",
+    "type": "anime",
+    "question": "Quelle sorciere de l'Envie est liee a Subaru ?",
+    "options": [
+      "Echidna",
+      "Satella",
+      "Beatrice",
+      "Emilia"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 304,
+    "category": "Fire Force",
+    "type": "anime",
+    "question": "A quelle compagnie appartient le heros Shinra ?",
+    "options": [
+      "La 1re compagnie",
+      "La 8e compagnie",
+      "La 5e compagnie",
+      "La 7e compagnie"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 305,
+    "category": "The Promised Neverland",
+    "type": "anime",
+    "question": "Comment s'appelle la maman gardienne de l'orphelinat de Grace Field ?",
+    "options": [
+      "Krone",
+      "Isabella",
+      "Emma",
+      "Gilda"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 306,
+    "category": "Tokyo Revengers",
+    "type": "anime",
+    "question": "Comment s'appelle l'amour d'enfance que Takemichi veut sauver ?",
+    "options": [
+      "Emma",
+      "Hinata Tachibana",
+      "Yuzuha",
+      "Senju"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 307,
+    "category": "Konosuba",
+    "type": "anime",
+    "question": "Quelle deesse de l'eau inutile accompagne Kazuma ?",
+    "options": [
+      "Megumin",
+      "Aqua",
+      "Darkness",
+      "Wiz"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 308,
+    "category": "Overlord",
+    "type": "anime",
+    "question": "Quel seigneur squelette dirige le tombeau de Nazarick ?",
+    "options": [
+      "Diablo",
+      "Ainz Ooal Gown",
+      "Demiurge",
+      "Touch Me"
+    ],
+    "correct": 1,
+    "reward": 100
+  },
+  {
+    "id": 309,
+    "category": "Bungo Stray Dogs",
+    "type": "anime",
+    "question": "Les personnages de Bungo Stray Dogs sont inspires de quoi ?",
+    "options": [
+      "De musiciens",
+      "D'ecrivains celebres",
+      "De peintres",
+      "De scientifiques"
+    ],
+    "correct": 1,
+    "reward": 100
   }
 ]
