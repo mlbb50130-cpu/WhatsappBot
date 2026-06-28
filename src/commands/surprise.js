@@ -1,4 +1,5 @@
 const MessageFormatter = require('../utils/messageFormatter');
+const Luck = require('../utils/luck');
 
 module.exports = {
   name: 'surprise',
@@ -26,8 +27,8 @@ module.exports = {
     const senderJid = message.key.remoteJid;
 
     try {
-      // Chance rare: 10% de trouver une super surprise
-      const isSuperSurprise = Math.random() < 0.1;
+      // Chance de super-surprise influencee par la chance du jour (5% a 30%)
+      const isSuperSurprise = Math.random() < (0.05 + Luck.luckFactor(user) * 0.25);
       const surprises = isSuperSurprise 
         ? this.surpriseTable.filter(s => s.reward >= 100)
         : this.surpriseTable;
@@ -41,7 +42,7 @@ module.exports = {
         user.xp += surprise.reward;
         rewardText = `+${surprise.reward} XP`;
       } else if (surprise.type === 'gold') {
-        user.gold = Math.min(user.gold + surprise.reward, 5000);
+        user.gold = (user.gold || 0) + surprise.reward;
         rewardText = `+${surprise.reward} Gold`;
       } else if (surprise.type === 'chakra') {
         user.chakra = Math.min(user.chakra + surprise.reward, user.maxChakra);

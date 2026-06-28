@@ -1,5 +1,5 @@
-const RandomUtils = require('../utils/random');
 const MessageFormatter = require('../utils/messageFormatter');
+const Luck = require('../utils/luck');
 
 module.exports = {
   name: 'chance',
@@ -14,12 +14,9 @@ module.exports = {
     const senderJid = message.key.remoteJid;
 
     try {
-      // Generate luck based on user JID and today's date
-      const today = new Date();
-      const dateString = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
-      const seed = parseInt(user.jid + dateString, 36) % 100;
-
-      const luck = Math.max(0, Math.min(100, seed + RandomUtils.range(-20, 20)));
+      // Chance du jour DETERMINISTE (stable toute la journee) qui influence
+      // reellement loot / roulette / surprise.
+      const luck = Luck.getDailyLuck(user);
 
       const luckyItems = [
         { luck: 80, text: '✨ Chance EXTRÊME! Tu peux faire l\'impossible aujourd\'hui!' },
@@ -46,9 +43,12 @@ module.exports = {
         advice = '💤 Reste prudent et ne prends pas de risques!';
       }
 
+      const winPct = Math.round(Luck.winProbability(user) * 100);
       const chanceItems = [
         { label: 'Chance', value: `${luck}%` },
         { label: 'Statut', value: message_luck.text },
+        { label: '🎰 Roulette', value: `${winPct}% de victoire aujourd'hui` },
+        { label: '🎁 Loot', value: luck >= 50 ? 'objets rares boostes' : 'objets rares reduits' },
         { label: '💡 Conseil', value: advice }
       ];
 

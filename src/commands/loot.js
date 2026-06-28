@@ -1,6 +1,7 @@
 const RandomUtils = require('../utils/random');
 const MessageFormatter = require('../utils/messageFormatter');
 const QuestSystem = require('../utils/questSystem');
+const Luck = require('../utils/luck');
 
 module.exports = {
   name: 'loot',
@@ -25,10 +26,11 @@ module.exports = {
   async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
-    // Weighted random selection
+    // Weighted random selection, biaisee par la chance du jour:
+    // chance haute -> objets rares plus probables, communs moins probables.
     const items = this.lootTable.map(item => ({
       value: item,
-      weight: item.weight
+      weight: Math.max(0.1, item.weight * Luck.lootRarityMultiplier(item.rarity, user))
     }));
 
     const loot = RandomUtils.weighted(items);

@@ -1,5 +1,6 @@
 const RandomUtils = require('../utils/random');
 const MessageFormatter = require('../utils/messageFormatter');
+const Luck = require('../utils/luck');
 
 module.exports = {
   name: 'roulette',
@@ -23,8 +24,8 @@ module.exports = {
       return;
     }
 
-    const chance = RandomUtils.range(1, 6);
-    const win = chance > 2; // 4/6 chance de gagner
+    // Probabilite de victoire influencee par la chance du jour (!chance)
+    const win = Math.random() < Luck.winProbability(user);
 
     // Déduire la mise
     user.gold = (user.gold || 0) - goldBet;

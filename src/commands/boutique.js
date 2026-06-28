@@ -29,7 +29,7 @@ L'equipement equipe rapporte un passif XP/h.
 
     slots.forEach((slot) => {
       const info = SLOTS[slot];
-      text += `\n${info.emoji} *${info.slotLabel.toUpperCase()}* (slot: ${slot})\n`;
+      text += `\n${info.emoji} *${info.label.toUpperCase()}* (slot: ${slot})\n`;
       getItemsBySlot(slot).forEach((item) => {
         text += `  #${item.id} ${item.rarityLabel} — ${item.name}\n     💰 ${item.price} gold • ⚡ +${item.xpPerHour} XP/h\n`;
       });
