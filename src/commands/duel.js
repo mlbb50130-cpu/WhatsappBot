@@ -157,6 +157,7 @@ module.exports = {
           QuestSystem.resetDailyQuests(user);
         }
         QuestSystem.updateDailyProgress(user, 'duels', 1);
+        QuestSystem.updateWeeklyProgress(user, 'duels', 1);
       } else {
         user.stats.losses += 1;
         opponent.stats.wins += 1;
@@ -169,6 +170,7 @@ module.exports = {
           QuestSystem.resetDailyQuests(opponent);
         }
         QuestSystem.updateDailyProgress(opponent, 'duels', 1);
+        QuestSystem.updateWeeklyProgress(opponent, 'duels', 1);
       }
 
       duelResults.push({

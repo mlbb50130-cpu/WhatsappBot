@@ -29,8 +29,12 @@ module.exports = {
         needsSave = true;
       }
 
-      const dailyQuests = QuestSystem.getDailyQuests();
-      const weeklyQuests = QuestSystem.getWeeklyQuests();
+      // Migration / securite: assigner des quetes si aucune
+      if (QuestSystem.ensureDailyAssigned(user)) needsSave = true;
+      if (QuestSystem.ensureWeeklyAssigned(user)) needsSave = true;
+
+      const dailyQuests = QuestSystem.getActiveDailyQuests(user);
+      const weeklyQuests = QuestSystem.getActiveWeeklyQuests(user);
 
       let questMessage = `
 ╔════════════════════════════════════════╗
@@ -93,7 +97,7 @@ ${this.formatQuestList(weeklyQuests, user.weeklyQuests)}
    [${progressBar}] ${status}
    Progress: ${current}/${quest.goal} ${statName}
    📝 ${quest.description}
-   💰 Récompense: ${quest.reward} XP
+   💰 Récompense: +${quest.reward} XP +${quest.gold || 0} gold
 `;
     }).join('\n');
   }

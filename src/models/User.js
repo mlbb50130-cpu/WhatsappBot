@@ -135,6 +135,7 @@ const userSchema = new mongoose.Schema({
   },
   dailyQuests: {
     lastReset: { type: Date, default: Date.now },
+    assigned: { type: [Number], default: [] },
     progress: {
       messages: { type: Number, default: 0 },
       duels: { type: Number, default: 0 },
@@ -145,7 +146,11 @@ const userSchema = new mongoose.Schema({
   },
   weeklyQuests: {
     lastReset: { type: Date, default: Date.now },
+    assigned: { type: [Number], default: [] },
     progress: {
+      messages: { type: Number, default: 0 },
+      duels: { type: Number, default: 0 },
+      quizCorrect: { type: Number, default: 0 },
       loots: { type: Number, default: 0 },
       level: { type: Number, default: 1 }
     },

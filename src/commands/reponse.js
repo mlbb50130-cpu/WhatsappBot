@@ -73,6 +73,7 @@ module.exports = {
       }
 
       QuestSystem.updateDailyProgress(user, 'quizCorrect', 1);
+      QuestSystem.updateWeeklyProgress(user, 'quizCorrect', 1);
       await user.save();
 
       await sendText(

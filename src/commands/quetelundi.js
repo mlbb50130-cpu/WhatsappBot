@@ -20,8 +20,11 @@ module.exports = {
         QuestSystem.resetWeeklyQuests(user);
         await user.save();
       }
+      if (QuestSystem.ensureWeeklyAssigned(user)) {
+        await user.save();
+      }
 
-      const weeklyQuests = QuestSystem.getWeeklyQuests();
+      const weeklyQuests = QuestSystem.getActiveWeeklyQuests(user);
       const progress = user.weeklyQuests?.progress || {};
       const completed = user.weeklyQuests?.completed || [];
 
@@ -46,15 +49,16 @@ module.exports = {
    ${progressBar} ${status}
    Progress: ${current}/${quest.goal}
    📝 ${quest.description}
-   💰 Récompense: +${quest.reward} XP
+   💰 Récompense: +${quest.reward} XP +${quest.gold || 0} gold
 
 `;
       });
 
       const totalReward = QuestSystem.getWeeklyReward(user);
       questMessage += `═════════════════════════════════════════
-💡 Récompense totale: +${totalReward} XP
-⏰ Reset tous les lundi (heure serveur)`;
+💡 Récompense en attente (complétées): +${totalReward.xp} XP +${totalReward.gold} gold
+✅ Réclame avec !valider
+⏰ Reset hebdomadaire (7 jours)`;
 
       if (reply) {
         await reply({ text: questMessage });

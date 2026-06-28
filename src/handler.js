@@ -316,8 +316,12 @@ async function handleMessage(sock, message, isGroup, groupData) {
       if (QuestSystem.needsWeeklyReset(user)) {
         QuestSystem.resetWeeklyQuests(user);
       }
+      // Migration / securite: assigner des quetes si aucune
+      QuestSystem.ensureDailyAssigned(user);
+      QuestSystem.ensureWeeklyAssigned(user);
 
       QuestSystem.updateDailyProgress(user, 'messages', 1);
+      QuestSystem.updateWeeklyProgress(user, 'messages', 1);
       await user.save();
 
       if (isGroup) {

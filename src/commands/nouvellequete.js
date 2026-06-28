@@ -20,6 +20,7 @@ module.exports = {
       if (QuestSystem.needsDailyReset(user)) {
         QuestSystem.resetDailyQuests(user);
       }
+      QuestSystem.ensureDailyAssigned(user);
 
       // Compteur journalier persiste
       const today = new Date();
@@ -38,7 +39,7 @@ module.exports = {
         return;
       }
 
-      const dailyQuests = QuestSystem.getDailyQuests();
+      const dailyQuests = QuestSystem.getActiveDailyQuests(user);
       const completed = user.dailyQuests.completed || [];
 
       // Quetes non encore completees

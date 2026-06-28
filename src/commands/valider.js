@@ -1,24 +1,26 @@
 const QuestSystem = require('../utils/questSystem');
 const MessageFormatter = require('../utils/messageFormatter');
 
-// Collecte les quetes completees mais pas encore validees, et les marque validees.
-function claim(questBucket, questDefs) {
-  if (!questBucket) return { reward: 0, count: 0 };
+// Collecte les quetes assignees completees mais pas encore validees, les marque validees.
+function claim(questBucket, activeQuests) {
+  if (!questBucket) return { xp: 0, gold: 0, count: 0 };
   if (!Array.isArray(questBucket.validated)) questBucket.validated = [];
 
-  let reward = 0;
+  let xp = 0;
+  let gold = 0;
   let count = 0;
 
   (questBucket.completed || []).forEach((questId) => {
-    const quest = questDefs.find((q) => q.id === questId);
+    const quest = activeQuests.find((q) => q.id === questId);
     if (quest && !questBucket.validated.includes(questId)) {
-      reward += quest.reward;
+      xp += quest.reward;
+      gold += quest.gold || 0;
       count += 1;
       questBucket.validated.push(questId);
     }
   });
 
-  return { reward, count };
+  return { xp, gold, count };
 }
 
 module.exports = {
@@ -35,27 +37,32 @@ module.exports = {
     const send = async (payload) => (reply ? reply(payload) : sock.sendMessage(senderJid, payload));
 
     try {
-      // Resets si necessaire (n'ecrase pas si deja a jour)
       if (QuestSystem.needsDailyReset(user)) QuestSystem.resetDailyQuests(user);
       if (QuestSystem.needsWeeklyReset(user)) QuestSystem.resetWeeklyQuests(user);
+      QuestSystem.ensureDailyAssigned(user);
+      QuestSystem.ensureWeeklyAssigned(user);
 
-      const daily = claim(user.dailyQuests, QuestSystem.getDailyQuests());
-      const weekly = claim(user.weeklyQuests, QuestSystem.getWeeklyQuests());
+      const daily = claim(user.dailyQuests, QuestSystem.getActiveDailyQuests(user));
+      const weekly = claim(user.weeklyQuests, QuestSystem.getActiveWeeklyQuests(user));
 
       const totalCount = daily.count + weekly.count;
-      const totalReward = daily.reward + weekly.reward;
+      const totalXp = daily.xp + weekly.xp;
+      const totalGold = daily.gold + weekly.gold;
 
       if (totalCount === 0) {
         await send({ text: MessageFormatter.warning('Aucune quete completee a valider pour le moment.') });
         return;
       }
 
-      user.xp += totalReward;
+      user.xp += totalXp;
+      user.gold = (user.gold || 0) + totalGold;
+      user.markModified('dailyQuests');
+      user.markModified('weeklyQuests');
       await user.save();
 
       let body = '';
-      if (daily.count > 0) body += `\n⏰ Quotidiennes: ${daily.count} (+${daily.reward} XP)`;
-      if (weekly.count > 0) body += `\n📅 Hebdomadaires: ${weekly.count} (+${weekly.reward} XP)`;
+      if (daily.count > 0) body += `\n⏰ Quotidiennes: ${daily.count} (+${daily.xp} XP, +${daily.gold} gold)`;
+      if (weekly.count > 0) body += `\n📅 Hebdomadaires: ${weekly.count} (+${weekly.xp} XP, +${weekly.gold} gold)`;
 
       const validationMsg = `
 ╔════════════════════════════════════════╗
@@ -63,7 +70,8 @@ module.exports = {
 ╚════════════════════════════════════════╝
 ${body}
 
-💰 Total: +${totalReward} XP
+💰 Total: +${totalXp} XP | +${totalGold} gold
+👛 Solde: ${user.gold} gold
 ═════════════════════════════════════════`;
 
       await send({ text: validationMsg });
