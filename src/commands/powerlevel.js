@@ -1,59 +1,54 @@
 const MessageFormatter = require('../utils/messageFormatter');
+const Combat = require('../utils/combat');
 
 module.exports = {
   name: 'powerlevel',
-  description: 'Voir ton power level',
+  description: 'Voir ta puissance de combat',
   category: 'PROFIL',
-  usage: '!powerlevel [@user]',
+  usage: '!powerlevel',
   adminOnly: false,
   groupOnly: false,
   cooldown: 3,
 
   async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
+    const send = async (payload) => (reply ? reply(payload) : sock.sendMessage(senderJid, payload));
 
     try {
-      // Calculate power level based on stats
-      const basePower = user.level * 100;
-      const xpBonus = Math.floor(user.xp / 10);
-      const duelBonus = (user.stats?.wins || 0) * 50;
-      const powerLevelBonus = user.powerLevel || 100;
-      const totalPower = basePower + xpBonus + duelBonus + powerLevelBonus;
+      // On reflete l'etat reel du chakra (peut influencer la puissance)
+      Combat.refreshChakra(user);
+
+      const rating = user.powerLevel || 100;       // rating de combat (evolue via ELO)
+      const levelBonus = (user.level || 1) * 10;
+      const base = Combat.basePower(user);          // rating + niveau
+      const chakraPct = Math.round(Combat.chakraRatio(user) * 100);
+      const effective = Math.round(Combat.combatPower(user)); // base module par le chakra
 
       const powerMessage = `
 ╔════════════════════════════════════╗
-║        ⚡ 𝔓𝔒𝔚𝔈𝔕 𝔏𝔈𝔙𝔈𝔏 ⚡           ║
+║        ⚡ 𝔓𝔘𝔌𝔖𝔖𝔄𝔑𝔆𝔈 ⚡             ║
 ╚════════════════════════════════════╝
 
-👤 *Utilisateur:* ${user.username || 'Joueur'}
-⚡ *Power Level:* ${totalPower}
+👤 *${user.username || 'Joueur'}*
+⚡ *Puissance de combat:* ${effective}
 
-📊 *Détails:*
-  Base (Level): +${basePower}
-  XP: +${xpBonus}
-  Duels gagnés: +${duelBonus}
-  Combat Power: +${powerLevelBonus}
+📊 *Details:*
+  🏅 Rating de combat: ${rating}
+  🎖️ Bonus de niveau: +${levelBonus}
+  🔵 Modificateur chakra: ${chakraPct}% (x${(0.85 + 0.15 * Combat.chakraRatio(user)).toFixed(2)})
+  = Base ${base} -> Effectif ${effective}
 
 📈 *Stats:*
   Duels: ${user.stats?.duels || 0}
   Victoires: ${user.stats?.wins || 0}
-  Défaites: ${user.stats?.losses || 0}
+  Defaites: ${user.stats?.losses || 0}
 
-${totalPower > 5000 ? '🌟 Puissance incroyable!' : totalPower > 2000 ? '💪 Très puissant!' : '⏳ Continue de progresser!'}
-
+${effective > 1500 ? '🌟 Puissance incroyable!' : effective > 600 ? '💪 Tres puissant!' : '⏳ Continue de progresser!'}
 ═════════════════════════════════════`;
 
-      if (reply) {
-        await reply({ text: powerMessage });
-      } else {
-        await sock.sendMessage(senderJid, { text: powerMessage });
-      }
+      await send({ text: powerMessage });
     } catch (error) {
-      if (reply) {
-        await reply({ text: '❌ Erreur!' });
-      } else {
-        await sock.sendMessage(senderJid, { text: '❌ Erreur!' });
-      }
+      await send({ text: '❌ Erreur!' });
     }
-  }
+  },
 };

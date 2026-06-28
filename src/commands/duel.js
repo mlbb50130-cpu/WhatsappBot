@@ -1,10 +1,15 @@
-const RandomUtils = require('../utils/random');
 const QuestSystem = require('../utils/questSystem');
 const MessageFormatter = require('../utils/messageFormatter');
+const Combat = require('../utils/combat');
+const User = require('../models/User');
+
+const CHAKRA_PER_DUEL = 20;
+const XP_WIN = 30;
+const XP_LOSS = 8;
 
 module.exports = {
   name: 'duel',
-  description: 'Défier un utilisateur en duel',
+  description: 'Defier un utilisateur en duel',
   category: 'COMBATS',
   usage: '!duel @user [nombre de duels]',
   adminOnly: false,
@@ -14,207 +19,125 @@ module.exports = {
   async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
     const participantJid = message.key.participant || senderJid;
+    const send = async (payload) => (reply ? reply(payload) : sock.sendMessage(senderJid, payload));
 
-    // Parse mention
     const mentions = message.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
-    
     if (mentions.length === 0) {
-      if (reply) {
-        await reply({ text: '❌ Utilisation: \`!duel @user [nombre]\`\nMentionne le joueur que tu veux affronter!\n\n💡 Exemple: !duel @user 5' });
-      } else {
-        await sock.sendMessage(senderJid, { text: '❌ Utilisation: \`!duel @user [nombre]\`\nMentionne le joueur que tu veux affronter!\n\n💡 Exemple: !duel @user 5' });
-      }
+      await send({ text: '❌ Utilisation: `!duel @user [nombre]`\nMentionne le joueur a affronter. Ex: !duel @user 5' });
       return;
     }
 
     const opponentJid = mentions[0];
-
     if (opponentJid === participantJid) {
-      if (reply) {
-        await reply({ text: '❌ Tu ne peux pas te battre contre toi-même!' });
-      } else {
-        await sock.sendMessage(senderJid, { text: '❌ Tu ne peux pas te battre contre toi-même!' });
-      }
+      await send({ text: '❌ Tu ne peux pas te battre contre toi-meme!' });
       return;
     }
 
-    // Get number of duels from args (default 1, max 10)
     let duelCount = 1;
     if (args[1]) {
-      const parsed = parseInt(args[1]);
-      if (!isNaN(parsed) && parsed > 0) {
-        duelCount = Math.min(parsed, 10); // Max 10 duels per command
-      }
+      const parsed = parseInt(args[1], 10);
+      if (!isNaN(parsed) && parsed > 0) duelCount = Math.min(parsed, 10);
     }
 
-    // Get opponent data
-    const User = require('../models/User');
     const opponent = await User.findOne({ jid: opponentJid });
-
     if (!opponent) {
-      if (reply) {
-        await reply({ text: '❌ Cet utilisateur n\'existe pas dans la base de données.' });
-      } else {
-        await sock.sendMessage(senderJid, { text: '❌ Cet utilisateur n\'existe pas dans la base de données.' });
-      }
+      await send({ text: '❌ Cet utilisateur n\'existe pas dans la base de donnees.' });
       return;
     }
 
-    // Reset chakra if 24h passed
-    const now = new Date();
-    const maxChakra = 100 + (user.level - 1) * 10;
-    let needsChakraReset = false;
-    let hoursDiff = 0;
-    
-    // Initialize maxChakra if not defined
-    if (!user.maxChakra) {
-      user.maxChakra = maxChakra;
-    }
-    
-    // Check if chakra needs to be reset
-    if (user.chakra === undefined || user.chakra === null) {
-      user.chakra = maxChakra;
-      user.lastChakraReset = now;
-      needsChakraReset = true;
-      hoursDiff = 0;
-    } else if (!user.lastChakraReset) {
-      user.lastChakraReset = now;
-      needsChakraReset = true;
-      hoursDiff = 0;
-    } else {
-      // Only reset if 24 hours have passed
-      const lastReset = new Date(user.lastChakraReset);
-      hoursDiff = (now - lastReset) / (1000 * 60 * 60);
-      if (hoursDiff >= 24) {
-        user.chakra = maxChakra;
-        user.lastChakraReset = now;
-        hoursDiff = 0; // Reset counter after reset
-        needsChakraReset = true;
-      }
-    }
-    
-    // Only save if chakra was reset
-    if (needsChakraReset) {
+    // Chakra (rafraichi via la logique centralisee)
+    Combat.refreshChakra(user);
+    Combat.refreshChakra(opponent);
+    const maxChakra = Combat.getMaxChakra(user);
+    const chakraCost = CHAKRA_PER_DUEL * duelCount;
+
+    if ((user.chakra || 0) < chakraCost) {
       await user.save();
-    }
-
-    if (user.chakra <= 0) {
-      await sock.sendMessage(senderJid, {
-        text: `❌ Ton chakra est épuisé (${user.chakra}/${maxChakra})!\n⏰ Il se réinitialisera en ${Math.ceil(24 - hoursDiff)}h`
+      await send({
+        text: `❌ Chakra insuffisant!\n📊 Besoin de ${chakraCost}, tu as ${user.chakra}/${maxChakra}\n⏰ Reset dans ${Combat.hoursUntilReset(user)}h`,
       });
       return;
     }
 
-    // Duel costs 20 chakra per duel
-    const chakraCost = 20 * duelCount;
-    
-    if (user.chakra < chakraCost) {
-      await sock.sendMessage(senderJid, {
-        text: `❌ Chakra insuffisant!\n📊 Tu as besoin de ${chakraCost} chakra mais tu n'en as que ${user.chakra}/${maxChakra}`
-      });
-      return;
-    }
-
+    // On paie le chakra: combattre draine -> baisse la puissance effective
     user.chakra -= chakraCost;
 
-    // Execute multiple duels
-    let duelResults = [];
+    // Resets de quetes une seule fois
+    if (QuestSystem.needsDailyReset(user)) QuestSystem.resetDailyQuests(user);
+    if (QuestSystem.needsWeeklyReset(user)) QuestSystem.resetWeeklyQuests(user);
+    if (QuestSystem.needsDailyReset(opponent)) QuestSystem.resetDailyQuests(opponent);
+    if (QuestSystem.needsWeeklyReset(opponent)) QuestSystem.resetWeeklyQuests(opponent);
+
+    const firstWinProb = Combat.winProbability(user, opponent);
+    const powerBefore = user.powerLevel || 100;
+
     let totalWins = 0;
     let totalLosses = 0;
-    let totalXpGained = 0;
-    let totalDifference = 0;
+    let totalXp = 0;
 
     for (let i = 0; i < duelCount; i++) {
-      // Create duel
-      const attackerPower = (user.powerLevel || 100) + user.level * 10 + RandomUtils.range(10, 50);
-      const defenderPower = (opponent.powerLevel || 100) + opponent.level * 10 + RandomUtils.range(10, 50);
+      const winProb = Combat.winProbability(user, opponent);
+      const attackerWins = Math.random() < winProb;
 
-      const winner = attackerPower > defenderPower ? 'attacker' : 'defender';
-      const difference = Math.abs(attackerPower - defenderPower);
-      totalDifference += difference;
-
-      // Update stats
       user.stats.duels += 1;
-      
-      // Update quest progress
-      if (QuestSystem.needsDailyReset(user)) {
-        QuestSystem.resetDailyQuests(user);
-      }
-      if (QuestSystem.needsWeeklyReset(user)) {
-        QuestSystem.resetWeeklyQuests(user);
-      }
-      
-      if (winner === 'attacker') {
+      opponent.stats.duels += 1;
+
+      if (attackerWins) {
+        const delta = Combat.ratingDelta(winProb); // peu si favori, beaucoup si upset
+        user.powerLevel = (user.powerLevel || 100) + delta;
+        opponent.powerLevel = Math.max(Combat.POWER_MIN, (opponent.powerLevel || 100) - delta);
         user.stats.wins += 1;
-        user.xp += 30;
-        user.powerLevel = (user.powerLevel || 100) + 5;
         opponent.stats.losses += 1;
-        totalWins++;
-        totalXpGained += 30;
-        
-        // Update daily quest
-        if (QuestSystem.needsDailyReset(user)) {
-          QuestSystem.resetDailyQuests(user);
-        }
+        user.xp += XP_WIN;
+        opponent.xp += XP_LOSS;
+        totalWins += 1;
+        totalXp += XP_WIN;
         QuestSystem.updateDailyProgress(user, 'duels', 1);
         QuestSystem.updateWeeklyProgress(user, 'duels', 1);
       } else {
-        user.stats.losses += 1;
+        const delta = Combat.ratingDelta(1 - winProb);
+        opponent.powerLevel = (opponent.powerLevel || 100) + delta;
+        user.powerLevel = Math.max(Combat.POWER_MIN, (user.powerLevel || 100) - delta);
         opponent.stats.wins += 1;
-        opponent.xp += 30;
-        opponent.powerLevel = (opponent.powerLevel || 100) + 5;
-        totalLosses++;
-        
-        // Update daily quest for opponent
-        if (QuestSystem.needsDailyReset(opponent)) {
-          QuestSystem.resetDailyQuests(opponent);
-        }
+        user.stats.losses += 1;
+        opponent.xp += XP_WIN;
+        user.xp += XP_LOSS;
+        totalLosses += 1;
+        totalXp += XP_LOSS;
         QuestSystem.updateDailyProgress(opponent, 'duels', 1);
         QuestSystem.updateWeeklyProgress(opponent, 'duels', 1);
       }
-
-      duelResults.push({
-        duelNum: i + 1,
-        winner,
-        attackerPower,
-        defenderPower,
-        difference
-      });
     }
 
     await user.save();
     await opponent.save();
 
-    // Format results
+    const powerChange = (user.powerLevel || 100) - powerBefore;
+    const powerChangeStr = `${powerChange >= 0 ? '+' : ''}${powerChange}`;
+
     const result = [
-      `⚔️ DUELS MULTIPLES ⚔️ (${duelCount})`,
+      `⚔️ DUEL ⚔️ (${duelCount})`,
       ``,
-      `👥 COMBATTANTS:`,
-      `${MessageFormatter.elegantBox('🔴 ATTAQUANT', [
+      MessageFormatter.elegantBox('🔴 ATTAQUANT', [
         { label: '👤 Nom', value: user.username },
-        { label: '🎖️ Niveau', value: user.level.toString() },
-        { label: '⚡ Victoires', value: totalWins.toString() }
-      ])}`,
-      ``,
-      `${MessageFormatter.elegantBox('🔵 DÉFENSEUR', [
+        { label: '🎖️ Niveau', value: String(user.level) },
+        { label: '⚡ Puissance', value: String(Math.round(Combat.combatPower(user))) },
+      ]),
+      MessageFormatter.elegantBox('🔵 DEFENSEUR', [
         { label: '👤 Nom', value: opponent.username },
-        { label: '🎖️ Niveau', value: opponent.level.toString() },
-        { label: '⚡ Victoires', value: totalLosses.toString() }
-      ])}`,
-      ``,
-      `${MessageFormatter.elegantBox('📊 RÉSUMÉ', [
-        { label: '✅ Duels gagnés', value: totalWins.toString() },
-        { label: '❌ Duels perdus', value: totalLosses.toString() },
-        { label: '💫 XP gagnés', value: totalXpGained.toString() },
-        { label: '📈 Différence totale', value: totalDifference.toString() },
-        { label: '🔵 Chakra restant', value: `${user.chakra}/${maxChakra}` }
-      ])}`
+        { label: '🎖️ Niveau', value: String(opponent.level) },
+        { label: '⚡ Puissance', value: String(Math.round(Combat.combatPower(opponent))) },
+      ]),
+      MessageFormatter.elegantBox('📊 RESULTAT', [
+        { label: '🎯 Chance de victoire', value: `${Math.round(firstWinProb * 100)}%` },
+        { label: '✅ Gagnes', value: String(totalWins) },
+        { label: '❌ Perdus', value: String(totalLosses) },
+        { label: '💫 XP', value: `+${totalXp}` },
+        { label: '🏅 Power', value: `${powerChangeStr} (${user.powerLevel})` },
+        { label: '🔵 Chakra', value: `${user.chakra}/${maxChakra}` },
+      ]),
     ].join('\n');
 
-    if (reply) {
-        await reply({ text: result });
-      } else {
-        await sock.sendMessage(senderJid, { text: result });
-      }
-  }
+    await send({ text: result });
+  },
 };
