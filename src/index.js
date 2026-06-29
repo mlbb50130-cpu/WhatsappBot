@@ -261,6 +261,29 @@ async function connectToWhatsApp() {
   // Save credentials when updated
   sock.ev.on('creds.update', saveCreds);
 
+  // Connexion par PAIRING CODE (au lieu du QR) si un numero est configure.
+  // Multi-device natif: on lie le bot via "Connecter avec le numero de telephone".
+  if (config.USE_PAIRING_CODE && !sock.authState.creds.registered) {
+    if (!config.PHONE_NUMBER) {
+      console.log('⚠️ USE_PAIRING_CODE actif mais aucun BOT_PHONE_NUMBER configure. Fallback QR.');
+    } else {
+      setTimeout(async () => {
+        try {
+          const code = await sock.requestPairingCode(config.PHONE_NUMBER);
+          const pretty = code && code.match(/.{1,4}/g) ? code.match(/.{1,4}/g).join('-') : code;
+          console.log('\n================= PAIRING CODE =================');
+          console.log(`📱 Numero : +${config.PHONE_NUMBER}`);
+          console.log(`🔗 Code   : ${pretty}`);
+          console.log('WhatsApp > Appareils connectes > Connecter un appareil');
+          console.log('   > Connecter avec le numero de telephone > saisir le code');
+          console.log('===============================================\n');
+        } catch (err) {
+          console.log('❌ Echec du pairing code:', err && err.message ? err.message : err);
+        }
+      }, 3000);
+    }
+  }
+
   sock.ev.on('contacts.upsert', (contacts = []) => {
     contacts.forEach(rememberContactIdentity);
   });
@@ -272,8 +295,8 @@ async function connectToWhatsApp() {
   sock.ev.on('connection.update', async (update) => {
     const { connection, lastDisconnect, qr } = update;
 
-    // Display QR Code when generated
-    if (qr) {
+    // Display QR Code when generated (sauf si on utilise le pairing code)
+    if (qr && !config.USE_PAIRING_CODE) {
       qrShown = true;
       try {
         qrcode.generate(qr, { small: true });

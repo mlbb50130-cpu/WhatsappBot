@@ -14,6 +14,14 @@ module.exports = {
   // 🔐 Session
   SESSION_NAME: process.env.WHATSAPP_SESSION_NAME || 'tetsubot_session',
   SESSION_DIR: './sessions',
+
+  // 🔗 Connexion WhatsApp (multi-device) - pairing code au lieu du QR
+  // Numero du bot (format international, sans + ni espaces), ex: 2376XXXXXXXX
+  PHONE_NUMBER: (process.env.BOT_PHONE_NUMBER || process.env.PHONE_NUMBER || '').replace(/[^0-9]/g, ''),
+  // Pairing code actif par defaut des qu'un numero est fourni (sauf USE_PAIRING_CODE=false)
+  USE_PAIRING_CODE: process.env.USE_PAIRING_CODE
+    ? process.env.USE_PAIRING_CODE !== 'false'
+    : Boolean((process.env.BOT_PHONE_NUMBER || process.env.PHONE_NUMBER || '').trim()),
   
   // 👥 GROUP SETTINGS
   GROUP_FEATURES: {
