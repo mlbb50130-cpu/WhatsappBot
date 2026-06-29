@@ -2,7 +2,7 @@ const MessageFormatter = require('../utils/messageFormatter');
 
 module.exports = {
   name: 'quotidien',
-  description: 'Mission quotidienne - 50 XP bonus',
+  description: 'Mission quotidienne - 50 XP + 200 gold bonus',
   category: 'QUÊTES',
   usage: '!quotidien',
   adminOnly: false,
@@ -26,6 +26,7 @@ module.exports = {
       }
 
       user.xp += 50;
+      user.gold = (user.gold || 0) + 200;
       user.lastDailyQuest = new Date();
       await user.save();
 
@@ -34,14 +35,16 @@ module.exports = {
 ║      ✅ 𝔐𝔌𝔖𝔖𝔌𝔒𝔑 𝔔𝔘𝔒𝔗𝔌𝔇𝔌𝔈𝔑𝔑𝔈 ✅     ║
 ╚════════════════════════════════════╝
 
-🎯 *Connecte-toi chaque jour pour gagner du XP!*
+🎯 *Connecte-toi chaque jour pour gagner du XP et du gold!*
 
-✨ *+50 XP* gagné!
+✨ *+50 XP* gagne!
+💰 *+200 gold* gagne!
 
 📊 *Ton XP:* ${user.xp}
 📈 *Ton niveau:* ${user.level}
+👛 *Ton gold:* ${user.gold}
 
-💡 Reviens demain pour une autre récompense!
+💡 Reviens demain pour une autre recompense!
 
 ═════════════════════════════════════`;
 

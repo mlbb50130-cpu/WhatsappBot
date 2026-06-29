@@ -2,76 +2,75 @@ const RandomUtils = require('../utils/random');
 const MessageFormatter = require('../utils/messageFormatter');
 const QuestSystem = require('../utils/questSystem');
 const Luck = require('../utils/luck');
+const { SHOP_ITEMS } = require('../data/shopItems');
+const { itemXpPerHour, RARITY_EMOJI } = require('../utils/equipmentPassiveXP');
+
+// Poids de base par rarete (biaises ensuite par le buff de chance).
+const RARITY_WEIGHT = { common: 50, rare: 30, epic: 15, legendary: 5 };
+// XP gagne a l'ouverture selon la rarete obtenue.
+const RARITY_LOOT_XP = { common: 20, rare: 50, epic: 100, legendary: 200 };
+const INVENTORY_MAX = 50;
 
 module.exports = {
   name: 'loot',
-  description: 'Ouvrir un loot aléatoire (réinitialisation: 10h)',
+  description: 'Ouvrir un loot d\'equipement (reinitialisation: 10h)',
   category: 'LOOT',
   usage: '!loot',
   adminOnly: false,
   groupOnly: true,
   cooldown: 36000, // 10h
 
-  lootTable: [
-    { name: 'Kunai Ninja', rarity: 'common', emoji: '🔪', weight: 40, xp: 10 },
-    { name: 'Shuriken Doré', rarity: 'rare', emoji: '⭐', weight: 25, xp: 25 },
-    { name: 'Sabre Katana', rarity: 'epic', emoji: '⚔️', weight: 20, xp: 50 },
-    { name: 'Grimoire Ancien', rarity: 'epic', emoji: '📖', weight: 10, xp: 40 },
-    { name: 'Relique Légendaire', rarity: 'legendary', emoji: '👑', weight: 5, xp: 100 },
-    { name: 'Perle Magique', rarity: 'rare', emoji: '💎', weight: 20, xp: 30 },
-    { name: 'Cape de l\'Ombre', rarity: 'epic', emoji: '🌑', weight: 15, xp: 45 },
-    { name: 'Anneau du Pouvoir', rarity: 'legendary', emoji: '💍', weight: 5, xp: 80 }
-  ],
-
   async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
+    const send = async (payload) => (reply ? reply(payload) : sock.sendMessage(senderJid, payload));
 
-    // Weighted random selection, biaisee par la chance du jour:
-    // chance haute -> objets rares plus probables, communs moins probables.
-    const items = this.lootTable.map(item => ({
-      value: item,
-      weight: Math.max(0.1, item.weight * Luck.lootRarityMultiplier(item.rarity, user))
+    if (!Array.isArray(user.inventory)) user.inventory = [];
+    if (user.inventory.length >= INVENTORY_MAX) {
+      await send({ text: MessageFormatter.warning(`Inventaire plein (${INVENTORY_MAX}). Vends des items avec \`!vendre <index>\`.`) });
+      return;
+    }
+
+    // Tirage de la rarete, pondere et BIAISE par le buff de chance (!chance)
+    const rarityChoices = Object.keys(RARITY_WEIGHT).map((r) => ({
+      value: r,
+      weight: Math.max(0.1, RARITY_WEIGHT[r] * Luck.lootRarityMultiplier(r, user)),
     }));
+    const rarity = RandomUtils.weighted(rarityChoices);
 
-    const loot = RandomUtils.weighted(items);
+    // Choix d'un equipement REEL du catalogue (avec slot -> equipable/fusionnable)
+    const pool = SHOP_ITEMS.filter((i) => i.rarity === rarity);
+    const item = pool[Math.floor(Math.random() * pool.length)];
 
-    // Add to inventory
     user.inventory.push({
-      itemId: RandomUtils.generateId(),
-      name: loot.name,
-      rarity: loot.rarity,
-      quantity: 1
+      itemId: item.itemId,
+      name: item.name,
+      rarity: item.rarity,
+      slot: item.slot,
+      quantity: 1,
+      exoticLevel: 0,
     });
 
-    // Add XP
-    user.xp += loot.xp;
+    const lootXp = RARITY_LOOT_XP[rarity] || 20;
+    user.xp += lootXp;
 
-    // Weekly quest progress (loots)
-    if (QuestSystem.needsWeeklyReset(user)) {
-      QuestSystem.resetWeeklyQuests(user);
-    }
+    if (QuestSystem.needsWeeklyReset(user)) QuestSystem.resetWeeklyQuests(user);
     QuestSystem.updateWeeklyProgress(user, 'loots', 1);
 
     await user.save();
 
-    const rarityEmojis = {
-      common: '⚪',
-      rare: '🔵',
-      epic: '🟣',
-      legendary: '🟡'
-    };
+    const index = user.inventory.length - 1;
+    const buffNote = Luck.isBuffActive(user) ? `🍀 Buff actif (${Luck.getActiveLuck(user)}%)` : 'Active !chance pour booster';
 
     const content = MessageFormatter.elegantBox('🎁 𝔏𝔒𝔒𝔗 𝔒𝔅𝔗𝔈𝔑𝔘 🎁', [
-      { label: `${loot.emoji} Objet`, value: loot.name },
-      { label: `${rarityEmojis[loot.rarity]} Rareté`, value: loot.rarity.toUpperCase() },
-      { label: '✨ XP Gagné', value: `+${loot.xp}` },
-      { label: '📦 Inventaire', value: `${user.inventory.length}/50` }
+      { label: `${RARITY_EMOJI[rarity] || '⚪'} Objet`, value: `${item.name}` },
+      { label: '🏷️ Rarete', value: rarity.toUpperCase() },
+      { label: '⚡ Passif', value: `+${itemXpPerHour(rarity, 0)} XP/h une fois equipe` },
+      { label: '✨ XP', value: `+${lootXp}` },
+      { label: '⚔️ Equiper', value: `!equip ${index}` },
+      { label: '🍀 Chance', value: buffNote },
+      { label: '📦 Inventaire', value: `${user.inventory.length}/${INVENTORY_MAX}` },
     ]);
 
-    if (reply) {
-        await reply(MessageFormatter.createMessageWithImage(content));
-      } else {
-        await sock.sendMessage(senderJid, MessageFormatter.createMessageWithImage(content));
-      }
-  }
+    await send(MessageFormatter.createMessageWithImage(content));
+  },
 };

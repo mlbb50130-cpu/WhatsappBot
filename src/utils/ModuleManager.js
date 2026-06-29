@@ -32,7 +32,7 @@ class ModuleManager {
     xp: {
       name: 'Système XP',
       description: 'Niveaux, XP, classement',
-      commands: ['xp', 'level', 'rank', 'classement', 'leaderboard', 'top', 'stats', 'badges', 'profil', 'profile', 'chakra', 'powerlevel', 'daily', 'gold', 'work'],
+      commands: ['xp', 'level', 'rank', 'classement', 'leaderboard', 'top', 'stats', 'badges', 'profil', 'profile', 'chakra', 'powerlevel', 'daily', 'gold', 'work', 'vendre', 'sell', 'miner', 'mine'],
       enabled: true
     },
     items: {

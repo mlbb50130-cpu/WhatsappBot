@@ -206,6 +206,14 @@ const userSchema = new mongoose.Schema({
     lastReset: { type: Date, default: Date.now },
     count: { type: Number, default: 0 }
   },
+  rouletteUsageToday: {
+    lastReset: { type: Date, default: Date.now },
+    count: { type: Number, default: 0 }
+  },
+  lastMine: {
+    type: Date,
+    default: null
+  },
   assetUsageToday: {
     lastReset: { type: Date, default: Date.now },
     count: { type: Number, default: 0 }

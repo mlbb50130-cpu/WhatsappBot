@@ -11,10 +11,28 @@ module.exports = {
   groupOnly: true,
   cooldown: 10,
 
+  dailyLimit: 25,
+
   async execute(sock, message, args, user, isGroup, groupData, reply) {
     const senderJid = message.key.remoteJid;
 
     const goldBet = 500;
+
+    // Limite quotidienne d'utilisation (25/jour)
+    const today = new Date();
+    if (!user.rouletteUsageToday) user.rouletteUsageToday = { lastReset: today, count: 0 };
+    const lastReset = new Date(user.rouletteUsageToday.lastReset || 0);
+    if (lastReset.toDateString() !== today.toDateString()) {
+      user.rouletteUsageToday.lastReset = today;
+      user.rouletteUsageToday.count = 0;
+    }
+    if (user.rouletteUsageToday.count >= this.dailyLimit) {
+      await user.save();
+      await sock.sendMessage(senderJid, {
+        text: MessageFormatter.warning(`Limite atteinte: ${this.dailyLimit} roulettes par jour. Reviens demain!`)
+      });
+      return;
+    }
 
     // Vérifier si l'utilisateur a assez d'or
     if ((user.gold || 0) < goldBet) {
@@ -24,7 +42,10 @@ module.exports = {
       return;
     }
 
-    // Probabilite de victoire influencee par la chance du jour (!chance)
+    // Consommer une utilisation
+    user.rouletteUsageToday.count += 1;
+
+    // Probabilite de victoire influencee par le buff de chance (!chance)
     const win = Math.random() < Luck.winProbability(user);
 
     // Déduire la mise
@@ -47,7 +68,8 @@ module.exports = {
       { label: '🎲 Résultat', value: win ? '✅ SURVÉCU!' : '💥 TOUCHÉ!' },
       { label: '💰 Or', value: win ? `+${goldWin - goldBet} gold (net)` : `-${goldBet} gold` },
       { label: '⭐ XP', value: `+${xpWin} XP` },
-      { label: '🪙 Solde', value: `${user.gold} gold` }
+      { label: '🪙 Solde', value: `${user.gold} gold` },
+      { label: '🎟️ Restant', value: `${this.dailyLimit - user.rouletteUsageToday.count}/${this.dailyLimit} aujourd'hui` }
     ];
     
     const result = MessageFormatter.elegantBox('🎰 𝔕𝔒𝔘𝔏𝔈𝔗𝔗𝔈 🎰', rouletteItems);

@@ -20,8 +20,9 @@ const RARITY_EMOJI = {
 };
 
 // Exotique: rendement croissant par niveau d'amelioration.
-const EXOTIC_BASE_XP = 300;
-const EXOTIC_XP_PER_LEVEL = 30;
+// Niv.1 = 350/h, +50 par niveau, Niv.10 = 800/h.
+const EXOTIC_BASE_XP = 350;
+const EXOTIC_XP_PER_LEVEL = 50;
 const EXOTIC_MAX_LEVEL = 10;
 
 // Plafond theorique pour les raretes non-exotiques (4 legendaires).
