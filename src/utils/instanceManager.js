@@ -16,8 +16,26 @@ const pino = require('pino');
 
 const INSTANCES_DIR = path.join(process.cwd(), 'instances');
 
-// digits -> { sock, status, pairingCode, connectedAt, prefix, phone, saveCreds }
+// Duree de vie max d'une instance ephemere: 2 jours. Au-dela, elle est arretee
+// (l'utilisateur la relie via l'app).
+const INSTANCE_TTL_MS = 2 * 24 * 60 * 60 * 1000;
+
+// digits -> { sock, status, pairingCode, connectedAt, createdAt, prefix, phone, saveCreds }
 const instances = new Map();
+
+let cleanupTimer = null;
+function ensureCleanup() {
+  if (cleanupTimer) return;
+  cleanupTimer = setInterval(() => {
+    const now = Date.now();
+    for (const [digits, inst] of instances) {
+      if (now - (inst.createdAt || now) > INSTANCE_TTL_MS) {
+        removeInstance(digits).catch(() => {});
+      }
+    }
+  }, 60 * 60 * 1000); // verifie chaque heure
+  if (cleanupTimer.unref) cleanupTimer.unref();
+}
 
 function digitsOf(phone) {
   return String(phone || '').replace(/\D/g, '');
@@ -31,11 +49,14 @@ function publicState(inst) {
     connected: inst.status === 'connected',
     pairingCode: inst.pairingCode || null,
     connectedAt: inst.connectedAt || null,
+    createdAt: inst.createdAt || null,
+    expiresAt: inst.createdAt ? inst.createdAt + INSTANCE_TTL_MS : null,
     prefix: inst.prefix || '!',
   };
 }
 
 async function createInstance(phone, prefix = '!') {
+  ensureCleanup();
   const digits = digitsOf(phone);
   if (digits.length < 8) throw new Error('Numero invalide');
 
@@ -66,6 +87,7 @@ async function createInstance(phone, prefix = '!') {
     status: 'starting',
     pairingCode: null,
     connectedAt: null,
+    createdAt: Date.now(),
     prefix: sock.instancePrefix,
     phone: digits,
     saveCreds,
