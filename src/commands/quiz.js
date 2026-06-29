@@ -104,7 +104,7 @@ module.exports = {
     const group = await Group.findOneAndUpdate(
       { groupJid: senderJid },
       { $setOnInsert: { groupJid: senderJid, groupName } },
-      { new: true, upsert: true, setDefaultsOnInsert: true }
+      { returnDocument: 'after', upsert: true, setDefaultsOnInsert: true }
     );
 
     if (!group.quizStats) {
