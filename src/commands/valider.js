@@ -1,8 +1,10 @@
 const QuestSystem = require('../utils/questSystem');
 const MessageFormatter = require('../utils/messageFormatter');
 
-// Collecte les quetes assignees completees mais pas encore validees, les marque validees.
-function claim(questBucket, activeQuests) {
+// Collecte TOUTES les quetes completees non encore validees et les marque validees.
+// resolveById resout depuis le pool complet (pas seulement 'assigned') pour ne
+// jamais ignorer une quete completee (desync assigned/completed, comptes migres).
+function claim(questBucket, resolveById) {
   if (!questBucket) return { xp: 0, gold: 0, count: 0 };
   if (!Array.isArray(questBucket.validated)) questBucket.validated = [];
 
@@ -11,7 +13,7 @@ function claim(questBucket, activeQuests) {
   let count = 0;
 
   (questBucket.completed || []).forEach((questId) => {
-    const quest = activeQuests.find((q) => q.id === questId);
+    const quest = resolveById(questId);
     if (quest && !questBucket.validated.includes(questId)) {
       xp += quest.reward;
       gold += quest.gold || 0;
@@ -42,8 +44,8 @@ module.exports = {
       QuestSystem.ensureDailyAssigned(user);
       QuestSystem.ensureWeeklyAssigned(user);
 
-      const daily = claim(user.dailyQuests, QuestSystem.getActiveDailyQuests(user));
-      const weekly = claim(user.weeklyQuests, QuestSystem.getActiveWeeklyQuests(user));
+      const daily = claim(user.dailyQuests, (id) => QuestSystem.getDailyQuestById(id));
+      const weekly = claim(user.weeklyQuests, (id) => QuestSystem.getWeeklyQuestById(id));
 
       const totalCount = daily.count + weekly.count;
       const totalXp = daily.xp + weekly.xp;

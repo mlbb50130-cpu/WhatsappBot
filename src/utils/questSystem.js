@@ -58,6 +58,11 @@ class QuestSystem {
     return ids.map((id) => WEEKLY_BY_ID.get(id)).filter(Boolean);
   }
 
+  // Lookup par id sur le POOL COMPLET (independant de 'assigned'), pour valider
+  // toutes les quetes completees meme en cas de desync assigned/completed.
+  static getDailyQuestById(id) { return DAILY_BY_ID.get(id) || null; }
+  static getWeeklyQuestById(id) { return WEEKLY_BY_ID.get(id) || null; }
+
   static needsDailyReset(user) {
     if (!user.dailyQuests || !user.dailyQuests.lastReset) return true;
     const now = Date.now();
