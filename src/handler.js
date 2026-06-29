@@ -277,6 +277,9 @@ async function handleMessage(sock, message, isGroup, groupData) {
     const participantJid = message.key.participant || senderJid;
     const username = message.pushName || 'Anonymous';
 
+    // Prefixe par instance (multi-tenant): chaque socket peut avoir son prefixe.
+    const prefix = sock.instancePrefix || config.PREFIX;
+
     let groupDoc = null;
     if (isGroup) {
       groupDoc = await Group.findOne({ groupJid: senderJid }).catch(() => null);
@@ -359,7 +362,7 @@ async function handleMessage(sock, message, isGroup, groupData) {
       }
     }
 
-    if (!messageContent.startsWith(config.PREFIX)) {
+    if (!messageContent.startsWith(prefix)) {
       if (global.tournamentSetup && global.tournamentSetup.has(senderJid)) {
         const tournoisquizCommand = commands.get('tournoisquiz');
         if (tournoisquizCommand && tournoisquizCommand.handleTournamentSetup) {
@@ -377,7 +380,7 @@ async function handleMessage(sock, message, isGroup, groupData) {
       return;
     }
 
-    const args = messageContent.slice(config.PREFIX.length).trim().split(/\s+/);
+    const args = messageContent.slice(prefix.length).trim().split(/\s+/);
     let commandName = args.shift().toLowerCase();
     commandName = commandName.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
@@ -474,7 +477,13 @@ async function handleMessage(sock, message, isGroup, groupData) {
         }
       }
 
-      const hasPermission = PermissionManager.canUseCommand(
+      // Le PROPRIETAIRE de l'instance (le compte WhatsApp du bot lui-meme) est
+      // toujours autorise: ses commandes arrivent en fromMe ou depuis son numero.
+      const botJid = getBotJid(sock);
+      const isInstanceOwner = message.key.fromMe
+        || (botJid && PermissionManager.jidMatches(botJid, PermissionManager.uniqueJids(participantJid)));
+
+      const hasPermission = isInstanceOwner || PermissionManager.canUseCommand(
         participantJid,
         command,
         isGroup,
@@ -484,17 +493,7 @@ async function handleMessage(sock, message, isGroup, groupData) {
       );
 
       if (!hasPermission) {
-        // Auto-warn: tout utilisateur non autorise (ni admin/owner du groupe, ni admin bot, ni le bot)
-        // prend un avertissement et -2000 XP. 3 avertissements => ban.
-        const botJid = getBotJid(sock);
-        const isBot = message.key.fromMe
-          || (botJid && PermissionManager.jidMatches(botJid, PermissionManager.uniqueJids(participantJid)));
-
-        if (isBot) {
-          await sendText(sock, senderJid, MessageFormatter.error('Cette commande est réservée aux administrateurs du groupe.'));
-          return;
-        }
-
+        // Auto-warn: utilisateur non autorise (ni admin/owner du groupe, ni admin bot).
         userLatest.warnings = (userLatest.warnings || 0) + 1;
         const removedXp = Math.min(2000, userLatest.xp || 0);
         userLatest.xp = Math.max(0, (userLatest.xp || 0) - 2000);

@@ -536,6 +536,15 @@ async function main() {
   // Load commands
   loadCommands();
 
+  // Demarrer le serveur web / API (Railway fournit PORT). Gere aussi les
+  // instances liees via l'app (multi-tenant).
+  try {
+    const { createWebServer } = require('./webserver');
+    createWebServer(process.env.PORT || 3000);
+  } catch (error) {
+    console.log('Serveur web non demarre:', error && error.message ? error.message : error);
+  }
+
   // Start equipment passive XP scheduler
   const EquipmentPassiveXP = require('./utils/equipmentPassiveXP');
   setInterval(() => {

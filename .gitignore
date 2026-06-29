@@ -14,6 +14,7 @@ venv/
 tetsubot_session/
 tetsubot_session.data.json
 session/
+instances/
 
 # OS files
 .DS_Store
