@@ -13,7 +13,13 @@ class PermissionManager {
     const candidates = uniqueJids(jid);
     if (candidates.length === 0) return false;
 
-    return (config.ADMIN_JIDS || []).some((adminJid) => jidMatches(adminJid, candidates));
+    const owners = [...(config.ADMIN_JIDS || [])];
+    // Le proprietaire de l'instance (numero de deploiement / compte du bot) est
+    // toujours reconnu comme admin/owner, pour ne jamais etre refuse sur
+    // activatebot et les autres commandes adminOnly.
+    if (config.PHONE_NUMBER) owners.push(config.PHONE_NUMBER);
+
+    return owners.some((adminJid) => jidMatches(adminJid, candidates));
   }
 
   static isGroupAdmin(groupJid, userJid, participants) {
