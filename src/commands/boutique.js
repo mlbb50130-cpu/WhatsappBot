@@ -39,6 +39,7 @@ L'equipement equipe rapporte un passif XP/h.
 🛍️ Acheter: \`!acheter <id>\`  (ex: \`!acheter 4\`)
 🎯 Filtrer: \`!boutique <slot>\` (head/body/hands/feet)
 ⚔️ Equiper ensuite: \`!equip <index_inventaire> <slot>\`
+🔵 Recharger le chakra: \`!acheterchakra [montant]\` (30 gold/point)
 ═════════════════════════════════════`;
 
     await send({ text });
