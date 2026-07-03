@@ -41,6 +41,22 @@ function digitsOf(phone) {
   return String(phone || '').replace(/\D/g, '');
 }
 
+// requestPairingCode doit etre appele APRES que la socket ait commence a se
+// connecter. On attend un court delai et on reessaie quelques fois.
+async function requestPairingWithRetry(sock, digits, tries = 4) {
+  let lastErr;
+  for (let i = 0; i < tries; i++) {
+    await new Promise((r) => setTimeout(r, 2500));
+    try {
+      const code = await sock.requestPairingCode(digits);
+      if (code) return code;
+    } catch (err) {
+      lastErr = err;
+    }
+  }
+  throw lastErr || new Error('pairing code indisponible');
+}
+
 function publicState(inst) {
   if (!inst) return null;
   return {
@@ -52,6 +68,7 @@ function publicState(inst) {
     createdAt: inst.createdAt || null,
     expiresAt: inst.createdAt ? inst.createdAt + INSTANCE_TTL_MS : null,
     prefix: inst.prefix || '!',
+    error: inst.error || null,
   };
 }
 
@@ -134,8 +151,8 @@ async function createInstance(phone, prefix = '!') {
   if (!sock.authState.creds.registered) {
     inst.status = 'pairing';
     try {
-      const code = await sock.requestPairingCode(digits);
-      inst.pairingCode = code;
+      inst.pairingCode = await requestPairingWithRetry(sock, digits);
+      inst.error = null;
     } catch (err) {
       inst.status = 'error';
       inst.error = err && err.message ? err.message : String(err);
