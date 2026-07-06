@@ -1,6 +1,10 @@
 const User = require('../../models/User');
 const MessageFormatter = require('../../utils/messageFormatter');
 
+function maxChakraFor(level) {
+  return 100 + (Math.max(1, level || 1) - 1) * 10;
+}
+
 module.exports = {
   name: 'resetchakraall',
   aliases: ['chakrareset', 'resetchakra'],
@@ -16,24 +20,31 @@ module.exports = {
     const send = async (payload) => (reply ? reply(payload) : sock.sendMessage(senderJid, payload));
 
     try {
-      // chakra (et maxChakra) = 100 + (niveau - 1) * 10, pour chaque joueur.
-      const maxExpr = {
-        $add: [100, { $multiply: [{ $subtract: [{ $ifNull: ['$level', 1] }, 1] }, 10] }],
-      };
+      const now = new Date();
+      // On lit juste _id + level, puis bulkWrite avec des $set classiques
+      // (pas de pipeline d'agregation -> compatible toutes versions).
+      const users = await User.find({}, '_id level').lean();
+      let modified = 0;
 
-      const result = await User.updateMany({}, [
-        {
-          $set: {
-            chakra: maxExpr,
-            maxChakra: maxExpr,
-            lastChakraReset: '$$NOW',
-          },
-        },
-      ]);
+      const BATCH = 500;
+      for (let i = 0; i < users.length; i += BATCH) {
+        const ops = users.slice(i, i + BATCH).map((u) => {
+          const max = maxChakraFor(u.level);
+          return {
+            updateOne: {
+              filter: { _id: u._id },
+              update: { $set: { chakra: max, maxChakra: max, lastChakraReset: now } },
+            },
+          };
+        });
+        if (ops.length) {
+          const res = await User.bulkWrite(ops, { ordered: false });
+          modified += res.modifiedCount || 0;
+        }
+      }
 
-      const count = result.modifiedCount ?? result.nModified ?? 0;
       await send({
-        text: MessageFormatter.success(`🔵 Chakra reinitialise au maximum pour ${count} joueur(s).`),
+        text: MessageFormatter.success(`🔵 Chakra reinitialise au maximum pour ${modified} joueur(s).`),
       });
     } catch (error) {
       await send({ text: MessageFormatter.publicError('Reinitialisation du chakra impossible', error) });
