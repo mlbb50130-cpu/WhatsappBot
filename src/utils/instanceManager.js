@@ -9,18 +9,18 @@
 // prefixe (sock.instancePrefix) et son propre proprietaire (son numero).
 
 const makeWASocket = require('@whiskeysockets/baileys').default;
-const { useMultiFileAuthState, fetchLatestBaileysVersion, Browsers } = require('@whiskeysockets/baileys');
+const { useMultiFileAuthState, fetchLatestBaileysVersion, Browsers, DisconnectReason } = require('@whiskeysockets/baileys');
 const fs = require('fs');
 const path = require('path');
 const pino = require('pino');
 
 const INSTANCES_DIR = path.join(process.cwd(), 'instances');
 
-// Duree de vie max d'une instance ephemere: 2 jours. Au-dela, elle est arretee
-// (l'utilisateur la relie via l'app).
+// Duree de vie max d'une instance ephemere: 2 jours. Au-dela, elle est arretee.
 const INSTANCE_TTL_MS = 2 * 24 * 60 * 60 * 1000;
+const MAX_RECONNECTS = 8;
 
-// digits -> { sock, status, pairingCode, connectedAt, createdAt, prefix, phone, saveCreds }
+// digits -> inst { sock, status, pairingCode, connectedAt, createdAt, prefix, phone, stopped, reconnects }
 const instances = new Map();
 
 let cleanupTimer = null;
@@ -33,7 +33,7 @@ function ensureCleanup() {
         removeInstance(digits).catch(() => {});
       }
     }
-  }, 60 * 60 * 1000); // verifie chaque heure
+  }, 60 * 60 * 1000);
   if (cleanupTimer.unref) cleanupTimer.unref();
 }
 
@@ -41,8 +41,6 @@ function digitsOf(phone) {
   return String(phone || '').replace(/\D/g, '');
 }
 
-// requestPairingCode doit etre appele APRES que la socket ait commence a se
-// connecter. On attend un court delai et on reessaie quelques fois.
 async function requestPairingWithRetry(sock, digits, tries = 4) {
   let lastErr;
   for (let i = 0; i < tries; i++) {
@@ -61,7 +59,7 @@ function publicState(inst) {
   if (!inst) return null;
   return {
     phone: inst.phone,
-    status: inst.status, // starting | pairing | connected | disconnected | error
+    status: inst.status, // starting | pairing | connecting | connected | disconnected | error
     connected: inst.status === 'connected',
     pairingCode: inst.pairingCode || null,
     connectedAt: inst.connectedAt || null,
@@ -72,16 +70,11 @@ function publicState(inst) {
   };
 }
 
-async function createInstance(phone, prefix = '!') {
-  ensureCleanup();
-  const digits = digitsOf(phone);
-  if (digits.length < 8) throw new Error('Numero invalide');
-
-  const existing = instances.get(digits);
-  if (existing && (existing.status === 'connected' || existing.status === 'pairing')) {
-    return publicState(existing);
-  }
-
+// Cree la socket, attache les handlers et gere la RECONNEXION.
+// Apres l'appairage, Baileys ferme avec restartRequired (515): il faut recreer
+// la socket pour que l'instance passe reellement en ligne.
+async function startSocket(inst) {
+  const digits = inst.phone;
   const dir = path.join(INSTANCES_DIR, digits);
   fs.mkdirSync(dir, { recursive: true });
 
@@ -96,36 +89,47 @@ async function createInstance(phone, prefix = '!') {
     syncFullHistory: false,
     printQRInTerminal: false,
   });
+  inst.sock = sock;
   sock.instancePhone = digits;
-  sock.instancePrefix = (prefix || '!').slice(0, 3) || '!';
-
-  const inst = {
-    sock,
-    status: 'starting',
-    pairingCode: null,
-    connectedAt: null,
-    createdAt: Date.now(),
-    prefix: sock.instancePrefix,
-    phone: digits,
-    saveCreds,
-  };
-  instances.set(digits, inst);
+  sock.instancePrefix = inst.prefix;
 
   sock.ev.on('creds.update', saveCreds);
 
   sock.ev.on('connection.update', (update) => {
     const { connection, lastDisconnect } = update;
+
+    if (connection === 'connecting' && inst.status !== 'pairing') {
+      inst.status = 'connecting';
+    }
+
     if (connection === 'open') {
       inst.status = 'connected';
       inst.connectedAt = Date.now();
       inst.pairingCode = null;
-    } else if (connection === 'close') {
-      inst.status = 'disconnected';
+      inst.error = null;
+      inst.reconnects = 0;
+    }
+
+    if (connection === 'close') {
       const code = lastDisconnect?.error?.output?.statusCode;
-      if (code === 401) {
-        // Deconnecte cote WhatsApp: nettoyer (l'utilisateur reliera via l'app).
-        removeInstance(digits).catch(() => {});
+
+      if (inst.stopped || code === DisconnectReason.loggedOut || code === 401) {
+        // Deconnecte cote WhatsApp / arret volontaire: on nettoie.
+        if (!inst.stopped) removeInstance(digits).catch(() => {});
+        return;
       }
+
+      // Toute autre fermeture (restartRequired 515, connexion perdue...) -> reconnexion.
+      inst.reconnects = (inst.reconnects || 0) + 1;
+      if (inst.reconnects > MAX_RECONNECTS) {
+        inst.status = 'error';
+        inst.error = 'trop de reconnexions';
+        return;
+      }
+      inst.status = 'connecting';
+      setTimeout(() => {
+        if (!inst.stopped) startSocket(inst).catch(() => {});
+      }, 2000);
     }
   });
 
@@ -147,7 +151,7 @@ async function createInstance(phone, prefix = '!') {
     }
   });
 
-  // Demande du pairing code si le numero n'est pas encore enregistre.
+  // Pairing code uniquement au premier lancement (numero pas encore enregistre).
   if (!sock.authState.creds.registered) {
     inst.status = 'pairing';
     try {
@@ -157,11 +161,36 @@ async function createInstance(phone, prefix = '!') {
       inst.status = 'error';
       inst.error = err && err.message ? err.message : String(err);
     }
-  } else {
-    inst.status = 'connected';
-    inst.connectedAt = Date.now();
   }
 
+  return sock;
+}
+
+async function createInstance(phone, prefix = '!') {
+  ensureCleanup();
+  const digits = digitsOf(phone);
+  if (digits.length < 8) throw new Error('Numero invalide');
+
+  const existing = instances.get(digits);
+  if (existing && existing.status !== 'error' && existing.status !== 'disconnected') {
+    return publicState(existing);
+  }
+
+  const inst = {
+    sock: null,
+    status: 'starting',
+    pairingCode: null,
+    connectedAt: null,
+    createdAt: Date.now(),
+    prefix: (prefix || '!').slice(0, 3) || '!',
+    phone: digits,
+    stopped: false,
+    reconnects: 0,
+    error: null,
+  };
+  instances.set(digits, inst);
+
+  await startSocket(inst);
   return publicState(inst);
 }
 
@@ -173,7 +202,7 @@ function setPrefix(phone, prefix) {
   const inst = instances.get(digitsOf(phone));
   if (!inst) return null;
   inst.prefix = (prefix || '!').slice(0, 3) || '!';
-  inst.sock.instancePrefix = inst.prefix;
+  if (inst.sock) inst.sock.instancePrefix = inst.prefix;
   return publicState(inst);
 }
 
@@ -181,8 +210,9 @@ async function removeInstance(phone) {
   const digits = digitsOf(phone);
   const inst = instances.get(digits);
   if (!inst) return false;
-  try { await inst.sock.logout(); } catch (e) { /* ignore */ }
-  try { await inst.sock.end(); } catch (e) { /* ignore */ }
+  inst.stopped = true;
+  try { await inst.sock?.logout(); } catch (e) { /* ignore */ }
+  try { await inst.sock?.end(); } catch (e) { /* ignore */ }
   instances.delete(digits);
   try { fs.rmSync(path.join(INSTANCES_DIR, digits), { recursive: true, force: true }); } catch (e) { /* ignore */ }
   return true;
