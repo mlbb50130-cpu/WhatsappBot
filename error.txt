@@ -1,0 +1,28 @@
+[ATLAS RECAP] Send failed for 120363175939244291@g.us: Connection Closed
+[ATLAS RECAP] Send failed for 120363171030238766@g.us: Connection Closed
+[ATLAS RECAP] Send failed for 120363425121622675@g.us: Connection Closed
+[ATLAS RECAP] Send failed for 120363406377292713@g.us: Connection Closed
+[ATLAS RECAP] Send failed for 120363407399700836@g.us: Connection Closed
+[ATLAS RECAP] Send failed for 120363422938794257@g.us: Connection Closed
+[ATLAS RECAP] Send failed for 120363175369604161@g.us: Connection Closed
+[ATLAS RECAP] Send failed for 120363403619161209@g.us: Connection Closed
+[ATLAS RECAP] Send failed for 120363152654668423@g.us: Connection Closed
+[ATLAS RECAP] Send failed for 120363403170818371@g.us: Connection Closed
+[ATLAS RECAP] Send failed for 120363425110954119@g.us: Connection Closed
+[ATLAS RECAP] Send failed for 120363198670859145@g.us: Connection Closed
+[ATLAS RECAP] Sent to 2/14 pending groups.
+Failed to decrypt message with any known session...
+Session error:Error: Bad MAC Error: Bad MAC
+    at Object.verifyMAC (/app/node_modules/libsignal/src/crypto.js:87:15)
+    at SessionCipher.doDecryptWhisperMessage (/app/node_modules/libsignal/src/session_cipher.js:250:16)
+    at async SessionCipher.decryptWithSessions (/app/node_modules/libsignal/src/session_cipher.js:147:29)
+    at async 74690085318855_1.0 [as awaitable] (/app/node_modules/libsignal/src/session_cipher.js:171:28)
+    at async _asyncQueueExecutor (/app/node_modules/libsignal/src/queue_job.js:20:29)
+Failed to decrypt message with any known session...
+Session error:Error: Bad MAC Error: Bad MAC
+    at Object.verifyMAC (/app/node_modules/libsignal/src/crypto.js:87:15)
+    at SessionCipher.doDecryptWhisperMessage (/app/node_modules/libsignal/src/session_cipher.js:250:16)
+    at async SessionCipher.decryptWithSessions (/app/node_modules/libsignal/src/session_cipher.js:147:29)
+    at async 74690085318855_1.0 [as awaitable] (/app/node_modules/libsignal/src/session_cipher.js:171:28)
+    at async _asyncQueueExecutor (/app/node_modules/libsignal/src/queue_job.js:20:29)
+Closing open session in favor of incoming prekey bundle

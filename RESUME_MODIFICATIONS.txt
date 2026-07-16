@@ -1,0 +1,179 @@
+================================================================================
+              TETSUBOT — RESUME COMPLET DES MODIFICATIONS (session)
+================================================================================
+Depot : https://github.com/mlbb50130-cpu/WhatsappBot  (branche main)
+Genere automatiquement — document de reference (non commite).
+
+
+--------------------------------------------------------------------------------
+1. QUETES — CORRECTIFS DE BASE
+--------------------------------------------------------------------------------
+- !valider : ne pouvait valider plusieurs fois les memes quetes (champ
+  `validated` absent du schema -> jamais persiste, et test sur le tableau
+  entier). Corrige : validation par quete (id), persistee.
+- quete.js : les resets quotidiens/hebdo n'etaient jamais sauvegardes
+  (condition de save toujours fausse). Corrige via un flag needsSave.
+- !quotidien / !hebdo : champs lastDailyQuest / lastWeeklyQuest absents du
+  schema -> anti-spam inoperant (XP farmable). Champs ajoutes au schema.
+- hebdo.js : calcul du debut de semaine qui mutait l'objet Date. Corrige.
+
+
+--------------------------------------------------------------------------------
+2. AUTO-WARN COMMANDES NON AUTORISEES
+--------------------------------------------------------------------------------
+- handler.js : tout utilisateur NON autorise (ni admin/owner du groupe, ni
+  admin bot, ni le bot lui-meme) qui lance une commande adminOnly prend
+  automatiquement un avertissement ET -2000 XP. 3 avertissements => ban.
+
+
+--------------------------------------------------------------------------------
+3. SETXP
+--------------------------------------------------------------------------------
+- !setxp @user -N : la soustraction etait cassee (le signe '-' n'etait pas
+  retire avant parseInt -> echec de validation). Corrige : magnitude parsee
+  sans le signe. Les 3 formes marchent : `500`, `+50`, `-30`.
+  (Note : le schema borne l'XP a min 0, donc pas d'XP negatif stocke.)
+
+
+--------------------------------------------------------------------------------
+4. SYSTEME DE QUIZ (refonte + contenu)
+--------------------------------------------------------------------------------
+- Fusion des deux systemes : quizanime.js delegue a quiz.js (filtre type).
+- Donnees src/data/quizzes.json : chaque quiz a id, category, type, question,
+  options[4], correct, reward.
+- Anti-repetition PAR GROUPE en base (Group.quizStats : count, seenIds,
+  resets, lastReset). Un quiz deja passe ne revient plus jusqu'a epuisement
+  du pool, puis reset automatique.
+- quiz.js : tirage par id, filtre par categorie/type, suivi groupe.
+- reponse.js : utilise quizId (plus de Set global en memoire).
+- CONTENU : 309 quiz au total, verifies, repartis sur 43 categories
+  (anime/manga). Bonnes reponses RE-EQUILIBREES sur A/B/C/D (78/77/77/77).
+- Mongoose : `new: true` remplace par `returnDocument: 'after'` (quiz.js)
+  pour supprimer l'avertissement de depreciation.
+
+
+--------------------------------------------------------------------------------
+5. GOLD = VRAIE MONNAIE + BOUTIQUE
+--------------------------------------------------------------------------------
+- Suppression du reset destructif du gold a 5000/24h (gold.js, roulette.js).
+  Le gold s'ACCUMULE desormais (gagne via !work, depense en boutique/roulette).
+- !boutique (alias !shop, !store) : catalogue d'equipement (src/data/shopItems.js).
+- !acheter <id> (alias !buy) : achat, debit du gold, ajout a l'inventaire.
+- FIX : !boutique plantait (SLOTS expose `label`, pas `slotLabel`).
+
+
+--------------------------------------------------------------------------------
+6. EQUIPEMENT + PASSIF XP/H
+--------------------------------------------------------------------------------
+- Catalogue de 32 equipements (8 par slot : tete/corps/mains/pieds),
+  plusieurs varietes par rarete.
+- Rendement passif (utils/equipmentPassiveXP.js, applique chaque heure) :
+    commun 50 | rare 100 | epique 175 | legendaire 250  (XP/h)
+    -> 4 slots legendaires = 1000 XP/h.
+- SLOTS VERROUILLES : un objet ne s'equipe que dans son slot (equip.js deduit
+  le slot automatiquement ; un casque ne peut pas aller aux pieds).
+- inventaire / equipement : affichage coherent (slot, rarete, niveau, total).
+
+
+--------------------------------------------------------------------------------
+7. RARETE EXOTIQUE + FUSION + AMELIORATION
+--------------------------------------------------------------------------------
+- Nouvelle rarete EXOTIQUE (🌈), au-dessus de legendaire.
+- !fusion <index> (alias !merge) : 3 equipements identiques (meme nom + meme
+  rarete) -> 1 de rarete superieure.
+  Chaine : commun -> rare -> epique -> legendaire -> exotique (niv.1).
+- !ameliorer <index> (alias !upgrade) : monte le niveau d'un exotique (max 10),
+  cout = 4000 x niveau (gold), XP/h croissant : 350 (niv.1) -> 800 (niv.10),
+  +50/niveau. Synchronise l'exemplaire equipe.
+- Flux end-game : boutique -> fusion -> exotique -> ameliorer.
+
+
+--------------------------------------------------------------------------------
+8. SYSTEME DE QUETES A ROTATION (refonte complete)
+--------------------------------------------------------------------------------
+- Pools : DAILY_POOL (13 quetes) et WEEKLY_POOL (10 quetes).
+- Tirage aleatoire a chaque reset : 5 quotidiennes + 3 hebdomadaires
+  (stockees dans `assigned`). Differentes a chaque periode.
+- Objectifs varies sur stats existantes : messages, duels, quiz (quotidien) ;
+  + loots, niveau (hebdo). Suivi hebdo branche (handler/duel/reponse).
+- RECOMPENSES XP + GOLD : chaque quete donne de l'XP et du gold.
+- !valider credite quotidiennes ET hebdomadaires (corrige : l'hebdo ne
+  rapportait jamais rien auparavant).
+- !nouvellequete : agit reellement (booste +50% une quete non completee) et
+  compteur 5/jour persiste (avant : commande sans effet).
+- ensureAssigned : migration automatique des anciens comptes.
+
+
+--------------------------------------------------------------------------------
+9. CHANCE -> BUFF ACTIF + INFLUENCE REELLE
+--------------------------------------------------------------------------------
+- utils/luck.js : la chance influence VRAIMENT loot / roulette / surprise.
+- !chance pose un BUFF de chance (1-100%) pendant 30 MINUTES (User.luckBuff).
+  Reroll bloque tant que le buff est actif. Sans buff : chance neutre (50%).
+- Effets du buff :
+    loot     : poids des objets rares boostes (communs reduits).
+    roulette : probabilite de victoire 20% a 80% selon la chance.
+    surprise : chance de super-surprise 5% a 30%.
+
+
+--------------------------------------------------------------------------------
+10. DUEL / CHAKRA / POWER (refonte de la logique)
+--------------------------------------------------------------------------------
+- utils/combat.js : source unique (chakra max, refresh 24h, puissance).
+- Issue de duel PROBABILISTE : P(victoire) = puissance / (somme des deux).
+  Les upsets sont possibles, proportionnels a l'ecart (avant : le plus fort
+  gagnait quasi toujours).
+- Anti-snowball type ELO : battre un favori rapporte peu, un upset rapporte
+  gros ; le perdant baisse (plancher 50). Fini le +5 systematique.
+- Le CHAKRA influence la puissance (+/-15% selon la reserve), pas juste un
+  cout. Chaque duel coute 20 chakra.
+- !powerlevel affiche la VRAIE puissance de combat (coherente avec le duel).
+- Fixes : opponent.stats.duels incremente, XP de consolation au perdant (+8).
+
+
+--------------------------------------------------------------------------------
+11. ECONOMIE & LOOT (ajustements)
+--------------------------------------------------------------------------------
+- ANCIEN SYSTEME D'EQUIPEMENT SUPPRIME : !loot donnait des items codes en dur
+  (Kunai, Shuriken...) SANS slot, donc inutilisables. Desormais !loot tire un
+  EQUIPEMENT REEL du catalogue boutique (avec slot) -> equipable et fusionnable.
+  Les 3 seules sources d'items (acheter, fusion, loot) utilisent le nouveau
+  systeme. Les vieux objets deja en inventaire sont revendables (!vendre).
+- Le BUFF DE CHANCE influence le drop de !loot (rarete boostee si buff actif).
+- Roulette LIMITEE a 25 utilisations / jour.
+- Amelioration exotique plus genereuse : +50 XP/h par niveau (350 -> 800).
+- Nouvelles sources de GOLD :
+    !vendre <index> / !sell   Revendre un objet (prix selon rarete, < boutique)
+    !miner / !mine            Miner du gold toutes les 30 min (bonus si buff)
+    !quotidien                Donne aussi +200 gold (en plus des 50 XP)
+
+
+--------------------------------------------------------------------------------
+RECAP DES NOUVELLES COMMANDES
+--------------------------------------------------------------------------------
+  !boutique / !shop / !store      Voir la boutique d'equipement
+  !acheter <id> / !buy            Acheter un equipement
+  !fusion <index> / !merge        Fusionner 3 identiques -> rarete superieure
+  !ameliorer <index> / !upgrade   Ameliorer un equipement exotique
+  !vendre <index> / !sell         Revendre un objet contre du gold
+  !miner / !mine                  Miner du gold (toutes les 30 min)
+  !chance                         Tirer un buff de chance (30 min)
+
+
+--------------------------------------------------------------------------------
+PRINCIPAUX FICHIERS
+--------------------------------------------------------------------------------
+  src/models/User.js              luckBuff, exoticLevel, assigned, validated...
+  src/models/Group.js             quizStats (suivi quiz par groupe)
+  src/utils/luck.js               chance active (buff 30 min)
+  src/utils/combat.js             logique chakra + puissance
+  src/utils/equipmentPassiveXP.js rarete, exotique, rendement XP/h
+  src/utils/questSystem.js        pools + rotation + recompenses
+  src/data/quizzes.json           309 quiz
+  src/data/shopItems.js           catalogue boutique (32 items)
+  src/commands/                   quiz, reponse, quizanime, quete, quetelundi,
+                                  valider, nouvellequete, duel, chakra,
+                                  powerlevel, chance, loot, roulette, surprise,
+                                  gold, work, boutique, acheter, fusion,
+                                  ameliorer, equip, equipement, inventaire
+================================================================================

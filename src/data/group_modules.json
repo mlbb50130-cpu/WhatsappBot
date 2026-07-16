@@ -178,5 +178,14 @@
     "quete": true,
     "nsfw": true,
     "mlbb": false
+  },
+  "120363427772961959@g.us": {
+    "mlbb": false,
+    "anime": true,
+    "fun": true,
+    "nsfw": false,
+    "xp": true,
+    "items": true,
+    "quete": true
   }
 }
