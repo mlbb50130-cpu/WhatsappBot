@@ -15,6 +15,7 @@ tetsubot_session/
 tetsubot_session.data.json
 session/
 instances/
+ia_outputs/
 
 # OS files
 .DS_Store

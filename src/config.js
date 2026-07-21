@@ -75,6 +75,11 @@ module.exports = {
     process.env.GEMENI_KEY ||
     '',
   GEMINI_MODEL: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
+
+  // 🤖 Claude (Anthropic) - genere du contenu et l'ecrit dans un fichier
+  ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY || '',
+  ANTHROPIC_BASE_URL: process.env.ANTHROPIC_BASE_URL || 'https://cc.freemodel.dev',
+  ANTHROPIC_MODEL: process.env.ANTHROPIC_MODEL || 'claude-opus-4-8',
   
   // 🖥️ Console Colors
   COLORS: {
