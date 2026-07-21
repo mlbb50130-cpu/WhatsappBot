@@ -40,7 +40,8 @@ module.exports = {
       });
     } catch (error) {
       await sock.sendPresenceUpdate('paused', jid).catch(() => null);
-      await send({ text: MessageFormatter.error(`Erreur IA: ${error.message || error}`) });
+      const detail = error && error.message ? error.message : String(error);
+      await send({ text: MessageFormatter.error(`Erreur IA: ${detail}`) });
     }
   },
 };

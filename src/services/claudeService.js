@@ -10,13 +10,27 @@ let client = null;
 function getClient() {
   if (client) return client;
   if (!config.ANTHROPIC_API_KEY) {
-    throw new Error('ANTHROPIC_API_KEY manquant (configure-le dans le .env).');
+    throw new Error('ANTHROPIC_API_KEY manquant (configure-le dans le .env / variables Railway).');
   }
   client = new Anthropic({
     apiKey: config.ANTHROPIC_API_KEY,
     baseURL: config.ANTHROPIC_BASE_URL,
   });
   return client;
+}
+
+// Extrait un message d'erreur REEL et lisible depuis une erreur du SDK Anthropic.
+function describeError(err) {
+  if (!err) return 'erreur inconnue';
+  const parts = [];
+  if (err.status) parts.push(`HTTP ${err.status}`);
+  // Le SDK expose souvent err.error.error.{type,message} (corps renvoye par l'API)
+  const apiErr = err.error?.error || err.error;
+  if (apiErr?.type) parts.push(apiErr.type);
+  const msg = apiErr?.message || err.message;
+  if (msg) parts.push(msg);
+  if (err.request_id) parts.push(`req ${err.request_id}`);
+  return parts.length ? parts.join(' | ') : String(err);
 }
 
 // Transforme la question en nom de fichier sur (sans caracteres interdits).
@@ -38,14 +52,28 @@ function slugify(question) {
 async function askAndSave(question) {
   const c = getClient();
 
-  // Streaming: recommande pour les sorties potentiellement longues (evite les timeouts).
-  const stream = c.messages.stream({
-    model: config.ANTHROPIC_MODEL,
-    max_tokens: 64000,
-    messages: [{ role: 'user', content: question }],
-  });
+  let message;
+  try {
+    // Streaming: recommande pour les sorties potentiellement longues (evite les timeouts).
+    const stream = c.messages.stream({
+      model: config.ANTHROPIC_MODEL,
+      max_tokens: 64000,
+      messages: [{ role: 'user', content: question }],
+    });
+    message = await stream.finalMessage();
+  } catch (err) {
+    // Remonte l'erreur REELLE (statut HTTP + type + message de l'API)
+    const detailed = new Error(describeError(err));
+    detailed.cause = err;
+    throw detailed;
+  }
 
-  const message = await stream.finalMessage();
+  // Refus de securite: HTTP 200 mais stop_reason "refusal" -> pas de contenu exploitable
+  if (message.stop_reason === 'refusal') {
+    const cat = message.stop_details?.category ? ` (${message.stop_details.category})` : '';
+    throw new Error(`La requete a ete refusee par l'IA${cat}.`);
+  }
+
   const text = message.content
     .filter((block) => block.type === 'text')
     .map((block) => block.text)
@@ -61,4 +89,4 @@ async function askAndSave(question) {
   return { text, filePath, fileName };
 }
 
-module.exports = { askAndSave, slugify, OUTPUT_DIR };
+module.exports = { askAndSave, slugify, describeError, OUTPUT_DIR };
