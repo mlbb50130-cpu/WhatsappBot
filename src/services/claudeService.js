@@ -54,13 +54,17 @@ async function askAndSave(question) {
 
   let message;
   try {
-    // Streaming: recommande pour les sorties potentiellement longues (evite les timeouts).
-    const stream = c.messages.stream({
-      model: config.ANTHROPIC_MODEL,
-      max_tokens: 64000,
-      messages: [{ role: 'user', content: question }],
-    });
-    message = await stream.finalMessage();
+    // Non-streaming: le proxy ne supporte pas forcement le flux SSE (sinon
+    // erreur "request ended without sending any chunks"). Timeout large car
+    // l'IA peut etre longue.
+    message = await c.messages.create(
+      {
+        model: config.ANTHROPIC_MODEL,
+        max_tokens: 16000,
+        messages: [{ role: 'user', content: question }],
+      },
+      { timeout: 600000 },
+    );
   } catch (err) {
     // Remonte l'erreur REELLE (statut HTTP + type + message de l'API)
     const detailed = new Error(describeError(err));
