@@ -2,6 +2,12 @@ const fs = require('fs');
 const path = require('path');
 const { spawn } = require('child_process');
 const config = require('../config');
+const {
+  buildGenerationPrompt,
+  createOutputFileName,
+  detectRequestedFormat,
+  stripWrappingCodeFence,
+} = require('../utils/aiResponseFormat');
 
 // Dossier ou sont ecrits les fichiers generes par l'IA.
 const OUTPUT_DIR = path.join(process.cwd(), 'ia_outputs');
@@ -106,21 +112,28 @@ function runClaudeCli(question) {
   });
 }
 
-/**
- * Demande a Claude de repondre a `question`, ecrit la reponse dans un fichier
- * nomme d'apres la question, et renvoie { text, filePath, fileName }.
- */
-async function askAndSave(question) {
+async function ask(question) {
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 
-  const text = await runClaudeCli(question);
+  const format = detectRequestedFormat(question);
+  const rawText = await runClaudeCli(buildGenerationPrompt(question, format));
+  const text = format ? stripWrappingCodeFence(rawText) : rawText;
 
-  const fileName = `${slugify(question)}.txt`;
+  if (!format) {
+    return { text, filePath: null, fileName: null, mimetype: null };
+  }
+
+  const fileName = createOutputFileName(question, format, slugify);
   const filePath = path.join(OUTPUT_DIR, fileName);
-  const header = `Question: ${question}\n${'='.repeat(60)}\n\n`;
-  fs.writeFileSync(filePath, header + (text || '(reponse vide)') + '\n', 'utf8');
+  fs.writeFileSync(filePath, text, 'utf8');
 
-  return { text, filePath, fileName };
+  return { text, filePath, fileName, mimetype: format.mimetype };
 }
 
-module.exports = { askAndSave, slugify, describeError, OUTPUT_DIR };
+module.exports = {
+  ask,
+  askAndSave: ask,
+  slugify,
+  describeError,
+  OUTPUT_DIR,
+};

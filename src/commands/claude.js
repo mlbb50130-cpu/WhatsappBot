@@ -1,11 +1,11 @@
-const fs = require('fs');
 const MessageFormatter = require('../utils/messageFormatter');
+const { sendAiResponse } = require('../utils/sendAiResponse');
 const ClaudeService = require('../services/claudeService');
 
 module.exports = {
   name: 'claude',
   aliases: ['ia2', 'demande'],
-  description: 'Demande a Claude (IA) et enregistre la reponse dans un fichier',
+  description: 'Demande a Claude et cree un fichier si un format est precise',
   category: 'BOT',
   usage: '!claude <question>',
   adminOnly: false,
@@ -30,22 +30,15 @@ module.exports = {
     await sock.sendPresenceUpdate('composing', jid).catch(() => null);
 
     try {
-      const { text, filePath, fileName } = await ClaudeService.askAndSave(question);
+      const result = await ClaudeService.ask(question);
       await sock.sendPresenceUpdate('paused', jid).catch(() => null);
 
-      // Ping le demandeur + apercu (WhatsApp limite la taille des messages)
-      const preview = text.length > 3000 ? `${text.slice(0, 3000)}\n...\n(reponse complete dans le fichier)` : text;
-      await sock.sendMessage(jid, {
-        text: `@${askerJid.split('@')[0]} ✅ Voici ta reponse:\n\n${preview || '(reponse vide)'}`,
-        mentions: [askerJid],
-      });
-
-      // Envoi du fichier nomme d'apres la question
-      await sock.sendMessage(jid, {
-        document: fs.readFileSync(filePath),
-        fileName,
-        mimetype: 'text/plain',
-        caption: `📄 ${fileName}`,
+      await sendAiResponse({
+        sock,
+        jid,
+        askerJid,
+        provider: 'Claude',
+        result,
       });
     } catch (error) {
       await sock.sendPresenceUpdate('paused', jid).catch(() => null);

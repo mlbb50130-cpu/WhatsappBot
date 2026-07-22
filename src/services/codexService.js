@@ -1,6 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 const { spawn } = require('child_process');
+const {
+  buildGenerationPrompt,
+  createOutputFileName,
+  detectRequestedFormat,
+  stripWrappingCodeFence,
+} = require('../utils/aiResponseFormat');
 
 require('dotenv').config({ quiet: true });
 
@@ -128,18 +134,20 @@ function createCodexEnvironment() {
   };
 }
 
-function runCodexCli(question) {
+function runCodexCli(question, format) {
   prepareRuntime();
 
   return new Promise((resolve, reject) => {
     const launcher = resolveCodexLauncher();
-    const prompt = [
-      'Reponds directement et clairement a la question suivante.',
-      'N execute aucune commande, ne lis aucun fichier local et ne modifie rien.',
-      'Utilise la meme langue que la question.',
-      '',
-      `Question: ${question}`,
-    ].join('\n');
+    const prompt = format
+      ? buildGenerationPrompt(question, format)
+      : [
+        'Reponds directement et clairement a la question suivante.',
+        'N execute aucune commande, ne lis aucun fichier local et ne modifie rien.',
+        'Utilise la meme langue que la question.',
+        '',
+        `Question: ${question}`,
+      ].join('\n');
     const cliArgs = [
       'exec',
       '--ephemeral',
@@ -231,18 +239,25 @@ function runCodexCli(question) {
   });
 }
 
-async function askAndSave(question) {
-  const text = await runCodexCli(question);
-  const fileName = `${slugify(question)}.txt`;
-  const filePath = path.join(OUTPUT_DIR, fileName);
-  const header = `Question: ${question}\n${'='.repeat(60)}\n\n`;
+async function ask(question) {
+  const format = detectRequestedFormat(question);
+  const rawText = await runCodexCli(question, format);
+  const text = format ? stripWrappingCodeFence(rawText) : rawText;
 
-  fs.writeFileSync(filePath, `${header}${text || '(reponse vide)'}\n`, 'utf8');
-  return { text, filePath, fileName };
+  if (!format) {
+    return { text, filePath: null, fileName: null, mimetype: null };
+  }
+
+  const fileName = createOutputFileName(question, format, slugify);
+  const filePath = path.join(OUTPUT_DIR, fileName);
+
+  fs.writeFileSync(filePath, text, 'utf8');
+  return { text, filePath, fileName, mimetype: format.mimetype };
 }
 
 module.exports = {
-  askAndSave,
+  ask,
+  askAndSave: ask,
   slugify,
   OUTPUT_DIR,
   CODEX_HOME,

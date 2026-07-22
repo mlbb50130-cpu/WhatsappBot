@@ -1,11 +1,11 @@
-const fs = require('fs');
 const MessageFormatter = require('../utils/messageFormatter');
+const { sendAiResponse } = require('../utils/sendAiResponse');
 const CodexService = require('../services/codexService');
 
 module.exports = {
   name: 'codex',
   aliases: ['gpt', 'demande-codex'],
-  description: 'Demande a Codex et enregistre la reponse dans un fichier',
+  description: 'Demande a Codex et cree un fichier si un format est precise',
   category: 'BOT',
   usage: '!codex <question>',
   adminOnly: false,
@@ -31,22 +31,15 @@ module.exports = {
     await sock.sendPresenceUpdate('composing', jid).catch(() => null);
 
     try {
-      const { text, filePath, fileName } = await CodexService.askAndSave(question);
+      const result = await CodexService.ask(question);
       await sock.sendPresenceUpdate('paused', jid).catch(() => null);
 
-      const preview = text.length > 3000
-        ? `${text.slice(0, 3000)}\n...\n(reponse complete dans le fichier)`
-        : text;
-      await sock.sendMessage(jid, {
-        text: `@${askerJid.split('@')[0]} Voici la reponse de Codex:\n\n${preview || '(reponse vide)'}`,
-        mentions: [askerJid],
-      });
-
-      await sock.sendMessage(jid, {
-        document: fs.readFileSync(filePath),
-        fileName,
-        mimetype: 'text/plain',
-        caption: `Codex - ${fileName}`,
+      await sendAiResponse({
+        sock,
+        jid,
+        askerJid,
+        provider: 'Codex',
+        result,
       });
     } catch (error) {
       await sock.sendPresenceUpdate('paused', jid).catch(() => null);
