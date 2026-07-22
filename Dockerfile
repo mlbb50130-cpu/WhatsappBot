@@ -11,6 +11,9 @@ COPY package*.json ./
 # Installer les dépendances Node.js
 RUN npm install --omit=dev --legacy-peer-deps
 
+# Installer le CLI Claude Code (necessaire pour la commande !claude)
+RUN npm install -g @anthropic-ai/claude-code
+
 # Copier les scripts Python et requirements
 COPY scripts/requirements.txt ./scripts/
 

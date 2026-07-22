@@ -9,8 +9,31 @@ const OUTPUT_DIR = path.join(process.cwd(), 'ia_outputs');
 // Le proxy (cc.freemodel.dev) n'autorise QUE le client officiel Claude Code.
 // On appelle donc le CLI `claude` en mode non-interactif (claude -p) au lieu du
 // SDK, qui serait rejete ("Access Denied ... official Claude Code client only").
-const CLAUDE_BIN = process.env.CLAUDE_BIN || 'claude';
 const CLAUDE_TIMEOUT_MS = parseInt(process.env.CLAUDE_TIMEOUT_MS, 10) || 600000;
+
+// Resout la commande a utiliser pour lancer le CLI claude selon la plateforme.
+// Sur Windows, npm installe les binaires globaux sous %APPDATA%\npm\claude.cmd
+// (inaccessible via PATH si le bot tourne dans un contexte a PATH reduit).
+// Sur Linux (Railway Docker), `claude` est installe globalement via npm et
+// accessible directement dans PATH.
+function getClaudeCommand() {
+  if (process.env.CLAUDE_BIN) {
+    return process.platform === 'win32'
+      ? { bin: 'cmd.exe', prefix: ['/c', process.env.CLAUDE_BIN] }
+      : { bin: process.env.CLAUDE_BIN, prefix: [] };
+  }
+  if (process.platform === 'win32') {
+    const appdata = process.env.APPDATA;
+    if (appdata) {
+      const claudeCmd = path.join(appdata, 'npm', 'claude.cmd');
+      if (fs.existsSync(claudeCmd)) {
+        return { bin: 'cmd.exe', prefix: ['/c', claudeCmd] };
+      }
+    }
+    return { bin: 'cmd.exe', prefix: ['/c', 'claude'] };
+  }
+  return { bin: 'claude', prefix: [] };
+}
 
 // Transforme la question en nom de fichier sur (sans caracteres interdits).
 function slugify(question) {
@@ -34,12 +57,11 @@ function describeError(err) {
 // avec l'erreur reelle (stderr / code de sortie / timeout).
 function runClaudeCli(question) {
   return new Promise((resolve, reject) => {
-    const isWin = process.platform === 'win32';
-    const command = isWin ? 'cmd.exe' : CLAUDE_BIN;
+    const { bin, prefix } = getClaudeCommand();
     const cliArgs = ['-p', question, '--model', config.ANTHROPIC_MODEL];
-    const args = isWin ? ['/c', CLAUDE_BIN, ...cliArgs] : cliArgs;
+    const args = [...prefix, ...cliArgs];
 
-    const child = spawn(command, args, {
+    const child = spawn(bin, args, {
       cwd: OUTPUT_DIR,
       env: {
         ...process.env,
