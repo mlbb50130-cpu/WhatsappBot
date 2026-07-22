@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { getFileUrl, scheduleFileDeletion, getTtlLabel } = require('./fileHosting');
 
 const MAX_MESSAGE_LENGTH = 3200;
 
@@ -26,6 +27,16 @@ async function sendAiResponse({ sock, jid, askerJid, provider, result }) {
   const mention = `@${askerJid.split('@')[0]}`;
 
   if (result.filePath && result.fileName) {
+    const fileUrl = getFileUrl(result.fileName);
+    const ttl = getTtlLabel();
+
+    // 1. Lien d'acces direct (valide pendant la duree configuree)
+    await sock.sendMessage(jid, {
+      text: `${mention} Lien (valide ${ttl}):\n${fileUrl}`,
+      mentions: [askerJid],
+    });
+
+    // 2. Fichier en piece jointe
     await sock.sendMessage(jid, {
       document: fs.readFileSync(result.filePath),
       fileName: result.fileName,
@@ -33,6 +44,9 @@ async function sendAiResponse({ sock, jid, askerJid, provider, result }) {
       caption: `${mention} ${provider} - ${result.fileName}`,
       mentions: [askerJid],
     });
+
+    // Supprimer le fichier local apres le TTL
+    scheduleFileDeletion(result.filePath);
     return;
   }
 

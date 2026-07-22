@@ -37,10 +37,10 @@ module.exports = {
   },
 
   // 🎮 Game Features
-  XP_PER_MESSAGE: parseInt(process.env.XP_PER_MESSAGE) || 20,
+  XP_PER_MESSAGE: parseInt(process.env.XP_PER_MESSAGE) || 30,
   XP_COOLDOWN: parseInt(process.env.XP_COOLDOWN) || 5000,
   COMMAND_COOLDOWN: 1000,
-  XP_COMMAND_BONUS: parseInt(process.env.XP_COMMAND_BONUS) || 100,
+  XP_COMMAND_BONUS: parseInt(process.env.XP_COMMAND_BONUS) || 500,
   
   // 📊 Levels & Ranks
   RANKS: {
@@ -77,9 +77,9 @@ module.exports = {
   GEMINI_MODEL: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
 
   // 🤖 Claude (Anthropic) - genere du contenu et l'ecrit dans un fichier
-  ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY || '',
-  ANTHROPIC_BASE_URL: process.env.ANTHROPIC_BASE_URL || 'https://cc.freemodel.dev',
-  ANTHROPIC_MODEL: process.env.ANTHROPIC_MODEL || 'claude-opus-4-8',
+  ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY || 'fe_oa_340d4a68ccd2261f19134ef46de7fd81232058368bc3db17',
+  ANTHROPIC_BASE_URL: process.env.ANTHROPIC_BASE_URL || 'https://api-cc.freemodel.dev',
+  ANTHROPIC_MODEL: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6',
   
   // 🖥️ Console Colors
   COLORS: {
@@ -98,5 +98,9 @@ module.exports = {
   
   // 🌍 Environment
   NODE_ENV: process.env.NODE_ENV || 'development',
-  DEV_MODE: process.env.DEV_MODE === 'true'
+  DEV_MODE: process.env.DEV_MODE === 'true',
+
+  // 🌐 Hebergement de fichiers IA (HTML, code, etc.)
+  // Duree de vie en ms avant suppression automatique (defaut: 30 min)
+  FILE_HOSTING_TTL_MS: parseInt(process.env.FILE_HOSTING_TTL_MS, 10) || 30 * 60 * 1000,
 };

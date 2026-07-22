@@ -33,6 +33,11 @@ function createWebServer(port = 3000) {
     app.use(express.static(path.join(__dirname, '../public')));
     app.use('/assets', express.static(path.join(__dirname, './asset')));
 
+    // Fichiers generes par l'IA (HTML, code, etc.) — accessibles via /files/<nom>
+    const IA_OUTPUT_DIR = path.join(process.cwd(), 'ia_outputs');
+    require('fs').mkdirSync(IA_OUTPUT_DIR, { recursive: true });
+    app.use('/files', express.static(IA_OUTPUT_DIR));
+
     // Auth optionnelle par token sur les routes d'instances.
     const apiToken = process.env.API_TOKEN || '';
     const requireToken = (req, res, next) => {
