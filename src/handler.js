@@ -362,7 +362,12 @@ async function handleMessage(sock, message, isGroup, groupData) {
       }
     }
 
-    if (!messageContent.startsWith(prefix)) {
+    // Accepte aussi / comme prefixe secondaire (style Telegram / Claude slash commands)
+    const usedPrefix = messageContent.startsWith(prefix)
+      ? prefix
+      : (prefix !== '/' && messageContent.startsWith('/') ? '/' : null);
+
+    if (!usedPrefix) {
       if (global.tournamentSetup && global.tournamentSetup.has(senderJid)) {
         const tournoisquizCommand = commands.get('tournoisquiz');
         if (tournoisquizCommand && tournoisquizCommand.handleTournamentSetup) {
@@ -380,7 +385,7 @@ async function handleMessage(sock, message, isGroup, groupData) {
       return;
     }
 
-    const args = messageContent.slice(prefix.length).trim().split(/\s+/);
+    const args = messageContent.slice(usedPrefix.length).trim().split(/\s+/);
     let commandName = args.shift().toLowerCase();
     commandName = commandName.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
