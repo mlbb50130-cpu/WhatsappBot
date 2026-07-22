@@ -140,6 +140,7 @@ async function ask(question) {
 module.exports = {
   ask,
   askAndSave: ask,
+  runClaudeCli,
   slugify,
   describeError,
   OUTPUT_DIR,

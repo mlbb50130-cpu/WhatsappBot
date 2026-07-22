@@ -389,7 +389,18 @@ async function handleMessage(sock, message, isGroup, groupData) {
     let commandName = args.shift().toLowerCase();
     commandName = commandName.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
-    const command = commands.get(commandName);
+    let command = commands.get(commandName);
+
+    // Si la commande n'existe pas mais que c'est un slash command Claude connu
+    // (/compact, /clear, /history), on le route vers la commande !claude.
+    if (!command && usedPrefix === '/') {
+      const { isClaudeSlashCommand } = require('./services/claudeSessionService');
+      if (isClaudeSlashCommand(commandName)) {
+        command = commands.get('claude');
+        if (command) args.unshift('/' + commandName);
+      }
+    }
+
     if (!command) return;
 
     if (isGroup && !commandVisible(command, buildContext({ groupJid: senderJid, isGroup }))) {
