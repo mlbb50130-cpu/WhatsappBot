@@ -102,8 +102,15 @@ function runClaudeCli(question) {
       finished = true;
       clearTimeout(timer);
       const out = stdout.trim();
-      if (code === 0 && out) return resolve(out);
-      const detail = (stderr.trim() || out || `code de sortie ${code}`);
+      // Prioritise stdout: le CLI peut sortir avec code != 0 pour des
+      // avertissements internes tout en ayant produit une reponse valide.
+      if (out) {
+        if (code !== 0) {
+          console.warn(`[Claude] exit=${code} mais stdout present (${out.length} chars) — on utilise la reponse`);
+        }
+        return resolve(out);
+      }
+      const detail = stderr.trim() || `code de sortie ${code}`;
       reject(new Error(detail));
     });
 

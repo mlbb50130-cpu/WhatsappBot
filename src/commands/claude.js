@@ -43,10 +43,13 @@ module.exports = {
     } catch (error) {
       await sock.sendPresenceUpdate('paused', jid).catch(() => null);
       const detail = error && error.message ? error.message : String(error);
+      console.error('[Claude] Erreur:', detail);
       // Ping le demandeur avec l'erreur reelle
       await sock.sendMessage(jid, {
         text: `@${askerJid.split('@')[0]} ❌ Erreur IA: ${detail}`,
         mentions: [askerJid],
+      }).catch((sendErr) => {
+        console.error('[Claude] Impossible d\'envoyer le message d\'erreur:', sendErr?.message || sendErr);
       });
     }
   },
