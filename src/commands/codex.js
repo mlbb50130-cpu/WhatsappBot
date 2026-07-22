@@ -1,5 +1,5 @@
 const MessageFormatter = require('../utils/messageFormatter');
-const { sendAiResponse } = require('../utils/sendAiResponse');
+const { sendAiError, sendAiResponse } = require('../utils/sendAiResponse');
 const CodexService = require('../services/codexService');
 
 module.exports = {
@@ -43,13 +43,12 @@ module.exports = {
       });
     } catch (error) {
       await sock.sendPresenceUpdate('paused', jid).catch(() => null);
-      const rawDetail = error && error.message ? error.message : String(error);
-      const detail = rawDetail.length > 3500
-        ? `${rawDetail.slice(0, 3500)}\n...(erreur tronquee)`
-        : rawDetail;
-      await sock.sendMessage(jid, {
-        text: `@${askerJid.split('@')[0]} Erreur Codex: ${detail}`,
-        mentions: [askerJid],
+      await sendAiError({
+        sock,
+        jid,
+        askerJid,
+        provider: 'Codex',
+        error,
       });
     }
   },

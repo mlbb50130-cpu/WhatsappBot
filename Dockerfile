@@ -3,7 +3,7 @@ FROM node:20-alpine
 WORKDIR /app
 
 # Installer git et Python (nécessaires pour npm et voiranime scraper)
-RUN apk add --no-cache git python3 py3-pip
+RUN apk add --no-cache git python3 py3-pip bubblewrap
 
 # Copier package.json et package-lock.json
 COPY package*.json ./

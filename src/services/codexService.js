@@ -20,11 +20,17 @@ const CODEX_API_KEY = process.env.CODEX_API_KEY || '';
 const CODEX_BASE_URL = process.env.CODEX_BASE_URL || 'https://api.freemodel.dev';
 const CODEX_MODEL = process.env.CODEX_MODEL || 'gpt-5.5';
 const CODEX_REASONING_EFFORT = process.env.CODEX_REASONING_EFFORT || 'xhigh';
+const CODEX_FILE_REASONING_EFFORT = process.env.CODEX_FILE_REASONING_EFFORT || 'high';
 const configuredTimeout = Number.parseInt(process.env.CODEX_TIMEOUT_MS, 10);
 const CODEX_TIMEOUT_MS = Number.isFinite(configuredTimeout) && configuredTimeout > 0
   ? configuredTimeout
   : 600000;
+const configuredFileTimeout = Number.parseInt(process.env.CODEX_FILE_TIMEOUT_MS, 10);
+const CODEX_FILE_TIMEOUT_MS = Number.isFinite(configuredFileTimeout) && configuredFileTimeout > 0
+  ? configuredFileTimeout
+  : Math.max(CODEX_TIMEOUT_MS, 1200000);
 const MAX_CAPTURE_LENGTH = 2 * 1024 * 1024;
+const CAPTURE_TRUNCATED_MARKER = '\n...[sortie CLI limitee a 2 Mio]';
 
 function slugify(question) {
   const base = String(question || 'reponse')
@@ -113,8 +119,32 @@ function resolveCodexLauncher() {
 }
 
 function appendCaptured(current, chunk) {
-  if (current.length >= MAX_CAPTURE_LENGTH) return current;
-  return (current + chunk.toString()).slice(0, MAX_CAPTURE_LENGTH);
+  if (current.endsWith(CAPTURE_TRUNCATED_MARKER)) return current;
+  const combined = current + chunk.toString();
+  if (combined.length <= MAX_CAPTURE_LENGTH) return combined;
+  return combined.slice(0, MAX_CAPTURE_LENGTH - CAPTURE_TRUNCATED_MARKER.length)
+    + CAPTURE_TRUNCATED_MARKER;
+}
+
+function buildCliDiagnostics({ stderr, stdout, code }) {
+  const sections = [];
+  if (code !== undefined && code !== null) sections.push(`Code de sortie: ${code}`);
+  if (stderr.trim()) sections.push(`STDERR:\n${stderr.trim()}`);
+  if (stdout.trim()) sections.push(`STDOUT partiel:\n${stdout.trim()}`);
+  return sections.join('\n\n');
+}
+
+function getRunSettings(format) {
+  if (format) {
+    return {
+      reasoningEffort: CODEX_FILE_REASONING_EFFORT,
+      timeoutMs: CODEX_FILE_TIMEOUT_MS,
+    };
+  }
+  return {
+    reasoningEffort: CODEX_REASONING_EFFORT,
+    timeoutMs: CODEX_TIMEOUT_MS,
+  };
 }
 
 function createCodexEnvironment() {
@@ -139,6 +169,7 @@ function runCodexCli(question, format) {
 
   return new Promise((resolve, reject) => {
     const launcher = resolveCodexLauncher();
+    const { reasoningEffort, timeoutMs } = getRunSettings(format);
     const prompt = format
       ? buildGenerationPrompt(question, format)
       : [
@@ -170,6 +201,8 @@ function runCodexCli(question, format) {
       '-c',
       'approval_policy=never',
       '-c',
+      `model_reasoning_effort=${tomlString(reasoningEffort)}`,
+      '-c',
       'web_search=disabled',
       '-c',
       'shell_environment_policy.inherit=none',
@@ -192,12 +225,13 @@ function runCodexCli(question, format) {
       finished = true;
       child.kill('SIGTERM');
       forceKillTimer = setTimeout(() => child.kill('SIGKILL'), 5000);
-      const lastCliMessage = stderr.trim().slice(-1500);
-      const suffix = lastCliMessage ? ` Dernier message CLI: ${lastCliMessage}` : '';
+      const diagnostics = buildCliDiagnostics({ stderr, stdout });
+      const suffix = diagnostics ? `\n\nDetails CLI complets:\n${diagnostics}` : '';
       reject(new Error(
-        `Delai Codex depasse (${Math.round(CODEX_TIMEOUT_MS / 1000)}s) avec ${CODEX_MODEL}.${suffix}`,
+        `Delai Codex depasse (${Math.round(timeoutMs / 1000)}s) avec ${CODEX_MODEL} `
+          + `(raisonnement ${reasoningEffort}).${suffix}`,
       ));
-    }, CODEX_TIMEOUT_MS);
+    }, timeoutMs);
 
     child.stdout.on('data', (data) => {
       stdout = appendCaptured(stdout, data);
@@ -227,8 +261,8 @@ function runCodexCli(question, format) {
         return;
       }
 
-      const detail = (stderr.trim() || output || `code de sortie ${code}`).slice(-6000);
-      reject(new Error(detail));
+      const diagnostics = buildCliDiagnostics({ stderr, stdout, code });
+      reject(new Error(diagnostics || `Echec Codex avec le code de sortie ${code}.`));
     });
 
     try {
@@ -261,4 +295,5 @@ module.exports = {
   slugify,
   OUTPUT_DIR,
   CODEX_HOME,
+  getRunSettings,
 };

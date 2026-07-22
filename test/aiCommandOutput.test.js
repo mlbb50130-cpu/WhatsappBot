@@ -10,7 +10,7 @@ const {
   detectRequestedFormat,
   stripWrappingCodeFence,
 } = require('../src/utils/aiResponseFormat');
-const { sendAiResponse, splitMessage } = require('../src/utils/sendAiResponse');
+const { sendAiError, sendAiResponse, splitMessage } = require('../src/utils/sendAiResponse');
 
 test('detecte les formats explicitement demandes', () => {
   assert.equal(detectRequestedFormat('cree une page en HTML').extension, 'html');
@@ -60,7 +60,7 @@ test('envoie une reponse normale sans document lorsqu il n y a pas de format', a
   assert.equal(sent[0].payload.document, undefined);
 });
 
-test('envoie uniquement le document genere avec son type MIME', async () => {
+test('envoie le lien et le document genere avec son type MIME', async () => {
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'ai-command-output-'));
   const filePath = path.join(tempDir, 'index.html');
   fs.writeFileSync(filePath, '<h1>Test</h1>', 'utf8');
@@ -84,11 +84,12 @@ test('envoie uniquement le document genere avec son type MIME', async () => {
       },
     });
 
-    assert.equal(sent.length, 1);
-    assert.equal(sent[0].payload.fileName, 'index.html');
-    assert.equal(sent[0].payload.mimetype, 'text/html');
-    assert.ok(Buffer.isBuffer(sent[0].payload.document));
-    assert.equal(sent[0].payload.text, undefined);
+    assert.equal(sent.length, 2);
+    assert.match(sent[0].payload.text, /index\.html/);
+    assert.equal(sent[1].payload.fileName, 'index.html');
+    assert.equal(sent[1].payload.mimetype, 'text/html');
+    assert.ok(Buffer.isBuffer(sent[1].payload.document));
+    assert.equal(sent[1].payload.text, undefined);
   } finally {
     fs.rmSync(tempDir, { recursive: true, force: true });
   }
@@ -98,4 +99,48 @@ test('decoupe les longues reponses sans perdre leur contenu utile', () => {
   const chunks = splitMessage('mot '.repeat(2000), 500);
   assert.ok(chunks.length > 1);
   assert.ok(chunks.every((chunk) => chunk.length <= 500));
+});
+
+test('envoie tous les details d une erreur en plusieurs messages', async () => {
+  const sent = [];
+  const sock = {
+    sendMessage: async (jid, payload) => sent.push({ jid, payload }),
+  };
+  const error = new Error(`debut-diagnostic ${'detail '.repeat(800)}fin-diagnostic`);
+
+  await sendAiError({
+    sock,
+    jid: 'groupe@g.us',
+    askerJid: '123@s.whatsapp.net',
+    provider: 'Codex',
+    error,
+  });
+
+  assert.ok(sent.length > 1);
+  assert.match(sent[0].payload.text, /debut-diagnostic/);
+  assert.match(sent.at(-1).payload.text, /fin-diagnostic/);
+  assert.ok(sent.every(({ payload }) => payload.document === undefined));
+});
+
+test('joint les diagnostics tres longs dans un fichier WhatsApp complet', async () => {
+  const sent = [];
+  const sock = {
+    sendMessage: async (jid, payload) => sent.push({ jid, payload }),
+  };
+  const error = new Error(`debut-fichier ${'detail '.repeat(2000)}fin-fichier`);
+
+  await sendAiError({
+    sock,
+    jid: 'groupe@g.us',
+    askerJid: '123@s.whatsapp.net',
+    provider: 'Codex',
+    error,
+  });
+
+  assert.equal(sent.length, 1);
+  assert.ok(Buffer.isBuffer(sent[0].payload.document));
+  assert.match(sent[0].payload.fileName, /^erreur-codex-/);
+  const diagnostics = sent[0].payload.document.toString('utf8');
+  assert.match(diagnostics, /debut-fichier/);
+  assert.match(diagnostics, /fin-fichier/);
 });

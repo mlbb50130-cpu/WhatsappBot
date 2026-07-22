@@ -2,6 +2,7 @@ const fs = require('fs');
 const { getFileUrl, scheduleFileDeletion, getTtlLabel } = require('./fileHosting');
 
 const MAX_MESSAGE_LENGTH = 3200;
+const MAX_INLINE_ERROR_LENGTH = MAX_MESSAGE_LENGTH * 3;
 
 function splitMessage(text, maxLength = MAX_MESSAGE_LENGTH) {
   const remainingChunks = [];
@@ -62,4 +63,45 @@ async function sendAiResponse({ sock, jid, askerJid, provider, result }) {
   }
 }
 
-module.exports = { sendAiResponse, splitMessage };
+function errorDetails(error) {
+  if (error instanceof Error) return error.stack || error.message;
+  if (typeof error === 'string') return error;
+  try {
+    return JSON.stringify(error, null, 2);
+  } catch (jsonError) {
+    return String(error);
+  }
+}
+
+async function sendAiError({ sock, jid, askerJid, provider, error }) {
+  const mention = `@${askerJid.split('@')[0]}`;
+  const details = `Erreur ${provider}:\n${errorDetails(error)}`;
+
+  if (details.length > MAX_INLINE_ERROR_LENGTH) {
+    const safeProvider = provider.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const fileName = `erreur-${safeProvider}-${Date.now()}.txt`;
+    await sock.sendMessage(jid, {
+      document: Buffer.from(details, 'utf8'),
+      fileName,
+      mimetype: 'text/plain',
+      caption: `${mention} Erreur ${provider} - diagnostics complets`,
+      mentions: [askerJid],
+    });
+    return;
+  }
+
+  const chunks = splitMessage(details);
+  for (let index = 0; index < chunks.length; index += 1) {
+    const firstChunk = index === 0;
+    await sock.sendMessage(jid, {
+      text: firstChunk ? `${mention} ${chunks[index]}` : chunks[index],
+      mentions: firstChunk ? [askerJid] : [],
+    });
+  }
+}
+
+module.exports = {
+  sendAiError,
+  sendAiResponse,
+  splitMessage,
+};

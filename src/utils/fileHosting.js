@@ -21,9 +21,10 @@ function getFileUrl(fileName) {
 }
 
 function scheduleFileDeletion(filePath) {
-  setTimeout(() => {
+  const timer = setTimeout(() => {
     fs.unlink(filePath, () => {});
   }, currentTtlMs);
+  if (timer.unref) timer.unref();
 }
 
 function setTtl(ms) {
