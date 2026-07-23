@@ -10,6 +10,8 @@ function getText(message) {
   if (msg.extendedTextMessage?.text) return msg.extendedTextMessage.text;
   if (msg.imageMessage?.caption) return msg.imageMessage.caption;
   if (msg.videoMessage?.caption) return msg.videoMessage.caption;
+  if (msg.documentMessage?.caption) return msg.documentMessage.caption;
+  if (msg.documentWithCaptionMessage?.message) return getText({ message: msg.documentWithCaptionMessage.message });
   return '';
 }
 
@@ -40,6 +42,10 @@ function getQuotedText(message) {
   if (quoted.extendedTextMessage?.text) return quoted.extendedTextMessage.text;
   if (quoted.imageMessage?.caption) return quoted.imageMessage.caption;
   if (quoted.videoMessage?.caption) return quoted.videoMessage.caption;
+  if (quoted.documentMessage?.caption) return quoted.documentMessage.caption;
+  if (quoted.documentWithCaptionMessage?.message) {
+    return getText({ message: quoted.documentWithCaptionMessage.message });
+  }
   return '';
 }
 
@@ -51,6 +57,10 @@ function normalizeContent(rawMessage) {
   if (!rawMessage) return null;
   const type = getContentType(rawMessage);
   if (!type) return null;
+
+  if (type === 'documentWithCaptionMessage' && rawMessage[type]?.message) {
+    return normalizeContent(rawMessage[type].message);
+  }
 
   if (
     type === 'viewOnceMessage' ||

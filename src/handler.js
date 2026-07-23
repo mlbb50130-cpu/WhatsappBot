@@ -43,6 +43,8 @@ function extractText(msg) {
   if (msg.extendedTextMessage?.text) return msg.extendedTextMessage.text;
   if (msg.imageMessage?.caption) return msg.imageMessage.caption;
   if (msg.videoMessage?.caption) return msg.videoMessage.caption;
+  if (msg.documentMessage?.caption) return msg.documentMessage.caption;
+  if (msg.documentWithCaptionMessage?.message) return extractText(msg.documentWithCaptionMessage.message);
   return '';
 }
 
