@@ -8,39 +8,83 @@ const {
   stripWrappingCodeFence,
 } = require('../utils/aiResponseFormat');
 
-// Historique de conversation par JID (en memoire, ephemere).
-// Chaque entree: { role: 'user'|'assistant'|'system', text: string }
-const HISTORY = new Map();
+// Sessions de conversation (en memoire, ephemere).
+// Cle = identifiant de session (voir buildSessionKey), valeur = { messages, lastUsed }
+// Chaque message: { role: 'user'|'assistant'|'system', text: string }
+const SESSIONS = new Map();
 const MAX_MESSAGES = 20; // 10 echanges max avant compaction automatique
+const SESSION_TTL_MS = 2 * 60 * 60 * 1000; // session oubliee apres 2h d'inactivite
+const MAX_SESSIONS = 500; // garde-fou memoire
 
-function getHistory(jid) {
-  return HISTORY.get(jid) || [];
+/**
+ * Construit la cle de session.
+ * - En groupe : une session distincte par membre (chacun sa memoire).
+ * - En prive  : une session par contact.
+ */
+function buildSessionKey(remoteJid, participantJid) {
+  if (!remoteJid) return participantJid || 'inconnu';
+  if (remoteJid.endsWith('@g.us')) {
+    return `${remoteJid}|${participantJid || remoteJid}`;
+  }
+  return remoteJid;
 }
 
-function pushHistory(jid, role, text) {
-  const h = getHistory(jid);
-  h.push({ role, text: String(text || '').slice(0, 600) });
-  while (h.length > MAX_MESSAGES) h.shift();
-  HISTORY.set(jid, h);
+// Supprime les sessions inactives, puis les plus anciennes si le cap est depasse.
+function cleanupSessions() {
+  const now = Date.now();
+  for (const [key, session] of SESSIONS) {
+    if (now - session.lastUsed > SESSION_TTL_MS) SESSIONS.delete(key);
+  }
+
+  while (SESSIONS.size > MAX_SESSIONS) {
+    let oldestKey = null;
+    let oldestTime = Infinity;
+    for (const [key, session] of SESSIONS) {
+      if (session.lastUsed < oldestTime) {
+        oldestTime = session.lastUsed;
+        oldestKey = key;
+      }
+    }
+    if (!oldestKey) break;
+    SESSIONS.delete(oldestKey);
+  }
 }
 
-// Construit le prompt en incluant l'historique de la conversation.
-// Utilise l'historique uniquement pour les questions conversationnelles
-// (pas pour les demandes de generation de fichier).
-function buildContextualPrompt(jid, question) {
-  const history = getHistory(jid);
-  if (history.length === 0) return question;
+function getHistory(key) {
+  return SESSIONS.get(key)?.messages || [];
+}
 
-  const historyBlock = history
+function setHistory(key, messages) {
+  SESSIONS.set(key, { messages, lastUsed: Date.now() });
+  cleanupSessions();
+}
+
+function pushHistory(key, role, text) {
+  const messages = getHistory(key);
+  messages.push({ role, text: String(text || '').slice(0, 600) });
+  while (messages.length > MAX_MESSAGES) messages.shift();
+  setHistory(key, messages);
+}
+
+function renderHistory(messages) {
+  return messages
     .map(m => {
       if (m.role === 'system') return m.text;
       return `[${m.role === 'user' ? 'Utilisateur' : 'Claude'}]: ${m.text}`;
     })
     .join('\n\n');
+}
+
+// Construit le prompt en incluant l'historique de la conversation.
+// Utilise l'historique uniquement pour les questions conversationnelles
+// (pas pour les demandes de generation de fichier).
+function buildContextualPrompt(key, question) {
+  const history = getHistory(key);
+  if (history.length === 0) return question;
 
   return [
     'Voici notre conversation precedente:',
-    historyBlock,
+    renderHistory(history),
     '',
     `[Utilisateur]: ${question}`,
     '',
@@ -49,11 +93,11 @@ function buildContextualPrompt(jid, question) {
 }
 
 /**
- * Pose une question a Claude en incluant l'historique de la conversation.
+ * Pose une question a Claude en incluant l'historique de la session.
  * Pour les demandes de generation de fichier (code, html, etc.) l'historique
  * n'est pas inclus car la generation est toujours stateless.
  */
-async function askInSession(jid, question) {
+async function askInSession(key, question) {
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 
   const format = detectRequestedFormat(question);
@@ -70,11 +114,11 @@ async function askInSession(jid, question) {
   }
 
   // Question conversationnelle : inclure l'historique
-  const prompt = buildContextualPrompt(jid, question);
+  const prompt = buildContextualPrompt(key, question);
   const text = await runClaudeCli(prompt);
 
-  pushHistory(jid, 'user', question);
-  pushHistory(jid, 'assistant', text);
+  pushHistory(key, 'user', question);
+  pushHistory(key, 'assistant', text);
 
   return { text, filePath: null, fileName: null, mimetype: null };
 }
@@ -84,41 +128,34 @@ async function askInSession(jid, question) {
  * l'historique par ce resume (equivalent du /compact du CLI).
  * Retourne le texte du resume, ou null si l'historique est trop court.
  */
-async function compactSession(jid) {
-  const history = getHistory(jid);
+async function compactSession(key) {
+  const history = getHistory(key);
   if (history.length < 2) return null;
-
-  const historyBlock = history
-    .map(m => {
-      if (m.role === 'system') return m.text;
-      return `[${m.role === 'user' ? 'Utilisateur' : 'Claude'}]: ${m.text}`;
-    })
-    .join('\n\n');
 
   const summaryPrompt = [
     'Fais un resume concis de cette conversation (3 a 5 phrases max).',
     'Garde uniquement les points essentiels et le contexte important.',
     'Commence directement par le resume, sans phrase d\'introduction.',
     '',
-    historyBlock,
+    renderHistory(history),
   ].join('\n');
 
   const summary = await runClaudeCli(summaryPrompt);
 
   // Remplace l'historique par le resume compacte
-  HISTORY.set(jid, [{ role: 'system', text: `[Contexte compacte]: ${summary}` }]);
+  setHistory(key, [{ role: 'system', text: `[Contexte compacte]: ${summary}` }]);
 
   return summary;
 }
 
-/** Efface l'historique (equivalent du /clear du CLI). */
-function clearSession(jid) {
-  HISTORY.delete(jid);
+/** Efface la session (equivalent du /clear du CLI). */
+function clearSession(key) {
+  SESSIONS.delete(key);
 }
 
-/** Retourne le nombre de messages dans l'historique. */
-function getHistoryStatus(jid) {
-  return { count: getHistory(jid).length };
+/** Retourne le nombre de messages dans la session. */
+function getHistoryStatus(key) {
+  return { count: getHistory(key).length };
 }
 
 // Slash commands Claude supportees par le bot
@@ -129,6 +166,7 @@ function isClaudeSlashCommand(name) {
 }
 
 module.exports = {
+  buildSessionKey,
   askInSession,
   compactSession,
   clearSession,

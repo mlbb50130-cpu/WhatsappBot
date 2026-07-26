@@ -7,20 +7,20 @@ const ClaudeSession = require('../services/claudeSessionService');
 // /clear   → efface l'historique
 // /history → affiche le nombre de messages en memoire
 const SLASH_HANDLERS = {
-  async compact(jid, askerJid, sock) {
-    const summary = await ClaudeSession.compactSession(jid);
+  async compact(sessionKey) {
+    const summary = await ClaudeSession.compactSession(sessionKey);
     if (!summary) return '📝 Pas assez d\'historique a compacter (minimum 2 messages).';
-    return `✅ Historique compacte:\n\n${summary}`;
+    return `✅ Ton historique a ete compacte:\n\n${summary}`;
   },
-  clear(jid) {
-    ClaudeSession.clearSession(jid);
-    return '🗑️ Historique de conversation efface.';
+  clear(sessionKey) {
+    ClaudeSession.clearSession(sessionKey);
+    return '🗑️ Ton historique de conversation a ete efface.';
   },
-  history(jid) {
-    const { count } = ClaudeSession.getHistoryStatus(jid);
+  history(sessionKey) {
+    const { count } = ClaudeSession.getHistoryStatus(sessionKey);
     return count === 0
-      ? '📭 Aucun historique de conversation.'
-      : `📋 ${count} message(s) dans l\'historique.`;
+      ? '📭 Tu n\'as aucun historique de conversation.'
+      : `📋 ${count} message(s) dans ton historique.`;
   },
 };
 
@@ -37,6 +37,8 @@ module.exports = {
   async execute(sock, message, args, user, isGroup, groupData, reply) {
     const jid = message.key.remoteJid;
     const askerJid = message.key.participant || jid;
+    // Chaque utilisateur a sa propre session, meme dans un groupe partage.
+    const sessionKey = ClaudeSession.buildSessionKey(jid, askerJid);
     const send = async (payload) => (reply ? reply(payload) : sock.sendMessage(jid, payload));
 
     const input = args.join(' ').trim();
@@ -56,7 +58,7 @@ module.exports = {
           if (isAsync) {
             await send({ text: MessageFormatter.info('⏳ Compaction en cours...') });
           }
-          const result = await handler(jid, askerJid, sock);
+          const result = await handler(sessionKey);
           await sock.sendMessage(jid, {
             text: `@${askerJid.split('@')[0]} ${result}`,
             mentions: [askerJid],
@@ -80,7 +82,7 @@ module.exports = {
     await sock.sendPresenceUpdate('composing', jid).catch(() => null);
 
     try {
-      const result = await ClaudeSession.askInSession(jid, input);
+      const result = await ClaudeSession.askInSession(sessionKey, input);
       await sock.sendPresenceUpdate('paused', jid).catch(() => null);
       await sendAiResponse({ sock, jid, askerJid, provider: 'Claude', result });
     } catch (error) {
