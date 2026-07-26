@@ -309,9 +309,13 @@ function runCodexCli(question, format) {
   });
 }
 
-async function ask(question, { attachment = null } = {}) {
+// `detectionText` permet a l'appelant de choisir sur quel texte porte la
+// detection de format. Utile quand `question` est enrichie d'un historique de
+// conversation, qui declencherait sinon de faux positifs.
+async function ask(question, { attachment = null, detectionText = null } = {}) {
   const input = buildCodexInput(question, attachment);
-  const format = detectRequestedFormat(input.detectionText);
+  const detectionSource = detectionText || input.detectionText;
+  const format = detectRequestedFormat(detectionSource);
   const rawText = await runCodexCli(input.prompt, format);
   const text = format ? stripWrappingCodeFence(rawText) : rawText;
 
@@ -319,7 +323,7 @@ async function ask(question, { attachment = null } = {}) {
     return { text, filePath: null, fileName: null, mimetype: null };
   }
 
-  const fileName = createOutputFileName(input.detectionText, format, slugify);
+  const fileName = createOutputFileName(detectionSource, format, slugify);
   const filePath = path.join(OUTPUT_DIR, fileName);
 
   fs.writeFileSync(filePath, text, 'utf8');
