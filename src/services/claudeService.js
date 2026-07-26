@@ -9,8 +9,10 @@ const {
   stripWrappingCodeFence,
 } = require('../utils/aiResponseFormat');
 
-// Dossier ou sont ecrits les fichiers generes par l'IA.
-const OUTPUT_DIR = path.join(process.cwd(), 'ia_outputs');
+// Dossier ou sont ecrits les fichiers generes par l'IA. Resolu a l'usage (et
+// non a l'import) car il depend d'un test d'ecriture qui peut echouer : voir
+// utils/iaOutputDir.
+const { resolveOutputDir } = require('../utils/iaOutputDir');
 
 // Le proxy (cc.freemodel.dev) n'autorise QUE le client officiel Claude Code.
 // On appelle donc le CLI `claude` en mode non-interactif (claude -p) au lieu du
@@ -68,7 +70,7 @@ function runClaudeCli(question) {
     const args = [...prefix, ...cliArgs];
 
     const child = spawn(bin, args, {
-      cwd: OUTPUT_DIR,
+      cwd: resolveOutputDir(),
       env: {
         ...process.env,
         ANTHROPIC_API_KEY: config.ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY,
@@ -120,7 +122,7 @@ function runClaudeCli(question) {
 }
 
 async function ask(question) {
-  fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+  const outputDir = resolveOutputDir();
 
   const format = detectRequestedFormat(question);
   const rawText = await runClaudeCli(buildGenerationPrompt(question, format));
@@ -131,7 +133,7 @@ async function ask(question) {
   }
 
   const fileName = createOutputFileName(question, format, slugify);
-  const filePath = path.join(OUTPUT_DIR, fileName);
+  const filePath = path.join(outputDir, fileName);
   fs.writeFileSync(filePath, text, 'utf8');
 
   return { text, filePath, fileName, mimetype: format.mimetype };
@@ -143,5 +145,5 @@ module.exports = {
   runClaudeCli,
   slugify,
   describeError,
-  OUTPUT_DIR,
+  resolveOutputDir,
 };

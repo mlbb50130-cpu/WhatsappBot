@@ -8,13 +8,22 @@ const {
   stripWrappingCodeFence,
 } = require('../utils/aiResponseFormat');
 
+const { resolveOutputDir, ensureSubDir } = require('../utils/iaOutputDir');
+
 require('dotenv').config({ quiet: true });
 
-const PROJECT_ROOT = path.resolve(__dirname, '..', '..');
-const OUTPUT_DIR = path.join(PROJECT_ROOT, 'ia_outputs');
-const CODEX_HOME = process.env.KASSIM_CODEX_HOME
-  || path.join(OUTPUT_DIR, '.codex-home');
-const WORK_DIR = path.join(OUTPUT_DIR, '.codex-work');
+// Le home et le repertoire de travail du CLI vivent sous le dossier de sortie,
+// resolu a l'usage pour pouvoir se replier si /app est en lecture seule.
+function codexHome() {
+  const configured = process.env.KASSIM_CODEX_HOME;
+  if (!configured) return ensureSubDir('.codex-home');
+  fs.mkdirSync(configured, { recursive: true });
+  return configured;
+}
+
+function codexWorkDir() {
+  return ensureSubDir('.codex-work');
+}
 
 const CODEX_API_KEY = process.env.CODEX_API_KEY || '';
 const CODEX_BASE_URL = process.env.CODEX_BASE_URL || 'https://api.freemodel.dev';
@@ -59,9 +68,8 @@ function prepareRuntime() {
     );
   }
 
-  fs.mkdirSync(OUTPUT_DIR, { recursive: true });
-  fs.mkdirSync(CODEX_HOME, { recursive: true });
-  fs.mkdirSync(WORK_DIR, { recursive: true });
+  const home = codexHome();
+  const workDir = codexWorkDir();
 
   const configToml = [
     'model_provider = "freemodel"',
@@ -77,11 +85,13 @@ function prepareRuntime() {
     '',
   ].join('\n');
 
-  writePrivateFile(path.join(CODEX_HOME, 'config.toml'), configToml);
+  writePrivateFile(path.join(home, 'config.toml'), configToml);
   writePrivateFile(
-    path.join(CODEX_HOME, 'auth.json'),
+    path.join(home, 'auth.json'),
     `${JSON.stringify({ OPENAI_API_KEY: CODEX_API_KEY }, null, 2)}\n`,
   );
+
+  return { home, workDir };
 }
 
 function resolveCodexLauncher() {
@@ -147,7 +157,7 @@ function getRunSettings(format) {
   };
 }
 
-function createCodexEnvironment() {
+function createCodexEnvironment(home) {
   const env = { ...process.env };
 
   // Do not leak state from a parent Codex session into the bot subprocess.
@@ -157,7 +167,7 @@ function createCodexEnvironment() {
 
   return {
     ...env,
-    CODEX_HOME,
+    CODEX_HOME: home,
     CODEX_API_KEY,
     OPENAI_API_KEY: CODEX_API_KEY,
     NO_COLOR: '1',
@@ -190,7 +200,7 @@ function buildCodexInput(question, attachment) {
 }
 
 function runCodexCli(question, format) {
-  prepareRuntime();
+  const { home, workDir } = prepareRuntime();
 
   return new Promise((resolve, reject) => {
     const launcher = resolveCodexLauncher();
@@ -235,9 +245,9 @@ function runCodexCli(question, format) {
     ];
 
     const child = spawn(launcher.command, [...launcher.prefixArgs, ...cliArgs], {
-      cwd: WORK_DIR,
+      cwd: workDir,
       windowsHide: true,
-      env: createCodexEnvironment(),
+      env: createCodexEnvironment(home),
     });
 
     let stdout = '';
@@ -324,7 +334,7 @@ async function ask(question, { attachment = null, detectionText = null } = {}) {
   }
 
   const fileName = createOutputFileName(detectionSource, format, slugify);
-  const filePath = path.join(OUTPUT_DIR, fileName);
+  const filePath = path.join(resolveOutputDir(), fileName);
 
   fs.writeFileSync(filePath, text, 'utf8');
   return { text, filePath, fileName, mimetype: format.mimetype };
@@ -334,8 +344,8 @@ module.exports = {
   ask,
   askAndSave: ask,
   slugify,
-  OUTPUT_DIR,
-  CODEX_HOME,
+  resolveOutputDir,
+  codexHome,
   buildCodexInput,
   getRunSettings,
 };

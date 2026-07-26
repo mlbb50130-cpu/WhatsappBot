@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const InstanceManager = require('./utils/instanceManager');
+const { resolveOutputDir } = require('./utils/iaOutputDir');
 
 // Variables globales pour les statistiques
 let botStats = {
@@ -34,9 +35,13 @@ function createWebServer(port = 3000) {
     app.use('/assets', express.static(path.join(__dirname, './asset')));
 
     // Fichiers generes par l'IA (HTML, code, etc.) — accessibles via /files/<nom>
-    const IA_OUTPUT_DIR = path.join(process.cwd(), 'ia_outputs');
-    require('fs').mkdirSync(IA_OUTPUT_DIR, { recursive: true });
-    app.use('/files', express.static(IA_OUTPUT_DIR));
+    // Meme resolution que les services : si /app est en lecture seule, les deux
+    // cotes basculent sur le meme repli, sinon les liens pointeraient a vide.
+    try {
+        app.use('/files', express.static(resolveOutputDir()));
+    } catch (err) {
+        console.error(`⚠️  /files desactive: ${err.message}`);
+    }
 
     // Auth optionnelle par token sur les routes d'instances.
     const apiToken = process.env.API_TOKEN || '';

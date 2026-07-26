@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { runClaudeCli, slugify, OUTPUT_DIR } = require('./claudeService');
+const { runClaudeCli, slugify, resolveOutputDir } = require('./claudeService');
 const {
   detectRequestedFormat,
   buildGenerationPrompt,
@@ -21,8 +21,6 @@ const store = createSessionStore({ runPrompt: runClaudeCli });
  * n'est pas inclus car la generation est toujours stateless.
  */
 async function askInSession(key, question) {
-  fs.mkdirSync(OUTPUT_DIR, { recursive: true });
-
   // Detection faite sur la question brute: l'historique pourrait contenir des
   // mots-cles de format et declencher un faux positif.
   const format = detectRequestedFormat(question);
@@ -31,7 +29,8 @@ async function askInSession(key, question) {
     const rawText = await runClaudeCli(buildGenerationPrompt(question, format));
     const text = stripWrappingCodeFence(rawText);
     const fileName = createOutputFileName(question, format, slugify);
-    const filePath = path.join(OUTPUT_DIR, fileName);
+    // Resolu ici seulement: une reponse texte n'a besoin d'aucun fichier.
+    const filePath = path.join(resolveOutputDir(), fileName);
     fs.writeFileSync(filePath, text, 'utf8');
     return { text, filePath, fileName, mimetype: format.mimetype };
   }

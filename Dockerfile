@@ -23,8 +23,11 @@ RUN pip3 install --no-cache-dir --break-system-packages -r scripts/requirements.
 # Copier TOUS les fichiers du projet
 COPY . .
 
-# Créer les dossiers nécessaires
-RUN mkdir -p logs sessions whatsapp_auth
+# Créer les dossiers nécessaires. ia_outputs recoit des droits larges: si la
+# plateforme lance le conteneur sous un utilisateur non-root, l'ecriture y
+# reste possible (a defaut, le code se replie sur /tmp).
+RUN mkdir -p logs sessions whatsapp_auth ia_outputs \
+    && chmod -R 777 logs sessions whatsapp_auth ia_outputs
 
 # Expose le port
 EXPOSE 3000
